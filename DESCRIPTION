@@ -1,0 +1,22 @@
+Package: TBSignatureProfiler
+Title: Profile RNA-Seq Data Using TB Pathway Signatures
+Version: 0.0.0.9000
+Authors@R: 
+    person(given = "David",
+           family = "Jenkins",
+           role = c("aut", "cre"),
+           email = "dfj@bu.edu")
+Description: Signatures of TB progression, TB disease, and other TB disease
+    states have been created. This package makes it easy to profile RNA-Seq data
+    using these signatures and common signature profiling tools including
+    ASSIGN, GSVA, and ssGSEA.
+License: MIT + file LICENSE
+Encoding: UTF-8
+biocViews: GeneExpression, DifferentialExpression
+LazyData: true
+RoxygenNote: 6.1.0
+Imports: 
+    ASSIGN,
+    GSVA
+Suggests: 
+    testthat
