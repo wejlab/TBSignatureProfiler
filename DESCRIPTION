@@ -20,3 +20,5 @@ Imports:
     GSVA
 Suggests: 
     testthat
+URL: https://github.com/dfjenkins3/TBSignatureProfiler
+BugReports: https://github.com/dfjenkins3/TBSignatureProfiler/issues
