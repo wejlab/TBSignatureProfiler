@@ -10,10 +10,12 @@ ASSIGN, GSVA, and ssGSEA.
 
 ## Installation
 
-You can install the released version of TBSignatureProfiler from [CRAN](https://CRAN.R-project.org) with:
+TBSignatureProfiler is under development. You can install the devel version via
+GitHub:
 
 ``` r
-install.packages("TBSignatureProfiler")
+# install.packages("devtools")
+devtools::install_github("dfjenkins3/TBSignatureProfiler")
 ```
 
 ## Example

@@ -19,6 +19,8 @@ Imports:
     ASSIGN,
     GSVA
 Suggests: 
-    testthat
+    testthat,
+    spelling
 URL: https://github.com/dfjenkins3/TBSignatureProfiler
 BugReports: https://github.com/dfjenkins3/TBSignatureProfiler/issues
+Language: en-US
