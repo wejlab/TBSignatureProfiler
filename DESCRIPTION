@@ -1,7 +1,7 @@
 Package: TBSignatureProfiler
 Title: Profile RNA-Seq Data Using TB Pathway Signatures
 Version: 0.0.0.9000
-Authors@R: 
+Authors@R:
     person(given = "David",
            family = "Jenkins",
            role = c("aut", "cre"),
@@ -15,14 +15,16 @@ Encoding: UTF-8
 biocViews: GeneExpression, DifferentialExpression
 LazyData: true
 RoxygenNote: 6.1.0
-Imports: 
+Imports:
     ASSIGN,
-    GSVA
-Suggests: 
+    GSVA,
+    SummarizedExperiment,
+    S4Vectors
+Suggests:
     testthat,
     spelling
 URL: https://github.com/dfjenkins3/TBSignatureProfiler
 BugReports: https://github.com/dfjenkins3/TBSignatureProfiler/issues
 Language: en-US
-Depends: 
+Depends:
     R (>= 2.10)

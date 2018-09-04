@@ -2,3 +2,5 @@ ensembl
 entrez
 GSVA
 ssGSEA
+SummarizedExperiment
+TBsignatures
