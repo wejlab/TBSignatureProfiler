@@ -32,17 +32,21 @@ runTBsigProfiler <- function(input, useAssay = NULL,
                              algorithm = c("GSVA", "ssGSEA", "ASSIGN"),
                              combineSigAndAlgorithm = FALSE, assignDir,
                              outputFormat = NULL) {
-  if(is.null(signatures)){
+  if (is.null(signatures)){
     utils::data("TBsignatures", package = "TBSignatureProfiler", envir = .myenv)
     signatures <- .myenv$TBsignatures
   }
   runindata <- input
-  if (!is.null(useAssay)){
-    if (!(class(input) %in% c("SummarizedExperiment", "SingleCellExperiment",
-                             "SCtkExperiment"))){
-      stop("useAssay only supported for SummarizedExperiment objects")
+  if (is(runindata, "SummarizedExperiment")){
+    if (!is.null(useAssay)){
+      if (!(class(input) %in% c("SummarizedExperiment", "SingleCellExperiment",
+                                "SCtkExperiment"))){
+        stop("useAssay only supported for SummarizedExperiment objects")
+      } else {
+        runindata <- SummarizedExperiment::assay(input, useAssay)
+      }
     } else {
-      runindata <- SummarizedExperiment::assay(input, useAssay)
+      stop("useAssay required for SummarizedExperiment Input")
     }
   }
   if (class(runindata) == "data.frame"){
@@ -58,17 +62,15 @@ runTBsigProfiler <- function(input, useAssay = NULL,
   }
 
   gsvaRes <- NULL
-  if("GSVA" %in% algorithm){
+  if ("GSVA" %in% algorithm){
     message("Running GSVA")
-    gsvaRes <- GSVA::gsva(runindata,
-                          signatures)
+    gsvaRes <- GSVA::gsva(runindata, signatures)
   }
 
   gsvaRes_ssgsea <- NULL
   if ("ssGSEA" %in% algorithm){
     message("Running ssGSEA")
-    gsvaRes_ssgsea <- GSVA::gsva(runindata,
-                                 signatures, method="ssgsea")
+    gsvaRes_ssgsea <- GSVA::gsva(runindata, signatures, method = "ssgsea")
   }
 
   assign_res <- NULL
@@ -77,8 +79,8 @@ runTBsigProfiler <- function(input, useAssay = NULL,
   }
 
   sig_result <- NULL
-  if(length(algorithm) == 1){
-    if(!is.null(gsvaRes)){
+  if (length(algorithm) == 1){
+    if (!is.null(gsvaRes)){
       sig_result <- gsvaRes
     } else if (!is.null(gsvaRes_ssgsea)){
       sig_result <- gsvaRes_ssgsea
@@ -89,7 +91,7 @@ runTBsigProfiler <- function(input, useAssay = NULL,
     }
   } else {
     combined_res <- data.frame()
-    if(!is.null(gsvaRes)){
+    if (!is.null(gsvaRes)){
       return(gsvaRes)
     }
     if (!is.null(gsvaRes_ssgsea)){
@@ -101,7 +103,7 @@ runTBsigProfiler <- function(input, useAssay = NULL,
     sig_result <- combined_res
   }
 
-  if(is.null(outputFormat)){
+  if (is.null(outputFormat)){
     #output same as input
     if (class(input) %in% c("SummarizedExperiment", "SingleCellExperiment",
                              "SCtkExperiment")){
@@ -111,15 +113,19 @@ runTBsigProfiler <- function(input, useAssay = NULL,
       return(input)
     } else if (class(input) == "matrix") {
       return(sig_result)
+    } else if (class(input) == "data.frame"){
+      return(data.frame(sig_result))
+    } else {
+      stop("Output format error.")
     }
   } else if (outputFormat == "matrix"){
     return(sig_result)
-  } else if(outputFormat == "data.frame"){
+  } else if (outputFormat == "data.frame"){
     return(data.frame(sig_result))
   } else if (outputFormat == "SummarizedExperiment"){
     outdata <- SummarizedExperiment::SummarizedExperiment(
-      assays = S4Vectors::SimpleList(data=runindata),
-      colData=S4Vectors::DataFrame(t(sig_result)))
+      assays = S4Vectors::SimpleList(data = runindata),
+      colData = S4Vectors::DataFrame(t(sig_result)))
     return(outdata)
   }
   return(input)
