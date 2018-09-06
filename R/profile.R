@@ -31,7 +31,7 @@
 #' @examples
 #' #create some toy data to test Predict29 signature, with 5 samples with low
 #' #and five samples with high expression of the signatures genes.
-#' mat_testdata <- rbind(matrix(c(rnorm(145), rnorm(145)+5), 29, 10,
+#' mat_testdata <- rbind(matrix(c(rnorm(145), rnorm(145) + 5), 29, 10,
 #'                              dimnames = list(TBsignatures$Predict29,
 #'                              paste0("sample", 1:10))),
 #'                       matrix(rnorm(1000), 100, 10,
@@ -138,6 +138,7 @@ runTBsigProfiler <- function(input, useAssay = NULL,
       assays = S4Vectors::SimpleList(data = runindata),
       colData = S4Vectors::DataFrame(t(sig_result)))
     return(outdata)
+  } else {
+    stop("Output format error.")
   }
-  return(input)
 }
