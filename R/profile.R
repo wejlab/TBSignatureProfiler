@@ -151,7 +151,7 @@ runTBsigProfiler <- function(input, useAssay = NULL,
     #name and combine. Otherwise we need to add an 'algorithm' column and
     #SummarizedExperiment output is not supported.
     if (is.null(combineSigAndAlgorithm)){
-      stop("You must choose whether or not to combine the signature and algorithm name.")
+      stop("You must choose whether or not to combine the signature and algorithm name using combineSigAndAlgorithm.")
     } else if (combineSigAndAlgorithm){
       if (!is.null(gsvaRes)){
         rownames(gsvaRes) <- paste("GSVA", rownames(gsvaRes), sep = "_")

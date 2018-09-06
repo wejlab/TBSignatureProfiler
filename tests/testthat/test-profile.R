@@ -89,6 +89,15 @@ test_that("matrix input", {
                      ASSIGNiter = 100, ASSIGNburnin = 50, parallel.sz = 1),
     "matrix"
   )
+  expect_error(
+    runTBsigProfiler(mat_testdata,
+                     signatures = list(sig1 = paste0("gene", 1:10)),
+                     combineSigAndAlgorithm = NULL,
+                     algorithm = c("GSVA", "ssGSEA", "ASSIGN"),
+                     ASSIGNiter = 100, ASSIGNburnin = 50, parallel.sz = 1),
+    paste0("You must choose whether or not to combine the signature and ",
+    "algorithm name using combineSigAndAlgorithm.")
+  )
 })
 
 #Test data.frame input
@@ -137,6 +146,31 @@ test_that("data.frame input", {
                      algorithm = c("GSVA", "ssGSEA"), parallel.sz = 1),
     "data.frame"
   )
+  expect_is(
+    runTBsigProfiler(df_testdata,
+                     signatures = list(sig1 = paste0("gene", 1:10)),
+                     combineSigAndAlgorithm = FALSE,
+                     algorithm = c("ssGSEA", "ASSIGN"), ASSIGNiter = 100,
+                     ASSIGNburnin = 50, parallel.sz = 1),
+    "data.frame"
+  )
+  expect_is(
+    runTBsigProfiler(df_testdata,
+                     signatures = list(sig1 = paste0("gene", 1:10)),
+                     combineSigAndAlgorithm = TRUE,
+                     algorithm = c("ssGSEA", "ASSIGN"), ASSIGNiter = 100,
+                     ASSIGNburnin = 50, parallel.sz = 1),
+    "data.frame"
+  )
+  assignDir <- tempfile("assign")
+  dir.create(assignDir)
+  expect_is(
+    runTBsigProfiler(df_testdata, assignDir = assignDir,
+                     signatures = list(sig1 = paste0("gene", 1:10)),
+                     algorithm = "ASSIGN", ASSIGNiter = 100, ASSIGNburnin = 50),
+    "data.frame"
+  )
+  unlink(assignDir)
 })
 
 #Test SummarizedExperiment input
@@ -174,6 +208,15 @@ test_that("SummarizedExperiment input", {
   )
   expect_error(
     runTBsigProfiler(SE_testdata, useAssay = "data",
+                     signatures = list(sig1 = paste0("gene", 1:10)),
+                     algorithm = c("GSVA", "ASSIGN"), parallel.sz = 1,
+                     combineSigAndAlgorithm = FALSE,
+                     ASSIGNiter = 100, ASSIGNburnin = 50),
+    "SummarizedExperiment not supported with combineSigAndAlgorithm FALSE."
+  )
+  expect_error(
+    runTBsigProfiler(SE_testdata, useAssay = "data",
+                     outputFormat = "SummarizedExperiment",
                      signatures = list(sig1 = paste0("gene", 1:10)),
                      algorithm = c("GSVA", "ASSIGN"), parallel.sz = 1,
                      combineSigAndAlgorithm = FALSE,
