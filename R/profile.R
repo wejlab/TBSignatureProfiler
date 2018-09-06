@@ -113,17 +113,20 @@ runTBsigProfiler <- function(input, useAssay = NULL,
         message(paste(signatures[[i]][!(signatures[[i]] %in% rownames(runindata))], sep = "  ", collapse = ", "))
         message(i, " will be skipped")
       } else {
-        if (!file.exists(paste0(i, "_ASSIGN"))){
+        if (!file.exists(i)){
           set.seed(1234)
           ASSIGN::assign.wrapper(testData = runindata, trainingLabel = NULL,
                                  geneList = currlist, adaptive_S = TRUE,
                                  iter = ASSIGNiter, burn_in = ASSIGNburnin,
-                                 outputDir = paste0(i, "_ASSIGN"))
+                                 outputDir = i)
         }
       }
     }
     setwd(predir)
     assign_res <- as.matrix(t(ASSIGN::gather_assign_results(assignDir)))
+    if (nrow(assign_res) == 0){
+      assign_res <- NULL
+    }
     if (delete_intermediate){
       unlink(assignDir, recursive = TRUE)
     } else {
@@ -144,16 +147,82 @@ runTBsigProfiler <- function(input, useAssay = NULL,
     }
   } else {
     combined_res <- data.frame()
-    if (!is.null(gsvaRes)){
-      return(gsvaRes)
+    #if combineSigAndAlgorithm TRUE, we can just concatenate the name to the sig
+    #name and combine. Otherwise we need to add an 'algorithm' column and
+    #SummarizedExperiment output is not supported.
+    if (is.null(combineSigAndAlgorithm)){
+      stop("You must choose whether or not to combine the signature and algorithm name.")
+    } else if (combineSigAndAlgorithm){
+      if (!is.null(gsvaRes)){
+        rownames(gsvaRes) <- paste("GSVA", rownames(gsvaRes), sep = "_")
+        combined_res <- gsvaRes
+      }
+      if (!is.null(gsvaRes_ssgsea)){
+        rownames(gsvaRes_ssgsea) <- paste("ssGSEA", rownames(gsvaRes_ssgsea),
+                                          sep = "_")
+        if (nrow(combined_res) == 0){
+          combined_res <- gsvaRes_ssgsea
+        } else {
+          combined_res <- rbind(combined_res, gsvaRes_ssgsea)
+        }
+      }
+      if (!is.null(assign_res)){
+        rownames(assign_res) <- paste("ASSIGN", rownames(assign_res), sep = "_")
+        if (nrow(combined_res) == 0){
+          combined_res <- assign_res
+        } else {
+          combined_res <- rbind(combined_res, assign_res)
+        }
+      }
+    } else {
+      if (!is.null(outputFormat)){
+        if (outputFormat == "SummarizedExperiment") {
+          stop("SummarizedExperiment not supported with combineSigAndAlgorithm FALSE.")
+        }
+      } else if (methods::is(input, "SummarizedExperiment")){
+        stop("SummarizedExperiment not supported with combineSigAndAlgorithm FALSE.")
+      }
+      if (!is.null(gsvaRes)){
+        alg_col <- gsvaRes[, 1, drop = FALSE]
+        colnames(alg_col) <- "algorithm"
+        alg_col[, 1] <- rep("GSVA", nrow(gsvaRes))
+        pathcol <- alg_col
+        pathcol[, 1] <- rownames(gsvaRes)
+        colnames(pathcol) <- "pathway"
+        gsvaRes <- cbind(pathcol, alg_col, gsvaRes)
+        combined_res <- gsvaRes
+      }
+      if (!is.null(gsvaRes_ssgsea)){
+        alg_col <- gsvaRes_ssgsea[, 1, drop = FALSE]
+        colnames(alg_col) <- "algorithm"
+        alg_col[, 1] <- rep("ssGSEA", nrow(gsvaRes_ssgsea))
+        pathcol <- alg_col
+        pathcol[, 1] <- rownames(gsvaRes_ssgsea)
+        colnames(pathcol) <- "pathway"
+        gsvaRes_ssgsea <- cbind(pathcol, alg_col, gsvaRes_ssgsea)
+        if (nrow(combined_res) == 0){
+          combined_res <- gsvaRes_ssgsea
+        } else {
+          combined_res <- rbind(combined_res, gsvaRes_ssgsea)
+        }
+      }
+      if (!is.null(assign_res)){
+        alg_col <- assign_res[, 1, drop = FALSE]
+        colnames(alg_col) <- "algorithm"
+        alg_col[, 1] <- rep("ASSIGN", nrow(assign_res))
+        pathcol <- alg_col
+        pathcol[, 1] <- rownames(assign_res)
+        colnames(pathcol) <- "pathway"
+        assign_res <- cbind(pathcol, alg_col, assign_res)
+        if (nrow(combined_res) == 0){
+          combined_res <- assign_res
+        } else {
+          combined_res <- rbind(combined_res, assign_res)
+        }
+      }
+      rownames(combined_res) <- NULL
     }
-    if (!is.null(gsvaRes_ssgsea)){
-      return(gsvaRes_ssgsea)
-    }
-    if (!is.null(assign_res)){
-      return(assign_res)
-    }
-    sig_result <- combined_res
+    sig_result <- as.matrix(combined_res)
   }
 
   if (is.null(outputFormat)){

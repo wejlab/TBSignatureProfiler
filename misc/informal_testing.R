@@ -21,6 +21,7 @@ test_GSVA12 <- runTBsigProfiler(input=indata_df, algorithm = "GSVA", outputForma
 test_GSVA13 <- runTBsigProfiler(input=indata_mat, algorithm = "GSVA")
 test_GSVA14 <- runTBsigProfiler(input=indata_mat, algorithm = "GSVA", outputFormat = "matrix")
 test_GSVA15 <- runTBsigProfiler(input=indata_mat, algorithm = "GSVA", outputFormat = "data.frame")
+test_GSVA15 <- runTBsigProfiler(input=indata_mat, algorithm = c("GSVA", "ssGSEA"), outputFormat = "data.frame", combineSigAndAlgorithm = FALSE)
 
 test_ssGSEA01 <- runTBsigProfiler(input=indata, useAssay = "tpmlog", algorithm = "ssGSEA")
 test_ssGSEA02 <- runTBsigProfiler(input=indata, useAssay = "tpmlog", algorithm = "ssGSEA", outputFormat = "matrix")
