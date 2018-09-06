@@ -6,8 +6,9 @@
 \usage{
 runTBsigProfiler(input, useAssay = NULL, signatures = NULL,
   algorithm = c("GSVA", "ssGSEA", "ASSIGN"),
-  combineSigAndAlgorithm = FALSE, assignDir, outputFormat = NULL,
-  parallel.sz = 0)
+  combineSigAndAlgorithm = FALSE, assignDir = NULL,
+  outputFormat = NULL, parallel.sz = 0, ASSIGNiter = 1e+05,
+  ASSIGNburnin = 50000)
 }
 \arguments{
 \item{input}{Input data as a SummarizedExperiment, data.frame, or matrix.
@@ -36,6 +37,13 @@ or data.frame. The default is the same as input.}
 
 \item{parallel.sz}{Number of processors to use when doing the calculations in
 parallel for GSVA and ssGSEA. If 0, all cores are used. The default is 0.}
+
+\item{ASSIGNiter}{The number of iterations in the ASSIGN MCMC. The default is
+100000.}
+
+\item{ASSIGNburnin}{The number of burn-in iterations for ASSIGN. These
+iterations are discarded when computing the posterior means of the model
+parameters. The default is 50000.}
 }
 \value{
 A data.frame of signature profiling results.

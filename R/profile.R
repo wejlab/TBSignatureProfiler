@@ -23,6 +23,11 @@
 #' or data.frame. The default is the same as input.
 #' @param parallel.sz Number of processors to use when doing the calculations in
 #' parallel for GSVA and ssGSEA. If 0, all cores are used. The default is 0.
+#' @param ASSIGNiter The number of iterations in the ASSIGN MCMC. The default is
+#' 100000.
+#' @param ASSIGNburnin The number of burn-in iterations for ASSIGN. These
+#' iterations are discarded when computing the posterior means of the model
+#' parameters. The default is 50000.
 #'
 #' @return A data.frame of signature profiling results.
 #'
@@ -42,8 +47,9 @@
 runTBsigProfiler <- function(input, useAssay = NULL,
                              signatures = NULL,
                              algorithm = c("GSVA", "ssGSEA", "ASSIGN"),
-                             combineSigAndAlgorithm = FALSE, assignDir,
-                             outputFormat = NULL, parallel.sz = 0) {
+                             combineSigAndAlgorithm = FALSE, assignDir = NULL,
+                             outputFormat = NULL, parallel.sz = 0,
+                             ASSIGNiter = 100000, ASSIGNburnin = 50000) {
   if (is.null(signatures)){
     utils::data("TBsignatures", package = "TBSignatureProfiler", envir = .myenv)
     signatures <- .myenv$TBsignatures
@@ -86,7 +92,43 @@ runTBsigProfiler <- function(input, useAssay = NULL,
 
   assign_res <- NULL
   if ("ASSIGN" %in% algorithm){
+    predir <- getwd()
+    delete_intermediate <- FALSE
+    if (is.null(assignDir)){
+      assignDir <- tempfile("assign")
+      if (!dir.exists(assignDir)){
+        dir.create(assignDir)
+      } else {
+        stop("Temp Directory Exists")
+      }
+      delete_intermediate <- TRUE
+    }
+    setwd(assignDir)
     message("Running ASSIGN")
+    for (i in names(signatures)){
+      message(i)
+      currlist <- signatures[i]
+      if (!all(signatures[[i]] %in% rownames(runindata))){
+        message("Signature genes in ", i, " missing from input data:")
+        message(paste(signatures[[i]][!(signatures[[i]] %in% rownames(runindata))], sep = "  ", collapse = ", "))
+        message(i, " will be skipped")
+      } else {
+        if (!file.exists(paste0(i, "_ASSIGN"))){
+          set.seed(1234)
+          ASSIGN::assign.wrapper(testData = runindata, trainingLabel = NULL,
+                                 geneList = currlist, adaptive_S = TRUE,
+                                 iter = ASSIGNiter, burn_in = ASSIGNburnin,
+                                 outputDir = paste0(i, "_ASSIGN"))
+        }
+      }
+    }
+    setwd(predir)
+    assign_res <- as.matrix(t(ASSIGN::gather_assign_results(assignDir)))
+    if (delete_intermediate){
+      unlink(assignDir, recursive = TRUE)
+    } else {
+      message("Intermediate ASSIGN results available at ", assignDir)
+    }
   }
 
   sig_result <- NULL
