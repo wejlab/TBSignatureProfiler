@@ -6,7 +6,8 @@
 \usage{
 runTBsigProfiler(input, useAssay = NULL, signatures = NULL,
   algorithm = c("GSVA", "ssGSEA", "ASSIGN"),
-  combineSigAndAlgorithm = FALSE, assignDir, outputFormat = NULL)
+  combineSigAndAlgorithm = FALSE, assignDir, outputFormat = NULL,
+  parallel.sz = 0)
 }
 \arguments{
 \item{input}{Input data as a SummarizedExperiment, data.frame, or matrix.
@@ -32,6 +33,9 @@ results. The default is NULL and intermediate results will not be saved.}
 
 \item{outputFormat}{Output data format. Can be SummarizedExperiment, matrix,
 or data.frame. The default is the same as input.}
+
+\item{parallel.sz}{Number of processors to use when doing the calculations in
+parallel for GSVA and ssGSEA. If 0, all cores are used. The default is 0.}
 }
 \value{
 A data.frame of signature profiling results.

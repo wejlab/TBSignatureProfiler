@@ -21,6 +21,8 @@
 #' results. The default is NULL and intermediate results will not be saved.
 #' @param outputFormat Output data format. Can be SummarizedExperiment, matrix,
 #' or data.frame. The default is the same as input.
+#' @param parallel.sz Number of processors to use when doing the calculations in
+#' parallel for GSVA and ssGSEA. If 0, all cores are used. The default is 0.
 #'
 #' @return A data.frame of signature profiling results.
 #'
@@ -31,13 +33,13 @@ runTBsigProfiler <- function(input, useAssay = NULL,
                              signatures = NULL,
                              algorithm = c("GSVA", "ssGSEA", "ASSIGN"),
                              combineSigAndAlgorithm = FALSE, assignDir,
-                             outputFormat = NULL) {
+                             outputFormat = NULL, parallel.sz = 0) {
   if (is.null(signatures)){
     utils::data("TBsignatures", package = "TBSignatureProfiler", envir = .myenv)
     signatures <- .myenv$TBsignatures
   }
   runindata <- input
-  if (is(runindata, "SummarizedExperiment")){
+  if (methods::is(runindata, "SummarizedExperiment")){
     if (!is.null(useAssay)){
       if (!(class(input) %in% c("SummarizedExperiment", "SingleCellExperiment",
                                 "SCtkExperiment"))){
@@ -64,13 +66,15 @@ runTBsigProfiler <- function(input, useAssay = NULL,
   gsvaRes <- NULL
   if ("GSVA" %in% algorithm){
     message("Running GSVA")
-    gsvaRes <- GSVA::gsva(runindata, signatures)
+    gsvaRes <- GSVA::gsva(runindata, signatures,
+                          parallel.sz = parallel.sz)
   }
 
   gsvaRes_ssgsea <- NULL
   if ("ssGSEA" %in% algorithm){
     message("Running ssGSEA")
-    gsvaRes_ssgsea <- GSVA::gsva(runindata, signatures, method = "ssgsea")
+    gsvaRes_ssgsea <- GSVA::gsva(runindata, signatures, method = "ssgsea",
+                                 parallel.sz = parallel.sz)
   }
 
   assign_res <- NULL

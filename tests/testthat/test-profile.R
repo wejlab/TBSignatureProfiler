@@ -10,28 +10,32 @@ SE_testdata <- SummarizedExperiment::SummarizedExperiment(
 
 #Test matrix input
 test_that("matrix input", {
-  runTBsigProfiler(mat_testdata,
-                   signatures = list(sig1 = paste0("gene", 1:10)),
-                   algorithm = "GSVA")
+  expect_is(runTBsigProfiler(mat_testdata,
+                             signatures = list(sig1 = paste0("gene", 1:10)),
+                             algorithm = "GSVA", parallel.sz = 1),
+            "matrix")
+
 })
 
 #Test data.frame input
 test_that("data.frame input", {
-  runTBsigProfiler(df_testdata,
-                   signatures = list(sig1 = paste0("gene", 1:10)),
-                   algorithm = "GSVA")
+  expect_is(runTBsigProfiler(df_testdata,
+                             signatures = list(sig1 = paste0("gene", 1:10)),
+                             algorithm = "GSVA", parallel.sz = 1),
+            "data.frame")
+
 })
 
 #Test SummarizedExperiment input
 test_that("SummarizedExperiment input", {
   expect_error(runTBsigProfiler(SE_testdata,
                                 signatures = list(sig1 = paste0("gene", 1:10)),
-                                algorithm = "GSVA"),
+                                algorithm = "GSVA", parallel.sz = 1),
                "useAssay required for SummarizedExperiment Input")
   expect_s4_class(runTBsigProfiler(SE_testdata,
                                    useAssay = "data",
                                    signatures = list(sig1 = paste0("gene", 1:10)),
-                                   algorithm = "GSVA"),
+                                   algorithm = "GSVA", parallel.sz = 1),
                   "SummarizedExperiment")
 
 })

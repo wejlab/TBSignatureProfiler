@@ -19,7 +19,8 @@ Imports:
     ASSIGN,
     GSVA,
     SummarizedExperiment,
-    S4Vectors
+    S4Vectors,
+    methods
 Suggests:
     testthat,
     spelling
