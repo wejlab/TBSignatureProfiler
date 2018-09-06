@@ -5,3 +5,7 @@ sudo: false
 cache: packages
 warnings_are_errors: true
 bioc_required: true
+r_github_packages:
+  - r-lib/covr
+after_success:
+  - Rscript -e 'covr::codecov()'

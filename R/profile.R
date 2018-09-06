@@ -29,6 +29,16 @@
 #' @export
 #'
 #' @examples
+#' #create some toy data to test Predict29 signature, with 5 samples with low
+#' #and five samples with high expression of the signatures genes.
+#' mat_testdata <- rbind(matrix(c(rnorm(145), rnorm(145)+5), 29, 10,
+#'                              dimnames = list(TBsignatures$Predict29,
+#'                              paste0("sample", 1:10))),
+#'                       matrix(rnorm(1000), 100, 10,
+#'                              dimnames = list(paste0("gene", 1:100),
+#'                              paste0("sample", 1:10))))
+#' res <- runTBsigProfiler(mat_testdata, algorithm = "GSVA", parallel.sz = 1)
+#' res["Predict29", ]
 runTBsigProfiler <- function(input, useAssay = NULL,
                              signatures = NULL,
                              algorithm = c("GSVA", "ssGSEA", "ASSIGN"),
@@ -41,15 +51,12 @@ runTBsigProfiler <- function(input, useAssay = NULL,
   runindata <- input
   if (methods::is(runindata, "SummarizedExperiment")){
     if (!is.null(useAssay)){
-      if (!(class(input) %in% c("SummarizedExperiment", "SingleCellExperiment",
-                                "SCtkExperiment"))){
-        stop("useAssay only supported for SummarizedExperiment objects")
-      } else {
         runindata <- SummarizedExperiment::assay(input, useAssay)
-      }
     } else {
       stop("useAssay required for SummarizedExperiment Input")
     }
+  } else if (!is.null(useAssay)) {
+    stop("useAssay only supported for SummarizedExperiment objects")
   }
   if (class(runindata) == "data.frame"){
     runindata <- as.matrix(runindata)

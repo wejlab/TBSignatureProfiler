@@ -23,7 +23,8 @@ Imports:
     methods
 Suggests:
     testthat,
-    spelling
+    spelling,
+    covr
 URL: https://github.com/dfjenkins3/TBSignatureProfiler
 BugReports: https://github.com/dfjenkins3/TBSignatureProfiler/issues
 Language: en-US

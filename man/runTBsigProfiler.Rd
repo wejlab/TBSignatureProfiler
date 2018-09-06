@@ -43,3 +43,15 @@ A data.frame of signature profiling results.
 \description{
 Run profiling using a set of signatures and profiling algorithms
 }
+\examples{
+#create some toy data to test Predict29 signature, with 5 samples with low
+#and five samples with high expression of the signatures genes.
+mat_testdata <- rbind(matrix(c(rnorm(145), rnorm(145)+5), 29, 10,
+                             dimnames = list(TBsignatures$Predict29,
+                             paste0("sample", 1:10))),
+                      matrix(rnorm(1000), 100, 10,
+                             dimnames = list(paste0("gene", 1:100),
+                             paste0("sample", 1:10))))
+res <- runTBsigProfiler(mat_testdata, algorithm = "GSVA", parallel.sz = 1)
+res["Predict29", ]
+}

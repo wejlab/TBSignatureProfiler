@@ -7,6 +7,21 @@ mat_testdata <- matrix(rnorm(1000), 100, 10,
 df_testdata <- data.frame(mat_testdata)
 SE_testdata <- SummarizedExperiment::SummarizedExperiment(
   assays = S4Vectors::SimpleList(data = mat_testdata))
+test <- list(df_testdata)
+
+test_that("incorrect input", {
+  expect_error(runTBsigProfiler(list(mat_testdata),
+                                signatures = list(sig1 = paste0("gene", 1:10)),
+                                algorithm = "GSVA", parallel.sz = 1),
+               paste0("Invalid input data type. Accepted input formats are",
+                      " matrix, data.frame, or SummarizedExperiment. ",
+                      "Your input: list"))
+  expect_error(runTBsigProfiler(mat_testdata,
+                                signatures = list(sig1 = paste0("gene", 1:10)),
+                                algorithm = "nothing", parallel.sz = 1),
+               paste0("Invalid algorithm. Supported algorithms are GSVA, ",
+                      "ssGSEA, and ASSIGN"))
+})
 
 #Test matrix input
 test_that("matrix input", {
@@ -14,6 +29,10 @@ test_that("matrix input", {
                              signatures = list(sig1 = paste0("gene", 1:10)),
                              algorithm = "GSVA", parallel.sz = 1),
             "matrix")
+  expect_error(runTBsigProfiler(mat_testdata, useAssay = "test",
+                                signatures = list(sig1 = paste0("gene", 1:10)),
+                                algorithm = "GSVA", parallel.sz = 1),
+               "useAssay only supported for SummarizedExperiment objects")
 
 })
 
