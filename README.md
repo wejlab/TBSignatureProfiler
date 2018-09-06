@@ -1,6 +1,7 @@
 # TBSignatureProfiler
 
 [![Travis build status](https://travis-ci.org/dfjenkins3/TBSignatureProfiler.svg?branch=master)](https://travis-ci.org/dfjenkins3/TBSignatureProfiler)
+[![codecov](https://codecov.io/gh/dfjenkins3/TBSignatureProfiler/branch/master/graph/badge.svg)](https://codecov.io/gh/dfjenkins3/TBSignatureProfiler)
 [![lifecycle](https://img.shields.io/badge/lifecycle-experimental-orange.svg)](https://www.tidyverse.org/lifecycle/#experimental)
 
 Signatures of TB progression, TB disease, and other TB disease
