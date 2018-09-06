@@ -58,13 +58,13 @@ test_that("matrix input", {
   expect_is(
     runTBsigProfiler(mat_testdata, outputFormat = "data.frame",
                      signatures = list(sig1 = paste0("gene", 1:10)),
-                     algorithm = "GSVA", ASSIGNiter = 100, ASSIGNburnin = 50),
+                     algorithm = "GSVA", parallel.sz = 1),
     "data.frame"
   )
   expect_s4_class(
     runTBsigProfiler(mat_testdata, outputFormat = "SummarizedExperiment",
                      signatures = list(sig1 = paste0("gene", 1:10)),
-                     algorithm = "GSVA", ASSIGNiter = 100, ASSIGNburnin = 50),
+                     algorithm = "GSVA", parallel.sz = 1),
     "SummarizedExperiment"
   )
 })
