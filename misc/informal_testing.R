@@ -1,4 +1,5 @@
 #informal testing
+library(TBSignatureProfiler)
 indata <- readRDS("~/Dropbox/grad_school/johnson_lab/20180725_latent_capetown_2018/latent_capetown_2018_SCE.rds")
 indata_SCE <- as(indata, "SingleCellExperiment")
 indata_SE <- as(indata_SCE, "SummarizedExperiment")

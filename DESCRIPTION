@@ -20,7 +20,8 @@ Imports:
     GSVA,
     SummarizedExperiment,
     S4Vectors,
-    methods
+    methods,
+    BiocParallel
 Suggests:
     testthat,
     spelling,

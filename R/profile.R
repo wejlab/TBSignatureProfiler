@@ -61,6 +61,10 @@ runTBsigProfiler <- function(input, useAssay = NULL,
     } else {
       stop("useAssay required for SummarizedExperiment Input")
     }
+    if (!combineSigAndAlgorithm & length(algorithm) > 1){
+      stop("SummarizedExperiment not supported with ",
+           "combineSigAndAlgorithm FALSE.")
+    }
   } else if (!is.null(useAssay)) {
     stop("useAssay only supported for SummarizedExperiment objects")
   }
@@ -96,11 +100,7 @@ runTBsigProfiler <- function(input, useAssay = NULL,
     delete_intermediate <- FALSE
     if (is.null(assignDir)){
       assignDir <- tempfile("assign")
-      if (!dir.exists(assignDir)){
-        dir.create(assignDir)
-      } else {
-        stop("Temp Directory Exists")
-      }
+      dir.create(assignDir)
       delete_intermediate <- TRUE
     }
     setwd(assignDir)
@@ -110,7 +110,10 @@ runTBsigProfiler <- function(input, useAssay = NULL,
       currlist <- signatures[i]
       if (!all(signatures[[i]] %in% rownames(runindata))){
         message("Signature genes in ", i, " missing from input data:")
-        message(paste(signatures[[i]][!(signatures[[i]] %in% rownames(runindata))], sep = "  ", collapse = ", "))
+        message(
+          paste(signatures[[i]][!(signatures[[i]] %in% rownames(runindata))],
+                sep = "  ", collapse = ", ")
+        )
         message(i, " will be skipped")
       } else {
         if (!file.exists(i)){
@@ -119,6 +122,8 @@ runTBsigProfiler <- function(input, useAssay = NULL,
                                  geneList = currlist, adaptive_S = TRUE,
                                  iter = ASSIGNiter, burn_in = ASSIGNburnin,
                                  outputDir = i)
+        } else {
+          message("Result already exists. Delete to re-run.")
         }
       }
     }
@@ -151,7 +156,8 @@ runTBsigProfiler <- function(input, useAssay = NULL,
     #name and combine. Otherwise we need to add an 'algorithm' column and
     #SummarizedExperiment output is not supported.
     if (is.null(combineSigAndAlgorithm)){
-      stop("You must choose whether or not to combine the signature and algorithm name using combineSigAndAlgorithm.")
+      stop("You must choose whether or not to combine the ",
+           "signature and algorithm name using combineSigAndAlgorithm.")
     } else if (combineSigAndAlgorithm){
       if (!is.null(gsvaRes)){
         rownames(gsvaRes) <- paste("GSVA", rownames(gsvaRes), sep = "_")
@@ -177,10 +183,12 @@ runTBsigProfiler <- function(input, useAssay = NULL,
     } else {
       if (!is.null(outputFormat)){
         if (outputFormat == "SummarizedExperiment") {
-          stop("SummarizedExperiment not supported with combineSigAndAlgorithm FALSE.")
+          stop("SummarizedExperiment not supported with",
+               " combineSigAndAlgorithm FALSE.")
         }
       } else if (methods::is(input, "SummarizedExperiment")){
-        stop("SummarizedExperiment not supported with combineSigAndAlgorithm FALSE.")
+        stop("SummarizedExperiment not supported with ",
+             "combineSigAndAlgorithm FALSE.")
       }
       if (!is.null(gsvaRes)){
         alg_col <- gsvaRes[, 1, drop = FALSE]
@@ -236,14 +244,18 @@ runTBsigProfiler <- function(input, useAssay = NULL,
     } else if (class(input) == "matrix") {
       return(sig_result)
     } else if (class(input) == "data.frame"){
-      return(data.frame(sig_result))
+      dfres <- data.frame(sig_result)
+      colnames(dfres) <- colnames(sig_result)
+      return(dfres)
     } else {
       stop("Output format error.")
     }
   } else if (outputFormat == "matrix"){
     return(sig_result)
   } else if (outputFormat == "data.frame"){
-    return(data.frame(sig_result))
+    dfres <- data.frame(sig_result)
+    colnames(dfres) <- colnames(sig_result)
+    return(dfres)
   } else if (outputFormat == "SummarizedExperiment"){
     outdata <- SummarizedExperiment::SummarizedExperiment(
       assays = S4Vectors::SimpleList(data = runindata),
