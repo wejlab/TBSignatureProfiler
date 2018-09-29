@@ -7,6 +7,9 @@ rownames(indata_SE) <- rownames(indata)
 indata_df <- data.frame(assay(indata, "tpmlog"))
 indata_mat <- assay(indata, "tpmlog")
 
+india_relapse <- readRDS("~/Dropbox/grad_school/johnson_lab/20180816_failure_relapse_india_2018/failure_relapse_india_2018.rds")
+india_relapse_GSVA <- runTBsigProfiler(input=india_relapse, useAssay = "logtpm", algorithm = "GSVA")
+
 test_GSVA01 <- runTBsigProfiler(input=indata, useAssay = "tpmlog", algorithm = "GSVA")
 test_GSVA02 <- runTBsigProfiler(input=indata, useAssay = "tpmlog", algorithm = "GSVA", outputFormat = "matrix")
 test_GSVA03 <- runTBsigProfiler(input=indata, useAssay = "tpmlog", algorithm = "GSVA", outputFormat = "data.frame")

@@ -1,6 +1,14 @@
+colData
+colList
+ColorBrewer
+colorSets
+ComplexHeatmap
 ensembl
 entrez
+ggplot
 GSVA
+inputData
+saturations
 ssGSEA
 SummarizedExperiment
 TBsignatures

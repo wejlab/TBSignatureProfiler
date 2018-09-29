@@ -21,7 +21,11 @@ Imports:
     SummarizedExperiment,
     S4Vectors,
     methods,
-    BiocParallel
+    BiocParallel,
+    ComplexHeatmap,
+    RColorBrewer,
+    ggplot2,
+    reshape2
 Suggests:
     testthat,
     spelling,
