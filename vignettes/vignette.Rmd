@@ -16,7 +16,11 @@ knitr::opts_chunk$set(
 )
 ```
 
+## Load the package
 
+```{r}
+library(TBSignatureProfiler)
+```
 
 ## Load toy dataset
 
