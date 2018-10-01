@@ -20,6 +20,15 @@ knitr::opts_chunk$set(
 
 ```{r}
 library(TBSignatureProfiler)
+library(glmnet)
+library(ROCR)
+library(bioDist)
+library(readr)
+library(boot)
+library(gmodels)
+library(DESeq2)
+library(caret)
+
 ```
 
 ## Load toy dataset
