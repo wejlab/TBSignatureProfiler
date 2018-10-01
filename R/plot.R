@@ -71,13 +71,13 @@ signatureHeatmap <- function(inputData, annotationData, name="Signatures",
     sigresults <- t(scale(t(sigresults)))
     keyname <- "Scaled\nScore"
   }
-  ComplexHeatmap::draw(
+  return(ComplexHeatmap::draw(
     ComplexHeatmap::Heatmap(sigresults, column_title = name,
                             show_column_names = showColumnNames,
                             show_row_names = showRowNames,
                             top_annotation = topha2, name = keyname),
     annotation_legend_side = "bottom"
-  )
+  ))
 }
 
 #TODO: Better example
@@ -120,13 +120,13 @@ signatureBoxplot <- function(inputData, annotationData, signatureColNames,
                           Group = SummarizedExperiment::colData(inputData)[, annotationColName])
   boxplotdfm <- reshape2::melt(boxplotdf, value.name = "Score",
                                variable.name = "Signature", id.vars = "Group")
-  ggplot2::ggplot(boxplotdfm, ggplot2::aes_string("Group", "Score")) +
+  return(ggplot2::ggplot(boxplotdfm, ggplot2::aes_string("Group", "Score")) +
     ggplot2::facet_wrap(~Signature, scales = 'free') +
     ggplot2::geom_boxplot(outlier.shape = NA, ggplot2::aes_string(fill = "Group")) +
     ggplot2::theme_classic() +
     ggplot2::geom_point(position = ggplot2::position_jitter(width = 0.1)) +
     ggplot2::scale_fill_brewer(palette = "Set1") +
-    ggplot2::ggtitle(name)
+    ggplot2::ggtitle(name))
 }
 
 signatureGeneHeatmap <- function(inputData, geneList, annotationData,
