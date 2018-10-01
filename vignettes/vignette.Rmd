@@ -1,0 +1,48 @@
+---
+title: "A Tutorial on using TBSignatureProfiler"
+author: "David Jenkins, Yue Zhao"
+date: "`r Sys.Date()`"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Vignette Title}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+```
+
+
+
+## Load toy dataset
+
+We are using a Indian TB dataset as a toy dataset.
+
+```{r}
+data_toy <- readRDS("../data/TB_indian.rds")
+load("../data/TBsignatures.rda")
+```
+
+
+## Data normalization
+
+```{r}
+data_toy_norm <- deseq2_norm_rle(data_toy$count.indian)
+```
+
+
+## Signature evaluation 
+
+```{r}
+quantitative.result <- SignatureQuantitative(data_toy_norm,
+                                             data_toy$meta.indian$label,
+                                             TBsignatures,
+                                             names(TBsignatures),
+                                             num.boot = 50)
+```
+
+
