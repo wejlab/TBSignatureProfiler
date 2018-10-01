@@ -2,7 +2,7 @@
 % Please edit documentation in R/plot.R
 \name{signatureHeatmap}
 \alias{signatureHeatmap}
-\title{Plot a Heatmap of Signature Genes}
+\title{Plot a Heatmap of Signature Scores}
 \usage{
 signatureHeatmap(inputData, annotationData, name = "Signatures",
   signatureColNames, annotationColNames, colList, scale = FALSE,
@@ -46,7 +46,7 @@ colList.}
 A ComplexHeatmap plot
 }
 \description{
-Plot a Heatmap of Signature Genes
+Plot a Heatmap of Signature Scores
 }
 \examples{
 mat_testdata <- rbind(matrix(c(rnorm(145), rnorm(145) + 5), 29, 10,

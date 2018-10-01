@@ -4,7 +4,7 @@
 #TODO: try with one signature
 # signatureHeatmap(india_relapse_GSVA, signatureColNames = colnames(colData(india_relapse_GSVA))[71:85],
 # annotationColNames=c("visit", "subjtype"))
-#' Plot a Heatmap of Signature Genes
+#' Plot a Heatmap of Signature Scores
 #'
 #' @param inputData Either a SummarizedExperiment object that contains the
 #' signature data and annotation as colData columns, or a data.frame or matrix
@@ -43,10 +43,10 @@
 #' res <- runTBsigProfiler(mat_testdata, algorithm = "GSVA", parallel.sz = 1)
 signatureHeatmap <- function(inputData, annotationData, name="Signatures",
                              signatureColNames, annotationColNames, colList,
-                             scale=FALSE, showColumnNames=TRUE, showRowNames=TRUE,
-                             colorSets=c("Set1", "Set2", "Set3", "Pastel1",
-                                         "Pastel2", "Accent", "Dark2",
-                                         "Paired")) {
+                             scale=FALSE, showColumnNames=TRUE,
+                             showRowNames=TRUE, colorSets=c("Set1", "Set2",
+                             "Set3", "Pastel1", "Pastel2", "Accent", "Dark2",
+                             "Paired")) {
   colList <- list()
   colorSetNum <- 1
   for (annot in annotationColNames){
@@ -112,6 +112,9 @@ signatureHeatmap <- function(inputData, annotationData, name="Signatures",
 #' res <- runTBsigProfiler(mat_testdata, algorithm = "GSVA", parallel.sz = 1)
 signatureBoxplot <- function(inputData, annotationData, signatureColNames,
                              annotationColName, name="Signatures", scale=FALSE) {
+  if (length(annotationColName) != 1){
+    stop("You must specify a single annotation column name to color boxplots by.")
+  }
   pathwaydata <- t(as.matrix(SummarizedExperiment::colData(inputData)[, signatureColNames]))
   if (scale) {
     pathwaydata <- t(scale(t(pathwaydata)))
@@ -129,9 +132,80 @@ signatureBoxplot <- function(inputData, annotationData, signatureColNames,
     ggplot2::ggtitle(name))
 }
 
-signatureGeneHeatmap <- function(inputData, geneList, annotationData,
-                                 signatureColNames, annotationColNames) {
-
+#TODO: Try NULL annotation
+#TODO: Fail NULL signatures
+#TODO: Other input support
+#' Plot a Heatmap of a single signature scores and gene expression
+#'
+#' @param inputData Either a SummarizedExperiment object that contains the
+#' signature data and annotation as colData columns, or a data.frame or matrix
+#' of signature data. Required.
+#' @param useAssay If inputData is a SummarizedExperiment, the assay to use for
+#' the gene expression data. Required if inputData is SummarizedExperiment.
+#' @param sigGenes The genes in the signature to use in the heatmap. For inbuilt
+#' signatures, you can use TBsignatures, (ex: TBsignatures[["ACS_COR"]]).
+#' Required.
+#' @param annotationData If inputData is a data.frame or matrix of signature
+#' data, a data.frame or matrix of annotation data.
+#' @param name The name of the heatmap. The default is "Signature".
+#' @param signatureColNames If inputData is a SummarizedExperiment, the column
+#' names in colData that contain the signature data.
+#' @param annotationColNames If inputData is a SummarizedExperiment, the column
+#' names in colData that contain the annotation data.
+#' @param scale Scale the gene expression data. The default is TRUE.
+#' @param showColumnNames Show columns names (sample names) in the heatmap. The
+#' default is TRUE.
+#' @param showRowNames Show row names(signature names) in the heatmap. The
+#' default is TRUE.
+#' @param colList Custom color information for annotation data as a named list
+#' to pass to ComplexHeatmap. By default, ColorBrewer color sets will be used.
+#' See colorSets for additional options.
+#'
+#' @return
+#' @export
+#'
+#' @examples
+signatureGeneHeatmap <- function(inputData, useAssay, sigGenes, annotationData,
+                                 name="Signature", signatureColNames,
+                                 annotationColNames, scale = TRUE,
+                                 showColumnNames = TRUE, showRowNames = TRUE,
+                                 colorSets=c("Set1", "Set2", "Set3", "Pastel1",
+                                             "Pastel2", "Accent", "Dark2",
+                                             "Paired")) {
+  pathwaycols <- list()
+  pathwaydata <- data.frame(SummarizedExperiment::colData(inputData)[, signatureColNames, drop = FALSE])
+  for (i in colnames(pathwaydata)){
+    t1min <- min(pathwaydata[, i])
+    t1max <- max(pathwaydata[, i])
+    pathwaycols[[i]] <- circlize::colorRamp2(c(t1min, mean(c(t1min, t1max)), t1max),
+                                             c("darkgreen", "white", "darkorange"))
+  }
+  colList <- list()
+  colorSetNum <- 1
+  for (annot in annotationColNames){
+    condLevels <- unique(SummarizedExperiment::colData(inputData)[, annot])
+    if (length(condLevels) > 8){
+      colors <- distinctColors(length(condLevels))
+    } else {
+      colors <- RColorBrewer::brewer.pal(8, colorSets[colorSetNum])
+      colorSetNum <- colorSetNum + 1
+    }
+    colList[[annot]] <- stats::setNames(colors[seq_along(condLevels)],
+                                        condLevels)
+  }
+  topha2 <- ComplexHeatmap::HeatmapAnnotation(
+    df = cbind(data.frame(SummarizedExperiment::colData(inputData)[, annotationColNames]),
+               data.frame(pathwaydata)),
+    col = c(colList, pathwaycols),
+    height = grid::unit(0.4 * length(c(annotationColNames, signatureColNames)), "cm"), show_legend = TRUE, show_annotation_name = TRUE)
+  heatdata <- assay(inputData, useAssay)[sigGenes[sigGenes %in% rownames(inputData)], ]
+  heatname <- useAssay
+  if (scale){
+    heatdata <- heatdata[rowSums(heatdata) != 0, ]
+    heatdata <- t(scale(t(heatdata)))
+    heatname <- paste("Scaled", heatname, sep = "\n")
+  }
+  return(ComplexHeatmap::draw(ComplexHeatmap::Heatmap(heatdata, show_column_names = showColumnNames, show_row_names = showRowNames, top_annotation = topha2, name = heatname, column_title = name), annotation_legend_side = "bottom"))
 }
 
 #' Generate a distinct palette for coloring different clusters

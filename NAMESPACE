@@ -3,4 +3,5 @@
 export(distinctColors)
 export(runTBsigProfiler)
 export(signatureBoxplot)
+export(signatureGeneHeatmap)
 export(signatureHeatmap)
