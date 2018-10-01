@@ -1,5 +1,5 @@
  
-# gene expression normalization, RLE normalization: relative log expression
+#' gene expression normalization, RLE normalization: relative log expression
 #'
 #' @param inputData a data.frame or matrix of gene expression count data. 
 #' Required.
@@ -13,7 +13,6 @@
 #'                     dimnames = list(paste0("gene", 1:100),
 #'                                     paste0("sample", 1:10)))
 #' res <- deseq2_norm_rle(inputTest)
-
 deseq2_norm_rle <- function(inputData){
     scalingFac <- estimateSizeFactorsForMatrix(inputData)
     inputDataScaled <- inputData
@@ -27,7 +26,7 @@ deseq2_norm_rle <- function(inputData){
 
 
 
-# LOOCV with logistic regression
+#' LOOCV with logistic regression
 #'
 #' @param df a data.frame of gene expression count data. 
 #' Required.
@@ -75,7 +74,7 @@ LOOAUC_simple_multiple_noplot_one_df <- function(df, targetVec){
 
 
 
-# Bootstrap LOOCV with logistic regression
+#' Bootstrap LOOCV with logistic regression
 #'
 #' @param df a data.frame of gene expression count data. 
 #' Required.
@@ -115,7 +114,7 @@ Bootstrap_LOOCV_LR_AUC <- function(df, target.vec, nboot){
 
 
 
-# Use logistic regression and Bootstrap LOOCV for signature evaluation.
+#' Use logistic regression and Bootstrap LOOCV for signature evaluation.
 #'
 #' @param df.input a data.frame of gene expression count data. 
 #' Required.
