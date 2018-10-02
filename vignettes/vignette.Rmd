@@ -32,15 +32,6 @@ library(e1071)
 
 ```
 
-## Load toy dataset
-
-We are using a Indian TB dataset as a toy dataset.
-
-```{r}
-data("TBsignatures")
-data("TB_indian")
-```
-
 
 ## Data normalization
 
