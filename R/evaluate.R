@@ -51,18 +51,18 @@ LOOAUC_simple_multiple_noplot_one_df <- function(df, targetVec){
 		train = t(as.matrix(df[,-j]))
 		test = t(as.matrix(df[,j]))
   	 	 fit <- suppressWarnings(glmnet(train, targetVec[-j], family = "binomial"))
-			 testPredictionClassVec[j] <- predict(fit,type="class", newx = test, s = 0)
-       testPredictionProbVec[j] <- predict(fit,type="response", newx = test, s = 0)
+			 testPredictionClassVec[j] <- suppressWarnings(predict(fit,type="class", newx = test, s = 0))
+       testPredictionProbVec[j] <- suppressWarnings(predict(fit,type="response", newx = test, s = 0))
 	}
-	loo.pred = prediction(testPredictionProbVec, targetVec)
-	loo.perf = performance(loo.pred,"tpr","fpr")
-	auc <- performance(loo.pred,"auc")
+	loo.pred = suppressWarnings(prediction(testPredictionProbVec, targetVec))
+	loo.perf = suppressWarnings(performance(loo.pred,"tpr","fpr"))
+	auc <- suppressWarnings(performance(loo.pred,"auc"))
 	auc <- unlist(slot(auc, "y.values"))
 	aucRound <- round(auc,3)
 	auc.vec <- c(auc.vec, aucRound)
 	# for other metric
 	testPredictionClassVec <- as.numeric(testPredictionClassVec)
-	cm = confusionMatrix(as.factor(testPredictionClassVec), as.factor(targetVec))
+	cm = suppressWarnings(confusionMatrix(as.factor(testPredictionClassVec), as.factor(targetVec)))
  	output.list <- list()
 	output.list[[1]] <- auc.vec
 	output.list[[2]] <- cm$byClass
@@ -99,7 +99,7 @@ Bootstrap_LOOCV_LR_AUC <- function(df, target.vec, nboot){
   for (i in 1:nboot){
     index.boot <- sample(1:ncol(df), ncol(df), replace = T)
     df.tmp <- df[,index.boot]
-    loo.output.list <- LOOAUC_simple_multiple_noplot_one_df(df.tmp, target.vec[index.boot])
+    loo.output.list <- suppressWarnings(LOOAUC_simple_multiple_noplot_one_df(df.tmp, target.vec[index.boot]))
     output.auc.vec[i] <- loo.output.list[[1]]
 		output.other.df <- rbind(output.other.df, loo.output.list[[2]])
   }
@@ -163,14 +163,14 @@ SignatureQuantitative <- function(df.input,
                                                nboot = num.boot))
     #auc
     auc.result[[i]] <- boot.output.list[[1]]
-    auc.result.ci[[i]] <- ci(auc.result[[i]])
+    auc.result.ci[[i]] <- suppressWarnings(ci(auc.result[[i]]))
     names(auc.result)[i] <- signature.name.vec[i]
     names(auc.result.ci)[i] <- signature.name.vec[i]
     # sensitivity
-    sensitivity.ci[[i]] <- ci(boot.output.list[[2]]$Sensitivity)
+    sensitivity.ci[[i]] <- suppressWarnings(ci(boot.output.list[[2]]$Sensitivity))
     names(sensitivity.ci)[i] <- signature.name.vec[i]
     # specificity
-    specificity.ci[[i]] <- ci(boot.output.list[[2]]$Specificity)
+    specificity.ci[[i]] <- suppressWarnings(ci(boot.output.list[[2]]$Specificity))
     names(specificity.ci)[i] <- signature.name.vec[i]
   }
 

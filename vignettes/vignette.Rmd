@@ -55,7 +55,7 @@ quantitative.result <- SignatureQuantitative(data_toy_norm,
                                              data_toy$meta.indian$label,
                                              TBsignatures,
                                              names(TBsignatures),
-                                             num.boot = 50)
+                                             num.boot = 5)
 ```
 
 
