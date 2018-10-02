@@ -17,10 +17,10 @@
 #'
 #' The gene expression and metadata 
 #'
-#' @name data_toy
+#' @name TB_indian
 #' @docType data
 #' @format list
 #' @keywords datasets
 #' @examples
-#' data("data_toy")
-"data_toy"
+#' data("TB_indian")
+"TB_indian"

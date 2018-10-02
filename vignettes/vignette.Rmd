@@ -45,7 +45,7 @@ load("../data/TBsignatures.rda")
 ## Data normalization
 
 ```{r}
-data_toy_norm <- deseq2_norm_rle(data_toy$count.indian)
+data_toy_norm <- deseq2_norm_rle(TB_indian$count.indian)
 ```
 
 
@@ -53,7 +53,7 @@ data_toy_norm <- deseq2_norm_rle(data_toy$count.indian)
 
 ```{r}
 quantitative.result <- SignatureQuantitative(data_toy_norm,
-                                             data_toy$meta.indian$label,
+                                             TB_indian$meta.indian$label,
                                              TBsignatures,
                                              names(TBsignatures),
                                              num.boot = 5)
