@@ -15,7 +15,7 @@
 
 #' TB toy dataset
 #'
-#' The gene expression and metadata 
+#' The gene expression and metadata
 #'
 #' @name TB_indian
 #' @docType data

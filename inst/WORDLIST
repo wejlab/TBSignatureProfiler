@@ -9,7 +9,16 @@ entrez
 ggplot
 GSVA
 inputData
+knitr
+LOOCV
+RLE
+rmarkdown
 saturations
 ssGSEA
 SummarizedExperiment
 TBsignatures
+VignetteEncoding
+VignetteEngine
+VignetteIndexEntry
+Yue
+Zhao

@@ -26,7 +26,7 @@ Imports:
     RColorBrewer,
     ggplot2,
     reshape2,
-    circlize
+    circlize,
     glmnet,
     ROCR,
     bioDist,
