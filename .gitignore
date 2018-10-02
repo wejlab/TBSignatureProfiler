@@ -1,0 +1,6 @@
+inst/doc
+.RData
+.Rhistory
+.Rbuildignore 
+.gitignore
+.Rproj.user

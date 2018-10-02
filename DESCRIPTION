@@ -27,12 +27,25 @@ Imports:
     ggplot2,
     reshape2,
     circlize
+    glmnet,
+    ROCR,
+    bioDist,
+    readr,
+    boot,
+    gmodels,
+    DESeq2,
+    caret,
+    ggfortify,
+    e1071
 Suggests:
     testthat,
     spelling,
-    covr
+    covr,
+    knitr,
+    rmarkdown
 URL: https://github.com/dfjenkins3/TBSignatureProfiler
 BugReports: https://github.com/dfjenkins3/TBSignatureProfiler/issues
 Language: en-US
 Depends:
     R (>= 2.10)
+VignetteBuilder: knitr

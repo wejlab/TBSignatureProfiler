@@ -1,0 +1,53 @@
+---
+title: "A Tutorial on using TBSignatureProfiler"
+author: "David Jenkins, Yue Zhao"
+date: "`r Sys.Date()`"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Vignette Title}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+```
+
+## Load the package
+
+```{r}
+library(TBSignatureProfiler)
+library(glmnet)
+library(ROCR)
+library(bioDist)
+library(readr)
+library(boot)
+library(gmodels)
+library(DESeq2)
+library(caret)
+library(e1071)
+
+```
+
+
+## Data normalization
+
+```{r}
+data_toy_norm <- deseq2_norm_rle(TB_indian$count.indian)
+```
+
+
+## Signature evaluation 
+
+```{r}
+quantitative.result <- SignatureQuantitative(data_toy_norm,
+                                             TB_indian$meta.indian$label,
+                                             TBsignatures,
+                                             names(TBsignatures),
+                                             num.boot = 5)
+```
+
+
