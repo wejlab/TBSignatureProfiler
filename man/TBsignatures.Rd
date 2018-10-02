@@ -8,8 +8,6 @@
 \format{list}
 \source{
 TODO
-
-TODO
 }
 \usage{
 TBsignatures

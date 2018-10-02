@@ -20,7 +20,6 @@
 #' @name TBsignatures
 #' @docType data
 #' @format list
-#' @source TODO
 #' @keywords datasets
 #' @examples
 #' data("data_toy")
