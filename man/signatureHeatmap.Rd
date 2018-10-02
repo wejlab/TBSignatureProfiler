@@ -5,9 +5,10 @@
 \title{Plot a Heatmap of Signature Scores}
 \usage{
 signatureHeatmap(inputData, annotationData, name = "Signatures",
-  signatureColNames, annotationColNames, colList, scale = FALSE,
-  showColumnNames = TRUE, showRowNames = TRUE, colorSets = c("Set1",
-  "Set2", "Set3", "Pastel1", "Pastel2", "Accent", "Dark2", "Paired"))
+  signatureColNames, annotationColNames, colList = list(),
+  scale = FALSE, showColumnNames = TRUE, showRowNames = TRUE,
+  colorSets = c("Set1", "Set2", "Set3", "Pastel1", "Pastel2", "Accent",
+  "Dark2", "Paired"))
 }
 \arguments{
 \item{inputData}{Either a SummarizedExperiment object that contains the
@@ -49,11 +50,26 @@ A ComplexHeatmap plot
 Plot a Heatmap of Signature Scores
 }
 \examples{
+library(SummarizedExperiment)
+#generate some artificial data that shows a difference in Predict29
 mat_testdata <- rbind(matrix(c(rnorm(145), rnorm(145) + 5), 29, 10,
                              dimnames = list(TBsignatures$Predict29,
-                             paste0("sample", 1:10))),
+                                             paste0("sample", 1:10))),
                       matrix(rnorm(1000), 100, 10,
                              dimnames = list(paste0("gene", 1:100),
-                             paste0("sample", 1:10))))
-res <- runTBsigProfiler(mat_testdata, algorithm = "GSVA", parallel.sz = 1)
+                                             paste0("sample", 1:10))))
+#Create a SummarizedExperiment object that contains the data
+testdataSE <- SummarizedExperiment(assays=SimpleList(data = mat_testdata),
+                                   colData=DataFrame(sample = c(rep("down", 5),
+                                                                rep("up", 5))))
+#Run profiler using GSVA and ssGSEA on Predict29
+res <- runTBsigProfiler(testdataSE, useAssay = "data",
+                        signatures = TBsignatures["Predict29"],
+                        algorithm = c("GSVA", "ssGSEA"), parallel.sz = 1,
+                        combineSigAndAlgorithm = TRUE)
+#Plot heatmap of the results
+signatureHeatmap(res, signatureColNames = c("GSVA_Predict29",
+                                            "ssGSEA_Predict29"),
+                 annotationColNames = "sample", scale=TRUE,
+                 showColumnNames = FALSE)
 }

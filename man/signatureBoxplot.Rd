@@ -33,11 +33,25 @@ provided.
 Plot a Boxplot of Signature Genes
 }
 \examples{
+library(SummarizedExperiment)
+#generate some artificial data that shows a difference in Predict29
 mat_testdata <- rbind(matrix(c(rnorm(145), rnorm(145) + 5), 29, 10,
                              dimnames = list(TBsignatures$Predict29,
-                             paste0("sample", 1:10))),
+                                             paste0("sample", 1:10))),
                       matrix(rnorm(1000), 100, 10,
                              dimnames = list(paste0("gene", 1:100),
-                             paste0("sample", 1:10))))
-res <- runTBsigProfiler(mat_testdata, algorithm = "GSVA", parallel.sz = 1)
+                                             paste0("sample", 1:10))))
+#Create a SummarizedExperiment object that contains the data
+testdataSE <- SummarizedExperiment(assays=SimpleList(data = mat_testdata),
+                                   colData=DataFrame(sample = c(rep("down", 5),
+                                                                rep("up", 5))))
+#Run profiler using GSVA and ssGSEA on Predict29
+res <- runTBsigProfiler(testdataSE, useAssay = "data",
+                        signatures = TBsignatures["Predict29"],
+                        algorithm = c("GSVA", "ssGSEA"), parallel.sz = 1,
+                        combineSigAndAlgorithm = TRUE)
+#Plot boxplot of the results
+signatureBoxplot(res, signatureColNames = c("GSVA_Predict29",
+                                            "ssGSEA_Predict29"),
+                 annotationColName = "sample", name = "Predict29 Signatures")
 }

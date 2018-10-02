@@ -25,7 +25,8 @@ Imports:
     ComplexHeatmap,
     RColorBrewer,
     ggplot2,
-    reshape2
+    reshape2,
+    circlize
 Suggests:
     testthat,
     spelling,

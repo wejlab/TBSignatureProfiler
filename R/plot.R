@@ -1,9 +1,3 @@
-#TODO: input1: signature data, annotation data frame (matrix of signature data and matrix of annotations)
-#TODO: input2: SummarizedExperiment object, list of columns of signature data, list of columns of annotation data
-#TODO: Better example
-#TODO: try with one signature
-# signatureHeatmap(india_relapse_GSVA, signatureColNames = colnames(colData(india_relapse_GSVA))[71:85],
-# annotationColNames=c("visit", "subjtype"))
 #' Plot a Heatmap of Signature Scores
 #'
 #' @param inputData Either a SummarizedExperiment object that contains the
@@ -34,38 +28,83 @@
 #' @export
 #'
 #' @examples
+#' library(SummarizedExperiment)
+#' #generate some artificial data that shows a difference in Predict29
 #' mat_testdata <- rbind(matrix(c(rnorm(145), rnorm(145) + 5), 29, 10,
 #'                              dimnames = list(TBsignatures$Predict29,
-#'                              paste0("sample", 1:10))),
+#'                                              paste0("sample", 1:10))),
 #'                       matrix(rnorm(1000), 100, 10,
 #'                              dimnames = list(paste0("gene", 1:100),
-#'                              paste0("sample", 1:10))))
-#' res <- runTBsigProfiler(mat_testdata, algorithm = "GSVA", parallel.sz = 1)
+#'                                              paste0("sample", 1:10))))
+#' #Create a SummarizedExperiment object that contains the data
+#' testdataSE <- SummarizedExperiment(assays=SimpleList(data = mat_testdata),
+#'                                    colData=DataFrame(sample = c(rep("down", 5),
+#'                                                                 rep("up", 5))))
+#' #Run profiler using GSVA and ssGSEA on Predict29
+#' res <- runTBsigProfiler(testdataSE, useAssay = "data",
+#'                         signatures = TBsignatures["Predict29"],
+#'                         algorithm = c("GSVA", "ssGSEA"), parallel.sz = 1,
+#'                         combineSigAndAlgorithm = TRUE)
+#' #Plot heatmap of the results
+#' signatureHeatmap(res, signatureColNames = c("GSVA_Predict29",
+#'                                             "ssGSEA_Predict29"),
+#'                  annotationColNames = "sample", scale=TRUE,
+#'                  showColumnNames = FALSE)
 signatureHeatmap <- function(inputData, annotationData, name="Signatures",
-                             signatureColNames, annotationColNames, colList,
-                             scale=FALSE, showColumnNames=TRUE,
+                             signatureColNames, annotationColNames,
+                             colList=list(), scale=FALSE, showColumnNames=TRUE,
                              showRowNames=TRUE, colorSets=c("Set1", "Set2",
                              "Set3", "Pastel1", "Pastel2", "Accent", "Dark2",
                              "Paired")) {
-  colList <- list()
-  colorSetNum <- 1
-  for (annot in annotationColNames){
-    condLevels <- unique(SummarizedExperiment::colData(inputData)[, annot])
-    if (length(condLevels) > 8){
-      colors <- distinctColors(length(condLevels))
-    } else {
-      colors <- RColorBrewer::brewer.pal(8, colorSets[colorSetNum])
-      colorSetNum <- colorSetNum + 1
+  if (methods::is(inputData, "SummarizedExperiment")){
+    if (any(duplicated(signatureColNames))){
+      stop("Duplicate signature column name is not supported.")
     }
-    colList[[annot]] <- stats::setNames(colors[seq_along(condLevels)],
-                                        condLevels)
+    if (!all(signatureColNames %in% colnames(SummarizedExperiment::colData(inputData)))){
+      stop("Signature column name not found in inputData.")
+    }
+    if (!all(annotationColNames %in% colnames(SummarizedExperiment::colData(inputData)))){
+      stop("Annotation column name not found in inputData.")
+    }
+    annotationData <- SummarizedExperiment::colData(inputData)[, annotationColNames, drop = FALSE]
+    inputData <-  SummarizedExperiment::colData(inputData)[, signatureColNames, drop = FALSE]
+  } else {
+    annotationColNames <- colnames(annotationData)
+  }
+  #if number of rows equal number of rows
+  if (nrow(annotationData) == nrow(inputData)){
+    if (!all(rownames(annotationData) == rownames(inputData))){
+      stop("Annotation data and signature data does not match.")
+    }
+  } else if (nrow(annotationData) == ncol(inputData)){
+    if (!all(rownames(annotationData) == colnames(inputData))){
+      stop("Annotation data and signature data does not match.")
+    }
+    inputData <- t(inputData)
+  } else {
+    stop("Annotation data and signature data does not match.")
+  }
+
+  if (length(colList) == 0){
+    colorSetNum <- 1
+    for (annot in annotationColNames){
+      condLevels <- unique(annotationData[, annot])
+      if (length(condLevels) > 8){
+        colors <- distinctColors(length(condLevels))
+      } else {
+        colors <- RColorBrewer::brewer.pal(8, colorSets[colorSetNum])
+        colorSetNum <- colorSetNum + 1
+      }
+      colList[[annot]] <- stats::setNames(colors[seq_along(condLevels)],
+                                          condLevels)
+    }
   }
 
   topha2 <- ComplexHeatmap::HeatmapAnnotation(
-    df = data.frame(SummarizedExperiment::colData(inputData)[, annotationColNames]),
+    df = data.frame(annotationData),
     col = colList, height = grid::unit(0.4 * length(annotationColNames), "cm"),
     show_legend = TRUE, show_annotation_name = TRUE)
-  sigresults <- t(as.matrix(SummarizedExperiment::colData(inputData)[, signatureColNames]))
+  sigresults <- t(as.matrix(inputData))
   keyname <- "Score"
   if (scale){
     sigresults <- t(scale(t(sigresults)))
@@ -80,9 +119,6 @@ signatureHeatmap <- function(inputData, annotationData, name="Signatures",
   ))
 }
 
-#TODO: Better example
-#TODO: test with 1 input
-#TODO: support other input method
 #' Plot a Boxplot of Signature Genes
 #'
 #' @param inputData Either a SummarizedExperiment object that contains the
@@ -103,24 +139,69 @@ signatureHeatmap <- function(inputData, annotationData, name="Signatures",
 #' @export
 #'
 #' @examples
+#' library(SummarizedExperiment)
+#' #generate some artificial data that shows a difference in Predict29
 #' mat_testdata <- rbind(matrix(c(rnorm(145), rnorm(145) + 5), 29, 10,
 #'                              dimnames = list(TBsignatures$Predict29,
-#'                              paste0("sample", 1:10))),
+#'                                              paste0("sample", 1:10))),
 #'                       matrix(rnorm(1000), 100, 10,
 #'                              dimnames = list(paste0("gene", 1:100),
-#'                              paste0("sample", 1:10))))
-#' res <- runTBsigProfiler(mat_testdata, algorithm = "GSVA", parallel.sz = 1)
+#'                                              paste0("sample", 1:10))))
+#' #Create a SummarizedExperiment object that contains the data
+#' testdataSE <- SummarizedExperiment(assays=SimpleList(data = mat_testdata),
+#'                                    colData=DataFrame(sample = c(rep("down", 5),
+#'                                                                 rep("up", 5))))
+#' #Run profiler using GSVA and ssGSEA on Predict29
+#' res <- runTBsigProfiler(testdataSE, useAssay = "data",
+#'                         signatures = TBsignatures["Predict29"],
+#'                         algorithm = c("GSVA", "ssGSEA"), parallel.sz = 1,
+#'                         combineSigAndAlgorithm = TRUE)
+#' #Plot boxplot of the results
+#' signatureBoxplot(res, signatureColNames = c("GSVA_Predict29",
+#'                                             "ssGSEA_Predict29"),
+#'                  annotationColName = "sample", name = "Predict29 Signatures")
 signatureBoxplot <- function(inputData, annotationData, signatureColNames,
                              annotationColName, name="Signatures", scale=FALSE) {
+  if (methods::is(inputData, "SummarizedExperiment")){
+    if (any(duplicated(signatureColNames))){
+      stop("Duplicate signature column name is not supported.")
+    }
+    if (!all(signatureColNames %in% colnames(SummarizedExperiment::colData(inputData)))){
+      stop("Signature column name not found in inputData.")
+    }
+    if (!all(annotationColName %in% colnames(SummarizedExperiment::colData(inputData)))){
+      stop("Annotation column name not found in inputData.")
+    }
+    annotationData <- data.frame(SummarizedExperiment::colData(inputData)[, annotationColName, drop = FALSE])
+    inputData <-  data.frame(SummarizedExperiment::colData(inputData)[, signatureColNames, drop = FALSE])
+  } else {
+    if (ncol(annotationData) != 1){
+      stop("annotationData must have only one column.")
+    }
+    annotationColName <- colnames(annotationData)
+  }
   if (length(annotationColName) != 1){
     stop("You must specify a single annotation column name to color boxplots by.")
   }
-  pathwaydata <- t(as.matrix(SummarizedExperiment::colData(inputData)[, signatureColNames]))
+  #if number of rows equal number of rows
+  if (nrow(annotationData) == nrow(inputData)){
+    if (!all(rownames(annotationData) == rownames(inputData))){
+      stop("Annotation data and signature data does not match.")
+    }
+  } else if (nrow(annotationData) == ncol(inputData)){
+    if (!all(rownames(annotationData) == colnames(inputData))){
+      stop("Annotation data and signature data does not match.")
+    }
+    inputData <- t(inputData)
+  } else {
+    stop("Annotation data and signature data does not match.")
+  }
+  pathwaydata <- t(inputData)
   if (scale) {
     pathwaydata <- t(scale(t(pathwaydata)))
   }
   boxplotdf <- data.frame(t(pathwaydata),
-                          Group = SummarizedExperiment::colData(inputData)[, annotationColName])
+                          Group = annotationData[, 1])
   boxplotdfm <- reshape2::melt(boxplotdf, value.name = "Score",
                                variable.name = "Signature", id.vars = "Group")
   return(ggplot2::ggplot(boxplotdfm, ggplot2::aes_string("Group", "Score")) +
@@ -132,26 +213,19 @@ signatureBoxplot <- function(inputData, annotationData, signatureColNames,
     ggplot2::ggtitle(name))
 }
 
-#TODO: Try NULL annotation
-#TODO: Fail NULL signatures
-#TODO: Other input support
 #' Plot a Heatmap of a single signature scores and gene expression
 #'
-#' @param inputData Either a SummarizedExperiment object that contains the
-#' signature data and annotation as colData columns, or a data.frame or matrix
-#' of signature data. Required.
-#' @param useAssay If inputData is a SummarizedExperiment, the assay to use for
-#' the gene expression data. Required if inputData is SummarizedExperiment.
+#' @param inputData A SummarizedExperiment object that contains the
+#' signature data and annotation as colData columns. Required.
+#' @param useAssay The assay to use for the gene expression data. Required.
 #' @param sigGenes The genes in the signature to use in the heatmap. For inbuilt
 #' signatures, you can use TBsignatures, (ex: TBsignatures[["ACS_COR"]]).
 #' Required.
-#' @param annotationData If inputData is a data.frame or matrix of signature
-#' data, a data.frame or matrix of annotation data.
 #' @param name The name of the heatmap. The default is "Signature".
-#' @param signatureColNames If inputData is a SummarizedExperiment, the column
-#' names in colData that contain the signature data.
-#' @param annotationColNames If inputData is a SummarizedExperiment, the column
-#' names in colData that contain the annotation data.
+#' @param signatureColNames The column names in colData that contain the
+#' signature data.
+#' @param annotationColNames The column names in colData that contain the
+#' annotation data.
 #' @param scale Scale the gene expression data. The default is TRUE.
 #' @param showColumnNames Show columns names (sample names) in the heatmap. The
 #' default is TRUE.
@@ -160,18 +234,47 @@ signatureBoxplot <- function(inputData, annotationData, signatureColNames,
 #' @param colList Custom color information for annotation data as a named list
 #' to pass to ComplexHeatmap. By default, ColorBrewer color sets will be used.
 #' See colorSets for additional options.
+#' @param colorSets By default, this function will use the color sets in the
+#' order listed below for annotation information. Replace this with the sets
+#' in order that you want to use them, or provide custom color sets with
+#' colList.
 #'
-#' @return
+#' @return  A ComplexHeatmap plot
+#'
 #' @export
 #'
 #' @examples
-signatureGeneHeatmap <- function(inputData, useAssay, sigGenes, annotationData,
+#' library(SummarizedExperiment)
+#' #generate some artificial data that shows a difference in Predict29
+#' mat_testdata <- rbind(matrix(c(rnorm(145), rnorm(145) + 5), 29, 10,
+#'                              dimnames = list(TBsignatures$Predict29,
+#'                                              paste0("sample", 1:10))),
+#'                       matrix(rnorm(1000), 100, 10,
+#'                              dimnames = list(paste0("gene", 1:100),
+#'                                              paste0("sample", 1:10))))
+#' #Create a SummarizedExperiment object that contains the data
+#' testdataSE <- SummarizedExperiment(assays=SimpleList(data = mat_testdata),
+#'                                    colData=DataFrame(sample = c(rep("down", 5),
+#'                                                                 rep("up", 5))))
+#' #Run profiler using GSVA and ssGSEA on Predict29
+#' res <- runTBsigProfiler(testdataSE, useAssay = "data",
+#'                         signatures = TBsignatures["Predict29"],
+#'                         algorithm = c("GSVA", "ssGSEA"), parallel.sz = 1,
+#'                         combineSigAndAlgorithm = TRUE)
+#' #Plot a heatmap of signature genes and pathway predictions
+#' signatureGeneHeatmap(res, useAssay = "data",
+#'                      sigGenes = TBsignatures[["Predict29"]],
+#'                      signatureColNames = c("GSVA_Predict29",
+#'                                            "ssGSEA_Predict29"),
+#'                      annotationColNames = c("sample"), showColumnNames = FALSE,
+#'                      name = "Predict29")
+signatureGeneHeatmap <- function(inputData, useAssay, sigGenes,
                                  name="Signature", signatureColNames,
-                                 annotationColNames, scale = TRUE,
-                                 showColumnNames = TRUE, showRowNames = TRUE,
-                                 colorSets=c("Set1", "Set2", "Set3", "Pastel1",
-                                             "Pastel2", "Accent", "Dark2",
-                                             "Paired")) {
+                                 annotationColNames, scale=TRUE,
+                                 showColumnNames=TRUE, showRowNames=TRUE,
+                                 colList=list(), colorSets=c("Set1", "Set2",
+                                 "Set3", "Pastel1", "Pastel2", "Accent",
+                                 "Dark2", "Paired")) {
   pathwaycols <- list()
   pathwaydata <- data.frame(SummarizedExperiment::colData(inputData)[, signatureColNames, drop = FALSE])
   for (i in colnames(pathwaydata)){
@@ -180,25 +283,28 @@ signatureGeneHeatmap <- function(inputData, useAssay, sigGenes, annotationData,
     pathwaycols[[i]] <- circlize::colorRamp2(c(t1min, mean(c(t1min, t1max)), t1max),
                                              c("darkgreen", "white", "darkorange"))
   }
-  colList <- list()
-  colorSetNum <- 1
-  for (annot in annotationColNames){
-    condLevels <- unique(SummarizedExperiment::colData(inputData)[, annot])
-    if (length(condLevels) > 8){
-      colors <- distinctColors(length(condLevels))
-    } else {
-      colors <- RColorBrewer::brewer.pal(8, colorSets[colorSetNum])
-      colorSetNum <- colorSetNum + 1
+
+  if (length(colList) == 0){
+    colorSetNum <- 1
+    for (annot in annotationColNames){
+      condLevels <- unique(SummarizedExperiment::colData(inputData)[, annot])
+      if (length(condLevels) > 8){
+        colors <- distinctColors(length(condLevels))
+      } else {
+        colors <- RColorBrewer::brewer.pal(8, colorSets[colorSetNum])
+        colorSetNum <- colorSetNum + 1
+      }
+      colList[[annot]] <- stats::setNames(colors[seq_along(condLevels)],
+                                          condLevels)
     }
-    colList[[annot]] <- stats::setNames(colors[seq_along(condLevels)],
-                                        condLevels)
   }
+
   topha2 <- ComplexHeatmap::HeatmapAnnotation(
-    df = cbind(data.frame(SummarizedExperiment::colData(inputData)[, annotationColNames]),
+    df = cbind(data.frame(SummarizedExperiment::colData(inputData)[, annotationColNames, drop = FALSE]),
                data.frame(pathwaydata)),
     col = c(colList, pathwaycols),
     height = grid::unit(0.4 * length(c(annotationColNames, signatureColNames)), "cm"), show_legend = TRUE, show_annotation_name = TRUE)
-  heatdata <- assay(inputData, useAssay)[sigGenes[sigGenes %in% rownames(inputData)], ]
+  heatdata <- SummarizedExperiment::assay(inputData, useAssay)[sigGenes[sigGenes %in% rownames(inputData)], ]
   heatname <- useAssay
   if (scale){
     heatdata <- heatdata[rowSums(heatdata) != 0, ]

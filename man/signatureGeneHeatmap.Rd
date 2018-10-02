@@ -4,34 +4,29 @@
 \alias{signatureGeneHeatmap}
 \title{Plot a Heatmap of a single signature scores and gene expression}
 \usage{
-signatureGeneHeatmap(inputData, useAssay, sigGenes, annotationData,
-  name = "Signature", signatureColNames, annotationColNames,
-  scale = TRUE, showColumnNames = TRUE, showRowNames = TRUE,
+signatureGeneHeatmap(inputData, useAssay, sigGenes, name = "Signature",
+  signatureColNames, annotationColNames, scale = TRUE,
+  showColumnNames = TRUE, showRowNames = TRUE, colList = list(),
   colorSets = c("Set1", "Set2", "Set3", "Pastel1", "Pastel2", "Accent",
   "Dark2", "Paired"))
 }
 \arguments{
-\item{inputData}{Either a SummarizedExperiment object that contains the
-signature data and annotation as colData columns, or a data.frame or matrix
-of signature data. Required.}
+\item{inputData}{A SummarizedExperiment object that contains the
+signature data and annotation as colData columns. Required.}
 
-\item{useAssay}{If inputData is a SummarizedExperiment, the assay to use for
-the gene expression data. Required if inputData is SummarizedExperiment.}
+\item{useAssay}{The assay to use for the gene expression data. Required.}
 
 \item{sigGenes}{The genes in the signature to use in the heatmap. For inbuilt
 signatures, you can use TBsignatures, (ex: TBsignatures[["ACS_COR"]]).
 Required.}
 
-\item{annotationData}{If inputData is a data.frame or matrix of signature
-data, a data.frame or matrix of annotation data.}
-
 \item{name}{The name of the heatmap. The default is "Signature".}
 
-\item{signatureColNames}{If inputData is a SummarizedExperiment, the column
-names in colData that contain the signature data.}
+\item{signatureColNames}{The column names in colData that contain the
+signature data.}
 
-\item{annotationColNames}{If inputData is a SummarizedExperiment, the column
-names in colData that contain the annotation data.}
+\item{annotationColNames}{The column names in colData that contain the
+annotation data.}
 
 \item{scale}{Scale the gene expression data. The default is TRUE.}
 
@@ -44,7 +39,41 @@ default is TRUE.}
 \item{colList}{Custom color information for annotation data as a named list
 to pass to ComplexHeatmap. By default, ColorBrewer color sets will be used.
 See colorSets for additional options.}
+
+\item{colorSets}{By default, this function will use the color sets in the
+order listed below for annotation information. Replace this with the sets
+in order that you want to use them, or provide custom color sets with
+colList.}
+}
+\value{
+A ComplexHeatmap plot
 }
 \description{
 Plot a Heatmap of a single signature scores and gene expression
+}
+\examples{
+library(SummarizedExperiment)
+#generate some artificial data that shows a difference in Predict29
+mat_testdata <- rbind(matrix(c(rnorm(145), rnorm(145) + 5), 29, 10,
+                             dimnames = list(TBsignatures$Predict29,
+                                             paste0("sample", 1:10))),
+                      matrix(rnorm(1000), 100, 10,
+                             dimnames = list(paste0("gene", 1:100),
+                                             paste0("sample", 1:10))))
+#Create a SummarizedExperiment object that contains the data
+testdataSE <- SummarizedExperiment(assays=SimpleList(data = mat_testdata),
+                                   colData=DataFrame(sample = c(rep("down", 5),
+                                                                rep("up", 5))))
+#Run profiler using GSVA and ssGSEA on Predict29
+res <- runTBsigProfiler(testdataSE, useAssay = "data",
+                        signatures = TBsignatures["Predict29"],
+                        algorithm = c("GSVA", "ssGSEA"), parallel.sz = 1,
+                        combineSigAndAlgorithm = TRUE)
+#Plot a heatmap of signature genes and pathway predictions
+signatureGeneHeatmap(res, useAssay = "data",
+                     sigGenes = TBsignatures[["Predict29"]],
+                     signatureColNames = c("GSVA_Predict29",
+                                           "ssGSEA_Predict29"),
+                     annotationColNames = c("sample"), showColumnNames = FALSE,
+                     name = "Predict29")
 }
