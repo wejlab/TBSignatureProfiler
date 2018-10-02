@@ -17,7 +17,7 @@
 #'
 #' The gene expression and metadata 
 #'
-#' @name TBsignatures
+#' @name data_toy
 #' @docType data
 #' @format list
 #' @keywords datasets
