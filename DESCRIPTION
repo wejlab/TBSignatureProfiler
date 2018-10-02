@@ -34,7 +34,8 @@ Imports:
     gmodels,
     DESeq2,
     caret,
-    ggfortify
+    ggfortify,
+    e1071
 Suggests:
     testthat,
     spelling,

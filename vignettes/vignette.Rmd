@@ -28,6 +28,7 @@ library(boot)
 library(gmodels)
 library(DESeq2)
 library(caret)
+library(e1071)
 
 ```
 
