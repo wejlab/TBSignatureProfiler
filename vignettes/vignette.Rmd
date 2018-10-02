@@ -37,8 +37,8 @@ library(e1071)
 We are using a Indian TB dataset as a toy dataset.
 
 ```{r}
-load("../data/TB_indian.rda")
-load("../data/TBsignatures.rda")
+data("TBsignatures")
+data("TB_indian")
 ```
 
 
