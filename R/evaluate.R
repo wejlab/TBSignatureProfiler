@@ -3,7 +3,7 @@
 #'
 #' @param inputData a data.frame or matrix of gene expression count data. 
 #' Required.
-#'
+#' @importFrom DESeq2 estimateSizeFactorsForMatrix
 #' @return Normalized count data
 #'
 #' @export
@@ -31,6 +31,11 @@ deseq2_norm_rle <- function(inputData){
 #' @param df a data.frame of gene expression count data. 
 #' Required.
 #' @param targetVec binary vector indicating y
+#' @import glmnet
+#' @import caret
+#' @importFrom ROCR prediction performance
+#' @importFrom methods slot
+#' @importFrom stats predict
 #' @return AUC from LOOCV
 #'
 #' @export
@@ -86,13 +91,13 @@ LOOAUC_simple_multiple_noplot_one_df <- function(df, targetVec){
 #' @export
 #'
 #' @examples
-#' inputTest <- matrix(rnorm(1000), 100, 10, 
+#' inputTest <- matrix(rnorm(1000), 100, 20, 
 #'                     dimnames = list(paste0("gene", 1:100),
-#'                                     paste0("sample", 1:10)))
+#'                                     paste0("sample", 1:20)))
 #' inputTest <- as.data.frame(inputTest)   
-#' targetVec <- sample(c(0,1), replace=TRUE, size=10)   
-#' nboot <- 50                                   
-#' res <- Bootstrap_LOOCV_LR_AUC(inputTest, target.vec, nboot)
+#' targetVec <- sample(c(0,1), replace=TRUE, size=20)   
+#' nboot <- 3                                   
+#' res <- Bootstrap_LOOCV_LR_AUC(inputTest, targetVec, nboot)
 Bootstrap_LOOCV_LR_AUC <- function(df, target.vec, nboot){
   output.auc.vec <- c()
 	output.other.df <- NULL
@@ -122,21 +127,24 @@ Bootstrap_LOOCV_LR_AUC <- function(df, target.vec, nboot){
 #' @param signature.list a list of signatures
 #' @param signature.name.vec vector of signature names
 #' @param num.boot number of bootstrap
-#'
+#' @importFrom gmodels ci
+#' @importFrom grDevices dev.off pdf
+#' @importFrom graphics boxplot
+#' @importFrom stats median
 #' @return the AUC, sensitivity and specificity
 #'
 #' @export
 #'
 #' @examples
-#' inputTest <- matrix(rnorm(1000), 100, 10, 
+#' inputTest <- matrix(rnorm(1000), 100, 20, 
 #'                     dimnames = list(paste0("gene", 1:100),
-#'                                     paste0("sample", 1:10)))
+#'                                     paste0("sample", 1:20)))
 #' inputTest <- as.data.frame(inputTest)   
-#' targetVec <- sample(c(0,1), replace=TRUE, size=10) 
-#' signature.list <- list(sig1 = c("gene1", "gene2", "gene3")，
-#'                        sig2 = c("gene4", "gene5", "gene6"))  
+#' targetVec <- sample(c(0,1), replace=TRUE, size=20) 
+#' signature.list <- list(sig1 = c("gene1", "gene2", "gene3"),
+#'                        sig2 = c("gene4", "gene5", "gene6"))
 #' signature.name.vec <- c("sig1", "sig2")                       
-#' num.boot <- 50                                   
+#' num.boot <- 3                                   
 #' res <- SignatureQuantitative(inputTest, 
 #'                              targetVec, 
 #'                              signature.list, 

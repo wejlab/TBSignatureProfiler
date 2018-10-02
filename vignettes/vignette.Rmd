@@ -37,7 +37,7 @@ library(e1071)
 We are using a Indian TB dataset as a toy dataset.
 
 ```{r}
-data_toy <- readRDS("../data/TB_indian.rds")
+load("../data/TB_indian.rda")
 load("../data/TBsignatures.rda")
 ```
 

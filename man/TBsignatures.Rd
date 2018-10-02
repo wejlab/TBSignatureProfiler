@@ -3,19 +3,27 @@
 \docType{data}
 \name{TBsignatures}
 \alias{TBsignatures}
+\alias{data_toy}
 \title{TB Signatures}
 \format{list}
 \source{
 TODO
+
+TODO
 }
 \usage{
 TBsignatures
+
+data_toy
 }
 \description{
 A set of 15 TB signatures from publications. This set of signatures uses
 gene symbols. Additional sets for entrez IDs and ensembl IDs are forthcoming.
+
+The gene expression and metadata
 }
 \examples{
 data("TBsignatures")
+data("data_toy")
 }
 \keyword{datasets}

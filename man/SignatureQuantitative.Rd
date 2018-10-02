@@ -26,15 +26,15 @@ the AUC, sensitivity and specificity
 Use logistic regression and Bootstrap LOOCV for signature evaluation.
 }
 \examples{
-inputTest <- matrix(rnorm(1000), 100, 10, 
+inputTest <- matrix(rnorm(1000), 100, 20, 
                     dimnames = list(paste0("gene", 1:100),
-                                    paste0("sample", 1:10)))
+                                    paste0("sample", 1:20)))
 inputTest <- as.data.frame(inputTest)   
-targetVec <- sample(c(0,1), replace=TRUE, size=10) 
-signature.list <- list(sig1 = c("gene1", "gene2", "gene3")，
-                       sig2 = c("gene4", "gene5", "gene6"))  
+targetVec <- sample(c(0,1), replace=TRUE, size=20) 
+signature.list <- list(sig1 = c("gene1", "gene2", "gene3"),
+                       sig2 = c("gene4", "gene5", "gene6"))
 signature.name.vec <- c("sig1", "sig2")                       
-num.boot <- 50                                   
+num.boot <- 3                                   
 res <- SignatureQuantitative(inputTest, 
                              targetVec, 
                              signature.list, 
