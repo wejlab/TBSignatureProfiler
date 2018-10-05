@@ -29,7 +29,6 @@ library(gmodels)
 library(DESeq2)
 library(caret)
 library(e1071)
-
 ```
 
 
@@ -45,8 +44,8 @@ data_toy_norm <- deseq2_norm_rle(TB_indian$count.indian)
 ```{r}
 quantitative.result <- SignatureQuantitative(data_toy_norm,
                                              TB_indian$meta.indian$label,
-                                             TBsignatures,
-                                             names(TBsignatures),
+                                             TBsignatures[c("ACS_COR_16","Predict29")],
+                                             c("ACS_COR_16","Predict29"),
                                              num.boot = 5)
 ```
 

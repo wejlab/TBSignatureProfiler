@@ -7,7 +7,7 @@
 LOOAUC_simple_multiple_noplot_one_df(df, targetVec)
 }
 \arguments{
-\item{df}{a data.frame of gene expression count data. 
+\item{df}{a data.frame of gene expression count data.
 Required.}
 
 \item{targetVec}{binary vector indicating y}
@@ -19,10 +19,10 @@ AUC from LOOCV
 LOOCV with logistic regression
 }
 \examples{
-inputTest <- matrix(rnorm(1000), 100, 10, 
+inputTest <- matrix(rnorm(1000), 100, 10,
                     dimnames = list(paste0("gene", 1:100),
                                     paste0("sample", 1:10)))
-inputTest <- as.data.frame(inputTest)   
-targetVec <- sample(c(0,1), replace=TRUE, size=10)                                 
+inputTest <- as.data.frame(inputTest)
+targetVec <- sample(c(0,1), replace=TRUE, size=10)
 res <- LOOAUC_simple_multiple_noplot_one_df(inputTest, targetVec)
 }

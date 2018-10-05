@@ -7,7 +7,7 @@
 deseq2_norm_rle(inputData)
 }
 \arguments{
-\item{inputData}{a data.frame or matrix of gene expression count data. 
+\item{inputData}{a data.frame or matrix of gene expression count data.
 Required.}
 }
 \value{
@@ -17,7 +17,7 @@ Normalized count data
 gene expression normalization, RLE normalization: relative log expression
 }
 \examples{
-inputTest <- matrix(rnorm(1000), 100, 10, 
+inputTest <- matrix(rnorm(1000), 100, 10,
                     dimnames = list(paste0("gene", 1:100),
                                     paste0("sample", 1:10)))
 res <- deseq2_norm_rle(inputTest)

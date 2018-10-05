@@ -6,14 +6,84 @@
 \title{TB Signatures}
 \format{list}
 \source{
-TODO
+\itemize{
+ \item{\strong{ACS_COR_16}}{: Zak, Daniel E., Adam Penn-Nicholson, Thomas J. Scriba, Ethan Thompson, Sara Suliman, Lynn M. Amon, Hassan Mahomed, et al. 2016. "A Blood RNA Signature for Tuberculosis Disease Risk: A Prospective Cohort Study." The Lancet 387 (10035): 2312–22. \href{http://dx.doi.org/10.1016/S0140-6736(15)01316-1}{10.1016/S0140-6736(15)01316-1}}
+ \item{\strong{Anderson_TB_vs_LTBI_42}}{: Anderson, Suzanne T., Myrsini Kaforou, Andrew J. Brent, Victoria J. Wright, Claire M. Banwell, George Chagaluka, Amelia C. Crampin, et al. 2014. "Diagnosis of Childhood Tuberculosis and Host RNA Expression in Africa." The New England Journal of Medicine 370 (18): 1712–23. \href{http://dx.doi.org/10.1056/NEJMoa1303657}{10.1056/NEJMoa1303657}}
+ \item{\strong{Anderson_TB_vs_other_LTBI_51}}{: Anderson, Suzanne T., Myrsini Kaforou, Andrew J. Brent, Victoria J. Wright, Claire M. Banwell, George Chagaluka, Amelia C. Crampin, et al. 2014. "Diagnosis of Childhood Tuberculosis and Host RNA Expression in Africa." The New England Journal of Medicine 370 (18): 1712–23. \href{http://dx.doi.org/10.1056/NEJMoa1303657}{10.1056/NEJMoa1303657}}
+ \item{\strong{Berry_393}}{: Berry, Matthew P. R., Christine M. Graham, Finlay W. McNab, Zhaohui Xu, Susannah A. A. Bloch, Tolu Oni, Katalin A. Wilkinson, et al. 2010. "An Interferon-Inducible Neutrophil-Driven Blood Transcriptional Signature in Human Tuberculosis." Nature 466 (7309): 973–77. \href{http://dx.doi.org/10.1038/nature09247}{10.1038/nature09247}}
+ \item{\strong{Berry_86}}{: Berry, Matthew P. R., Christine M. Graham, Finlay W. McNab, Zhaohui Xu, Susannah A. A. Bloch, Tolu Oni, Katalin A. Wilkinson, et al. 2010. "An Interferon-Inducible Neutrophil-Driven Blood Transcriptional Signature in Human Tuberculosis." Nature 466 (7309): 973–77. \href{http://dx.doi.org/10.1038/nature09247}{10.1038/nature09247}}
+ \item{\strong{Blankley_380}}{: Blankley, Simon, Christine M. Graham, Joe Levin, Jacob Turner, Matthew P. R. Berry, Chloe I. Bloom, Zhaohui Xu, et al. 2016. "A 380-Gene Meta-Signature of Active Tuberculosis Compared with Healthy Controls." The European Respiratory Journal: Official Journal of the European Society for Clinical Respiratory Physiology 47 (6): 1873–76. \href{http://dx.doi.org/10.1183/13993003.02121-2015}{10.1183/13993003.02121-2015}}
+ \item{\strong{Blankley_5}}{: Blankley, Simon, Christine M. Graham, Joe Levin, Jacob Turner, Matthew P. R. Berry, Chloe I. Bloom, Zhaohui Xu, et al. 2016. "A 380-Gene Meta-Signature of Active Tuberculosis Compared with Healthy Controls." The European Respiratory Journal: Official Journal of the European Society for Clinical Respiratory Physiology 47 (6): 1873–76. \href{http://dx.doi.org/10.1183/13993003.02121-2015}{10.1183/13993003.02121-2015}}
+ \item{\strong{Bloom_140}}{: Bloom, Chloe I., Christine M. Graham, Matthew P. R. Berry, Fotini Rozakeas, Paul S. Redford, Yuanyuan Wang, Zhaohui Xu, et al. 2013. "Transcriptional Blood Signatures Distinguish Pulmonary Tuberculosis, Pulmonary Sarcoidosis, Pneumonias and Lung Cancers." PloS One 8 (8): e70630. \href{http://dx.doi.org/10.1371/journal.pone.0070630}{10.1371/journal.pone.0070630}}
+ \item{\strong{DISEASE_9}}{: Thompson, Ethan G., Ying Du, Stephanus T. Malherbe, Smitha Shankar, Jackie Braun, Joe Valvo, Katharina Ronacher, et al. 2017. "Host Blood RNA Signatures Predict the Outcome of Tuberculosis Treatment." Tuberculosis  107 (December): 48–58. \href{http://dx.doi.org/10.1016/j.tube.2017.08.004}{10.1016/j.tube.2017.08.004}}
+ \item{\strong{Esmail_subclinical_203}}{: Esmail, Hanif, Rachel P. Lai, Maia Lesosky, Katalin A. Wilkinson, Christine M. Graham, Stuart Horswell, Anna K. Coussens, Clifton E. Barry 3rd, Anne O'Garra, and Robert J. Wilkinson. 2018. "Complement Pathway Gene Activation and Rising Circulating Immune Complexes Characterize Early Disease in HIV-Associated Tuberculosis." Proceedings of the National Academy of Sciences of the United States of America 115 (5): E964–73. \href{http://dx.doi.org/10.1073/pnas.1711853115}{10.1073/pnas.1711853115}}
+ \item{\strong{Esmail_subclinical_82}}{: Esmail, Hanif, Rachel P. Lai, Maia Lesosky, Katalin A. Wilkinson, Christine M. Graham, Stuart Horswell, Anna K. Coussens, Clifton E. Barry 3rd, Anne O'Garra, and Robert J. Wilkinson. 2018. "Complement Pathway Gene Activation and Rising Circulating Immune Complexes Characterize Early Disease in HIV-Associated Tuberculosis." Proceedings of the National Academy of Sciences of the United States of America 115 (5): E964–73. \href{http://dx.doi.org/10.1073/pnas.1711853115}{10.1073/pnas.1711853115}}
+ \item{\strong{Esmail_TB_vs_LTBI_893}}{: Esmail, Hanif, Rachel P. Lai, Maia Lesosky, Katalin A. Wilkinson, Christine M. Graham, Stuart Horswell, Anna K. Coussens, Clifton E. Barry 3rd, Anne O'Garra, and Robert J. Wilkinson. 2018. "Complement Pathway Gene Activation and Rising Circulating Immune Complexes Characterize Early Disease in HIV-Associated Tuberculosis." Proceedings of the National Academy of Sciences of the United States of America 115 (5): E964–73. \href{http://dx.doi.org/10.1073/pnas.1711853115}{10.1073/pnas.1711853115}}
+ \item{\strong{FAILURE_13}}{: Thompson, Ethan G., Ying Du, Stephanus T. Malherbe, Smitha Shankar, Jackie Braun, Joe Valvo, Katharina Ronacher, et al. 2017. "Host Blood RNA Signatures Predict the Outcome of Tuberculosis Treatment." Tuberculosis  107 (December): 48–58. \href{http://dx.doi.org/10.1016/j.tube.2017.08.004}{10.1016/j.tube.2017.08.004}}
+ \item{\strong{Jacobsen_3}}{: Jacobsen, Marc, Dirk Repsilber, Andrea Gutschmidt, Albert Neher, Knut Feldmann, Hans J. Mollenkopf, Andreas Ziegler, and Stefan H. E. Kaufmann. 2007. "Candidate Biomarkers for Discrimination between Infection and Disease Caused by Mycobacterium Tuberculosis." Journal of Molecular Medicine  85 (6): 613–21. \href{http://dx.doi.org/10.1007/s00109-007-0157-6}{10.1007/s00109-007-0157-6}}
+ \item{\strong{Kaforou_TB_vs_LTBI_27}}{: Kaforou, Myrsini, Victoria J. Wright, Tolu Oni, Neil French, Suzanne T. Anderson, Nonzwakazi Bangani, Claire M. Banwell, et al. 2013. "Detection of Tuberculosis in HIV-Infected and -Uninfected African Adults Using Whole Blood RNA Expression Signatures: A Case-Control Study." PLoS Medicine 10 (10): e1001538. \href{http://dx.doi.org/10.1371/journal.pmed.1001538}{10.1371/journal.pmed.1001538}}
+ \item{\strong{Kaforou_TB_vs_LTBI_other_53}}{: Kaforou, Myrsini, Victoria J. Wright, Tolu Oni, Neil French, Suzanne T. Anderson, Nonzwakazi Bangani, Claire M. Banwell, et al. 2013. "Detection of Tuberculosis in HIV-Infected and -Uninfected African Adults Using Whole Blood RNA Expression Signatures: A Case-Control Study." PLoS Medicine 10 (10): e1001538. \href{http://dx.doi.org/10.1371/journal.pmed.1001538}{10.1371/journal.pmed.1001538}}
+ \item{\strong{Kaforou_TB_vs_other_44}}{: Kaforou, Myrsini, Victoria J. Wright, Tolu Oni, Neil French, Suzanne T. Anderson, Nonzwakazi Bangani, Claire M. Banwell, et al. 2013. "Detection of Tuberculosis in HIV-Infected and -Uninfected African Adults Using Whole Blood RNA Expression Signatures: A Case-Control Study." PLoS Medicine 10 (10): e1001538. \href{http://dx.doi.org/10.1371/journal.pmed.1001538}{10.1371/journal.pmed.1001538}}
+ \item{\strong{Lee_4}}{: Lee, Shih-Wei, Lawrence Shih-Hsin Wu, Guan-Mau Huang, Kai-Yao Huang, Tzong-Yi Lee, and Julia Tzu-Ya Weng. 2016. "Gene Expression Profiling Identifies Candidate Biomarkers for Active and Latent Tuberculosis." BMC Bioinformatics 17 Suppl 1 (January): 3. \href{http://dx.doi.org/10.1186/s12859-015-0848-x}{10.1186/s12859-015-0848-x}}
+ \item{\strong{Maertzdorf_100}}{: Maertzdorf, Jeroen, January Weiner 3rd, Hans-Joachim Mollenkopf, TBornot TB Network, Torsten Bauer, Antje Prasse, Joachim Müller-Quernheim, and Stefan H. E. Kaufmann. 2012. "Common Patterns and Disease-Related Signatures in Tuberculosis and Sarcoidosis." Proceedings of the National Academy of Sciences of the United States of America 109 (20): 7853–58. \href{http://dx.doi.org/10.1073/pnas.1121072109}{10.1073/pnas.1121072109}}
+ \item{\strong{Maertzdorf_4}}{: Maertzdorf, Jeroen, Gayle McEwen, January Weiner 3rd, Song Tian, Eric Lader, Ulrich Schriek, Harriet Mayanja-Kizza, Martin Ota, John Kenneth, and Stefan He Kaufmann. 2016. "Concise Gene Signature for Point-of-Care Classification of Tuberculosis." EMBO Molecular Medicine 8 (2): 86–95. \href{http://dx.doi.org/10.15252/emmm.201505790}{10.15252/emmm.201505790}}
+ \item{\strong{Predict29}}{: \emph{submitted}}
+ \item{\strong{RESPONSE5}}{: Thompson, Ethan G., Ying Du, Stephanus T. Malherbe, Smitha Shankar, Jackie Braun, Joe Valvo, Katharina Ronacher, et al. 2017. "Host Blood RNA Signatures Predict the Outcome of Tuberculosis Treatment." Tuberculosis  107 (December): 48–58. \href{http://dx.doi.org/10.1016/j.tube.2017.08.004}{10.1016/j.tube.2017.08.004}}
+ \item{\strong{Roe_4}}{: Roe, Jennifer K., Niclas Thomas, Eliza Gil, Katharine Best, Evdokia Tsaliki, Stephen Morris-Jones, Sian Stafford, et al. 2016. "Blood Transcriptomic Diagnosis of Pulmonary and Extrapulmonary Tuberculosis." JCI Insight 1 (16): e87238. \href{http://dx.doi.org/10.1172/jci.insight.87238}{10.1172/jci.insight.87238}}
+ \item{\strong{Sambarey_10}}{: Sambarey, Awanti, Abhinandan Devaprasad, Abhilash Mohan, Asma Ahmed, Soumya Nayak, Soumya Swaminathan, George D'Souza, et al. 2017. "Unbiased Identification of Blood-Based Biomarkers for Pulmonary Tuberculosis by Modeling and Mining Molecular Interaction Networks." EBioMedicine 15 (February): 112–26. \href{http://dx.doi.org/10.1016/j.ebiom.2016.12.009}{10.1016/j.ebiom.2016.12.009}}
+ \item{\strong{Singhania_20}}{: Singhania, Akul, Raman Verma, Christine M. Graham, Jo Lee, Trang Tran, Matthew Richardson, Patrick Lecine, et al. 2018. "A Modular Transcriptional Signature Identifies Phenotypic Heterogeneity of Human Tuberculosis Infection." Nature Communications 9 (1): 2308. \href{http://dx.doi.org/10.1038/s41467-018-04579-w}{10.1038/s41467-018-04579-w}}
+ \item{\strong{Sloot_2}}{: Sloot, Rosa, Maarten F. Schim van der Loeff, Erik W. van Zwet, Mariëlle C. Haks, Sytze T. Keizer, Maarten Scholing, Tom H. M. Ottenhoff, Martien W. Borgdorff, and Simone A. Joosten. 2015. "Biomarkers Can Identify Pulmonary Tuberculosis in HIV-Infected Drug Users Months Prior to Clinical Diagnosis." EBioMedicine 2 (2): 172–79. \href{http://dx.doi.org/10.1016/j.ebiom.2014.12.001}{10.1016/j.ebiom.2014.12.001}}
+ \item{\strong{Suliman_RISK4}}{: Suliman, Sara, Ethan Thompson, Jayne Sutherland, January Weiner Rd, Martin O. C. Ota, Smitha Shankar, Adam Penn-Nicholson, et al. 2018. "Four-Gene Pan-African Blood Signature Predicts Progression to Tuberculosis." American Journal of Respiratory and Critical Care Medicine, April. https://doi.org/10.1164/rccm.201711-2340OC. \href{http://dx.doi.org/10.1164/rccm.201711-2340OC}{10.1164/rccm.201711-2340OC}}
+ \item{\strong{Sweeney_DIAG3}}{: Sweeney, Timothy E., Lindsay Braviak, Cristina M. Tato, and Purvesh Khatri. 2016. "Genome-Wide Expression for Diagnosis of Pulmonary Tuberculosis: A Multicohort Analysis." The Lancet. Respiratory Medicine 4 (3): 213–24. \href{http://dx.doi.org/10.1016/S2213-2600(16)00048-5}{10.1016/S2213-2600(16)00048-5}}
+ \item{\strong{Walter_TB_vs_LTBI_51}}{: Walter, Nicholas D., Mikaela A. Miller, Joshua Vasquez, Marc Weiner, Adam Chapman, Melissa Engle, Michael Higgins, et al. 2016. "Blood Transcriptional Biomarkers for Active Tuberculosis among Patients in the United States: A Case-Control Study with Systematic Cross-Classifier Evaluation." Journal of Clinical Microbiology 54 (2): 274–82. \href{http://dx.doi.org/10.1128/JCM.01990-15}{10.1128/JCM.01990-15}}
+ \item{\strong{Walter_TB_vs_Pneumonia_47}}{: Walter, Nicholas D., Mikaela A. Miller, Joshua Vasquez, Marc Weiner, Adam Chapman, Melissa Engle, Michael Higgins, et al. 2016. "Blood Transcriptional Biomarkers for Active Tuberculosis among Patients in the United States: A Case-Control Study with Systematic Cross-Classifier Evaluation." Journal of Clinical Microbiology 54 (2): 274–82. \href{http://dx.doi.org/10.1128/JCM.01990-15}{10.1128/JCM.01990-15}}
+ \item{\strong{Walter_TB_vs_Pneumonia_LTBI_119}}{: Walter, Nicholas D., Mikaela A. Miller, Joshua Vasquez, Marc Weiner, Adam Chapman, Melissa Engle, Michael Higgins, et al. 2016. "Blood Transcriptional Biomarkers for Active Tuberculosis among Patients in the United States: A Case-Control Study with Systematic Cross-Classifier Evaluation." Journal of Clinical Microbiology 54 (2): 274–82. \href{http://dx.doi.org/10.1128/JCM.01990-15}{10.1128/JCM.01990-15}}
+}
 }
 \usage{
 TBsignatures
 }
 \description{
-A set of 15 TB signatures from publications. This set of signatures uses
-gene symbols. Additional sets for entrez IDs and ensembl IDs are forthcoming.
+A set of 31 TB signatures from publications. This set of signatures uses
+gene symbols. Attempts have been made to use updated gene symbols and remove
+symbols that didn't match the most recent annotation. Additional sets for
+entrez IDs and ensembl IDs are forthcoming. The name ends with the number of
+genes in the original signature.
+}
+\details{
+\itemize{
+ \item{\strong{ACS_COR_16}}{: TB vs. healthy/LTBI - 16 gene signature}
+ \item{\strong{Anderson_TB_vs_LTBI_42}}{: TB vs LTBI - 42 gene signature (37 genes after filtering)}
+ \item{\strong{Anderson_TB_vs_other_LTBI_51}}{: TB vs OD/LTBI - 51 gene signature (41 genes after filtering)}
+ \item{\strong{Berry_393}}{: TB vs. healthy/LTBI - 393 gene signature (290 genes after filtering)}
+ \item{\strong{Berry_86}}{: TB vs. OD - 86 gene signature (74 genes after filtering)}
+ \item{\strong{Blankley_380}}{: TB vs. healthy/LTBI - 380 gene signature (383 genes after filtering)}
+ \item{\strong{Blankley_5}}{: TB vs. healthy/LTBI/post treat - 5 gene signature}
+ \item{\strong{Bloom_140}}{: TB vs. LTBI/OD - 140 gene signature (115 genes after filtering)}
+ \item{\strong{DISEASE_9}}{: Treatment Failure and PET-CT resolution - 9 gene signature (8 genes after filtering)}
+ \item{\strong{Esmail_subclinical_203}}{: Subclinical/TB vs LTBI - 203 gene signature (155 genes after filtering)}
+ \item{\strong{Esmail_subclinical_82}}{: Subclinical/TB vs LTBI - 82 gene signature (66 genes after filtering)}
+ \item{\strong{Esmail_TB_vs_LTBI_893}}{: TB vs. LTBI - 893 gene signature (700 genes after filtering)}
+ \item{\strong{FAILURE_13}}{: Treatment Failure - 13 gene signature}
+ \item{\strong{Jacobsen_3}}{: TB vs. healthy/LTBI - 3 gene signature}
+ \item{\strong{Kaforou_TB_vs_LTBI_27}}{: TB vs. LTBI - 27 gene signature (24 genes after filtering)}
+ \item{\strong{Kaforou_TB_vs_LTBI_other_53}}{: TB vs. LTBI/OD - 53 gene signature (45 genes after filtering)}
+ \item{\strong{Kaforou_TB_vs_other_44}}{: TB vs. OD - 44 gene signature (32 genes after filtering)}
+ \item{\strong{Lee_4}}{: TB vs. healthy/LTBI - 4 gene signature}
+ \item{\strong{Maertzdorf_100}}{: TB vs. LTBI/OD - 100 gene signature (65 genes after filtering)}
+ \item{\strong{Maertzdorf_4}}{: TB vs. healthy/LTBI/OD - 4 gene signature}
+ \item{\strong{Predict29}}{: Progressor vs. Non-progressor - 29 gene signature}
+ \item{\strong{RESPONSE5}}{: Treatment Failures vs. Cures - 5 gene signature}
+ \item{\strong{Roe_4}}{: TB vs. OD - 4 gene signature}
+ \item{\strong{Sambarey_10}}{: TB vs. LTBI/HIV - 10 gene signature}
+ \item{\strong{Singhania_20}}{: TB vs. LTBI/OD - 20 gene signature}
+ \item{\strong{Sloot_2}}{: TB progression vs HIV - 2 gene signature}
+ \item{\strong{Suliman_RISK4}}{: TB vs. healthy/LTBI - 4 gene signature (3 genes after filtering)}
+ \item{\strong{Sweeney_DIAG3}}{: TB vs. LTBI/OD - 3 gene signature}
+ \item{\strong{Walter_TB_vs_LTBI_51}}{: TB vs. LTBI - 51 gene signature (50 genes after filtering)}
+ \item{\strong{Walter_TB_vs_Pneumonia_47}}{: TB vs. Pneumonia - 47 gene signature (41 genes after filtering)}
+ \item{\strong{Walter_TB_vs_Pneumonia_LTBI_119}}{: TB vs. Pneumonia/LTBI - 119 gene signature (113 genes after filtering)}
+}
 }
 \examples{
 data("TBsignatures")
