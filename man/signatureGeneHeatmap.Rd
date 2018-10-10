@@ -5,7 +5,7 @@
 \title{Plot a Heatmap of a single signature scores and gene expression}
 \usage{
 signatureGeneHeatmap(inputData, useAssay, sigGenes, name = "Signature",
-  signatureColNames, annotationColNames, scale = TRUE,
+  signatureColNames = NULL, annotationColNames = NULL, scale = TRUE,
   showColumnNames = TRUE, showRowNames = TRUE, colList = list(),
   colorSets = c("Set1", "Set2", "Set3", "Pastel1", "Pastel2", "Accent",
   "Dark2", "Paired"))

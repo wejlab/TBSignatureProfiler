@@ -269,41 +269,64 @@ signatureBoxplot <- function(inputData, annotationData, signatureColNames,
 #'                      annotationColNames = c("sample"), showColumnNames = FALSE,
 #'                      name = "Predict29")
 signatureGeneHeatmap <- function(inputData, useAssay, sigGenes,
-                                 name="Signature", signatureColNames,
-                                 annotationColNames, scale=TRUE,
+                                 name="Signature", signatureColNames=NULL,
+                                 annotationColNames = NULL, scale=TRUE,
                                  showColumnNames=TRUE, showRowNames=TRUE,
                                  colList=list(), colorSets=c("Set1", "Set2",
                                  "Set3", "Pastel1", "Pastel2", "Accent",
                                  "Dark2", "Paired")) {
-  pathwaycols <- list()
-  pathwaydata <- data.frame(SummarizedExperiment::colData(inputData)[, signatureColNames, drop = FALSE])
-  for (i in colnames(pathwaydata)){
-    t1min <- min(pathwaydata[, i])
-    t1max <- max(pathwaydata[, i])
-    pathwaycols[[i]] <- circlize::colorRamp2(c(t1min, mean(c(t1min, t1max)), t1max),
-                                             c("darkgreen", "white", "darkorange"))
-  }
-
-  if (length(colList) == 0){
-    colorSetNum <- 1
-    for (annot in annotationColNames){
-      condLevels <- unique(SummarizedExperiment::colData(inputData)[, annot])
-      if (length(condLevels) > 8){
-        colors <- distinctColors(length(condLevels))
-      } else {
-        colors <- RColorBrewer::brewer.pal(8, colorSets[colorSetNum])
-        colorSetNum <- colorSetNum + 1
-      }
-      colList[[annot]] <- stats::setNames(colors[seq_along(condLevels)],
-                                          condLevels)
+  if (!is.null(signatureColNames)){
+    pathwaycols <- list()
+    pathwaydata <- data.frame(SummarizedExperiment::colData(inputData)[, signatureColNames, drop = FALSE])
+    for (i in colnames(pathwaydata)){
+      t1min <- min(pathwaydata[, i])
+      t1max <- max(pathwaydata[, i])
+      pathwaycols[[i]] <- circlize::colorRamp2(c(t1min, mean(c(t1min, t1max)), t1max),
+                                               c("darkgreen", "white", "darkorange"))
     }
+  } else {
+    pathwaycols <- NULL
+    pathwaydata <- NULL
   }
 
-  topha2 <- ComplexHeatmap::HeatmapAnnotation(
-    df = cbind(data.frame(SummarizedExperiment::colData(inputData)[, annotationColNames, drop = FALSE]),
-               data.frame(pathwaydata)),
-    col = c(colList, pathwaycols),
-    height = grid::unit(0.4 * length(c(annotationColNames, signatureColNames)), "cm"), show_legend = TRUE, show_annotation_name = TRUE)
+  if (!is.null(annotationColNames)) {
+    if (length(colList) == 0){
+      colorSetNum <- 1
+      for (annot in annotationColNames){
+        condLevels <- unique(SummarizedExperiment::colData(inputData)[, annot])
+        if (length(condLevels) > 8){
+          colors <- distinctColors(length(condLevels))
+        } else {
+          colors <- RColorBrewer::brewer.pal(8, colorSets[colorSetNum])
+          colorSetNum <- colorSetNum + 1
+        }
+        colList[[annot]] <- stats::setNames(colors[seq_along(condLevels)],
+                                            condLevels)
+      }
+    }
+    if (any(annotationColNames != names(colList))) {
+      stop("The colList is out of sync with the annotation columns")
+    }
+  } else {
+    colList <- NULL
+  }
+
+  if (!is.null(pathwaydata) | !is.null(annotationColNames)) {
+    if (!is.null(annotationColNames) & !is.null(pathwaydata)){
+      annotDF <- cbind(data.frame(SummarizedExperiment::colData(inputData)[, annotationColNames, drop = FALSE]),
+                       pathwaydata)
+    } else if (!is.null(annotationColNames)) {
+      annotDF <- cbind(data.frame(SummarizedExperiment::colData(inputData)[, annotationColNames, drop = FALSE]))
+    } else {
+      annotDF <- pathwaydata
+    }
+    topha <- ComplexHeatmap::HeatmapAnnotation(
+      df = annotDF,
+      col = c(colList, pathwaycols),
+      height = grid::unit(0.4 * length(c(annotationColNames, signatureColNames)), "cm"), show_legend = TRUE, show_annotation_name = TRUE)
+  } else {
+    topha <- NULL
+  }
   heatdata <- SummarizedExperiment::assay(inputData, useAssay)[sigGenes[sigGenes %in% rownames(inputData)], ]
   heatname <- useAssay
   if (scale){
@@ -311,7 +334,13 @@ signatureGeneHeatmap <- function(inputData, useAssay, sigGenes,
     heatdata <- t(scale(t(heatdata)))
     heatname <- paste("Scaled", heatname, sep = "\n")
   }
-  return(ComplexHeatmap::draw(ComplexHeatmap::Heatmap(heatdata, show_column_names = showColumnNames, show_row_names = showRowNames, top_annotation = topha2, name = heatname, column_title = name), annotation_legend_side = "bottom"))
+  return(ComplexHeatmap::draw(
+    ComplexHeatmap::Heatmap(
+      heatdata, show_column_names = showColumnNames,
+      show_row_names = showRowNames, top_annotation = topha,
+      name = heatname, column_title = name),
+    annotation_legend_side = "bottom")
+  )
 }
 
 #' Generate a distinct palette for coloring different clusters
