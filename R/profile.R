@@ -108,13 +108,9 @@ runTBsigProfiler <- function(input, useAssay = NULL,
     for (i in names(signatures)){
       message(i)
       currlist <- signatures[i]
-      if (!all(signatures[[i]] %in% rownames(runindata))){
-        message("Signature genes in ", i, " missing from input data:")
-        message(
-          paste(signatures[[i]][!(signatures[[i]] %in% rownames(runindata))],
-                sep = "  ", collapse = ", ")
-        )
-        message(i, " will be skipped")
+      currlist[[1]] <- currlist[[1]][currlist[[1]] %in% rownames(runindata)]
+      if (length(currlist[[1]]) < 2){
+        message("Not enough signature genes in ", i, ", so analysis will not run.")
       } else {
         if (!file.exists(i)){
           set.seed(1234)

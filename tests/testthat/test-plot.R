@@ -128,7 +128,7 @@ test_that("Missing annotationData", {
     signatureGeneHeatmap(inputData = SE_wres, useAssay = "data",
                          sigGenes = TBsignatures$Predict29,
                          annotationColNames = c("sample"),
-                         colList = list("wrong" = c("yes"="blue"))),
+                         colList = list("wrong" = c("yes" = "blue"))),
     "The colList is out of sync with the annotation columns")
 })
 

@@ -88,15 +88,22 @@ signatureHeatmap <- function(inputData, annotationData, name="Signatures",
   if (length(colList) == 0){
     colorSetNum <- 1
     for (annot in annotationColNames){
-      condLevels <- unique(annotationData[, annot])
-      if (length(condLevels) > 8){
-        colors <- distinctColors(length(condLevels))
+      if (is.numeric(annotationData[, annot])){
+        t1min <- min(annotationData[, annot], na.rm = TRUE)
+        t1max <- max(annotationData[, annot], na.rm = TRUE)
+        colList[[annot]] <- circlize::colorRamp2(c(t1min, t1max),
+                                                 c("white", "blue"))
       } else {
-        colors <- RColorBrewer::brewer.pal(8, colorSets[colorSetNum])
-        colorSetNum <- colorSetNum + 1
+        condLevels <- unique(annotationData[, annot][!is.na(annotationData[, annot])])
+        if (length(condLevels) > 8){
+          colors <- distinctColors(length(condLevels))
+        } else {
+          colors <- RColorBrewer::brewer.pal(8, colorSets[colorSetNum])
+          colorSetNum <- colorSetNum + 1
+        }
+        colList[[annot]] <- stats::setNames(colors[seq_along(condLevels)],
+                                            condLevels)
       }
-      colList[[annot]] <- stats::setNames(colors[seq_along(condLevels)],
-                                          condLevels)
     }
   }
 
@@ -279,8 +286,8 @@ signatureGeneHeatmap <- function(inputData, useAssay, sigGenes,
     pathwaycols <- list()
     pathwaydata <- data.frame(SummarizedExperiment::colData(inputData)[, signatureColNames, drop = FALSE])
     for (i in colnames(pathwaydata)){
-      t1min <- min(pathwaydata[, i])
-      t1max <- max(pathwaydata[, i])
+      t1min <- min(pathwaydata[, i], na.rm = TRUE)
+      t1max <- max(pathwaydata[, i], na.rm = TRUE)
       pathwaycols[[i]] <- circlize::colorRamp2(c(t1min, mean(c(t1min, t1max)), t1max),
                                                c("darkgreen", "white", "darkorange"))
     }
