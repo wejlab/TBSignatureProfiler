@@ -139,6 +139,7 @@ signatureHeatmap <- function(inputData, annotationData, name="Signatures",
 #' name in colData to use to make the boxplot.
 #' @param name The name of the boxplot. The default is "Signatures".
 #' @param scale Scale the signature data. The default is FALSE.
+#' @param includePoints Include points over the boxplots. The default is TRUE.
 #'
 #' @return A ggplot2 boxplot of the signature data using the annotation
 #' provided.
@@ -168,7 +169,8 @@ signatureHeatmap <- function(inputData, annotationData, name="Signatures",
 #'                                             "ssGSEA_Predict29"),
 #'                  annotationColName = "sample", name = "Predict29 Signatures")
 signatureBoxplot <- function(inputData, annotationData, signatureColNames,
-                             annotationColName, name="Signatures", scale=FALSE) {
+                             annotationColName, name="Signatures", scale=FALSE,
+                             includePoints=TRUE) {
   if (methods::is(inputData, "SummarizedExperiment")){
     if (any(duplicated(signatureColNames))){
       stop("Duplicate signature column name is not supported.")
@@ -211,11 +213,14 @@ signatureBoxplot <- function(inputData, annotationData, signatureColNames,
                           Group = annotationData[, 1])
   boxplotdfm <- reshape2::melt(boxplotdf, value.name = "Score",
                                variable.name = "Signature", id.vars = "Group")
-  return(ggplot2::ggplot(boxplotdfm, ggplot2::aes_string("Group", "Score")) +
+  theplot <- ggplot2::ggplot(boxplotdfm, ggplot2::aes_string("Group", "Score")) +
     ggplot2::facet_wrap(~Signature, scales = 'free') +
     ggplot2::geom_boxplot(outlier.shape = NA, ggplot2::aes_string(fill = "Group")) +
-    ggplot2::theme_classic() +
-    ggplot2::geom_point(position = ggplot2::position_jitter(width = 0.1)) +
+    ggplot2::theme_classic()
+  if (includePoints) {
+    theplot <- theplot + ggplot2::geom_point(position = ggplot2::position_jitter(width = 0.1))
+  }
+  return(theplot +
     ggplot2::scale_fill_brewer(palette = "Set1") +
     ggplot2::ggtitle(name))
 }
@@ -296,19 +301,28 @@ signatureGeneHeatmap <- function(inputData, useAssay, sigGenes,
     pathwaydata <- NULL
   }
 
+  annotationData <- data.frame(SummarizedExperiment::colData(inputData)[, annotationColNames, drop = FALSE])
+
   if (!is.null(annotationColNames)) {
     if (length(colList) == 0){
       colorSetNum <- 1
       for (annot in annotationColNames){
-        condLevels <- unique(SummarizedExperiment::colData(inputData)[, annot])
-        if (length(condLevels) > 8){
-          colors <- distinctColors(length(condLevels))
+        if (is.numeric(annotationData[, annot])){
+          t1min <- min(annotationData[, annot], na.rm = TRUE)
+          t1max <- max(annotationData[, annot], na.rm = TRUE)
+          colList[[annot]] <- circlize::colorRamp2(c(t1min, t1max),
+                                                   c("white", "blue"))
         } else {
-          colors <- RColorBrewer::brewer.pal(8, colorSets[colorSetNum])
-          colorSetNum <- colorSetNum + 1
+          condLevels <- unique(annotationData[, annot][!is.na(annotationData[, annot])])
+          if (length(condLevels) > 8){
+            colors <- distinctColors(length(condLevels))
+          } else {
+            colors <- RColorBrewer::brewer.pal(8, colorSets[colorSetNum])
+            colorSetNum <- colorSetNum + 1
+          }
+          colList[[annot]] <- stats::setNames(colors[seq_along(condLevels)],
+                                              condLevels)
         }
-        colList[[annot]] <- stats::setNames(colors[seq_along(condLevels)],
-                                            condLevels)
       }
     }
     if (any(annotationColNames != names(colList))) {

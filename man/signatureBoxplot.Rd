@@ -5,7 +5,8 @@
 \title{Plot a Boxplot of Signature Genes}
 \usage{
 signatureBoxplot(inputData, annotationData, signatureColNames,
-  annotationColName, name = "Signatures", scale = FALSE)
+  annotationColName, name = "Signatures", scale = FALSE,
+  includePoints = TRUE)
 }
 \arguments{
 \item{inputData}{Either a SummarizedExperiment object that contains the
@@ -24,6 +25,8 @@ name in colData to use to make the boxplot.}
 \item{name}{The name of the boxplot. The default is "Signatures".}
 
 \item{scale}{Scale the signature data. The default is FALSE.}
+
+\item{includePoints}{Include points over the boxplots. The default is TRUE.}
 }
 \value{
 A ggplot2 boxplot of the signature data using the annotation
