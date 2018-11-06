@@ -192,6 +192,12 @@ signatureBoxplot <- function(inputData, annotationData, signatureColNames,
   if (length(annotationColName) != 1){
     stop("You must specify a single annotation column name to color boxplots by.")
   }
+  if (!is.factor(annotationData[, 1])) {
+    annotationData[, 1] <- as.factor(annotationData[, 1])
+  }
+  if (length(levels(annotationData[, 1])) > 9){
+    stop("Too many levels in the annotation data. The boxplot can contain a maximum of 9 levels")
+  }
   #if number of rows equal number of rows
   if (nrow(annotationData) == nrow(inputData)){
     if (!all(rownames(annotationData) == rownames(inputData))){

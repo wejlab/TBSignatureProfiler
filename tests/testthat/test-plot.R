@@ -14,7 +14,8 @@ df_testdata <- data.frame(mat_testdata)
 SE_testdata <- SummarizedExperiment::SummarizedExperiment(
   assays = S4Vectors::SimpleList(data = mat_testdata),
   colData = S4Vectors::DataFrame(sample = c(rep("down", 5), rep("up", 5)),
-                                 samplename = paste0("sample", 1:10)))
+                                 samplename = paste0("sample", 1:10),
+                                 samplenum = c(1:5, 1:5)))
 SE_wres <- runTBsigProfiler(SE_testdata, useAssay = "data",
                             signatures = list(sig1 = paste0("gene", 1:10)),
                             algorithm = "ssGSEA", parallel.sz = 1)
@@ -98,6 +99,10 @@ test_that("Missing annotationData", {
                      annotationData = annotdata[, 1, drop = FALSE]),
     "Annotation data and signature data does not match.")
   expect_error(
+    signatureBoxplot(inputData = SE_wres, annotationColName = "samplename",
+                     signatureColNames = "sig1"),
+    "Too many levels in the annotation data. The boxplot can contain a maximum of 9 levels")
+  expect_error(
     signatureBoxplot(inputData = df_errornames[, 1:5],
                      annotationData = annotdata[, 1, drop = FALSE]),
     "Annotation data and signature data does not match.")
@@ -153,6 +158,11 @@ test_that("SummarizedExperiment Plot Works", {
   expect_is(
     signatureBoxplot(inputData = SE_wres, annotationColName = "sample",
                      signatureColNames = "sig1", scale = TRUE),
+    "ggplot"
+  )
+  expect_is(
+    signatureBoxplot(inputData = SE_wres, annotationColName = "samplenum",
+                     signatureColNames = "sig1"),
     "ggplot"
   )
 
