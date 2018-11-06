@@ -29,9 +29,9 @@
 #'
 #' @examples
 #' library(SummarizedExperiment)
-#' #generate some artificial data that shows a difference in Predict29
-#' mat_testdata <- rbind(matrix(c(rnorm(145), rnorm(145) + 5), 29, 10,
-#'                              dimnames = list(TBsignatures$Predict29,
+#' #generate some artificial data that shows a difference in ACS_COR_16
+#' mat_testdata <- rbind(matrix(c(rnorm(80), rnorm(80) + 5), 16, 10,
+#'                              dimnames = list(TBsignatures$ACS_COR_16,
 #'                                              paste0("sample", 1:10))),
 #'                       matrix(rnorm(1000), 100, 10,
 #'                              dimnames = list(paste0("gene", 1:100),
@@ -40,14 +40,14 @@
 #' testdataSE <- SummarizedExperiment(assays=SimpleList(data = mat_testdata),
 #'                                    colData=DataFrame(sample = c(rep("down", 5),
 #'                                                                 rep("up", 5))))
-#' #Run profiler using GSVA and ssGSEA on Predict29
+#' #Run profiler using GSVA and ssGSEA on ACS_COR_16
 #' res <- runTBsigProfiler(testdataSE, useAssay = "data",
-#'                         signatures = TBsignatures["Predict29"],
+#'                         signatures = TBsignatures["ACS_COR_16"],
 #'                         algorithm = c("GSVA", "ssGSEA"), parallel.sz = 1,
 #'                         combineSigAndAlgorithm = TRUE)
 #' #Plot heatmap of the results
-#' signatureHeatmap(res, signatureColNames = c("GSVA_Predict29",
-#'                                             "ssGSEA_Predict29"),
+#' signatureHeatmap(res, signatureColNames = c("GSVA_ACS_COR_16",
+#'                                             "ssGSEA_ACS_COR_16"),
 #'                  annotationColNames = "sample", scale=TRUE,
 #'                  showColumnNames = FALSE)
 signatureHeatmap <- function(inputData, annotationData, name="Signatures",
@@ -148,9 +148,9 @@ signatureHeatmap <- function(inputData, annotationData, name="Signatures",
 #'
 #' @examples
 #' library(SummarizedExperiment)
-#' #generate some artificial data that shows a difference in Predict29
-#' mat_testdata <- rbind(matrix(c(rnorm(145), rnorm(145) + 5), 29, 10,
-#'                              dimnames = list(TBsignatures$Predict29,
+#' #generate some artificial data that shows a difference in ACS_COR_16
+#' mat_testdata <- rbind(matrix(c(rnorm(80), rnorm(80) + 5), 16, 10,
+#'                              dimnames = list(TBsignatures$ACS_COR_16,
 #'                                              paste0("sample", 1:10))),
 #'                       matrix(rnorm(1000), 100, 10,
 #'                              dimnames = list(paste0("gene", 1:100),
@@ -159,15 +159,15 @@ signatureHeatmap <- function(inputData, annotationData, name="Signatures",
 #' testdataSE <- SummarizedExperiment(assays=SimpleList(data = mat_testdata),
 #'                                    colData=DataFrame(sample = c(rep("down", 5),
 #'                                                                 rep("up", 5))))
-#' #Run profiler using GSVA and ssGSEA on Predict29
+#' #Run profiler using GSVA and ssGSEA on ACS_COR_16
 #' res <- runTBsigProfiler(testdataSE, useAssay = "data",
-#'                         signatures = TBsignatures["Predict29"],
+#'                         signatures = TBsignatures["ACS_COR_16"],
 #'                         algorithm = c("GSVA", "ssGSEA"), parallel.sz = 1,
 #'                         combineSigAndAlgorithm = TRUE)
 #' #Plot boxplot of the results
-#' signatureBoxplot(res, signatureColNames = c("GSVA_Predict29",
-#'                                             "ssGSEA_Predict29"),
-#'                  annotationColName = "sample", name = "Predict29 Signatures")
+#' signatureBoxplot(res, signatureColNames = c("GSVA_ACS_COR_16",
+#'                                             "ssGSEA_ACS_COR_16"),
+#'                  annotationColName = "sample", name = "ACS_COR_16 Signatures")
 signatureBoxplot <- function(inputData, annotationData, signatureColNames,
                              annotationColName, name="Signatures", scale=FALSE,
                              includePoints=TRUE) {
@@ -257,9 +257,9 @@ signatureBoxplot <- function(inputData, annotationData, signatureColNames,
 #'
 #' @examples
 #' library(SummarizedExperiment)
-#' #generate some artificial data that shows a difference in Predict29
-#' mat_testdata <- rbind(matrix(c(rnorm(145), rnorm(145) + 5), 29, 10,
-#'                              dimnames = list(TBsignatures$Predict29,
+#' #generate some artificial data that shows a difference in ACS_COR_16
+#' mat_testdata <- rbind(matrix(c(rnorm(80), rnorm(80) + 5), 16, 10,
+#'                              dimnames = list(TBsignatures$ACS_COR_16,
 #'                                              paste0("sample", 1:10))),
 #'                       matrix(rnorm(1000), 100, 10,
 #'                              dimnames = list(paste0("gene", 1:100),
@@ -268,18 +268,18 @@ signatureBoxplot <- function(inputData, annotationData, signatureColNames,
 #' testdataSE <- SummarizedExperiment(assays=SimpleList(data = mat_testdata),
 #'                                    colData=DataFrame(sample = c(rep("down", 5),
 #'                                                                 rep("up", 5))))
-#' #Run profiler using GSVA and ssGSEA on Predict29
+#' #Run profiler using GSVA and ssGSEA on ACS_COR_16
 #' res <- runTBsigProfiler(testdataSE, useAssay = "data",
-#'                         signatures = TBsignatures["Predict29"],
+#'                         signatures = TBsignatures["ACS_COR_16"],
 #'                         algorithm = c("GSVA", "ssGSEA"), parallel.sz = 1,
 #'                         combineSigAndAlgorithm = TRUE)
 #' #Plot a heatmap of signature genes and pathway predictions
 #' signatureGeneHeatmap(res, useAssay = "data",
-#'                      sigGenes = TBsignatures[["Predict29"]],
-#'                      signatureColNames = c("GSVA_Predict29",
-#'                                            "ssGSEA_Predict29"),
+#'                      sigGenes = TBsignatures[["ACS_COR_16"]],
+#'                      signatureColNames = c("GSVA_ACS_COR_16",
+#'                                            "ssGSEA_ACS_COR_16"),
 #'                      annotationColNames = c("sample"), showColumnNames = FALSE,
-#'                      name = "Predict29")
+#'                      name = "ACS_COR_16")
 signatureGeneHeatmap <- function(inputData, useAssay, sigGenes,
                                  name="Signature", signatureColNames=NULL,
                                  annotationColNames = NULL, scale=TRUE,

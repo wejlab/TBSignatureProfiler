@@ -1,8 +1,8 @@
 context("test-profile")
 
 set.seed(1234)
-mat_testdata <- rbind(matrix(c(rnorm(145), rnorm(145) + 5), 29, 10,
-                             dimnames = list(TBsignatures$Predict29,
+mat_testdata <- rbind(matrix(c(rnorm(80), rnorm(80) + 5), 16, 10,
+                             dimnames = list(TBsignatures$ACS_COR_16,
                                              paste0("sample", 1:10))),
                       matrix(rnorm(1000), 100, 10,
                              dimnames = list(paste0("gene", 1:100),

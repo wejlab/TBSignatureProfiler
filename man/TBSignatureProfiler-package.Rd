@@ -22,5 +22,11 @@ Useful links:
 \author{
 \strong{Maintainer}: David Jenkins \email{dfj@bu.edu}
 
+Authors:
+\itemize{
+  \item Yue Zhao \email{wej@bu.edu}
+  \item W. Evan Johnson \email{wej@bu.edu}
+}
+
 }
 \keyword{internal}

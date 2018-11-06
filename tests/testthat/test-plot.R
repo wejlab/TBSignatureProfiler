@@ -4,8 +4,8 @@ set.seed(1234)
 annotdata <- data.frame(sample = c(rep("down", 5), rep("up", 5)),
                         samplename = paste0("sample", 1:10),
                         row.names = paste0("sample", 1:10))
-mat_testdata <- rbind(matrix(c(rnorm(145), rnorm(145) + 5), 29, 10,
-                             dimnames = list(TBsignatures$Predict29,
+mat_testdata <- rbind(matrix(c(rnorm(80), rnorm(80) + 5), 16, 10,
+                             dimnames = list(TBsignatures$ACS_COR_16,
                                              paste0("sample", 1:10))),
                       matrix(rnorm(1000), 100, 10,
                              dimnames = list(paste0("gene", 1:100),
@@ -126,7 +126,7 @@ test_that("Missing annotationData", {
     "argument \"sigGenes\" is missing, with no default")
   expect_error(
     signatureGeneHeatmap(inputData = SE_wres, useAssay = "data",
-                         sigGenes = TBsignatures$Predict29,
+                         sigGenes = TBsignatures$ACS_COR_16,
                          annotationColNames = c("sample"),
                          colList = list("wrong" = c("yes" = "blue"))),
     "The colList is out of sync with the annotation columns")
@@ -158,24 +158,24 @@ test_that("SummarizedExperiment Plot Works", {
 
   expect_is(
     signatureGeneHeatmap(inputData = SE_wres, useAssay = "data",
-                         sigGenes = TBsignatures$Predict29),
+                         sigGenes = TBsignatures$ACS_COR_16),
     "HeatmapList"
   )
   expect_is(
     signatureGeneHeatmap(inputData = SE_wres, useAssay = "data",
-                         sigGenes = TBsignatures$Predict29,
+                         sigGenes = TBsignatures$ACS_COR_16,
                          signatureColNames = "sig1"),
     "HeatmapList"
   )
   expect_is(
     signatureGeneHeatmap(inputData = SE_wres, useAssay = "data",
-                         sigGenes = TBsignatures$Predict29,
+                         sigGenes = TBsignatures$ACS_COR_16,
                          annotationColNames = c("sample")),
     "HeatmapList"
   )
   expect_is(
     signatureGeneHeatmap(inputData = SE_wres, useAssay = "data",
-                         sigGenes = TBsignatures$Predict29,
+                         sigGenes = TBsignatures$ACS_COR_16,
                          signatureColNames = "sig1",
                          annotationColNames = c("sample", "samplename")),
     "HeatmapList"

@@ -1,10 +1,15 @@
 ---
-title: "A Tutorial on using TBSignatureProfiler"
+title: "TBSignatureProfiler Tutorial"
 author: "David Jenkins, Yue Zhao"
 date: "`r Sys.Date()`"
-output: rmarkdown::html_vignette
+output:
+  html_document:
+    code_folding: show
+    toc: true
+    toc_float: true
+    theme: "yeti"
 vignette: >
-  %\VignetteIndexEntry{Vignette Title}
+  %\VignetteIndexEntry{TBSignatureProfiler Tutorial}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 ---
@@ -19,23 +24,26 @@ knitr::opts_chunk$set(
 ## Load the package
 
 ```{r}
-library(TBSignatureProfiler)
-library(glmnet)
-library(ROCR)
-library(bioDist)
-library(readr)
-library(boot)
-library(gmodels)
-library(DESeq2)
-library(caret)
-library(e1071)
+suppressPackageStartupMessages({
+  library(TBSignatureProfiler)
+  library(glmnet)
+  library(ROCR)
+  library(bioDist)
+  library(readr)
+  library(boot)
+  library(gmodels)
+  library(DESeq2)
+  library(caret)
+  library(e1071)
+})
 ```
 
+# Signature Evaluation Using Logistic Regression and Bootstrap LOOCV
 
 ## Data normalization
 
 ```{r}
-data_toy_norm <- deseq2_norm_rle(TB_indian$count.indian)
+data_toy_norm <- deseq2_norm_rle(assay(TB_indian, "counts"))
 ```
 
 
@@ -43,10 +51,50 @@ data_toy_norm <- deseq2_norm_rle(TB_indian$count.indian)
 
 ```{r}
 quantitative.result <- SignatureQuantitative(data_toy_norm,
-                                             TB_indian$meta.indian$label,
-                                             TBsignatures[c("ACS_COR_16","Predict29")],
-                                             c("ACS_COR_16","Predict29"),
+                                             colData(TB_indian)$label,
+                                             #TBsignatures[c("ACS_COR_16","Predict29")],
+                                             TBsignatures[c("ACS_COR_16")],
+                                             #c("ACS_COR_16","Predict29"),
+                                             c("ACS_COR_16"),
                                              num.boot = 5)
 ```
 
+# GSVA and ssGSEA
 
+## Profiling Signatures
+
+```{r, message=FALSE, results='hide'}
+res <- runTBsigProfiler(TB_indian, useAssay = "logcounts",
+                        algorithm = c("GSVA"),
+                        combineSigAndAlgorithm = FALSE,
+                        parallel.sz = 1)
+```
+
+## Signature Result Heatmap
+
+```{r, message=FALSE, results='hide', fig.height=10, fig.width=12}
+colData(res)$label <- factor(colData(res)$label)
+signatureHeatmap(res, signatureColNames = names(TBsignatures)[names(TBsignatures) %in% colnames(colData(res))],
+                 name = "GSVA", annotationColNames = "label", scale = TRUE)
+```
+
+## Signature Result Boxplot
+
+```{r, message=FALSE, results='hide', fig.height=9, fig.width=12}
+signatureBoxplot(res, signatureColNames = names(TBsignatures)[names(TBsignatures) %in% colnames(colData(res))],
+                 name = "GSVA", annotationColName = "label", scale = TRUE)
+```
+
+## ACS_COR Signature Boxplot
+
+```{r, message=FALSE, results='hide', fig.height=8, fig.width=10}
+signatureGeneHeatmap(res, useAssay = "logcounts", signatureColNames = "ACS_COR_16",
+                     sigGenes = TBsignatures[["ACS_COR_16"]], name = "ACS_COR",
+                     annotationColNames = "label", scale = TRUE)
+```
+
+# Session info {.unnumbered}
+
+```{r sessionInfo, echo=FALSE}
+sessionInfo()
+```

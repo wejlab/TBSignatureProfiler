@@ -4,12 +4,12 @@
 \name{TB_indian}
 \alias{TB_indian}
 \title{TB toy dataset}
-\format{list}
+\format{SummarizedExperiment}
 \usage{
 TB_indian
 }
 \description{
-The gene expression and metadata
+The gene expression and metadata in a SummarizedExperiment object.
 }
 \examples{
 data("TB_indian")

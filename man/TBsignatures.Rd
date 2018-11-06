@@ -27,7 +27,6 @@
  \item{\strong{Lee_4}}{: Lee, Shih-Wei, Lawrence Shih-Hsin Wu, Guan-Mau Huang, Kai-Yao Huang, Tzong-Yi Lee, and Julia Tzu-Ya Weng. 2016. "Gene Expression Profiling Identifies Candidate Biomarkers for Active and Latent Tuberculosis." BMC Bioinformatics 17 Suppl 1 (January): 3. \href{http://dx.doi.org/10.1186/s12859-015-0848-x}{10.1186/s12859-015-0848-x}}
  \item{\strong{Maertzdorf_100}}{: Maertzdorf, Jeroen, January Weiner 3rd, Hans-Joachim Mollenkopf, TBornot TB Network, Torsten Bauer, Antje Prasse, Joachim Müller-Quernheim, and Stefan H. E. Kaufmann. 2012. "Common Patterns and Disease-Related Signatures in Tuberculosis and Sarcoidosis." Proceedings of the National Academy of Sciences of the United States of America 109 (20): 7853–58. \href{http://dx.doi.org/10.1073/pnas.1121072109}{10.1073/pnas.1121072109}}
  \item{\strong{Maertzdorf_4}}{: Maertzdorf, Jeroen, Gayle McEwen, January Weiner 3rd, Song Tian, Eric Lader, Ulrich Schriek, Harriet Mayanja-Kizza, Martin Ota, John Kenneth, and Stefan He Kaufmann. 2016. "Concise Gene Signature for Point-of-Care Classification of Tuberculosis." EMBO Molecular Medicine 8 (2): 86–95. \href{http://dx.doi.org/10.15252/emmm.201505790}{10.15252/emmm.201505790}}
- \item{\strong{Predict29}}{: \emph{submitted}}
  \item{\strong{RESPONSE5}}{: Thompson, Ethan G., Ying Du, Stephanus T. Malherbe, Smitha Shankar, Jackie Braun, Joe Valvo, Katharina Ronacher, et al. 2017. "Host Blood RNA Signatures Predict the Outcome of Tuberculosis Treatment." Tuberculosis  107 (December): 48–58. \href{http://dx.doi.org/10.1016/j.tube.2017.08.004}{10.1016/j.tube.2017.08.004}}
  \item{\strong{Roe_4}}{: Roe, Jennifer K., Niclas Thomas, Eliza Gil, Katharine Best, Evdokia Tsaliki, Stephen Morris-Jones, Sian Stafford, et al. 2016. "Blood Transcriptomic Diagnosis of Pulmonary and Extrapulmonary Tuberculosis." JCI Insight 1 (16): e87238. \href{http://dx.doi.org/10.1172/jci.insight.87238}{10.1172/jci.insight.87238}}
  \item{\strong{Sambarey_10}}{: Sambarey, Awanti, Abhinandan Devaprasad, Abhilash Mohan, Asma Ahmed, Soumya Nayak, Soumya Swaminathan, George D'Souza, et al. 2017. "Unbiased Identification of Blood-Based Biomarkers for Pulmonary Tuberculosis by Modeling and Mining Molecular Interaction Networks." EBioMedicine 15 (February): 112–26. \href{http://dx.doi.org/10.1016/j.ebiom.2016.12.009}{10.1016/j.ebiom.2016.12.009}}
@@ -72,7 +71,6 @@ genes in the original signature.
  \item{\strong{Lee_4}}{: TB vs. healthy/LTBI - 4 gene signature}
  \item{\strong{Maertzdorf_100}}{: TB vs. LTBI/OD - 100 gene signature (65 genes after filtering)}
  \item{\strong{Maertzdorf_4}}{: TB vs. healthy/LTBI/OD - 4 gene signature}
- \item{\strong{Predict29}}{: Progressor vs. Non-progressor - 29 gene signature}
  \item{\strong{RESPONSE5}}{: Treatment Failures vs. Cures - 5 gene signature}
  \item{\strong{Roe_4}}{: TB vs. OD - 4 gene signature}
  \item{\strong{Sambarey_10}}{: TB vs. LTBI/HIV - 10 gene signature}
