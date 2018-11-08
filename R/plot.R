@@ -22,6 +22,7 @@
 #' order listed below for annotation information. Replace this with the sets
 #' in order that you want to use them, or provide custom color sets with
 #' colList.
+#' @param ... Additional parameters to pass to ComplexHeatmap::Heatmap().
 #'
 #' @return A ComplexHeatmap plot
 #'
@@ -55,7 +56,7 @@ signatureHeatmap <- function(inputData, annotationData, name="Signatures",
                              colList=list(), scale=FALSE, showColumnNames=TRUE,
                              showRowNames=TRUE, colorSets=c("Set1", "Set2",
                              "Set3", "Pastel1", "Pastel2", "Accent", "Dark2",
-                             "Paired")) {
+                             "Paired"), ...) {
   if (methods::is(inputData, "SummarizedExperiment")){
     if (any(duplicated(signatureColNames))){
       stop("Duplicate signature column name is not supported.")
@@ -94,7 +95,11 @@ signatureHeatmap <- function(inputData, annotationData, name="Signatures",
         colList[[annot]] <- circlize::colorRamp2(c(t1min, t1max),
                                                  c("white", "blue"))
       } else {
-        condLevels <- unique(annotationData[, annot][!is.na(annotationData[, annot])])
+        if (is.factor(annotationData[, annot][!is.na(annotationData[, annot])])){
+          condLevels <- levels(annotationData[, annot][!is.na(annotationData[, annot])])
+        } else {
+          condLevels <- unique(annotationData[, annot][!is.na(annotationData[, annot])])
+        }
         if (length(condLevels) > 8){
           colors <- distinctColors(length(condLevels))
         } else {
@@ -121,7 +126,7 @@ signatureHeatmap <- function(inputData, annotationData, name="Signatures",
     ComplexHeatmap::Heatmap(sigresults, column_title = name,
                             show_column_names = showColumnNames,
                             show_row_names = showRowNames,
-                            top_annotation = topha2, name = keyname),
+                            top_annotation = topha2, name = keyname, ...),
     annotation_legend_side = "bottom"
   ))
 }
@@ -140,6 +145,12 @@ signatureHeatmap <- function(inputData, annotationData, name="Signatures",
 #' @param name The name of the boxplot. The default is "Signatures".
 #' @param scale Scale the signature data. The default is FALSE.
 #' @param includePoints Include points over the boxplots. The default is TRUE.
+#' @param notch Make a notched box plot. Notches are used to compare groups;
+#' if the notches of two boxes do not overlap, this suggests that the medians
+#' are significantly different. The default is FALSE.
+#' @param rotateLabels Rotate x-axis labels. The default is false
+#' @param nrow Number of rows in result
+#' @param ncol Number of columns in result
 #'
 #' @return A ggplot2 boxplot of the signature data using the annotation
 #' provided.
@@ -170,7 +181,8 @@ signatureHeatmap <- function(inputData, annotationData, name="Signatures",
 #'                  annotationColName = "sample", name = "ACS_COR_16 Signatures")
 signatureBoxplot <- function(inputData, annotationData, signatureColNames,
                              annotationColName, name="Signatures", scale=FALSE,
-                             includePoints=TRUE) {
+                             includePoints=TRUE, notch = FALSE, rotateLabels = FALSE,
+                             nrow = NULL, ncol = NULL) {
   if (methods::is(inputData, "SummarizedExperiment")){
     if (any(duplicated(signatureColNames))){
       stop("Duplicate signature column name is not supported.")
@@ -220,11 +232,15 @@ signatureBoxplot <- function(inputData, annotationData, signatureColNames,
   boxplotdfm <- reshape2::melt(boxplotdf, value.name = "Score",
                                variable.name = "Signature", id.vars = "Group")
   theplot <- ggplot2::ggplot(boxplotdfm, ggplot2::aes_string("Group", "Score")) +
-    ggplot2::facet_wrap(~Signature, scales = 'free') +
-    ggplot2::geom_boxplot(outlier.shape = NA, ggplot2::aes_string(fill = "Group")) +
+    ggplot2::facet_wrap(~Signature, scales = 'free', nrow = nrow, ncol = ncol) +
+    ggplot2::geom_boxplot(outlier.shape = NA, ggplot2::aes_string(fill = "Group"),
+                          notch = notch) +
     ggplot2::theme_classic()
   if (includePoints) {
     theplot <- theplot + ggplot2::geom_point(position = ggplot2::position_jitter(width = 0.1))
+  }
+  if (rotateLabels) {
+    theplot <- theplot + ggplot2::theme(axis.text.x = ggplot2::element_text(angle = 90, hjust = 1))
   }
   return(theplot +
     ggplot2::scale_fill_brewer(palette = "Set1") +
@@ -256,6 +272,7 @@ signatureBoxplot <- function(inputData, annotationData, signatureColNames,
 #' order listed below for annotation information. Replace this with the sets
 #' in order that you want to use them, or provide custom color sets with
 #' colList.
+#' @param ... Additional parameters to pass to ComplexHeatmap::Heatmap().
 #'
 #' @return  A ComplexHeatmap plot
 #'
@@ -292,7 +309,7 @@ signatureGeneHeatmap <- function(inputData, useAssay, sigGenes,
                                  showColumnNames=TRUE, showRowNames=TRUE,
                                  colList=list(), colorSets=c("Set1", "Set2",
                                  "Set3", "Pastel1", "Pastel2", "Accent",
-                                 "Dark2", "Paired")) {
+                                 "Dark2", "Paired"), ...) {
   if (!is.null(signatureColNames)){
     pathwaycols <- list()
     pathwaydata <- data.frame(SummarizedExperiment::colData(inputData)[, signatureColNames, drop = FALSE])
@@ -319,7 +336,11 @@ signatureGeneHeatmap <- function(inputData, useAssay, sigGenes,
           colList[[annot]] <- circlize::colorRamp2(c(t1min, t1max),
                                                    c("white", "blue"))
         } else {
-          condLevels <- unique(annotationData[, annot][!is.na(annotationData[, annot])])
+          if (is.factor(annotationData[, annot][!is.na(annotationData[, annot])])){
+            condLevels <- levels(annotationData[, annot][!is.na(annotationData[, annot])])
+          } else {
+            condLevels <- unique(annotationData[, annot][!is.na(annotationData[, annot])])
+          }
           if (length(condLevels) > 8){
             colors <- distinctColors(length(condLevels))
           } else {
@@ -365,7 +386,7 @@ signatureGeneHeatmap <- function(inputData, useAssay, sigGenes,
     ComplexHeatmap::Heatmap(
       heatdata, show_column_names = showColumnNames,
       show_row_names = showRowNames, top_annotation = topha,
-      name = heatname, column_title = name),
+      name = heatname, column_title = name, ...),
     annotation_legend_side = "bottom")
   )
 }

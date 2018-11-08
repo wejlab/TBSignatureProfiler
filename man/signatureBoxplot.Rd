@@ -6,7 +6,8 @@
 \usage{
 signatureBoxplot(inputData, annotationData, signatureColNames,
   annotationColName, name = "Signatures", scale = FALSE,
-  includePoints = TRUE)
+  includePoints = TRUE, notch = FALSE, rotateLabels = FALSE,
+  nrow = NULL, ncol = NULL)
 }
 \arguments{
 \item{inputData}{Either a SummarizedExperiment object that contains the
@@ -27,6 +28,16 @@ name in colData to use to make the boxplot.}
 \item{scale}{Scale the signature data. The default is FALSE.}
 
 \item{includePoints}{Include points over the boxplots. The default is TRUE.}
+
+\item{notch}{Make a notched box plot. Notches are used to compare groups;
+if the notches of two boxes do not overlap, this suggests that the medians
+are significantly different. The default is FALSE.}
+
+\item{rotateLabels}{Rotate x-axis labels. The default is false}
+
+\item{nrow}{Number of rows in result}
+
+\item{ncol}{Number of columns in result}
 }
 \value{
 A ggplot2 boxplot of the signature data using the annotation

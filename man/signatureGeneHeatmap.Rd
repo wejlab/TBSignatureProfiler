@@ -8,7 +8,7 @@ signatureGeneHeatmap(inputData, useAssay, sigGenes, name = "Signature",
   signatureColNames = NULL, annotationColNames = NULL, scale = TRUE,
   showColumnNames = TRUE, showRowNames = TRUE, colList = list(),
   colorSets = c("Set1", "Set2", "Set3", "Pastel1", "Pastel2", "Accent",
-  "Dark2", "Paired"))
+  "Dark2", "Paired"), ...)
 }
 \arguments{
 \item{inputData}{A SummarizedExperiment object that contains the
@@ -44,6 +44,8 @@ See colorSets for additional options.}
 order listed below for annotation information. Replace this with the sets
 in order that you want to use them, or provide custom color sets with
 colList.}
+
+\item{...}{Additional parameters to pass to ComplexHeatmap::Heatmap().}
 }
 \value{
 A ComplexHeatmap plot

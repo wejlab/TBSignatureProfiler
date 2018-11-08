@@ -8,7 +8,7 @@ signatureHeatmap(inputData, annotationData, name = "Signatures",
   signatureColNames, annotationColNames, colList = list(),
   scale = FALSE, showColumnNames = TRUE, showRowNames = TRUE,
   colorSets = c("Set1", "Set2", "Set3", "Pastel1", "Pastel2", "Accent",
-  "Dark2", "Paired"))
+  "Dark2", "Paired"), ...)
 }
 \arguments{
 \item{inputData}{Either a SummarizedExperiment object that contains the
@@ -42,6 +42,8 @@ default is TRUE.}
 order listed below for annotation information. Replace this with the sets
 in order that you want to use them, or provide custom color sets with
 colList.}
+
+\item{...}{Additional parameters to pass to ComplexHeatmap::Heatmap().}
 }
 \value{
 A ComplexHeatmap plot

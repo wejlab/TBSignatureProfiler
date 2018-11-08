@@ -1,6 +1,6 @@
 Package: TBSignatureProfiler
 Title: Profile RNA-Seq Data Using TB Pathway Signatures
-Version: 0.0.0.9001
+Version: 0.0.0.9004
 Authors@R:
     c(person(given = "David", family = "Jenkins", role = c("aut", "cre"), email = "dfj@bu.edu"),
       person(given = "Yue", family = "Zhao", role = c("aut"), email = "wej@bu.edu"),
