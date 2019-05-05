@@ -13,7 +13,7 @@ License: MIT + file LICENSE
 Encoding: UTF-8
 biocViews: GeneExpression, DifferentialExpression
 LazyData: true
-RoxygenNote: 6.1.0
+RoxygenNote: 6.1.1
 Imports:
     ASSIGN,
     GSVA,
@@ -39,6 +39,7 @@ Imports:
 Suggests:
     testthat,
     spelling,
+    lintr,
     covr,
     knitr,
     rmarkdown
