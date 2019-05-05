@@ -1,6 +1,6 @@
 #' TB Signatures
 #'
-#' A set of 31 TB signatures from publications. This set of signatures uses
+#' A set of 34 TB signatures from publications. This set of signatures uses
 #' gene symbols. Attempts have been made to use updated gene symbols and remove
 #' symbols that didn't match the most recent annotation. Additional sets for
 #' entrez IDs and ensembl IDs are forthcoming. The name ends with the number of
@@ -37,6 +37,10 @@
 #'  \item{\strong{Walter_TB_vs_LTBI_51}}{: TB vs. LTBI - 51 gene signature (50 genes after filtering)}
 #'  \item{\strong{Walter_TB_vs_Pneumonia_47}}{: TB vs. Pneumonia - 47 gene signature (41 genes after filtering)}
 #'  \item{\strong{Walter_TB_vs_Pneumonia_LTBI_119}}{: TB vs. Pneumonia/LTBI - 119 gene signature (113 genes after filtering)}
+#'  \item{\strong{Rajan_5}}{: TB vs. HIV - 5 gene signature}
+#'  \item{\strong{Gliddon_4}}{: TB vs. OD/HIV- 4 gene signature}
+#'  \item{\strong{Gliddon_3}}{: TB vs. LTBI/HIV - 3 gene signature}
+#'  \item{\strong{Roe_COR_3}}{: : TB vs. healthy/LTBI - 3 gene signature}
 #' }
 #'
 #' @name TBsignatures
@@ -74,7 +78,11 @@
 #'  \item{\strong{Walter_TB_vs_LTBI_51}}{: Walter, Nicholas D., Mikaela A. Miller, Joshua Vasquez, Marc Weiner, Adam Chapman, Melissa Engle, Michael Higgins, et al. 2016. "Blood Transcriptional Biomarkers for Active Tuberculosis among Patients in the United States: A Case-Control Study with Systematic Cross-Classifier Evaluation." Journal of Clinical Microbiology 54 (2): 274–82. \href{http://dx.doi.org/10.1128/JCM.01990-15}{10.1128/JCM.01990-15}}
 #'  \item{\strong{Walter_TB_vs_Pneumonia_47}}{: Walter, Nicholas D., Mikaela A. Miller, Joshua Vasquez, Marc Weiner, Adam Chapman, Melissa Engle, Michael Higgins, et al. 2016. "Blood Transcriptional Biomarkers for Active Tuberculosis among Patients in the United States: A Case-Control Study with Systematic Cross-Classifier Evaluation." Journal of Clinical Microbiology 54 (2): 274–82. \href{http://dx.doi.org/10.1128/JCM.01990-15}{10.1128/JCM.01990-15}}
 #'  \item{\strong{Walter_TB_vs_Pneumonia_LTBI_119}}{: Walter, Nicholas D., Mikaela A. Miller, Joshua Vasquez, Marc Weiner, Adam Chapman, Melissa Engle, Michael Higgins, et al. 2016. "Blood Transcriptional Biomarkers for Active Tuberculosis among Patients in the United States: A Case-Control Study with Systematic Cross-Classifier Evaluation." Journal of Clinical Microbiology 54 (2): 274–82. \href{http://dx.doi.org/10.1128/JCM.01990-15}{10.1128/JCM.01990-15}}
-#' }
+#'  \item{\strong{Rajan_TB_vs_HIV_5}}{: Rajan, Jayant V., Semitala, Fred C., Kamya, Moses R., Yoon, Christina., Mehta, Tejas., Cattamanchi, Adithya., Seielstad, Mark., Montalvo, Lani., Andama, Alfred., Katende, Jane., Asege, Lucy., Nakaye, Martha., Mwebe, Sandra. 2018 "A Novel, 5-Transcript, Whole-blood Gene-expression Signature for Tuberculosis Screening Among People Living With Human Immunodeficiency Virus" Clinical Infectious Diseases XX(XX): 1-7. \href{https://doi.org/10.1093/cid/ciy835}{10.1093/cid/ciy835}}
+#'  \item{\strong{Gliddon_TB_vs_OD_4}}{: Gliddon, Harriet D., Kaforou, Myrsini, Alikian, Mary, Habgood-Coote, Dominic, Zhou, Chenxi, Oni, Tolu, Anderson, Suzanne T., Brent, Andrew J., Crampin, Amelia C., Eley, Brian, Kern, Florian, Langford, Paul R., Ottenhoff, Tom H. M., Hibberd, Martin L., French, Neil, Wright, Victoria J., Dockrell, Hazel M., Coin, Lachlan J., Wilkinson, Robert J., Levin, Michael. 2019 "Identification of reduced host transcriptomic signatures for tuberculosis and digital PCR-based validation and quantification" biorxiv.org: . \href{http://dx.doi.org/10.1101/583674}{10.1101/583674}}
+#'  \item{\strong{Gliddon_TB_vs_OD_3}}{: Gliddon, Harriet D., Kaforou, Myrsini, Alikian, Mary, Habgood-Coote, Dominic, Zhou, Chenxi, Oni, Tolu, Anderson, Suzanne T., Brent, Andrew J., Crampin, Amelia C., Eley, Brian, Kern, Florian, Langford, Paul R., Ottenhoff, Tom H. M., Hibberd, Martin L., French, Neil, Wright, Victoria J., Dockrell, Hazel M., Coin, Lachlan J., Wilkinson, Robert J., Levin, Michael. 2019 "Identification of reduced host transcriptomic signatures for tuberculosis and digital PCR-based validation and quantification" biorxiv.org: . \href{http://dx.doi.org/10.1101/583674}{10.1101/583674}}
+#'  \item{\strong{Roe_COR_16}}{: Roe, Jennifer, Venturini, Cristina, Gupta, Rishi K., Gurry, Celine, Chain, Benjamin M., Sun, Yuxin, Southern, Jo, Jackson, Charlotte, Lipman, Marc, C., Miller, Robert F., Martineau, Adrian R., Abubakar, Ibrahim, Noursadeghi, Mahdad. 2019 "T1 Blood transcriptomic stratification of short-term risk in contacts of tuberculosis" XX(XX): . \href{https://doi.org/10.1093/cid/ciz252}{10.1093/cid/ciz252}}
+#'  #' }
 #' @keywords datasets
 #' @examples
 #' data("TBsignatures")
