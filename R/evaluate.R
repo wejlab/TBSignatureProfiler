@@ -42,6 +42,7 @@ deseq2_norm_rle <- function(inputData){
 #' inputTest <- as.data.frame(inputTest)
 #' targetVec <- sample(c(0,1), replace=TRUE, size=10)
 #' res <- LOOAUC_simple_multiple_noplot_one_df(inputTest, targetVec)
+
 LOOAUC_simple_multiple_noplot_one_df <- function(df, targetVec){
   auc.vec <- c()
   nSample <- ncol(df)
@@ -146,6 +147,11 @@ SignatureQuantitative <- function(df.input,
                                   num.boot = 100){
 
   df.list <- list()
+  # create progress bar
+  counter <- 0
+  total <- length(signature.list)*length(df.list)
+  pb <- txtProgressBar(min = 0, max = total, style = 3)
+  
   for (i in 1:length(signature.list)){
     df.list[[i]] <- df.input[signature.list[[i]], ]
   }
@@ -154,37 +160,53 @@ SignatureQuantitative <- function(df.input,
   auc.result.ci <- list()
   sensitivity.ci <- list()
   specificity.ci <- list()
+  
   for (i in 1:length(df.list)){
     boot.output.list <- suppressWarnings(Bootstrap_LOOCV_LR_AUC(df.list[[i]],
                                                target.vec.num,
                                                nboot = num.boot))
-    #auc
+    # AUC
     auc.result[[i]] <- boot.output.list[[1]]
-    
-    ci.lower <- round(quantile(auc.result[[i]], probs = 0.05), 4)
-    ci.upper <- round(quantile(auc.result[[i]], probs = 0.95), 4)
-    st.error <- (1/(num.boot-1))*sum(auc.result[[i]] - mean(auc.result.ci[[i]]))
-    auc.result.ci[[i]] <- c("Estimate" = NULL, "CI lower" = ci.lower,
-                            "CI upper" = ci.upper, "Std. Error" = st.error)
+    result <- LOOAUC_simple_multiple_noplot_one_df(df.list[[i]], targetVec = target.vec.num)
+    est <- result[[1]]
+    ci.lower <- quantile(auc.result[[i]], probs = 0.05)
+    ci.upper <- quantile(auc.result[[i]], probs = 0.95)
+    st.error <- (1/(num.boot-1))*sum(auc.result[[i]] - mean(auc.result[[i]]))
+    auc.result.ci[[i]] <- round(c("Estimate" = est, "CI lower" = ci.lower,
+                            "CI upper" = ci.upper, "Std. Error" = st.error), 4)
     names(auc.result)[i] <- signature.name.vec[i]
     names(auc.result.ci)[i] <- signature.name.vec[i]
     # sensitivity
-    sensitivity.ci[[i]] <- suppressWarnings(ci(boot.output.list[[2]]$Sensitivity))
+    est2 <- result[[2]]$Sensitivity
+    ci.lower2 <- quantile(boot.output.list[[2]]$Sensitivity, probs = 0.05)
+    ci.upper2 <- quantile(boot.output.list[[2]]$Sensitivity, probs = 0.95)
+    st.error2 <- (1/(num.boot-1))*sum(boot.output.list[[2]]$Sensitivity - mean(boot.output.list[[2]]$Sensitivity)) 
+    sensitivity.ci[[i]] <- c("Estimate" = est2, "CI lower" = ci.lower2,
+                                   "CI upper" = ci.upper2, "Std. Error" = st.error2)
     names(sensitivity.ci)[i] <- signature.name.vec[i]
     # specificity
+    est3 <- result[[2]]$Specificity
+    ci.lower3 <- quantile(boot.output.list[[2]]$Specificity, probs = 0.05)
+    ci.upper3 <- quantile(boot.output.list[[2]]$Specificity, probs = 0.95)
+    st.error3 <- (1/(num.boot-1))*sum(boot.output.list[[2]]$Specificity - mean(boot.output.list[[2]]$Specificity)) 
+    specificity.ci[[i]] <- c("Estimate" = est3, "CI lower" = ci.lower3,
+                                   "CI upper" = ci.upper3, "Std. Error" = st.error3)
     specificity.ci[[i]] <- suppressWarnings(ci(boot.output.list[[2]]$Specificity))
     names(specificity.ci)[i] <- signature.name.vec[i]
+    
+    counter <- counter + 1
+    setTxtProgressBar(pb, counter)
   }
 
   #boxplot
   m <- lapply(auc.result, median, na.rm = TRUE)
   o <- order(unlist(m))
-  pdf("boxplot.pdf", width = 13, height = 8)
+  # pdf("boxplot.pdf", width = 13, height = 8)
   boxplot(auc.result[o],
           main = "Quantitative evaluation of signatures: AUC",
           cex.axis = 0.6,
           las = 2)
-  dev.off()
+  # dev.off()
 
   # output df instead of list
   df.auc.ci <- data.frame(matrix(unlist(auc.result.ci),
@@ -204,6 +226,8 @@ SignatureQuantitative <- function(df.input,
                                          byrow = TRUE))
   colnames(df.specificity.ci) <- names(specificity.ci[[1]])
   rownames(df.specificity.ci) <- signature.name.vec
+  
+  close(pb)
 
   return(list(df.auc.ci = df.auc.ci,
               df.sensitivity.ci = df.sensitivity.ci,
