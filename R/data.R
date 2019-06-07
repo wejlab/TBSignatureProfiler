@@ -89,7 +89,7 @@
 "TBsignatures"
 
 
-#' TB toy dataset
+#' TB Example dataset
 #'
 #' The gene expression and metadata in a SummarizedExperiment object.
 #'

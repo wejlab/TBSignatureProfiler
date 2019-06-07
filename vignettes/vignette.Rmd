@@ -1,6 +1,6 @@
 ---
 title: "TBSignatureProfiler Tutorial"
-author: "David Jenkins, Yue Zhao"
+author: "David Jenkins, Yue Zhao, Aubrey Odom"
 date: "`r Sys.Date()`"
 output:
   html_document:
@@ -80,16 +80,18 @@ signatureHeatmap(res, signatureColNames = names(TBsignatures)[names(TBsignatures
 
 ## Signature Result Boxplot
 
-```{r, message=FALSE, results='hide', fig.height=9, fig.width=12}
+```{r, message = FALSE, results = 'hide', fig.height = 9, fig.width = 12}
 signatureBoxplot(res, signatureColNames = names(TBsignatures)[names(TBsignatures) %in% colnames(colData(res))],
                  name = "GSVA", annotationColName = "label", scale = TRUE)
 ```
 
-## ACS_COR Signature Boxplot
+## ACS_COR Signature Heatmap
 
-```{r, message=FALSE, results='hide', fig.height=8, fig.width=10}
-signatureGeneHeatmap(res, useAssay = "logcounts", signatureColNames = "ACS_COR_16",
-                     sigGenes = TBsignatures[["ACS_COR_16"]], name = "ACS_COR",
+```{r, message=FALSE, fig.height=8, fig.width=10}
+signatureGeneHeatmap(res, useAssay = "logcounts", 
+                     signatureColNames = "ACS_COR_16",
+                     sigGenes = TBsignatures[["ACS_COR_16"]], 
+                     name = "ACS_COR",
                      annotationColNames = "label", scale = TRUE)
 ```
 

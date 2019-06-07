@@ -160,7 +160,12 @@ SignatureQuantitative <- function(df.input,
                                                nboot = num.boot))
     #auc
     auc.result[[i]] <- boot.output.list[[1]]
-    auc.result.ci[[i]] <- suppressWarnings(ci(auc.result[[i]]))
+    
+    ci.lower <- round(quantile(auc.result[[i]], probs = 0.05), 4)
+    ci.upper <- round(quantile(auc.result[[i]], probs = 0.95), 4)
+    st.error <- (1/(num.boot-1))*sum(auc.result[[i]] - mean(auc.result.ci[[i]]))
+    auc.result.ci[[i]] <- c("Estimate" = NULL, "CI lower" = ci.lower,
+                            "CI upper" = ci.upper, "Std. Error" = st.error)
     names(auc.result)[i] <- signature.name.vec[i]
     names(auc.result.ci)[i] <- signature.name.vec[i]
     # sensitivity
