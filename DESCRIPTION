@@ -5,7 +5,7 @@ Authors@R:
     c(person(given = "David", family = "Jenkins", role = c("aut", "cre"), email = "dfj@bu.edu"),
       person(given = "Yue", family = "Zhao", role = c("aut"), email = "wej@bu.edu"),
       person(given = c("W. Evan"), family = "Johnson", role = c("aut"), email = "wej@bu.edu"),
-      person(given = c("Aubrey"), family = "Odom", role = c("aut"), email = "aubreyodom55@gmail.com"))
+      person(given = c("Aubrey"), family = "Odom", role = c("aut"), email = "aubreyodom@byu.edu"))
 Description: Signatures of TB progression, TB disease, and other TB disease
     states have been created. This package makes it easy to profile RNA-Seq data
     using these signatures and common signature profiling tools including
@@ -43,7 +43,8 @@ Suggests:
     lintr,
     covr,
     knitr,
-    rmarkdown
+    rmarkdown,
+    progress
 URL: https://github.com/dfjenkins3/TBSignatureProfiler
 BugReports: https://github.com/dfjenkins3/TBSignatureProfiler/issues
 Language: en-US
