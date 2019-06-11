@@ -59,7 +59,7 @@ LOOAUC_simple_multiple_noplot_one_df <- function(df, targetVec){
   loo.perf <- suppressWarnings(performance(loo.pred, "tpr", "fpr"))
   auc <- suppressWarnings(performance(loo.pred, "auc"))
   auc <- unlist(slot(auc, "y.values"))
-  aucRound <- round(auc, 3)
+  aucRound <- round(auc, 4)
   auc.vec <- c(auc.vec, aucRound)
   # for other metric
   testPredictionClassVec <- as.numeric(testPredictionClassVec)
@@ -149,7 +149,7 @@ SignatureQuantitative <- function(df.input,
   df.list <- list()
   # create progress bar
   counter <- 0
-  total <- length(signature.list)*length(df.list)
+  total <- length(signature.list)^2
   pb <- txtProgressBar(min = 0, max = total, style = 3)
   
   for (i in 1:length(signature.list)){
@@ -172,12 +172,12 @@ SignatureQuantitative <- function(df.input,
     ci.lower <- quantile(auc.result[[i]], probs = 0.05)
     ci.upper <- quantile(auc.result[[i]], probs = 0.95)
     st.error <- (1/(num.boot-1))*sum(auc.result[[i]] - mean(auc.result[[i]]))
-    auc.result.ci[[i]] <- round(c("Estimate" = est, "CI lower" = ci.lower,
-                            "CI upper" = ci.upper, "Std. Error" = st.error), 4)
+    auc.result.ci[[i]] <- c("Estimate" = est, "CI lower" = ci.lower,
+                            "CI upper" = ci.upper, "Std. Error" = st.error)
     names(auc.result)[i] <- signature.name.vec[i]
     names(auc.result.ci)[i] <- signature.name.vec[i]
     # sensitivity
-    est2 <- result[[2]]$Sensitivity
+    est2 <- result$other["Sensitivity"]
     ci.lower2 <- quantile(boot.output.list[[2]]$Sensitivity, probs = 0.05)
     ci.upper2 <- quantile(boot.output.list[[2]]$Sensitivity, probs = 0.95)
     st.error2 <- (1/(num.boot-1))*sum(boot.output.list[[2]]$Sensitivity - mean(boot.output.list[[2]]$Sensitivity)) 
@@ -185,7 +185,7 @@ SignatureQuantitative <- function(df.input,
                                    "CI upper" = ci.upper2, "Std. Error" = st.error2)
     names(sensitivity.ci)[i] <- signature.name.vec[i]
     # specificity
-    est3 <- result[[2]]$Specificity
+    est3 <- result$other["Specificity"]
     ci.lower3 <- quantile(boot.output.list[[2]]$Specificity, probs = 0.05)
     ci.upper3 <- quantile(boot.output.list[[2]]$Specificity, probs = 0.95)
     st.error3 <- (1/(num.boot-1))*sum(boot.output.list[[2]]$Specificity - mean(boot.output.list[[2]]$Specificity)) 
@@ -232,4 +232,82 @@ SignatureQuantitative <- function(df.input,
   return(list(df.auc.ci = df.auc.ci,
               df.sensitivity.ci = df.sensitivity.ci,
               df.specificity.ci = df.specificity.ci))
+}
+
+#' Add SummarizedExperiment assays to the Data Structure.
+#' 
+#' This function creates additional assays for a gene expression count dataset to be used in further analysis.
+#' @param SE_obj SummarizedExperiment object containing gene expression count data. 
+#' @param type vector or single character string indicating the type(s) of assay to add to SE_obj. 
+#' If no value is specified, then CPM, log CPM, and log counts assays will all be created.
+#' See details for further information on possible values.
+#' @param  prior.counts integer specifying the average count to be added to each 
+#' observation to avoid taking the log of zero. Used only if 'type' = "all" or "logCPM". 
+#' If no value is input, default is 3.
+#' 
+#' @return This function returns a Summarized Experiment object with up 
+#' to 3 additional assay types added to the original inputted object.
+#' 
+#' @details Here I will detail the specific objects... 
+#' 
+#' @author Aubrey Odom
+#' 
+#' @export
+#' 
+#' @examples 
+#' ### You can add a log counts, log CPM, and CPM assay by default
+#' testrun_all <- mkAssay(hivtb_data)
+#' assays(testrun_all)
+#' 
+#' ### If a vector is passed to 'type' then all specified options will be added
+#' testrun_CPM <- mkAssay(hivtb_data, type = c("CPM", "logCPM"))
+#' assays(testrun_CPM)
+#' 
+#' ### Pass a single option to 'type'
+#' testrun_lc <- mkAssay(hivtb_data, type = "logcounts")
+#' assays(testrun_lc)
+
+mkAssay <- function(SE_obj, type = "all", prior_counts = 3) {
+  if (isFALSE(type %in% c("logcounts", "CPM", "logCPM", "all"))) {
+    return(cat("\" The input for the assay type is invalid. Please specify one of the following options: 
+                     \"logcounts\"
+                     \"CPM\"
+                     \"logCPM\"
+                     \"all\"
+                     "))
+  } 
+  
+  if ("logcounts" %in% type) {
+    SummarizedExperiment::assay(SE_obj, "logcounts") <- log(SummarizedExperiment::assays(SE_obj)$counts + 1)
+  } 
+  
+  if ("CPM" %in% type) {
+    data.norm <- edgeR::DGEList(counts = SummarizedExperiment::assay(SE_obj, "counts"))
+    dge_data.norm <- edgeR::calcNormFactors(data.norm)
+    CPM_data.norm <- edgeR::cpm(dge_data.norm, log = FALSE)
+    SummarizedExperiment::assay(SE_obj, "cpm") <- CPM_data.norm
+  } 
+  
+  if ("logCPM" %in% type) {
+    data.norm <- edgeR::DGEList(counts = SummarizedExperiment::assay(SE_obj, "counts"))
+    dge_data.norm <- edgeR::calcNormFactors(data.norm)
+    logCPM_data.norm <- edgeR::cpm(dge_data.norm, log = TRUE, prior.counts = prior_counts)
+    SummarizedExperiment::assay(SE_obj, "logcpm") <- logCPM_data.norm
+  } 
+  
+  if ("all" %in% type) {
+    # Create logcounts assay
+    SummarizedExperiment::assay(SE_obj, "logcounts") <- log(SummarizedExperiment::assays(SE_obj)$counts + 1)
+    
+    # Create CPM assay
+    data.norm <- edgeR::DGEList(counts = SummarizedExperiment::assay(SE_obj, "counts"))
+    dge_data.norm <- edgeR::calcNormFactors(data.norm)
+    CPM_data.norm <- edgeR::cpm(dge_data.norm, log = FALSE, prior.counts = prior_counts)
+    SummarizedExperiment::assay(SE_obj, "cpm") <- CPM_data.norm
+    
+    # Create logCPM assay
+    logCPM_data.norm <- edgeR::cpm(dge_data.norm, log = TRUE, prior.counts = prior_counts)
+    SummarizedExperiment::assay(SE_obj, "logcpm") <- logCPM_data.norm
+  }
+  return(SE_obj)
 }
