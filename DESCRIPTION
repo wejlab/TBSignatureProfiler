@@ -3,7 +3,7 @@ Title: Profile RNA-Seq Data Using TB Pathway Signatures
 Version: 0.0.0.9004
 Authors@R:
     c(person(given = "David", family = "Jenkins", role = c("aut", "cre"), email = "dfj@bu.edu"),
-      person(given = "Yue", family = "Zhao", role = c("aut"), email = "jasonzhao0307@gmail.com"),
+      person(given = "Yue", family = "Zhao", role = c("aut"), email = "yuezh@bu.edu"),
       person(given = c("W. Evan"), family = "Johnson", role = c("aut"), email = "wej@bu.edu"),
       person(given = c("Aubrey"), family = "Odom", role = c("aut"), email = "aubreyodom@byu.edu"))
 Description: Signatures of TB progression, TB disease, and other TB disease
