@@ -149,7 +149,7 @@ SignatureQuantitative <- function(df.input,
   df.list <- list()
   # create progress bar
   counter <- 0
-  total <- length(signature.list)^2
+  total <- length(signature.list)
   pb <- txtProgressBar(min = 0, max = total, style = 3)
   
   for (i in 1:length(signature.list)){
