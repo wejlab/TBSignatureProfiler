@@ -3,7 +3,7 @@
 \docType{data}
 \name{TB_indian}
 \alias{TB_indian}
-\title{TB toy dataset}
+\title{TB Example dataset}
 \format{SummarizedExperiment}
 \usage{
 TB_indian

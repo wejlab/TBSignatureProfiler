@@ -9,10 +9,10 @@ distinctColors(n, hues = c("red", "cyan", "orange", "blue", "yellow",
   value.range = c(0.7, 1))
 }
 \arguments{
-\item{n}{Integer; Number of colors to generate}
+\item{n}{integer; Number of colors to generate}
 
-\item{hues}{Character vector of R colors available from the colors()
-function. These will be used as the base colors for the clustering scheme.
+\item{hues}{character vector of R colors available from the colors()
+function. these will be used as the base colors for the clustering scheme.
 Different saturations and values (i.e. darkness) will be generated for each
 hue.}
 
@@ -23,7 +23,7 @@ hue.}
 Default: c(0.5, 1)}
 }
 \value{
-A vector of distinct colors that have been converted to  HEX from
+vector of distinct colors that have been converted to HEX from
 HSV.
 }
 \description{

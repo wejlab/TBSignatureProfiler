@@ -21,7 +21,7 @@ data, a data.frame or matrix of annotation data.}
 names in colData that contain the signature data.}
 
 \item{annotationColName}{If inputData is a SummarizedExperiment, the column
-name in colData to use to make the boxplot.}
+name in colData used to make the boxplot.}
 
 \item{name}{The name of the boxplot. The default is "Signatures".}
 

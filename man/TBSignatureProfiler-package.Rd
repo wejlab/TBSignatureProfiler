@@ -24,8 +24,9 @@ Useful links:
 
 Authors:
 \itemize{
-  \item Yue Zhao \email{wej@bu.edu}
+  \item Yue Zhao \email{yuezh@bu.edu}
   \item W. Evan Johnson \email{wej@bu.edu}
+  \item Aubrey Odom \email{aubreyodom@byu.edu}
 }
 
 }

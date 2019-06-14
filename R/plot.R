@@ -141,7 +141,7 @@ signatureHeatmap <- function(inputData, annotationData, name="Signatures",
 #' @param signatureColNames If inputData is a SummarizedExperiment, the column
 #' names in colData that contain the signature data.
 #' @param annotationColName If inputData is a SummarizedExperiment, the column
-#' name in colData to use to make the boxplot.
+#' name in colData used to make the boxplot.
 #' @param name The name of the boxplot. The default is "Signatures".
 #' @param scale Scale the signature data. The default is FALSE.
 #' @param includePoints Include points over the boxplots. The default is TRUE.
@@ -210,7 +210,7 @@ signatureBoxplot <- function(inputData, annotationData, signatureColNames,
   if (length(levels(annotationData[, 1])) > 9){
     stop("Too many levels in the annotation data. The boxplot can contain a maximum of 9 levels")
   }
-  #if number of rows equal number of rows
+  # if number of rows equal number of row names
   if (nrow(annotationData) == nrow(inputData)){
     if (!all(rownames(annotationData) == rownames(inputData))){
       stop("Annotation data and signature data does not match.")
@@ -232,7 +232,7 @@ signatureBoxplot <- function(inputData, annotationData, signatureColNames,
   boxplotdfm <- reshape2::melt(boxplotdf, value.name = "Score",
                                variable.name = "Signature", id.vars = "Group")
   theplot <- ggplot2::ggplot(boxplotdfm, ggplot2::aes_string("Group", "Score")) +
-    ggplot2::facet_wrap(~Signature, scales = 'free', nrow = nrow, ncol = ncol) +
+    ggplot2::facet_wrap( ~ Signature, scales = 'free', nrow = nrow, ncol = ncol) +
     ggplot2::geom_boxplot(outlier.shape = NA, ggplot2::aes_string(fill = "Group"),
                           notch = notch) +
     ggplot2::theme_classic()
@@ -393,23 +393,23 @@ signatureGeneHeatmap <- function(inputData, useAssay, sigGenes,
 
 #' Generate a distinct palette for coloring different clusters
 #'
-#' @param n Integer; Number of colors to generate
-#' @param hues Character vector of R colors available from the colors()
-#' function. These will be used as the base colors for the clustering scheme.
+#' @param n integer; Number of colors to generate
+#' @param hues character vector of R colors available from the colors()
+#' function. these will be used as the base colors for the clustering scheme.
 #' Different saturations and values (i.e. darkness) will be generated for each
 #' hue.
 #' @param saturation.range Numeric vector of length 2 with values between 0 and
 #' 1. Default: c(0.25, 1)
 #' @param value.range Numeric vector of length 2 with values between 0 and 1.
 #' Default: c(0.5, 1)
-#' @return A vector of distinct colors that have been converted to  HEX from
+#' @return vector of distinct colors that have been converted to HEX from
 #' HSV.
 #' @export
 distinctColors <- function(n, hues = c("red", "cyan", "orange", "blue",
                                        "yellow", "purple", "green", "magenta"),
                            saturation.range = c(0.7, 1),
                            value.range = c(0.7, 1)) {
-  #Adapted from compbiomed/celda, thanks to all celda developers
+  # Adapted from compbiomed/celda, thanks to all celda developers
   if (!(all(hues %in% grDevices::colors()))) {
     stop("Only color names listed in the 'color'",
          " function can be used in 'hues'")
@@ -441,3 +441,6 @@ distinctColors <- function(n, hues = c("red", "cyan", "orange", "blue",
 
   return(col[1:n])
 }
+
+#' Create an interactive table for AUC and T-tests
+#' 
