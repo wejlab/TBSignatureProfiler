@@ -28,7 +28,6 @@ deseq2_norm_rle <- function(inputData){
 #' @param targetVec binary vector indicating y
 #' @import glmnet
 #' @import caret
-#' @importFrom ROCR prediction performance
 #' @importFrom methods slot
 #' @importFrom stats predict
 #' @return AUC from LOOCV
@@ -55,10 +54,8 @@ LOOAUC_simple_multiple_noplot_one_df <- function(df, targetVec){
     testPredictionClassVec[j] <- suppressWarnings(predict(fit, type = "class", newx = test, s = 0))
     testPredictionProbVec[j] <- suppressWarnings(predict(fit, type = "response", newx = test, s = 0))
   }
-  loo.pred <- suppressWarnings(prediction(testPredictionProbVec, targetVec))
-  loo.perf <- suppressWarnings(performance(loo.pred, "tpr", "fpr"))
-  auc <- suppressWarnings(performance(loo.pred, "auc"))
-  auc <- unlist(slot(auc, "y.values"))
+  loo.pred <- ROCit::rocit(testPredictionProbVec, targetVec)
+  auc <- loo.pred$AUC
   aucRound <- round(auc, 4)
   auc.vec <- c(auc.vec, aucRound)
   # for other metric
@@ -198,7 +195,7 @@ SignatureQuantitative <- function(df.input,
     setTxtProgressBar(pb, counter)
   }
 
-  #boxplot
+  # boxplot
   m <- lapply(auc.result, median, na.rm = TRUE)
   o <- order(unlist(m))
   # pdf("boxplot.pdf", width = 13, height = 8)
