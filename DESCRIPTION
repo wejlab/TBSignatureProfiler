@@ -28,7 +28,7 @@ Imports:
     reshape2,
     circlize,
     glmnet,
-    ROCR,
+    ROCit,
     bioDist,
     readr,
     boot,
@@ -36,7 +36,8 @@ Imports:
     DESeq2,
     caret,
     ggfortify,
-    e1071
+    e1071,
+    DT
 Suggests:
     testthat,
     spelling,
