@@ -1,6 +1,6 @@
 ---
 title: "TBSignatureProfiler Vignette"
-author: "Aubrey Odom"
+author: "Evan Johnson, Aubrey Odom"
 date: "`r Sys.Date()`"
 output:
   html_document:
@@ -24,9 +24,7 @@ suppressPackageStartupMessages({
   library(SummarizedExperiment)
   library(TBSignatureProfiler)
   library(DESeq2)
-  library(edgeR)
   library(DT)
-  library(ROCR)
 })
 ```
 
@@ -59,14 +57,12 @@ The following code will read in the data count matrix (assay) and sample meta da
 library(SummarizedExperiment)
 library(TBSignatureProfiler)
 
-setwd("C:/Users/aubie/Downloads/BRITE/Tuberculosis/TBSignatureProfiler")
-
 ## HIV/TB gene expression data for 25,369 genes and 33 samples
-counts <- read.table("inst/extdata/features_combined.txt",
+counts <- read.table("extdata/features_combined.txt",
                      header = T, row.names = 1, sep = '\t')
 
 ## Sample information file for the 33 samples containing the sample name and TB status
-coldata <- read.table("inst/extdata/meta_data.txt", header = T, 
+coldata <- read.table("extdata/meta_data.txt", header = T, 
                       row.names = 1)
 
 ### Generate a Summarized experiment object
@@ -91,7 +87,7 @@ The SummarizedExperiment object allows for the generation, storage and easy subs
 
 ```{r}
 ## Make a logcounts, CPM and logCPM assay
-hivtb_data <- mkAssay(hivtb_data)
+hivtb_data <- mkAssay(SE_obj = hivtb_data)
 
 ### Note that we now have 4 assays
 assays(hivtb_data)
@@ -111,11 +107,12 @@ siglist_hivtb <- names(TBsignatures)
 TBsignatures_nanostring <- TBsignatures[siglist_hivtb]
 
 ## Run the TBSignatureProfiler to score the signatures in the data
-ssgsea_res <- runTBsigProfiler(hivtb_data, useAssay = "logcpm",
-                                 signatures = TBsignatures_nanostring,
-                                 algorithm = "ssGSEA",
-                                 combineSigAndAlgorithm = FALSE,
-                                 parallel.sz = 4)
+ssgsea_res <- runTBsigProfiler(input = hivtb_data, 
+                               useAssay = "logcpm",
+                               signatures = TBsignatures_nanostring,
+                               algorithm = "ssGSEA",
+                               combineSigAndAlgorithm = FALSE,
+                               parallel.sz = 4)
 ```
 
 
@@ -147,7 +144,8 @@ signatureHeatmap(ssgsea_res, name = "Heatmap of Signatures,
 ### All Signatures Boxplots
 
 ```{r boxssgsea, message = FALSE, results = 'hide', fig.height = 9, fig.width=12}
-signatureBoxplot(ssgsea_res, name = "Boxplots of Signatures, ssGSEA", 
+signatureBoxplot(inputData = ssgsea_res, 
+                 name = "Boxplots of Signatures, ssGSEA", 
                  signatureColNames = names(TBsignatures_nanostring),
                  annotationColName = "Disease", rotateLabels = FALSE)
 ```
@@ -176,11 +174,11 @@ for (i in names(TBsignatures_nanostring)){
 
   cat("####", i, "\n")
 
-  signatureGeneHeatmap(ssgsea_res, useAssay = "logcpm", 
-                     TBsignatures_nanostring[[i]],
-                     name = i, signatureColNames = i, 
-                     annotationColNames = c("Disease"),
-                     showColumnNames = FALSE)
+  signatureGeneHeatmap(inputData = ssgsea_res, useAssay = "logcpm",
+                       TBsignatures_nanostring[[i]],
+                       name = i, signatureColNames = i, 
+                       annotationColNames = c("Disease"),
+                       showColumnNames = FALSE)
   
   cat("\n\n")
 }
@@ -189,7 +187,10 @@ for (i in names(TBsignatures_nanostring)){
 
 ### Table with T-tests & AUC 
 ```{r AUC table}
-bootstrapAUC(ssgsea_res, ssgsea_res$Disease,             TBsignatures_nanostring)
+bootstrapAUC(SE_scored = ssgsea_res, 
+             annotatinD)
+
+bootstrapAUC(ssgsea_res, ssgsea_res$Disease,   TBsignatures_nanostring)
 ```
 
 ### Boxplots for the bootstrapped AUCs
@@ -232,13 +233,13 @@ During the training process, we bootstrap the samples, cross-validate the logist
 ```{r SigEVAL}
 ## We can normalize the data and evaluate the signatures
 hivtb_norm <- deseq2_norm_rle(assay(hivtb_data, "counts"))
-seeme <- Sys.time()
+
 quantitative.result <- SignatureQuantitative(df.input = hivtb_norm,
-                      target.vec.num = colData(hivtb_data)$BinaryTB,
-                      signature.list = TBsignatures,
-                      signature.name.vec = names(TBsignatures),
-                      num.boot = 10)
-Sys.time() - seeme
+                       target.vec.num = colData(hivtb_data)$BinaryTB,
+                       signature.list = TBsignatures,
+                       signature.name.vec = names(TBsignatures),
+                       num.boot = 10)
+
 quantitative.result
 
 ## Order by area under the curve.
