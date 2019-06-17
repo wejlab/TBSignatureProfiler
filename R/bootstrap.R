@@ -155,7 +155,7 @@ compareBoxplots <- function(SE_scored, annotationData, signatureColNames, num.bo
 #' 
 #' @example 
 signatureROCplot <- function(inputData, annotationData, signatureColNames,
-                             annotationColName, scale = FALSE, ) {
+                             annotationColName, scale = FALSE) {
   
   # Error catches and variable creation
   if (methods::is(inputData, "SummarizedExperiment")){
