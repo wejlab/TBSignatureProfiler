@@ -5,7 +5,7 @@
 \title{Use logistic regression and Bootstrap LOOCV for signature evaluation.}
 \usage{
 SignatureQuantitative(df.input, target.vec.num, signature.list,
-  signature.name.vec, num.boot = 100)
+  signature.name.vec, num.boot = 100, pb.show = TRUE)
 }
 \arguments{
 \item{df.input}{a data.frame of gene expression count data.
@@ -18,6 +18,8 @@ Required.}
 \item{signature.name.vec}{vector of signature names}
 
 \item{num.boot}{number of bootstrap}
+
+\item{pb.show}{Logical; whether to display a progress bar for output. Default is TRUE.}
 }
 \value{
 the AUC, sensitivity and specificity

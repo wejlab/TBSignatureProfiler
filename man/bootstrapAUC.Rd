@@ -5,7 +5,7 @@
 \title{Bootstrap the AUC and compute a p-value for each profiled signature}
 \usage{
 bootstrapAUC(SE_scored, annotationData, signatureColNames,
-  num.boot = 100)
+  num.boot = 100, pb.show = TRUE)
 }
 \arguments{
 \item{SE_scored}{A SummarizedExperiment object with genes in the rows,
@@ -14,6 +14,8 @@ and signature scores in the columns. There should also be a column indicating TB
 \item{annotationData}{A factor of annotation data, indicating TB status.}
 
 \item{num.boot}{The number of times to bootstrap the data.}
+
+\item{pb.show}{Logical for whether to show a progress bar while running code.}
 
 \item{SignatureColNames}{The column names in the SE_scored colData that contain 
 the signature score data.}
