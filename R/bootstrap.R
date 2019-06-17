@@ -84,7 +84,7 @@ bootstrapAUC <- function(SE_scored, annotationData, signatureColNames, num.boot 
 
 tableAUC <- function(SE_scored, annotationData, signatureColNames, num.boot, pb.show = TRUE){
   # Run the bootstrapping function
-  BS.Results <- bootstrapAUC(SE_scored, annotationData, signatureColNames, num.boot, pb.show)
+  BS.Results <- bootstrapAUC(SE_scored, annotationData, signatureColNames, num.boot, pb.show = pb.show)
   pvals <- BS.Results[["P-values"]]
   aucs_boot <- BS.Results[["Boot AUC Values"]]
   aucs <- BS.Results[["Non-Boot AUC Values"]]
