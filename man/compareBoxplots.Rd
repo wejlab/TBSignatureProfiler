@@ -2,10 +2,10 @@
 % Please edit documentation in R/bootstrap.R
 \name{compareBoxplots}
 \alias{compareBoxplots}
-\title{Create an array of boxplots for bootstrapped AUC values.}
+\title{Create a comparison plot of boxplots for bootstrapped AUC values.}
 \usage{
 compareBoxplots(SE_scored, annotationData, signatureColNames,
-  num.boot = 100, plot.col = 2, cex.axis = 0.7, cex = 0.25,
+  num.boot = 100, cex.axis = 0.7, cex = 0.25,
   name = "Boxplot Comparison of Signatures")
 }
 \arguments{
@@ -16,13 +16,18 @@ and signature scores in the columns. There should also be a column indicating TB
 
 \item{num.boot}{The number of times to bootstrap the data.}
 
-\item{plot.col}{}
+\item{cex.axis}{The magnification to be used for axis annotation relative to the current setting of cex.}
+
+\item{cex}{A numerical value giving the amount by which plotting text and symbols should be magnified 
+relative to the default.}
+
+\item{name}{A character string giving the overall title for the plot.}
 
 \item{SignatureColNames}{The column names in the SE_scored colData that contain 
 the signature score data.}
 }
 \value{
-
+A plot with side-by-side boxplots of bootstrapped AUC values for each specified signature.
 }
 \description{
 Present the results of AUC bootstrapping for the various scored signatures via boxplots.

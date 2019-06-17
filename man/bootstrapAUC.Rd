@@ -11,7 +11,7 @@ bootstrapAUC(SE_scored, annotationData, signatureColNames,
 \item{SE_scored}{A SummarizedExperiment object with genes in the rows,
 and signature scores in the columns. There should also be a column indicating TB status.}
 
-\item{annotationData}{A vector of annotation data, typically indicating TB status.}
+\item{annotationData}{A factor of annotation data, indicating TB status.}
 
 \item{num.boot}{The number of times to bootstrap the data.}
 
