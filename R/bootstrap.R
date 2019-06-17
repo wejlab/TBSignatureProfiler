@@ -4,7 +4,7 @@
 #' for all signatures tested on a given dataset.
 #' @param SE_scored A SummarizedExperiment object with genes in the rows,
 #' and signature scores in the columns. There should also be a column indicating TB status.
-#' @param annotationData A vector of annotation data, typically indicating TB status.
+#' @param annotationData A factor of annotation data, indicating TB status.
 #' @param SignatureColNames The column names in the SE_scored colData that contain 
 #' the signature score data.
 #' @param num.boot The number of times to bootstrap the data.
@@ -19,9 +19,6 @@
 bootstrapAUC <- function(SE_scored, annotationData, signatureColNames, num.boot = 100){
   pvals <- aucs <- aucs_boot <- NULL
   
-  if (!is.vector(annotationData)){
-    stop("annotationData must be a vector.")
-  } 
   if (!is.factor(annotationData)) annotationData <- as.factor(annotationData)
   
   # Create progress bar
@@ -38,7 +35,7 @@ bootstrapAUC <- function(SE_scored, annotationData, signatureColNames, num.boot 
     pvals <- c(pvals, t.test(score ~ annotationData)$p.value)
     
     # Obtain AUC based on entire dataset
-    pred <- ROCit::rocit(SE_scored[, i], score)
+    pred <- ROCit::rocit(score, annotationData)
     auc <- pred$AUC
     aucs <- c(aucs, max(auc, 1 - auc))
     
@@ -100,7 +97,7 @@ tableAUC <- function(SE_scored, annotationData, signatureColNames, num.boot){
                        options = list(scrollX = T, pageLength = 30), rownames = F))
 }
 
-#' Create an array of boxplots for bootstrapped AUC values.
+#' Create a comparison plot of boxplots for bootstrapped AUC values.
 #' 
 #' Present the results of AUC bootstrapping for the various scored signatures via boxplots.
 #'
@@ -110,15 +107,18 @@ tableAUC <- function(SE_scored, annotationData, signatureColNames, num.boot){
 #' @param SignatureColNames The column names in the SE_scored colData that contain 
 #' the signature score data.
 #' @param num.boot The number of times to bootstrap the data.
-#' @param plot.col 
+#' @param cex.axis The magnification to be used for axis annotation relative to the current setting of cex.
+#' @param cex A numerical value giving the amount by which plotting text and symbols should be magnified 
+#' relative to the default.
+#' @param name A character string giving the overall title for the plot.
 #' 
 #' @export
 #' 
-#' @return 
+#' @return A plot with side-by-side boxplots of bootstrapped AUC values for each specified signature.
 #' 
 #' @example 
 compareBoxplots <- function(SE_scored, annotationData, signatureColNames, num.boot = 100,
-                            plot.col = 2, cex.axis = 0.7, cex = 0.25,
+                            cex.axis = 0.7, cex = 0.25,
                             name = "Boxplot Comparison of Signatures"){
   # Run the bootstrapping function
   BS.Results <- bootstrapAUC(SE_scored, annotationData, signatureColNames, num.boot)
@@ -128,11 +128,27 @@ compareBoxplots <- function(SE_scored, annotationData, signatureColNames, num.bo
   colnames(aucs_boot) <- names(signatureColNames)
   boxplot(aucs_boot[,order(aucs)], las = 2, cex.axis = cex.axis, cex = cex,
           main = name, ylab = "Bootstrapped AUC Values")
-  abline(h = 0.5, col = plot.col, lty = 2)
+  abline(h = 0.5, col = "red", lty = 2)
 }
 
-## AUC Plots ----------------------------------
-
+#' Create an array of ROC plots to compare signatures.
+#' 
+#' @param inputData Either a SummarizedExperiment object that contains the
+#' signature data and annotation as colData columns, or a data.frame or matrix
+#' of signature data. Required.
+#' @param annotationData If inputData is a data.frame or matrix of signature
+#' data, a data.frame or matrix of annotation data.
+#' @param signatureColNames If inputData is a SummarizedExperiment, the column
+#' names in colData that contain the signature data.
+#' @param annotationColName If inputData is a SummarizedExperiment, the column
+#' name in colData that contains the annotation data.
+#' @param scale Scale the signature data. The default is FALSE.
+#' 
+#' @return An array of ROC plots.
+#' 
+#' @export
+#' 
+#' @example 
 signatureROCplot <- function(inputData, annotationData, signatureColNames,
                              annotationColName, scale = FALSE) {
   
