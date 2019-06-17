@@ -1,6 +1,6 @@
 ---
 title: "TBSignatureProfiler Vignette"
-author: "Evan Johnson, Aubrey Odom"
+author: "Evan Johnson & Aubrey Odom"
 date: "`r Sys.Date()`"
 output:
   html_document:
@@ -56,6 +56,8 @@ The following code will read in the data count matrix (assay) and sample meta da
 ```{r loading data}
 library(SummarizedExperiment)
 library(TBSignatureProfiler)
+devtools::load_all()
+
 
 ## HIV/TB gene expression data for 25,369 genes and 33 samples
 counts <- read.table("extdata/features_combined.txt",
@@ -118,7 +120,7 @@ ssgsea_res <- runTBsigProfiler(input = hivtb_data,
 
 The TBSignature profiler will input a SummarizedExperiment object, and output a SummarizedExperiment object with the signature scores stored in the colData. A truncated example of this is provided here:
 
-```{r, message = FALSE, results = 'hide'}
+```{r, message = FALSE}
 ## colData from the original SE
 head(colData(hivtb_data))
 
@@ -142,7 +144,7 @@ signatureHeatmap(ssgsea_res, name = "Heatmap of Signatures,
 
 
 ### All Signatures Boxplots
-
+Points represent the jittered scores for each sample. 
 ```{r boxssgsea, message = FALSE, results = 'hide', fig.height = 9, fig.width=12}
 signatureBoxplot(inputData = ssgsea_res, 
                  name = "Boxplots of Signatures, ssGSEA", 
@@ -153,7 +155,7 @@ signatureBoxplot(inputData = ssgsea_res,
 
 ### Single Boxplots from one Signature at a Time {.tabset}
 
-```{r Boxplots_single_ssgsea, results = "asis"}
+```{r Boxplots_single_ssgsea, results = "asis", message = FALSE}
 for (i in names(TBsignatures_nanostring)){
 
   cat("####", i, "\n")
@@ -169,7 +171,7 @@ for (i in names(TBsignatures_nanostring)){
 ### Individual Gene Signature plots {.tabset}
 The same function used previously can also produce heatmaps that highlight a single selected signature. In these heatmaps, the columns of the heatmaps are the samples as before, whereas the rows are now the genes included in the signatures.
 
-```{r genes_ssgsea, results = "asis"}
+```{r genes_ssgsea, results = "asis", message = FALSE}
 for (i in names(TBsignatures_nanostring)){
 
   cat("####", i, "\n")
@@ -186,21 +188,20 @@ for (i in names(TBsignatures_nanostring)){
 ```
 
 ### Table with T-tests & AUC 
-```{r AUC table}
-bootstrapAUC(SE_scored = ssgsea_res, 
-             annotatinD)
-
-bootstrapAUC(ssgsea_res, ssgsea_res$Disease,   TBsignatures_nanostring)
+```{r AUC table, message = FALSE}
+tableAUC(SE_scored = ssgsea_res, annotationData = ssgsea_res$Disease, signatureColNames = TBsignatures_nanostring,
+             num.boot = 100, pb.show = FALSE)
 ```
 
 ### Boxplots for the bootstrapped AUCs
-```{r }
-compareBoxplots(ssgsea_res, ssgsea_res$Disease,             TBsignatures_nanostring)
+```{r BS Boxplots, message = FALSE}
+compareBoxplots(ssgsea_res, ssgsea_res$Disease,             
+                TBsignatures_nanostring, pb.show = FALSE)
 ```
 
 
 ### Separate AUC plots {.tabset}
-```{r AUC plots, results = 'asis'}
+```{r AUC plots, results = 'asis', message = FALSE}
 for (i in names(TBsignatures_nanostring)){
   
   cat("####", i, "\n")
@@ -226,11 +227,11 @@ Currently when I run this function with all signatures it spits them out one at 
 ```
 
 ## Signature Evaluation with Logistic Regression
-For this dataset, we wish to differentiate HIV/Tuberculosis samples from HIV-only samples. In order to evaluate how the 34 provided TB signatures do this, we can use each signature and our the 31-sample dataset 
+For this dataset, we wish to differentiate HIV/Tuberculosis samples from HIV-only samples. In order to evaluate how the 34 provided TB signatures do this, we use each signature and our 31-sample dataset.
 
 During the training process, we bootstrap the samples, cross-validate the logistic regression and calculate the validation set AUCs from each cross-validation iteration In theory, if a signature is a good one, it should have a higher average AUC from these bootstrap logistic regression experiments. We then provide the AUC boxplot for each signature, which provides a clear comparison between the signatures. 
 
-```{r SigEVAL}
+```{r SigEVAL, message = FALSE}
 ## We can normalize the data and evaluate the signatures
 hivtb_norm <- deseq2_norm_rle(assay(hivtb_data, "counts"))
 
@@ -238,12 +239,14 @@ quantitative.result <- SignatureQuantitative(df.input = hivtb_norm,
                        target.vec.num = colData(hivtb_data)$BinaryTB,
                        signature.list = TBsignatures,
                        signature.name.vec = names(TBsignatures),
-                       num.boot = 10)
+                       num.boot = 10,
+                       pb.show = FALSE)
 
-quantitative.result
+head(quantitative.result)
 
 ## Order by area under the curve.
 ordered_AUC <- quantitative.result$df.auc.ci[order(
   quantitative.result$df.auc.ci$`Estimate`, decreasing = TRUE),]
 ordered_AUC
+
 ```
