@@ -91,7 +91,7 @@ tableAUC <- function(SE_scored, annotationData, signatureColNames, num.boot, pb.
   
   # Create interactive table
   return(DT::datatable(cbind("Signatures" = names(signatureColNames), 
-                             "P-values" = pvals, 
+                             "P-values" = round(pvals, 4), 
                              "-10*Log(p-values)" = round(-10 * log(pvals), 4), 
                              "LowerAUC" = round(apply(aucs_boot, 2, quantile, probs = .05), 4), 
                              "AUCs" = round(aucs, 4), 
@@ -126,7 +126,7 @@ compareBoxplots <- function(SE_scored, annotationData, signatureColNames, num.bo
                             name = "Boxplot Comparison of Signatures",
                             pb.show = TRUE){
   # Run the bootstrapping function
-  BS.Results <- bootstrapAUC(SE_scored, annotationData, signatureColNames, num.boot)
+  BS.Results <- bootstrapAUC(SE_scored, annotationData, signatureColNames, num.boot, pb.show = pb.show)
   aucs_boot <- BS.Results[["Boot AUC Values"]]
   aucs <- BS.Results[["Non-Boot AUC Values"]]
   
@@ -220,5 +220,7 @@ signatureROCplot <- function(inputData, annotationData, signatureColNames,
   }
   
 }
+
+
 
 
