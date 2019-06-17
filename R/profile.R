@@ -254,8 +254,8 @@ runTBsigProfiler <- function(input, useAssay = NULL,
     return(dfres)
   } else if (outputFormat == "SummarizedExperiment"){
     outdata <- SummarizedExperiment::SummarizedExperiment(
-      assays <- S4Vectors::SimpleList(data = runindata),
-      colData <- S4Vectors::DataFrame(t(sig_result)))
+      assays = S4Vectors::SimpleList(data = runindata),
+      colData = S4Vectors::DataFrame(t(sig_result)))
     return(outdata)
   } else {
     stop("Output format error.")
