@@ -8,6 +8,7 @@
 #' @param SignatureColNames The column names in the SE_scored colData that contain 
 #' the signature score data.
 #' @param num.boot The number of times to bootstrap the data.
+#' @param pb.show Logical for whether to show a progress bar while running code.
 #' 
 #' @return A list of length 3 returning a vector of p-values for a 2-sample t-test, bootstrapped AUC values,
 #' and AUC value for using all scored values for all signatures specified in SignatureColNames.
@@ -16,7 +17,8 @@
 #' 
 #' @examples 
 
-bootstrapAUC <- function(SE_scored, annotationData, signatureColNames, num.boot = 100){
+bootstrapAUC <- function(SE_scored, annotationData, signatureColNames, num.boot = 100,
+                         pb.show = TRUE){
   pvals <- aucs <- aucs_boot <- NULL
   
   if (!is.factor(annotationData)) annotationData <- as.factor(annotationData)
@@ -24,7 +26,7 @@ bootstrapAUC <- function(SE_scored, annotationData, signatureColNames, num.boot 
   # Create progress bar
   total <- length(names(signatureColNames))
   counter <- 0
-  pb <- txtProgressBar(min = 0, max = total, 
+  if(pb.show)  pb <- txtProgressBar(min = 0, max = total, 
                  label = "Computing bootstrapped AUC for each signature.",
                  style = 3)
   
@@ -53,10 +55,10 @@ bootstrapAUC <- function(SE_scored, annotationData, signatureColNames, num.boot 
     
     # Update the progress bar
     counter <- counter + 1
-    setTxtProgressBar(pb, counter)
+    if (pb.show) setTxtProgressBar(pb, counter)
   }
   
-  close(pb)
+  if (pb.show) close(pb)
   return(list("P-values" = pvals, "Boot AUC Values" = aucs_boot,
          "Non-Boot AUC Values" = aucs))
 }
@@ -72,6 +74,7 @@ bootstrapAUC <- function(SE_scored, annotationData, signatureColNames, num.boot 
 #' @param SignatureColNames The column names in the SE_scored colData that contain 
 #' the signature score data.
 #' @param num.boot The number of times to bootstrap the data.
+#' @param pb.show Logical for whether to show a progress bar while running code.
 #' 
 #' @export
 #' 
@@ -79,9 +82,9 @@ bootstrapAUC <- function(SE_scored, annotationData, signatureColNames, num.boot 
 #' 
 #' @example 
 
-tableAUC <- function(SE_scored, annotationData, signatureColNames, num.boot){
+tableAUC <- function(SE_scored, annotationData, signatureColNames, num.boot, pb.show = TRUE){
   # Run the bootstrapping function
-  BS.Results <- bootstrapAUC(SE_scored, annotationData, signatureColNames, num.boot)
+  BS.Results <- bootstrapAUC(SE_scored, annotationData, signatureColNames, num.boot, pb.show)
   pvals <- BS.Results[["P-values"]]
   aucs_boot <- BS.Results[["Boot AUC Values"]]
   aucs <- BS.Results[["Non-Boot AUC Values"]]
@@ -111,6 +114,7 @@ tableAUC <- function(SE_scored, annotationData, signatureColNames, num.boot){
 #' @param cex A numerical value giving the amount by which plotting text and symbols should be magnified 
 #' relative to the default.
 #' @param name A character string giving the overall title for the plot.
+#' @param pb.show Logical for whether to show a progress bar while running code.
 #' 
 #' @export
 #' 
@@ -119,7 +123,8 @@ tableAUC <- function(SE_scored, annotationData, signatureColNames, num.boot){
 #' @example 
 compareBoxplots <- function(SE_scored, annotationData, signatureColNames, num.boot = 100,
                             cex.axis = 0.7, cex = 0.25,
-                            name = "Boxplot Comparison of Signatures"){
+                            name = "Boxplot Comparison of Signatures",
+                            pb.show = TRUE){
   # Run the bootstrapping function
   BS.Results <- bootstrapAUC(SE_scored, annotationData, signatureColNames, num.boot)
   aucs_boot <- BS.Results[["Boot AUC Values"]]
@@ -150,7 +155,7 @@ compareBoxplots <- function(SE_scored, annotationData, signatureColNames, num.bo
 #' 
 #' @example 
 signatureROCplot <- function(inputData, annotationData, signatureColNames,
-                             annotationColName, scale = FALSE) {
+                             annotationColName, scale = FALSE, ) {
   
   # Error catches and variable creation
   if (methods::is(inputData, "SummarizedExperiment")){
