@@ -39,8 +39,7 @@ Imports:
     e1071,
     DT,
     mime, 
-    XML,
-    Tibble
+    XML
 Suggests:
     testthat,
     spelling,
