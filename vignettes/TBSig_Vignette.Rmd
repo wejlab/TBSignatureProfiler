@@ -23,8 +23,7 @@ knitr::opts_chunk$set(echo = TRUE,
 suppressPackageStartupMessages({
   library(SummarizedExperiment)
   library(TBSignatureProfiler)
-  library(DESeq2)
-  library(DT)
+  library(knitr)
 })
 ```
 
@@ -242,11 +241,13 @@ quantitative.result <- SignatureQuantitative(df.input = hivtb_norm,
                        num.boot = 10,
                        pb.show = FALSE)
 
-head(quantitative.result)
+kable(head(quantitative.result$df.auc.ci), digits = 4)
+kable(head(quantitative.result$df.sensitivity.ci), digits = 4)
+kable(head(quantitative.result$df.specificity.ci), digits = 4)
 
 ## Order by area under the curve.
 ordered_AUC <- quantitative.result$df.auc.ci[order(
   quantitative.result$df.auc.ci$`Estimate`, decreasing = TRUE),]
-ordered_AUC
+kable(head(ordered_AUC), digits = 4)
 
 ```
