@@ -37,10 +37,8 @@ Imports:
     caret,
     ggfortify,
     e1071,
-    DT,
-    mime, 
-    XML
-Suggests:
+    DT
+    Suggests:
     testthat,
     spelling,
     lintr,
