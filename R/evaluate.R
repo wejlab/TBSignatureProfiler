@@ -114,6 +114,7 @@ Bootstrap_LOOCV_LR_AUC <- function(df, target.vec, nboot){
 #' @param signature.list a list of signatures
 #' @param signature.name.vec vector of signature names
 #' @param num.boot number of bootstrap
+#' @param pb.show Logical; whether to display a progress bar for output. Default is TRUE.
 #' @importFrom gmodels ci
 #' @importFrom grDevices dev.off pdf
 #' @importFrom graphics boxplot
@@ -141,13 +142,14 @@ SignatureQuantitative <- function(df.input,
                                   target.vec.num,
                                   signature.list,
                                   signature.name.vec,
-                                  num.boot = 100){
+                                  num.boot = 100,
+                                  pb.show = TRUE){
 
   df.list <- list()
   # create progress bar
   counter <- 0
   total <- length(signature.list)
-  pb <- txtProgressBar(min = 0, max = total, style = 3)
+  if (pb.show) pb <- txtProgressBar(min = 0, max = total, style = 3)
   
   for (i in 1:length(signature.list)){
     df.list[[i]] <- df.input[signature.list[[i]], ]
@@ -192,7 +194,7 @@ SignatureQuantitative <- function(df.input,
     names(specificity.ci)[i] <- signature.name.vec[i]
     
     counter <- counter + 1
-    setTxtProgressBar(pb, counter)
+    if (pb.show) setTxtProgressBar(pb, counter)
   }
 
   # boxplot
@@ -224,7 +226,7 @@ SignatureQuantitative <- function(df.input,
   colnames(df.specificity.ci) <- names(specificity.ci[[1]])
   rownames(df.specificity.ci) <- signature.name.vec
   
-  close(pb)
+  if (pb.show) close(pb)
 
   return(list(df.auc.ci = df.auc.ci,
               df.sensitivity.ci = df.sensitivity.ci,
@@ -308,3 +310,14 @@ mkAssay <- function(SE_obj, type = "all", prior_counts = 3) {
   }
   return(SE_obj)
 }
+
+
+
+
+
+
+
+
+
+
+
