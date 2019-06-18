@@ -37,7 +37,8 @@ Imports:
     caret,
     ggfortify,
     e1071,
-    DT
+    DT,
+    edgeR
 Suggests:
     testthat,
     spelling,
