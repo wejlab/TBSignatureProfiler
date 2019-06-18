@@ -38,7 +38,7 @@ Imports:
     ggfortify,
     e1071,
     DT
-    Suggests:
+Suggests:
     testthat,
     spelling,
     lintr,
