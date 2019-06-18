@@ -190,7 +190,7 @@ tableAUC(SE_scored = ssgsea_res,
          annotationData = ssgsea_res$Disease, 
          signatureColNames = TBsignatures_nanostring,
          num.boot = 100, 
-         pb_show = TRUE)
+         pb_show = FALSE)
 ```
 
 ### Boxplots for the bootstrapped AUCs
