@@ -42,7 +42,7 @@ The TBSignature profiler will input a SummarizedExperiment object, and according
 
 Download the TBSignatureProfiler using the following command:
 
-```{r load profiler, eval = FALSE}
+```{r load profiler, eval = FALSE, results = FALSE}
 devtools::install_github("aubreyodom/TBSignatureProfiler")
 ```
 
@@ -190,13 +190,13 @@ tableAUC(SE_scored = ssgsea_res,
          annotationData = ssgsea_res$Disease, 
          signatureColNames = TBsignatures_nanostring,
          num.boot = 100, 
-         pb.show = TRUE)
+         pb_show = TRUE)
 ```
 
 ### Boxplots for the bootstrapped AUCs
 ```{r BS Boxplots, message = FALSE}
 compareBoxplots(ssgsea_res, ssgsea_res$Disease,             
-                TBsignatures_nanostring, pb.show = FALSE)
+                TBsignatures_nanostring, pb_show = FALSE)
 ```
 
 
