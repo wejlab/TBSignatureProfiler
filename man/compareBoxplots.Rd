@@ -6,7 +6,7 @@
 \usage{
 compareBoxplots(SE_scored, annotationData, signatureColNames,
   num.boot = 100, cex.axis = 0.7, cex = 0.25,
-  name = "Boxplot Comparison of Signatures", pb.show = TRUE)
+  name = "Boxplot Comparison of Signatures", pb_show = TRUE)
 }
 \arguments{
 \item{SE_scored}{A SummarizedExperiment object with genes in the rows,
@@ -23,7 +23,7 @@ relative to the default.}
 
 \item{name}{A character string giving the overall title for the plot.}
 
-\item{pb.show}{Logical for whether to show a progress bar while running code.}
+\item{pb_show}{Logical for whether to show a progress bar while running code.}
 
 \item{SignatureColNames}{The column names in the SE_scored colData that contain 
 the signature score data.}

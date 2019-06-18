@@ -5,7 +5,7 @@
 \title{Create an interactive table of results for the bootstrapped AUC and p-values for a scored dataset.}
 \usage{
 tableAUC(SE_scored, annotationData, signatureColNames, num.boot,
-  pb.show = TRUE)
+  pb_show = TRUE)
 }
 \arguments{
 \item{SE_scored}{A SummarizedExperiment object with genes in the rows,
@@ -15,7 +15,7 @@ and signature scores in the columns. There should also be a column indicating TB
 
 \item{num.boot}{The number of times to bootstrap the data.}
 
-\item{pb.show}{Logical for whether to show a progress bar while running code.}
+\item{pb_show}{Logical for whether to show a progress bar while running code.}
 
 \item{SignatureColNames}{The column names in the SE_scored colData that contain 
 the signature score data.}

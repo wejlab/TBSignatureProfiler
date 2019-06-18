@@ -74,7 +74,7 @@ bootstrapAUC <- function(SE_scored, annotationData, signatureColNames, num.boot 
 #' @param SignatureColNames The column names in the SE_scored colData that contain 
 #' the signature score data.
 #' @param num.boot The number of times to bootstrap the data.
-#' @param pb.show Logical for whether to show a progress bar while running code.
+#' @param pb_show Logical for whether to show a progress bar while running code.
 #' 
 #' @export
 #' 
@@ -82,9 +82,9 @@ bootstrapAUC <- function(SE_scored, annotationData, signatureColNames, num.boot 
 #' 
 #' @example 
 
-tableAUC <- function(SE_scored, annotationData, signatureColNames, num.boot, pb.show = TRUE){
+tableAUC <- function(SE_scored, annotationData, signatureColNames, num.boot, pb_show = TRUE){
   # Run the bootstrapping function
-  BS.Results <- bootstrapAUC(SE_scored, annotationData, signatureColNames, num.boot, pb.show = pb.show)
+  BS.Results <- bootstrapAUC(SE_scored, annotationData, signatureColNames, num.boot, pb.show = pb_show)
   pvals <- BS.Results[["P-values"]]
   aucs_boot <- BS.Results[["Boot AUC Values"]]
   aucs <- BS.Results[["Non-Boot AUC Values"]]
@@ -114,7 +114,7 @@ tableAUC <- function(SE_scored, annotationData, signatureColNames, num.boot, pb.
 #' @param cex A numerical value giving the amount by which plotting text and symbols should be magnified 
 #' relative to the default.
 #' @param name A character string giving the overall title for the plot.
-#' @param pb.show Logical for whether to show a progress bar while running code.
+#' @param pb_show Logical for whether to show a progress bar while running code.
 #' 
 #' @export
 #' 
@@ -124,9 +124,9 @@ tableAUC <- function(SE_scored, annotationData, signatureColNames, num.boot, pb.
 compareBoxplots <- function(SE_scored, annotationData, signatureColNames, num.boot = 100,
                             cex.axis = 0.7, cex = 0.25,
                             name = "Boxplot Comparison of Signatures",
-                            pb.show = TRUE){
+                            pb_show = TRUE){
   # Run the bootstrapping function
-  BS.Results <- bootstrapAUC(SE_scored, annotationData, signatureColNames, num.boot, pb.show = pb.show)
+  BS.Results <- bootstrapAUC(SE_scored, annotationData, signatureColNames, num.boot, pb.show = pb_show)
   aucs_boot <- BS.Results[["Boot AUC Values"]]
   aucs <- BS.Results[["Non-Boot AUC Values"]]
   
