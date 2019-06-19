@@ -1,9 +1,9 @@
 #' TB Signatures
 #'
-#' A set of 34 TB signatures from publications. This set of signatures uses
+#' A set of 34 Tuberculosis gene signatures from various publications. This set of signatures uses
 #' gene symbols. Attempts have been made to use updated gene symbols and remove
-#' symbols that didn't match the most recent annotation. Additional sets for
-#' entrez IDs and ensembl IDs are forthcoming. The name ends with the number of
+#' symbols that did not match the most recent annotation. Additional sets for
+#' Entrez IDs and Ensembl IDs are forthcoming. The assigned signature name ends with the number of
 #' genes in the original signature.
 #'
 #' \itemize{
@@ -89,9 +89,13 @@
 "TBsignatures"
 
 
-#' TB Example dataset
+#' TB Example dataset with Indian population data
 #'
-#' The gene expression and metadata in a SummarizedExperiment object.
+#' An example dataset containing the gene expression and metadata in a SummarizedExperiment object for an Indian 
+#' population. Active TB contamination of the 44 subjects is denoted for each as a "1"(active) or "0" (latent/not present),
+#' and can be accessed via \code{TB_indian$label}. The SummarizedExperiment object 
+#' contains 2 assays (counts and log(counts)), and the column names give the unique
+#' subject identification number along with the subject's gender.
 #'
 #' @name TB_indian
 #' @docType data
@@ -100,3 +104,19 @@
 #' @examples
 #' data("TB_indian")
 "TB_indian"
+
+#' TB Example dataset with TB/HIV data
+#'
+#' An example dataset containing the gene expression and metadata in a SummarizedExperiment object for 33 subjects
+#' with HIV and/or Tuberculosis diseases. Information on subject infection status can be accessed with \code{TB_hiv$Disease}.
+#' Samples with both TB and HIV contamination are marked as \code{tb_hiv}, while samples 
+#' with HIV and no TB are marked as \code{hiv_only}. Additionally, 2 samples with both TB & HIV that are undergoing Anti-Retroviral 
+#' therapy for HIV are marked as \code{tb_hiv_art}.
+#'
+#' @name TB_hiv
+#' @docType data
+#' @format SummarizedExperiment
+#' @keywords datasets
+#' @examples
+#' data("TB_hiv")
+"TB_hiv"
