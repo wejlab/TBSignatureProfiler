@@ -105,7 +105,7 @@ ssgsea_res <- runTBsigProfiler(input = hivtb_data,
                                useAssay = "logcpm",
                                signatures = TBsignatures_nanostring,
                                algorithm = "ssGSEA",
-                               combineSigAndAlgorithm = FALSE,
+                               combineSigAndAlgorithm = TRUE,
                                parallel.sz = 4)
 ```
 

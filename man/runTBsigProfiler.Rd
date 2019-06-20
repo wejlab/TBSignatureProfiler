@@ -2,7 +2,7 @@
 % Please edit documentation in R/profile.R
 \name{runTBsigProfiler}
 \alias{runTBsigProfiler}
-\title{Run TB Signature Profiling}
+\title{Run Tuberculosis Gene Signature profiling}
 \usage{
 runTBsigProfiler(input, useAssay = NULL, signatures = NULL,
   algorithm = c("GSVA", "ssGSEA", "ASSIGN"),
@@ -11,55 +11,94 @@ runTBsigProfiler(input, useAssay = NULL, signatures = NULL,
   ASSIGNburnin = 50000)
 }
 \arguments{
-\item{input}{Input data as a SummarizedExperiment, data.frame, or matrix.
-Required}
+\item{input}{an input data object of the class \code{SummarizedExperiment}, 
+\code{data.frame}, or \code{matrix} containing gene expression data. Required.}
 
-\item{useAssay}{When using SummarizedExperiment style input, the assay to
-use for signature profiling. Required for SummarizedExperiment}
+\item{useAssay}{a character string specifying the assay to use for signature 
+profiling when \code{input} is a SummarizedExperiment. Required only for input 
+data of the class \code{SummarizedExperiment}.}
 
-\item{signatures}{A list of signatures to run. If signatures is NULL, the
-default set of signatures from the included TBsignatures data set is run.
-For details run ?TBsignatures.}
+\item{signatures}{a list of signatures to run with their associated genes. 
+This list should be in the same format as \code{TBsignatures}, included in 
+the TBSignatureProfiler package. If \code{signatures = NULL}, the default set 
+of signatures \code{TBsignatures} list is used. For details, 
+run \code{?TBsignatures}.}
 
-\item{algorithm}{A list of algorithms to run. The default is GSVA, ssGSEA,
-and ASSIGN.}
+\item{algorithm}{a vector of algorithms to run, or character string if only 
+one is desired. The default is \code{c("GSVA", "ssGSEA", "ASSIGN")}.}
 
-\item{combineSigAndAlgorithm}{Logical. If TRUE, the row names will be in
-the form <signature>_<algorithm>. If FALSE, there will be a column named
-'algorithm' that lists which algorithm is used. If NULL, and one algorithm
-was used, the algorithm will not be listed. The default is false.}
+\item{combineSigAndAlgorithm}{logical, not supported if \code{input} is a 
+SummarizedExperiment object (in which case, the default is \code{TRUE}). 
+For a matrix or data frame, if \code{TRUE}, the row names will be in the form 
+<signature>_<algorithm>. If \code{FALSE}, there will be a column named
+'algorithm' that lists which algorithm is used, and a column named 'pathway'
+that lists the signature profiled. If \code{NULL}, and one algorithm was used,
+the algorithm will not be listed. The default is \code{FALSE}.}
 
-\item{assignDir}{If using ASSIGN, a directory to save intermediate ASSIGN
-results. The default is NULL and intermediate results will not be saved.}
+\item{assignDir}{a character string naming a directory to save intermediate
+ASSIGN results if \code{algorithm} specifies \code{"ASSIGN"}. The default is 
+\code{NULL}, in which case intermediate results will not be saved.}
 
-\item{outputFormat}{Output data format. Can be SummarizedExperiment, matrix,
-or data.frame. The default is the same as input.}
+\item{outputFormat}{a character string specifying the output data format. 
+Possible values are \code{"SummarizedExperiment"}, \code{"matrix"}, or 
+\code{"data.frame"}. The default is to return the same type as the 
+\code{input} object.}
 
-\item{parallel.sz}{Number of processors to use when doing the calculations in
-parallel for GSVA and ssGSEA. If 0, all cores are used. The default is 0.}
+\item{parallel.sz}{an integer identifying the number of processors to use 
+when running the calculations in parallel for the GSVA and ssGSEA algorithms. 
+If \code{parallel.sz = 0}, all cores are used. The default is \code{0}.}
 
-\item{ASSIGNiter}{The number of iterations in the ASSIGN MCMC. The default is
-100000.}
+\item{ASSIGNiter}{an integer indicating the number of iterations to use in 
+the MCMC for the ASSIGN algorithm. The default is \code{100,000}.}
 
-\item{ASSIGNburnin}{The number of burn-in iterations for ASSIGN. These
-iterations are discarded when computing the posterior means of the model
-parameters. The default is 50000.}
+\item{ASSIGNburnin}{an integer indicating the number of burn-in iterations 
+to use in the MCMC for the ASSIGN algorithm. These iterations are discarded 
+when computing the posterior means of the model parameters. The default is 
+\code{50,000}.}
 }
 \value{
-A data.frame of signature profiling results.
+A SummarizedExperiment object, data.frame, or matrix of signature 
+profiling results. The returned object will be of the format specified in 
+\code{outputFormat}. If \code{input} is a SummarizedExperiment and 
+\code{outputFormat = "SummarizedExperiment"}, then the output will retain 
+any input information stored in the input colData. In general, if 
+\code{outputFormat = "SummarizedExperiment"} then columns in the colData will
+include the scores for each desired signature with samples on the rows. If 
+\code{input} is a data.frame or matrix, then the returned object will have 
+signatures on the rows and samples on the columns.
 }
 \description{
-Run profiling using a set of signatures and profiling algorithms
+Using some subset of the signatures listed in \code{TBsignatures} and 
+specified scoring algorithms, this function runs gene signature profiling 
+on an input gene expression dataset. It allows for scores to be computed for 
+these signatures which can be compared using various visualization tools also
+provided in the TBSignatureProfiler package.
 }
 \examples{
-#create some toy data to test ACS_COR_16 signature, with 5 samples with low
-#and five samples with high expression of the signatures genes.
+## Using a matrix input/output
+ # Create some toy data to test ACS_COR_16 signature, using 5 samples with low 
+ # expression & five samples with high expression of the signatures genes.
 mat_testdata <- rbind(matrix(c(rnorm(80), rnorm(80) + 5), 16, 10,
                              dimnames = list(TBsignatures$ACS_COR_16,
                              paste0("sample", 1:10))),
                       matrix(rnorm(1000), 100, 10,
                              dimnames = list(paste0("gene", 1:100),
                              paste0("sample", 1:10))))
-res <- runTBsigProfiler(mat_testdata, algorithm = "GSVA", parallel.sz = 1)
+res <- runTBsigProfiler(input = mat_testdata,
+                        signatures = TBsignatures, 
+                        algorithm = c("GSVA", "ssGSEA"), 
+                        combineSigAndAlgorithm = FALSE,
+                        parallel.sz = 1)
 res["ACS_COR_16", ]
+
+## Using a SummarizedExperiment input/output
+ # The TB_indian SummarizedExperiment data is included in the package.
+GSVA_res <- runTBsigProfiler(input = TB_indian,
+                             useAssay = "logcounts",
+                             signatures = TBsignatures,
+                             algorithm = c("GSVA"),
+                             combineSigAndAlgorithm = FALSE,
+                             parallel.sz = 4)
+GSVA_res$ACS_COR_16
+ 
 }
