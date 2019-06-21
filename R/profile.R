@@ -13,7 +13,7 @@
 #' @param useAssay a character string specifying the assay to use for signature 
 #' profiling when \code{input} is a SummarizedExperiment. Required only for input 
 #' data of the class \code{SummarizedExperiment}.
-#' @param signatures a list of signatures to run with their associated genes. 
+#' @param signatures a \code{list} of signatures to run with their associated genes. 
 #' This list should be in the same format as \code{TBsignatures}, included in 
 #' the TBSignatureProfiler package. If \code{signatures = NULL}, the default set 
 #' of signatures \code{TBsignatures} list is used. For details, 
@@ -23,7 +23,7 @@
 #' @param combineSigAndAlgorithm logical, not supported if \code{input} is a 
 #' SummarizedExperiment object (in which case, the default is \code{TRUE}). 
 #' For a matrix or data frame, if \code{TRUE}, the row names will be in the form 
-#' <signature>_<algorithm>. If \code{FALSE}, there will be a column named
+#' <algorithm>_<signature>. If \code{FALSE}, there will be a column named
 #' 'algorithm' that lists which algorithm is used, and a column named 'pathway'
 #' that lists the signature profiled. If \code{NULL}, and one algorithm was used,
 #' the algorithm will not be listed. The default is \code{FALSE}.
@@ -44,15 +44,16 @@
 #' when computing the posterior means of the model parameters. The default is 
 #' \code{50,000}.
 #'
-#' @return A SummarizedExperiment object, data.frame, or matrix of signature 
-#' profiling results. The returned object will be of the format specified in 
-#' \code{outputFormat}. If \code{input} is a SummarizedExperiment and 
+#' @return A \code{SummarizedExperiment} object, \code{data.frame}, or 
+#' \code{matrix} of signature profiling results. The returned object will be 
+#' of the format specified in \code{outputFormat}. 
+#' If \code{input} is a \code{SummarizedExperiment} and 
 #' \code{outputFormat = "SummarizedExperiment"}, then the output will retain 
 #' any input information stored in the input colData. In general, if 
-#' \code{outputFormat = "SummarizedExperiment"} then columns in the colData will
-#' include the scores for each desired signature with samples on the rows. If 
-#' \code{input} is a data.frame or matrix, then the returned object will have 
-#' signatures on the rows and samples on the columns. 
+#' \code{outputFormat = "SummarizedExperiment"} then columns in the \code{colData} 
+#' will include the scores for each desired signature with samples on the rows. 
+#' If \code{input} is a \code{data.frame} or \code{matrix}, then the returned 
+#' object will have signatures on the rows and samples on the columns. 
 #'
 #' @export
 #'
@@ -302,3 +303,5 @@ runTBsigProfiler <- function(input, useAssay = NULL,
     stop("Output format error.")
   }
 }
+
+

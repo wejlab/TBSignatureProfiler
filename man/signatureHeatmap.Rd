@@ -2,7 +2,7 @@
 % Please edit documentation in R/plot.R
 \name{signatureHeatmap}
 \alias{signatureHeatmap}
-\title{Plot a Heatmap of Signature Scores}
+\title{Plot a Heatmap of Signature Scores.}
 \usage{
 signatureHeatmap(inputData, annotationData, name = "Signatures",
   signatureColNames, annotationColNames, colList = list(),
@@ -11,67 +11,78 @@ signatureHeatmap(inputData, annotationData, name = "Signatures",
   "Dark2", "Paired"), ...)
 }
 \arguments{
-\item{inputData}{Either a SummarizedExperiment object that contains the
-signature data and annotation as colData columns, or a data.frame or matrix
-of signature data. Required.}
+\item{inputData}{an input data object. It should either be of the class 
+\code{SummarizedExperiment} and contain the profiled signature data and 
+annotation data as columns in the colData, or alternatively be of the classes 
+\code{data.frame} or \code{matrix} and contain only the gene expression data. 
+Required.}
 
-\item{annotationData}{If inputData is a data.frame or matrix of signature
-data, a data.frame or matrix of annotation data.}
+\item{annotationData}{a data.frame or matrix of annotation data, with one 
+column. Only required if \code{inputData} is a data.frame or matrix of 
+signature data.}
 
-\item{name}{The name of the heatmap. The default is "Signatures".}
+\item{name}{a character string with the plot title of the heatmap. The 
+default is \code{"Signatures"}.}
 
-\item{signatureColNames}{If inputData is a SummarizedExperiment, the column
-names in colData that contain the signature data.}
+\item{signatureColNames}{a vector of the column names in the colData that 
+contain the signature data. Only required if \code{inputData} is a 
+SummarizedExperiment object.}
 
-\item{annotationColNames}{If inputData is a SummarizedExperiment, the column
-names in colData that contain the annotation data.}
+\item{annotationColNames}{a vector of the column names in the colData that 
+contain the annotation data. Only required if \code{inputData} is a 
+SummarizedExperiment object.}
 
-\item{colList}{Custom color information as a named list to pass to
-ComplexHeatmap. By default, ColorBrewer color sets will be used. See
-colorSets for additional options.}
+\item{colList}{a named list specifying custom color information to pass to
+ComplexHeatmap. By default, ColorBrewer color sets will be used. See the 
+the parameter \code{colorSets} for additional details.}
 
-\item{scale}{Scale the signature data. The default is FALSE.}
+\item{scale}{logical. Setting \code{scale = TRUE} scales the signature data. 
+The default is \code{FALSE}.}
 
-\item{showColumnNames}{Show columns names (sample names) in the heatmap. The
-default is TRUE.}
+\item{showColumnNames}{logical. Setting \code{showColumnNames = TRUE} will 
+show the column names (i.e. sample names) on the heatmap. The default is 
+\code{TRUE}.}
 
-\item{showRowNames}{Show row names(signature names) in the heatmap. The
-default is TRUE.}
+\item{showRowNames}{logical. Setting \code{showColumnNames = TRUE} will 
+show the row names (i.e. signature names) on the heatmap. The default is 
+\code{TRUE}.}
 
-\item{colorSets}{By default, this function will use the color sets in the
-order listed below for annotation information. Replace this with the sets
-in order that you want to use them, or provide custom color sets with
-colList.}
+\item{colorSets}{a vector of names listing the color sets in the order 
+that they should be used in creating the heatmap. By default, this function 
+will use the color sets in the order listed below for annotation information. 
+You may replace this with the sets in order that you want to use them, or 
+provide custom color sets with the \code{colList} parameter.}
 
-\item{...}{Additional parameters to pass to ComplexHeatmap::Heatmap().}
+\item{...}{Additional arguments to be passed to \code{ComplexHeatmap::Heatmap()}.}
 }
 \value{
-A ComplexHeatmap plot
+A ComplexHeatmap plot.
 }
 \description{
-Plot a Heatmap of Signature Scores
+This function takes a dataset of scored gene expression data as an input
+and returns a ComplexHeatmap plot for for visual comparison of 
+signature performance.
 }
 \examples{
 library(SummarizedExperiment)
-#generate some artificial data that shows a difference in ACS_COR_16
+# Generate some artificial data that shows a difference in ACS_COR_16
 mat_testdata <- rbind(matrix(c(rnorm(80), rnorm(80) + 5), 16, 10,
                              dimnames = list(TBsignatures$ACS_COR_16,
                                              paste0("sample", 1:10))),
                       matrix(rnorm(1000), 100, 10,
                              dimnames = list(paste0("gene", 1:100),
                                              paste0("sample", 1:10))))
-#Create a SummarizedExperiment object that contains the data
-testdataSE <- SummarizedExperiment(assays=SimpleList(data = mat_testdata),
-                                   colData=DataFrame(sample = c(rep("down", 5),
+# Create a SummarizedExperiment object that contains the data
+testdataSE <- SummarizedExperiment(assays = SimpleList(data = mat_testdata),
+                                     colData = DataFrame(sample = 
+                                                           c(rep("down", 5),
                                                                 rep("up", 5))))
-#Run profiler using GSVA and ssGSEA on ACS_COR_16
 res <- runTBsigProfiler(testdataSE, useAssay = "data",
                         signatures = TBsignatures["ACS_COR_16"],
                         algorithm = c("GSVA", "ssGSEA"), parallel.sz = 1,
                         combineSigAndAlgorithm = TRUE)
-#Plot heatmap of the results
 signatureHeatmap(res, signatureColNames = c("GSVA_ACS_COR_16",
                                             "ssGSEA_ACS_COR_16"),
-                 annotationColNames = "sample", scale=TRUE,
+                 annotationColNames = "sample", scale = TRUE,
                  showColumnNames = FALSE)
 }
