@@ -2,27 +2,29 @@
 % Please edit documentation in R/evaluate.R
 \name{LOOAUC_simple_multiple_noplot_one_df}
 \alias{LOOAUC_simple_multiple_noplot_one_df}
-\title{LOOCV with logistic regression}
+\title{Perform Leave-one-out CV with Logistic Regression.}
 \usage{
 LOOAUC_simple_multiple_noplot_one_df(df, targetVec)
 }
 \arguments{
-\item{df}{a data.frame of gene expression count data.
-Required.}
+\item{df}{a \code{data.frame} of gene expression count data. Required.}
 
-\item{targetVec}{binary vector indicating y}
+\item{targetVec}{a binary vector of the response variable. Should be 
+the same number of rows as \code{df}. Required.}
 }
 \value{
-AUC from LOOCV
+A list of length 3 with elements 
+\item{auc}{The AUC from the LOOCV procedure.} 
+\item{byClass}{A vector containing the sensitivity, specificity, positive 
+predictive value, negative predictive value, precision, recall, F1, 
+prevalence, detection rate, detection prevalence and balanced accuracy.}
+\item{prob}{A vector of the test prediction probabilities.}
 }
 \description{
-LOOCV with logistic regression
+Perform Leave-one-out CV with Logistic Regression.
 }
 \examples{
-inputTest <- matrix(rnorm(1000), 100, 10,
-                    dimnames = list(paste0("gene", 1:100),
-                                    paste0("sample", 1:10)))
-inputTest <- as.data.frame(inputTest)
-targetVec <- sample(c(0,1), replace=TRUE, size=10)
+inputTest <- as.data.frame(assay(TB_indian, "counts"))
+targetVec <- TB_indian$label
 res <- LOOAUC_simple_multiple_noplot_one_df(inputTest, targetVec)
 }

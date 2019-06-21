@@ -1,45 +1,43 @@
-#' gene expression normalization, RLE normalization: relative log expression
-#'
-#' @param inputData a data.frame or matrix of gene expression count data.
-#' Required.
-#' @importFrom DESeq2 estimateSizeFactorsForMatrix
-#' @return Normalized count data
+#' Normalize Gene Expression Count Data.
+#' 
+#' @param inputData a \code{data.frame} or \code{matrix} of gene expression 
+#' count data. Required.
+#' 
+#' @return A \code{data.frame} or \code{matrix} of normalized count data.
 #'
 #' @export
 #'
-#' @examples
-#' inputTest <- matrix(rnorm(1000), 100, 10,
-#'                     dimnames = list(paste0("gene", 1:100),
-#'                                     paste0("sample", 1:10)))
-#' res <- deseq2_norm_rle(inputTest)
+#' @examples 
+#' # Example using the counts assay from a SummarizedExperiment
+#' data_in <- assay(TB_indian, "counts")
+#' res <- deseq2_norm_rle(data_in)
 deseq2_norm_rle <- function(inputData){
-    scalingFac <- estimateSizeFactorsForMatrix(inputData)
+    scalingFac <- DESeq2::estimateSizeFactorsForMatrix(inputData)
     inputDataScaled <- inputData
-    for (i in 1:ncol(inputData)){
+    for (i in 1:ncol(inputData)) {
         inputDataScaled[, i] <- inputData[, i] / scalingFac[i]
     }
     return(inputDataScaled)
 }
 
-#' LOOCV with logistic regression
+#' Perform Leave-one-out CV with Logistic Regression.
 #'
-#' @param df a data.frame of gene expression count data.
-#' Required.
-#' @param targetVec binary vector indicating y
-#' @import glmnet
-#' @import caret
-#' @importFrom methods slot
-#' @importFrom stats predict
-#' @return AUC from LOOCV
-#'
+#' @param df a \code{data.frame} of gene expression count data. Required.
+#' @param targetVec a binary vector of the response variable. Should be 
+#' the same number of rows as \code{df}. Required.
+#' 
+#' @return A list of length 3 with elements 
+#' \item{auc}{The AUC from the LOOCV procedure.} 
+#' \item{byClass}{A vector containing the sensitivity, specificity, positive 
+#' predictive value, negative predictive value, precision, recall, F1, 
+#' prevalence, detection rate, detection prevalence and balanced accuracy.}
+#' \item{prob}{A vector of the test prediction probabilities.}
+#' 
 #' @export
 #'
 #' @examples
-#' inputTest <- matrix(rnorm(1000), 100, 10,
-#'                     dimnames = list(paste0("gene", 1:100),
-#'                                     paste0("sample", 1:10)))
-#' inputTest <- as.data.frame(inputTest)
-#' targetVec <- sample(c(0,1), replace=TRUE, size=10)
+#' inputTest <- as.data.frame(assay(TB_indian, "counts"))
+#' targetVec <- TB_indian$label
 #' res <- LOOAUC_simple_multiple_noplot_one_df(inputTest, targetVec)
 
 LOOAUC_simple_multiple_noplot_one_df <- function(df, targetVec){
@@ -50,34 +48,44 @@ LOOAUC_simple_multiple_noplot_one_df <- function(df, targetVec){
   for (j in 1:nSample){
     train <- t(as.matrix(df[, -j]))
     test <- t(as.matrix(df[, j]))
-    fit <- suppressWarnings(glmnet(train, targetVec[-j], family = "binomial"))
-    testPredictionClassVec[j] <- suppressWarnings(predict(fit, type = "class", newx = test, s = 0))
-    testPredictionProbVec[j] <- suppressWarnings(predict(fit, type = "response", newx = test, s = 0))
+    fit <- suppressWarnings(glmnet::glmnet(train, targetVec[-j], 
+                                           family = "binomial"))
+    testPredictionClassVec[j] <- suppressWarnings(
+      stats::predict(fit, type = "class", newx = test, s = 0))
+    testPredictionProbVec[j] <- suppressWarnings(
+      stats::predict(fit, type = "response", newx = test, s = 0))
   }
   loo.pred <- ROCit::rocit(testPredictionProbVec, targetVec)
   auc <- loo.pred$AUC
   aucRound <- round(auc, 4)
   auc.vec <- c(auc.vec, aucRound)
-  # for other metric
   testPredictionClassVec <- as.numeric(testPredictionClassVec)
-  cm <- suppressWarnings(confusionMatrix(as.factor(testPredictionClassVec), as.factor(targetVec)))
+  conf.mat <- suppressWarnings(
+    caret::confusionMatrix(as.factor(testPredictionClassVec), 
+                                         as.factor(targetVec)))
   output.list <- list()
   output.list[[1]] <- auc.vec
-  output.list[[2]] <- cm$byClass
+  output.list[[2]] <- conf.mat$byClass
   output.list[[3]] <- testPredictionProbVec
-  names(output.list) <- c("auc", "other", "prob")
+  names(output.list) <- c("auc", "byClass", "prob")
   return(output.list)
 }
 
-#' Bootstrap LOOCV with logistic regression
+#' Bootstrap on Leave-one-out CV with Logistic Regression.
 #'
-#' @param df a data.frame of gene expression count data.
-#' Required.
-#' @param target.vec binary vector indicating y
-#' @param nboot number of bootstrap
+#' @param df a \code{data.frame} of gene expression count data. Required.
+#' @param targetVec a binary vector of the response variable. Should be 
+#' the same number of rows as \code{df}. Required.
+#' @param nboot an integer specifying the number of bootstrap iterations.
 #'
-#' @return AUC from bootstrap LOOCV
-#'
+#' @return A list of length 2 with elements \item{auc}{A vector the length of 
+#' \code{nboot} with the AUC from each bootstrap iteration.}
+#' \item{byClass}{A dataframe with number of rows equal to \code{nboot}. Each
+#' row contains the sensitivity, specificity, positive predictive
+#' value, negative predictive value, precision, recall, F1, prevalence,
+#' detection rate, detection prevalence and balanced accuracy for that 
+#' bootstrap iteration.}
+#' 
 #' @export
 #'
 #' @examples
@@ -85,40 +93,50 @@ LOOAUC_simple_multiple_noplot_one_df <- function(df, targetVec){
 #'                     dimnames = list(paste0("gene", 1:100),
 #'                                     paste0("sample", 1:20)))
 #' inputTest <- as.data.frame(inputTest)
-#' targetVec <- sample(c(0,1), replace=TRUE, size=20)
+#' targetVec <- sample(c(0,1), replace = TRUE, size = 20)
 #' nboot <- 3
 #' res <- Bootstrap_LOOCV_LR_AUC(inputTest, targetVec, nboot)
 Bootstrap_LOOCV_LR_AUC <- function(df, target.vec, nboot){
   output.auc.vec <- c()
-  output.other.df <- NULL
+  output.byClass.df <- NULL
   for (i in 1:nboot){
     index.boot <- sample(1:ncol(df), ncol(df), replace = TRUE)
     df.tmp <- df[, index.boot]
-    loo.output.list <- suppressWarnings(LOOAUC_simple_multiple_noplot_one_df(df.tmp, target.vec[index.boot]))
+    loo.output.list <- suppressWarnings(
+      LOOAUC_simple_multiple_noplot_one_df(df.tmp, target.vec[index.boot]))
     output.auc.vec[i] <- loo.output.list[[1]]
-    output.other.df <- rbind(output.other.df, loo.output.list[[2]])
+    output.byClass.df <- rbind(output.byClass.df, loo.output.list[[2]])
   }
 
   output.list <- list()
   output.list[[1]] <- output.auc.vec
-  output.list[[2]] <- as.data.frame(output.other.df)
-  names(output.list) <- c("auc", "other")
+  output.list[[2]] <- as.data.frame(output.byClass.df)
+  names(output.list) <- c("auc", "byClass")
   return(output.list)
 }
 
-#' Use logistic regression and Bootstrap LOOCV for signature evaluation.
+#' Use Logistic Regression and Bootstrap LOOCV to Evaluate Signatures.
+#' 
+#' This function takes as input a \code{data.frame} with genetic expression
+#' count data, and uses a bootstrapped leave-one-out cross validation procedure
+#' with logistic regression to allow for numeric and graphical comparison 
+#' across any number of genetic signatures.
 #'
-#' @param df.input a data.frame of gene expression count data.
-#' Required.
-#' @param target.vec.num numeric binary vector indicating y
-#' @param signature.list a list of signatures
-#' @param signature.name.vec vector of signature names
-#' @param num.boot number of bootstrap
-#' @param pb.show Logical; whether to display a progress bar for output. Default is TRUE.
-#' @importFrom gmodels ci
-#' @importFrom grDevices dev.off pdf
-#' @importFrom graphics boxplot
-#' @importFrom stats median
+#' @param df.input a \code{data.frame} of gene expression count data. Required.
+#' @param target.vec.num a numeric binary vector of the response variable. 
+#' The vector should be the same number of rows as \code{df}. Required.
+#' @param signature.list a \code{list} of signatures to run with their 
+#' associated genes. This list should be in the same format as \code{TBsignatures}, 
+#' included in the TBSignatureProfiler package. If \code{signatures = NULL}, the 
+#' default set of signatures \code{TBsignatures} list is used. For details, 
+#' run \code{?TBsignatures}.
+#' @param signature.name.vec A vector specifying the names of the signatures
+#' to be compared. This should be the same length as \code{signature.list}.
+#' @param num.boot an integer specifying the number of bootstrap iterations.
+#' @param pb.show logical. If \code{TRUE} then a progress bar for the 
+#' bootstrapping procedure will be displayed as output. The default is 
+#' \code{TRUE}.
+#' 
 #' @return the AUC, sensitivity and specificity
 #'
 #' @export
@@ -128,30 +146,23 @@ Bootstrap_LOOCV_LR_AUC <- function(df, target.vec, nboot){
 #'                     dimnames = list(paste0("gene", 1:100),
 #'                                     paste0("sample", 1:20)))
 #' inputTest <- as.data.frame(inputTest)
-#' targetVec <- sample(c(0,1), replace=TRUE, size=20)
+#' targetVec <- sample(c(0,1), replace = TRUE, size = 20)
 #' signature.list <- list(sig1 = c("gene1", "gene2", "gene3"),
 #'                        sig2 = c("gene4", "gene5", "gene6"))
 #' signature.name.vec <- c("sig1", "sig2")
 #' num.boot <- 3
-#' res <- SignatureQuantitative(inputTest,
-#'                              targetVec,
-#'                              signature.list,
-#'                              signature.name.vec,
-#'                              num.boot)
-SignatureQuantitative <- function(df.input,
-                                  target.vec.num,
-                                  signature.list,
-                                  signature.name.vec,
-                                  num.boot = 100,
-                                  pb.show = TRUE){
-
+#' res <- SignatureQuantitative(inputTest, targetVec, signature.list,
+#'                              signature.name.vec, num.boot)
+SignatureQuantitative <- function(df.input, target.vec.num, signature.list,
+                                  signature.name.vec, num.boot = 100,
+                                  pb.show = TRUE) {
   df.list <- list()
-  # create progress bar
+  # progress bar
   counter <- 0
   total <- length(signature.list)
   if (pb.show) pb <- txtProgressBar(min = 0, max = total, style = 3)
   
-  for (i in 1:length(signature.list)){
+  for (i in 1:length(signature.list)) {
     df.list[[i]] <- df.input[signature.list[[i]], ]
   }
 
@@ -160,13 +171,14 @@ SignatureQuantitative <- function(df.input,
   sensitivity.ci <- list()
   specificity.ci <- list()
   
-  for (i in 1:length(df.list)){
+  for (i in 1:length(df.list)) {
     boot.output.list <- suppressWarnings(Bootstrap_LOOCV_LR_AUC(df.list[[i]],
                                                target.vec.num,
                                                nboot = num.boot))
     # AUC
     auc.result[[i]] <- boot.output.list[[1]]
-    result <- LOOAUC_simple_multiple_noplot_one_df(df.list[[i]], targetVec = target.vec.num)
+    result <- LOOAUC_simple_multiple_noplot_one_df(df.list[[i]], 
+                                                   targetVec = target.vec.num)
     est <- result[[1]]
     ci.lower <- quantile(auc.result[[i]], probs = 0.05)
     ci.upper <- quantile(auc.result[[i]], probs = 0.95)
@@ -176,38 +188,40 @@ SignatureQuantitative <- function(df.input,
     names(auc.result)[i] <- signature.name.vec[i]
     names(auc.result.ci)[i] <- signature.name.vec[i]
     # sensitivity
-    est2 <- result$other["Sensitivity"]
+    est2 <- result$byClass["Sensitivity"]
     ci.lower2 <- quantile(boot.output.list[[2]]$Sensitivity, probs = 0.05)
     ci.upper2 <- quantile(boot.output.list[[2]]$Sensitivity, probs = 0.95)
-    st.error2 <- (1/(num.boot-1))*sum(boot.output.list[[2]]$Sensitivity - mean(boot.output.list[[2]]$Sensitivity)) 
+    st.error2 <- (1 / (num.boot - 1)) * 
+      sum(boot.output.list[[2]]$Sensitivity - 
+            mean(boot.output.list[[2]]$Sensitivity)) 
     sensitivity.ci[[i]] <- c("Estimate" = est2, "CI lower" = ci.lower2,
-                                   "CI upper" = ci.upper2, "Std. Error" = st.error2)
+                             "CI upper" = ci.upper2, "Std. Error" = st.error2)
     names(sensitivity.ci)[i] <- signature.name.vec[i]
-    # specificity
-    est3 <- result$other["Specificity"]
+    est3 <- result$byClass["Specificity"]
     ci.lower3 <- quantile(boot.output.list[[2]]$Specificity, probs = 0.05)
     ci.upper3 <- quantile(boot.output.list[[2]]$Specificity, probs = 0.95)
-    st.error3 <- (1/(num.boot-1))*sum(boot.output.list[[2]]$Specificity - mean(boot.output.list[[2]]$Specificity)) 
+    st.error3 <- (1 / (num.boot - 1)) * 
+      sum(boot.output.list[[2]]$Specificity - 
+            mean(boot.output.list[[2]]$Specificity)) 
     specificity.ci[[i]] <- c("Estimate" = est3, "CI lower" = ci.lower3,
-                                   "CI upper" = ci.upper3, "Std. Error" = st.error3)
-    specificity.ci[[i]] <- suppressWarnings(ci(boot.output.list[[2]]$Specificity))
+                             "CI upper" = ci.upper3, "Std. Error" = st.error3)
+    specificity.ci[[i]] <- suppressWarnings(
+      gmodels::ci(boot.output.list[[2]]$Specificity))
     names(specificity.ci)[i] <- signature.name.vec[i]
     
     counter <- counter + 1
     if (pb.show) setTxtProgressBar(pb, counter)
   }
 
-  # boxplot
+  # Boxplot
   m <- lapply(auc.result, median, na.rm = TRUE)
   o <- order(unlist(m))
-  # pdf("boxplot.pdf", width = 13, height = 8)
   boxplot(auc.result[o],
           main = "Quantitative evaluation of signatures: AUC",
           cex.axis = 0.6,
           las = 2)
-  # dev.off()
-
-  # output df instead of list
+  
+  # output data.frame instead of list
   df.auc.ci <- data.frame(matrix(unlist(auc.result.ci),
                                  nrow = length(auc.result.ci),
                                  byrow = TRUE))
@@ -233,42 +247,47 @@ SignatureQuantitative <- function(df.input,
               df.specificity.ci = df.specificity.ci))
 }
 
-#' Add SummarizedExperiment assays to the Data Structure.
+#' Add SummarizedExperiment Assays to the Data Structure.
 #' 
-#' This function creates additional assays for a gene expression count dataset to be used in further analysis.
-#' @param SE_obj SummarizedExperiment object containing gene expression count data. 
-#' @param type vector or single character string indicating the type(s) of assay to add to SE_obj. 
-#' If no value is specified, then CPM, log CPM, and log counts assays will all be created.
-#' See details for further information on possible values.
-#' @param  prior.counts integer specifying the average count to be added to each 
-#' observation to avoid taking the log of zero. Used only if 'type' = "all" or "logCPM". 
-#' If no value is input, default is 3.
+#' This function creates additional assays for a gene expression count dataset 
+#' to be used in further analysis.
 #' 
-#' @return This function returns a Summarized Experiment object with up 
-#' to 3 additional assay types added to the original inputted object.
+#' @param SE_obj a \code{SummarizedExperiment} object containing gene expression 
+#' count data. Required.
+#' @param type either a vector or a single character string indicating the 
+#' type(s) of assay to add to \code{SE_obj}. The default is 
+#' \code{c("CPM", "logCPM", "logcounts")}. 
+#' @param  prior.counts an integer specifying the average count to be added to 
+#' each observation to avoid taking the log of zero. Used only if 
+#' \code{type = "all"} or \code{"logCPM"}. The default is \code{3}.
 #' 
-#' @details Here I will detail the specific objects... 
+#' @return This function returns a \code{SummarizedExperiment} object with up 
+#' to 3 additional assay types attached to the original inputted object.
+#' \item{cpm}{Counts per million}
+#' \item{logcpm}{Log counts per million}
+#' \item{logcounts}{Log counts}
 #' 
 #' @author Aubrey Odom
 #' 
 #' @export
 #' 
 #' @examples 
-#' ### You can add a log counts, log CPM, and CPM assay by default
-#' testrun_all <- mkAssay(hivtb_data)
+#' ## You can add a log counts, log CPM, and CPM assay by default
+#' testrun_all <- mkAssay(TB_hiv)
 #' assays(testrun_all)
 #' 
-#' ### If a vector is passed to 'type' then all specified options will be added
-#' testrun_CPM <- mkAssay(hivtb_data, type = c("CPM", "logCPM"))
+#' ## If a vector is passed to 'type' then all specified options will be added
+#' testrun_CPM <- mkAssay(TB_hiv, type = c("CPM", "logCPM"))
 #' assays(testrun_CPM)
 #' 
-#' ### Pass a single option to 'type'
-#' testrun_lc <- mkAssay(hivtb_data, type = "logcounts")
+#' ## Pass a single option to 'type'
+#' testrun_lc <- mkAssay(TB_hiv, type = "logcounts")
 #' assays(testrun_lc)
 
 mkAssay <- function(SE_obj, type = "all", prior_counts = 3) {
   if (isFALSE(type %in% c("logcounts", "CPM", "logCPM", "all"))) {
-    return(cat("\" The input for the assay type is invalid. Please specify one of the following options: 
+    return(cat("\" The input for the assay type is invalid. 
+    Please specify one of the following options: 
                      \"logcounts\"
                      \"CPM\"
                      \"logCPM\"
@@ -277,35 +296,43 @@ mkAssay <- function(SE_obj, type = "all", prior_counts = 3) {
   } 
   
   if ("logcounts" %in% type) {
-    SummarizedExperiment::assay(SE_obj, "logcounts") <- log(SummarizedExperiment::assays(SE_obj)$counts + 1)
+    SummarizedExperiment::assay(SE_obj, "logcounts") <- 
+      log(SummarizedExperiment::assays(SE_obj)$counts + 1)
   } 
   
   if ("CPM" %in% type) {
-    data.norm <- edgeR::DGEList(counts = SummarizedExperiment::assay(SE_obj, "counts"))
+    data.norm <- edgeR::DGEList(
+      counts = SummarizedExperiment::assay(SE_obj, "counts"))
     dge_data.norm <- edgeR::calcNormFactors(data.norm)
     CPM_data.norm <- edgeR::cpm(dge_data.norm, log = FALSE)
     SummarizedExperiment::assay(SE_obj, "cpm") <- CPM_data.norm
   } 
   
   if ("logCPM" %in% type) {
-    data.norm <- edgeR::DGEList(counts = SummarizedExperiment::assay(SE_obj, "counts"))
+    data.norm <- edgeR::DGEList(
+      counts = SummarizedExperiment::assay(SE_obj, "counts"))
     dge_data.norm <- edgeR::calcNormFactors(data.norm)
-    logCPM_data.norm <- edgeR::cpm(dge_data.norm, log = TRUE, prior.counts = prior_counts)
+    logCPM_data.norm <- edgeR::cpm(
+      dge_data.norm, log = TRUE, prior.counts = prior_counts)
     SummarizedExperiment::assay(SE_obj, "logcpm") <- logCPM_data.norm
   } 
   
   if ("all" %in% type) {
     # Create logcounts assay
-    SummarizedExperiment::assay(SE_obj, "logcounts") <- log(SummarizedExperiment::assays(SE_obj)$counts + 1)
+    SummarizedExperiment::assay(SE_obj, "logcounts") <- log(
+      SummarizedExperiment::assays(SE_obj)$counts + 1)
     
     # Create CPM assay
-    data.norm <- edgeR::DGEList(counts = SummarizedExperiment::assay(SE_obj, "counts"))
+    data.norm <- edgeR::DGEList(
+      counts = SummarizedExperiment::assay(SE_obj, "counts"))
     dge_data.norm <- edgeR::calcNormFactors(data.norm)
-    CPM_data.norm <- edgeR::cpm(dge_data.norm, log = FALSE, prior.counts = prior_counts)
+    CPM_data.norm <- edgeR::cpm(
+      dge_data.norm, log = FALSE, prior.counts = prior_counts)
     SummarizedExperiment::assay(SE_obj, "cpm") <- CPM_data.norm
     
     # Create logCPM assay
-    logCPM_data.norm <- edgeR::cpm(dge_data.norm, log = TRUE, prior.counts = prior_counts)
+    logCPM_data.norm <- edgeR::cpm(
+      dge_data.norm, log = TRUE, prior.counts = prior_counts)
     SummarizedExperiment::assay(SE_obj, "logcpm") <- logCPM_data.norm
   }
   return(SE_obj)

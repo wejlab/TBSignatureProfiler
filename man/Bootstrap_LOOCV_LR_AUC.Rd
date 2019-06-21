@@ -2,30 +2,36 @@
 % Please edit documentation in R/evaluate.R
 \name{Bootstrap_LOOCV_LR_AUC}
 \alias{Bootstrap_LOOCV_LR_AUC}
-\title{Bootstrap LOOCV with logistic regression}
+\title{Bootstrap on Leave-one-out CV with Logistic Regression.}
 \usage{
 Bootstrap_LOOCV_LR_AUC(df, target.vec, nboot)
 }
 \arguments{
-\item{df}{a data.frame of gene expression count data.
-Required.}
+\item{df}{a \code{data.frame} of gene expression count data. Required.}
 
-\item{target.vec}{binary vector indicating y}
+\item{nboot}{an integer specifying the number of bootstrap iterations.}
 
-\item{nboot}{number of bootstrap}
+\item{targetVec}{a binary vector of the response variable. Should be 
+the same number of rows as \code{df}. Required.}
 }
 \value{
-AUC from bootstrap LOOCV
+A list of length 2 with elements \item{auc}{A vector the length of 
+\code{nboot} with the AUC from each bootstrap iteration.}
+\item{byClass}{A dataframe with number of rows equal to \code{nboot}. Each
+row contains the sensitivity, specificity, positive predictive
+value, negative predictive value, precision, recall, F1, prevalence,
+detection rate, detection prevalence and balanced accuracy for that 
+bootstrap iteration.}
 }
 \description{
-Bootstrap LOOCV with logistic regression
+Bootstrap on Leave-one-out CV with Logistic Regression.
 }
 \examples{
 inputTest <- matrix(rnorm(1000), 100, 20,
                     dimnames = list(paste0("gene", 1:100),
                                     paste0("sample", 1:20)))
 inputTest <- as.data.frame(inputTest)
-targetVec <- sample(c(0,1), replace=TRUE, size=20)
+targetVec <- sample(c(0,1), replace = TRUE, size = 20)
 nboot <- 3
 res <- Bootstrap_LOOCV_LR_AUC(inputTest, targetVec, nboot)
 }

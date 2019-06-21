@@ -2,44 +2,51 @@
 % Please edit documentation in R/evaluate.R
 \name{SignatureQuantitative}
 \alias{SignatureQuantitative}
-\title{Use logistic regression and Bootstrap LOOCV for signature evaluation.}
+\title{Use Logistic Regression and Bootstrap LOOCV to Evaluate Signatures.}
 \usage{
 SignatureQuantitative(df.input, target.vec.num, signature.list,
   signature.name.vec, num.boot = 100, pb.show = TRUE)
 }
 \arguments{
-\item{df.input}{a data.frame of gene expression count data.
-Required.}
+\item{df.input}{a \code{data.frame} of gene expression count data. Required.}
 
-\item{target.vec.num}{numeric binary vector indicating y}
+\item{target.vec.num}{a numeric binary vector of the response variable. 
+The vector should be the same number of rows as \code{df}. Required.}
 
-\item{signature.list}{a list of signatures}
+\item{signature.list}{a \code{list} of signatures to run with their 
+associated genes. This list should be in the same format as \code{TBsignatures}, 
+included in the TBSignatureProfiler package. If \code{signatures = NULL}, the 
+default set of signatures \code{TBsignatures} list is used. For details, 
+run \code{?TBsignatures}.}
 
-\item{signature.name.vec}{vector of signature names}
+\item{signature.name.vec}{A vector specifying the names of the signatures
+to be compared. This should be the same length as \code{signature.list}.}
 
-\item{num.boot}{number of bootstrap}
+\item{num.boot}{an integer specifying the number of bootstrap iterations.}
 
-\item{pb.show}{Logical; whether to display a progress bar for output. Default is TRUE.}
+\item{pb.show}{logical. If \code{TRUE} then a progress bar for the 
+bootstrapping procedure will be displayed as output. The default is 
+\code{TRUE}.}
 }
 \value{
 the AUC, sensitivity and specificity
 }
 \description{
-Use logistic regression and Bootstrap LOOCV for signature evaluation.
+This function takes as input a \code{data.frame} with genetic expression
+count data, and uses a bootstrapped leave-one-out cross validation procedure
+with logistic regression to allow for numeric and graphical comparison 
+across any number of genetic signatures.
 }
 \examples{
 inputTest <- matrix(rnorm(1000), 100, 20,
                     dimnames = list(paste0("gene", 1:100),
                                     paste0("sample", 1:20)))
 inputTest <- as.data.frame(inputTest)
-targetVec <- sample(c(0,1), replace=TRUE, size=20)
+targetVec <- sample(c(0,1), replace = TRUE, size = 20)
 signature.list <- list(sig1 = c("gene1", "gene2", "gene3"),
                        sig2 = c("gene4", "gene5", "gene6"))
 signature.name.vec <- c("sig1", "sig2")
 num.boot <- 3
-res <- SignatureQuantitative(inputTest,
-                             targetVec,
-                             signature.list,
-                             signature.name.vec,
-                             num.boot)
+res <- SignatureQuantitative(inputTest, targetVec, signature.list,
+                             signature.name.vec, num.boot)
 }

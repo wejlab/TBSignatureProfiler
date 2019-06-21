@@ -2,42 +2,44 @@
 % Please edit documentation in R/evaluate.R
 \name{mkAssay}
 \alias{mkAssay}
-\title{Add SummarizedExperiment assays to the Data Structure.}
+\title{Add SummarizedExperiment Assays to the Data Structure.}
 \usage{
 mkAssay(SE_obj, type = "all", prior_counts = 3)
 }
 \arguments{
-\item{SE_obj}{SummarizedExperiment object containing gene expression count data.}
+\item{SE_obj}{a \code{SummarizedExperiment} object containing gene expression 
+count data. Required.}
 
-\item{type}{vector or single character string indicating the type(s) of assay to add to SE_obj. 
-If no value is specified, then CPM, log CPM, and log counts assays will all be created.
-See details for further information on possible values.}
+\item{type}{either a vector or a single character string indicating the 
+type(s) of assay to add to \code{SE_obj}. The default is 
+c("CPM", "logCPM", "logcounts").}
 
-\item{prior.counts}{integer specifying the average count to be added to each 
-observation to avoid taking the log of zero. Used only if 'type' = "all" or "logCPM". 
-If no value is input, default is 3.}
+\item{prior.counts}{an integer specifying the average count to be added to 
+each observation to avoid taking the log of zero. Used only if 
+\code{type = "all"} or \code{"logCPM"}. The default is 3.}
 }
 \value{
-This function returns a Summarized Experiment object with up 
-to 3 additional assay types added to the original inputted object.
+This function returns a \code{SummarizedExperiment} object with up 
+to 3 additional assay types attached to the original inputted object.
+\item{cpm}{Counts per million}
+\item{logcpm}{Log counts per million}
+\item{logcounts}{Log counts}
 }
 \description{
-This function creates additional assays for a gene expression count dataset to be used in further analysis.
-}
-\details{
-Here I will detail the specific objects...
+This function creates additional assays for a gene expression count dataset 
+to be used in further analysis.
 }
 \examples{
-### You can add a log counts, log CPM, and CPM assay by default
-testrun_all <- mkAssay(hivtb_data)
+## You can add a log counts, log CPM, and CPM assay by default
+testrun_all <- mkAssay(TB_hiv)
 assays(testrun_all)
 
-### If a vector is passed to 'type' then all specified options will be added
-testrun_CPM <- mkAssay(hivtb_data, type = c("CPM", "logCPM"))
+## If a vector is passed to 'type' then all specified options will be added
+testrun_CPM <- mkAssay(TB_hiv, type = c("CPM", "logCPM"))
 assays(testrun_CPM)
 
-### Pass a single option to 'type'
-testrun_lc <- mkAssay(hivtb_data, type = "logcounts")
+## Pass a single option to 'type'
+testrun_lc <- mkAssay(TB_hiv, type = "logcounts")
 assays(testrun_lc)
 }
 \author{

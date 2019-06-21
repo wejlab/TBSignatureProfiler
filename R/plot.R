@@ -472,9 +472,9 @@ signatureGeneHeatmap <- function(inputData, useAssay, sigGenes,
 #' will be generated for each hue. Default is \code{c("red", "cyan", "orange", 
 #' "blue", "yellow", "purple", "green", "magenta")}
 #' @param saturation.range a numeric vector of length 2 with values between 0 
-#' and 1. The default is \code{c(0.25, 1)}.
-#' @param value.range a numeric vector of length 2 with values between 0 and 1.
-#' The default is \code{c(0.5, 1)}.
+#' and 1 giving the range of saturation. The default is \code{c(0.25, 1)}.
+#' @param value.range a numeric vector of length 2 with values between 0 and 1 
+#' giving the range of values. The default is \code{c(0.5, 1)}.
 #' 
 #' @return A vector of distinct colors that have been converted to HEX from
 #' HSV.

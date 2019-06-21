@@ -21,8 +21,8 @@ data of the class \code{SummarizedExperiment}.}
 \item{signatures}{a \code{list} of signatures to run with their associated genes. 
 This list should be in the same format as \code{TBsignatures}, included in 
 the TBSignatureProfiler package. If \code{signatures = NULL}, the default set 
-of signatures \code{TBsignatures} list is used. For details, 
-run \code{?TBsignatures}.}
+of signatures \code{TBsignatures} list is used. For details, run 
+\code{?TBsignatures}.}
 
 \item{algorithm}{a vector of algorithms to run, or character string if only 
 one is desired. The default is \code{c("GSVA", "ssGSEA", "ASSIGN")}.}

@@ -2,23 +2,22 @@
 % Please edit documentation in R/evaluate.R
 \name{deseq2_norm_rle}
 \alias{deseq2_norm_rle}
-\title{gene expression normalization, RLE normalization: relative log expression}
+\title{Normalize Gene Expression Count Data.}
 \usage{
 deseq2_norm_rle(inputData)
 }
 \arguments{
-\item{inputData}{a data.frame or matrix of gene expression count data.
-Required.}
+\item{inputData}{a \code{data.frame} or \code{matrix} of gene expression 
+count data. Required.}
 }
 \value{
-Normalized count data
+A \code{data.frame} or \code{matrix} of normalized count data.
 }
 \description{
-gene expression normalization, RLE normalization: relative log expression
+Normalize Gene Expression Count Data.
 }
 \examples{
-inputTest <- matrix(rnorm(1000), 100, 10,
-                    dimnames = list(paste0("gene", 1:100),
-                                    paste0("sample", 1:10)))
-res <- deseq2_norm_rle(inputTest)
+# Example using the counts assay from a SummarizedExperiment
+data_in <- assay(TB_indian, "counts")
+res <- deseq2_norm_rle(data_in)
 }
