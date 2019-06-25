@@ -91,10 +91,16 @@ runTBsigProfiler <- function(input, useAssay = NULL,
                              outputFormat = NULL, parallel.sz = 0,
                              ASSIGNiter = 100000, ASSIGNburnin = 50000) {
   if (is.null(signatures)) {
-    utils::data("TBsignatures", package = "TBSignatureProfiler", 
-                envir = .myenv)
-    signatures <- .myenv$TBsignatures
-  }
+    # Override with global environment
+    if ("TBsignatures" %in% ls(envir = .GlobalEnv)) {
+      get("TBsignatures", envir = .GlobalEnv)
+      signatures <- TBsignatures
+    } else {
+      data("TBsignatures", package = "TBSignatureProfiler", envir = .myenv)
+      signatures <- .myenv$TBsignatures
+    }
+  } 
+  
   runindata <- input
   if (methods::is(runindata, "SummarizedExperiment")) {
     if (!is.null(useAssay)) {

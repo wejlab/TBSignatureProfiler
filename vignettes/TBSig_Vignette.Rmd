@@ -72,6 +72,8 @@ hivtb_data <- hivtb_data_all[, hivtb_data_all$Disease != "tb_hiv_art"]
 hivtb_data$Disease <- factor(hivtb_data$Disease)
 dim(hivtb_data)
 
+TB_hiv <- hivtb_data
+
 ### Make an additional binary indicator for signature evaluation
 hivtb_data$BinaryTB <- as.numeric(hivtb_data$Disease)-1
 ```
@@ -98,12 +100,11 @@ names(TBsignatures)
 
 ## We can use all of these signatures for further analysis
 siglist_hivtb <- names(TBsignatures)
-TBsignatures_nanostring <- TBsignatures[siglist_hivtb]
 
 ## Run the TBSignatureProfiler to score the signatures in the data
 ssgsea_res <- runTBsigProfiler(input = hivtb_data, 
                                useAssay = "logcpm",
-                               signatures = TBsignatures_nanostring,
+                               signatures = TBsignatures,
                                algorithm = "ssGSEA",
                                combineSigAndAlgorithm = TRUE,
                                parallel.sz = 4)
@@ -128,7 +129,7 @@ The TBSignatureProfiler includes the functionality to create heatmaps from the c
 ```{r heat_ssgsea, message = FALSE, fig.height = 8, fig.width = 10}
 signatureHeatmap(ssgsea_res, name = "Heatmap of Signatures, 
                  ssGSEA Algorithm", 
-                 signatureColNames = names(TBsignatures_nanostring),
+                 signatureColNames = names(TBsignatures),
                  annotationColNames = "Disease",
                  scale = TRUE,
                  showColumnNames = FALSE)
@@ -140,7 +141,7 @@ Points represent the jittered scores for each sample.
 ```{r boxssgsea, message = FALSE, results = 'hide', fig.height = 9, fig.width=12}
 signatureBoxplot(inputData = ssgsea_res, 
                  name = "Boxplots of Signatures, ssGSEA", 
-                 signatureColNames = names(TBsignatures_nanostring),
+                 signatureColNames = names(TBsignatures),
                  annotationColName = "Disease", rotateLabels = FALSE)
 ```
 
@@ -148,7 +149,7 @@ signatureBoxplot(inputData = ssgsea_res,
 ### Single Boxplots from one Signature at a Time {.tabset}
 
 ```{r Boxplots_single_ssgsea, results = "asis", message = FALSE}
-for (i in names(TBsignatures_nanostring)){
+for (i in names(TBsignatures)){
 
   cat("####", i, "\n")
 
@@ -164,12 +165,12 @@ for (i in names(TBsignatures_nanostring)){
 The same function used previously can also produce heatmaps that highlight a single selected signature. In these heatmaps, the columns of the heatmaps are the samples as before, whereas the rows are now the genes included in the signatures.
 
 ```{r genes_ssgsea, results = "asis", message = FALSE}
-for (i in names(TBsignatures_nanostring)){
+for (i in names(TBsignatures)){
 
   cat("####", i, "\n")
 
   signatureGeneHeatmap(inputData = ssgsea_res, useAssay = "logcpm",
-                       TBsignatures_nanostring[[i]],
+                       TBsignatures[[i]],
                        name = i, signatureColNames = i, 
                        annotationColNames = c("Disease"),
                        showColumnNames = FALSE)
@@ -183,7 +184,7 @@ for (i in names(TBsignatures_nanostring)){
 ```{r AUC table, message = FALSE}
 tableAUC(SE_scored = ssgsea_res, 
          annotationData = ssgsea_res$Disease, 
-         signatureColNames = TBsignatures_nanostring,
+         signatureColNames = TBsignatures,
          num.boot = 100, 
          pb_show = FALSE)
 ```
@@ -191,13 +192,13 @@ tableAUC(SE_scored = ssgsea_res,
 ### Boxplots for the bootstrapped AUCs
 ```{r BS Boxplots, message = FALSE}
 compareBoxplots(ssgsea_res, ssgsea_res$Disease,             
-                TBsignatures_nanostring, pb_show = FALSE)
+                TBsignatures, pb_show = FALSE)
 ```
 
 
 ### Separate AUC plots {.tabset}
 ```{r AUC plots, results = 'asis', message = FALSE}
-for (i in names(TBsignatures_nanostring)){
+for (i in names(TBsignatures)){
   
   cat("####", i, "\n")
   
@@ -216,7 +217,7 @@ Currently when I run this function with all signatures it spits them out one at 
 
   signatureROCplot(inputData = ssgsea_res,
                  annotationData = ssgsea_res$Disease,
-                 signatureColNames = names(TBsignatures_nanostring),
+                 signatureColNames = names(TBsignatures),
                  annotationColName = "Disease")
 
 ```

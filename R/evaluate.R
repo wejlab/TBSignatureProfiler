@@ -127,11 +127,13 @@ Bootstrap_LOOCV_LR_AUC <- function(df, target.vec, nboot){
 #' The vector should be the same number of rows as \code{df}. Required.
 #' @param signature.list a \code{list} of signatures to run with their 
 #' associated genes. This list should be in the same format as \code{TBsignatures}, 
-#' included in the TBSignatureProfiler package. If \code{signatures = NULL}, the 
-#' default set of signatures \code{TBsignatures} list is used. For details, 
+#' included in the TBSignatureProfiler package. If \code{signature.list = NULL}, 
+#' the default set of signatures \code{TBsignatures} list is used. For details, 
 #' run \code{?TBsignatures}.
 #' @param signature.name.vec A vector specifying the names of the signatures
 #' to be compared. This should be the same length as \code{signature.list}.
+#' If \code{signature.name.vec = NULL}, the default set of signatures 
+#' \code{TBsignatures} list is used.
 #' @param num.boot an integer specifying the number of bootstrap iterations.
 #' @param pb.show logical. If \code{TRUE} then a progress bar for the 
 #' bootstrapping procedure will be displayed as output. The default is 
@@ -153,9 +155,30 @@ Bootstrap_LOOCV_LR_AUC <- function(df, target.vec, nboot){
 #' num.boot <- 3
 #' res <- SignatureQuantitative(inputTest, targetVec, signature.list,
 #'                              signature.name.vec, num.boot)
-SignatureQuantitative <- function(df.input, target.vec.num, signature.list,
-                                  signature.name.vec, num.boot = 100,
+SignatureQuantitative <- function(df.input, target.vec.num, 
+                                  signature.list = NULL,
+                                  signature.name.vec = NULL, 
+                                  num.boot = 100,
                                   pb.show = TRUE) {
+  
+  if ((is.null(signature.name.vec) & !is.null(signature.name.list)
+       | (!is.null(signature.name.vec) & is.null(signature.name.list)))){
+    stop("Please specify arguments for both signature.list and
+         signature.name.vec, or leave them both empty to use
+         TBsignatures as the list of signatures for profiling.")
+  } else if (is.null(signature.list) & is.null(signature.name.vec)){
+    if ("TBsignatures" %in% ls(envir = .GlobalEnv)) {
+      get("TBsignatures", envir = .GlobalEnv)
+    }
+    signature.list <- TBsignatures
+    signature.name.vec <- names(signature.list)
+  }
+  
+  if (length(signature.list) != length(signature.name.vec)){
+    stop("The inputs signature.list and signature.name.vec are not the same
+         length.")
+  }
+  
   df.list <- list()
   # progress bar
   counter <- 0

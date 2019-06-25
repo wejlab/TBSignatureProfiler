@@ -9,20 +9,21 @@
 #' annotation data as columns in the colData, or alternatively be of the classes 
 #' \code{data.frame} or \code{matrix} and contain only the gene expression data. 
 #' Required.
-#' @param annotationData a data.frame or matrix of annotation data, with one 
-#' column. Only required if \code{inputData} is a data.frame or matrix of 
-#' signature data.
+#' @param annotationData a \code{data.frame} or \code{matrix} of annotation 
+#' data, with one column. Only required if \code{inputData} is a
+#' \code{data.frame} or \code{matrix} of signature data.
 #' @param name a character string with the plot title of the heatmap. The 
 #' default is \code{"Signatures"}.
-#' @param signatureColNames a vector of the column names in the colData that 
+#' @param signatureColNames a vector of the column names in \code{colData} that 
 #' contain the signature data. Only required if \code{inputData} is a 
 #' SummarizedExperiment object.
-#' @param annotationColNames a vector of the column names in the colData that 
+#' @param annotationColNames a vector of the column names in \code{colData} that 
 #' contain the annotation data. Only required if \code{inputData} is a 
-#' SummarizedExperiment object.
-#' @param colList a named list specifying custom color information to pass to
-#' ComplexHeatmap. By default, ColorBrewer color sets will be used. See the 
-#' the parameter \code{colorSets} for additional details.
+#' \code{SummarizedExperiment}.
+#' @param colList a named \code{list} specifying custom color information to 
+#' pass to \code{ComplexHeatmap::Heatmap()}. By default, \code{ColorBrewer} 
+#' color sets will be used. See the the parameter \code{colorSets} for 
+#' additional details.
 #' @param scale logical. Setting \code{scale = TRUE} scales the signature data. 
 #' The default is \code{FALSE}.
 #' @param showColumnNames logical. Setting \code{showColumnNames = TRUE} will 
@@ -148,18 +149,18 @@ signatureHeatmap <- function(inputData, annotationData, name = "Signatures",
 #'
 #' @param inputData an input data object. It should either be of the class 
 #' \code{SummarizedExperiment} and contain the profiled signature data and 
-#' annotation data as columns in the colData, or alternatively be of the classes 
-#' \code{data.frame} or \code{matrix} and contain only the gene expression data. 
-#' Required.
+#' annotation data as columns in the \code{colData}, or alternatively be of the 
+#' classes \code{data.frame} or \code{matrix} and contain only the gene 
+#' expression data. Required.
 #' @param annotationData a \code{data.frame} or \code{matrix} of annotation data, 
 #' with one column. Only required if \code{inputData} is a \code{data.frame} or 
 #' \code{matrix} of signature data.
-#' @param signatureColNames a \code{vector} of the column names in the colData 
+#' @param signatureColNames a \code{vector} of the column names in \code{colData} 
 #' that contain the signature data. Only required if \code{inputData} is a 
 #' \code{SummarizedExperiment} object.
 #' @param annotationColName a character string naming the column name in the 
 #' \code{colData} that contains the annotation data to be used in making the 
-#' boxplot. Only required if inputData is a SummarizedExperiment object.
+#' boxplot. Only required if inputData is a \code{SummarizedExperiment} object.
 #' @param name a character string giving the title of the boxplot. The default 
 #' is \code{"Signatures"}.
 #' @param scale logical. Setting \code{scale = TRUE} scales the signature data. 
