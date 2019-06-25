@@ -107,11 +107,10 @@
 
 #' TB Example dataset with TB/HIV data
 #'
-#' An example dataset containing the gene expression and metadata in a SummarizedExperiment object for 33 subjects
+#' An example dataset containing the gene expression and metadata in a SummarizedExperiment object for 31 subjects
 #' with HIV and/or Tuberculosis diseases. Information on subject infection status can be accessed with \code{TB_hiv$Disease}.
 #' Samples with both TB and HIV contamination are marked as \code{tb_hiv}, while samples 
-#' with HIV and no TB are marked as \code{hiv_only}. Additionally, 2 samples with both TB & HIV that are undergoing Anti-Retroviral 
-#' therapy for HIV are marked as \code{tb_hiv_art}.
+#' with HIV and no TB are marked as \code{hiv_only}.
 #'
 #' @name TB_hiv
 #' @docType data

@@ -4,43 +4,61 @@
 \alias{mkAssay}
 \title{Add SummarizedExperiment Assays to the Data Structure.}
 \usage{
-mkAssay(SE_obj, type = "all", prior_counts = 3)
+mkAssay(SE_obj, input_name = "counts", output_name = NULL,
+  log = FALSE, counts_to_CPM = TRUE, prior_counts = 3)
 }
 \arguments{
-\item{SE_obj}{a \code{SummarizedExperiment} object containing gene expression 
-count data. Required.}
+\item{SE_obj}{a \code{SummarizedExperiment} object containing gene expression
+data. Required.}
 
-\item{type}{either a vector or a single character string indicating the 
-type(s) of assay to add to \code{SE_obj}. The default is 
-c("CPM", "logCPM", "logcounts").}
+\item{input_name}{a character string specifying the name of the assay to
+be referenced for creating additional assays. Default is \code{"counts"}.}
+
+\item{output_name}{a character string to concatenate to "log" when computing
+a log assay. If \code{NULL}, then \code{input_name} will be substituted.
+Only used if \code{log = TRUE}. Default is \code{NULL}.}
+
+\item{log}{logical. Indicate whether an assay returned should be the log
+of whichever assay is specified in \code{"output_name"}. If 
+\code{counts_to_CPM = TRUE} as well, then a log CPM assay will also
+be created. Default is \code{FALSE}.}
+
+\item{counts_to_CPM}{logical. This argument only applies if the 
+\code{input_type} is a counts assay. If \code{TRUE}, then the output assays
+will include a normalized CPM assay. If \code{counts_to_CPM = TRUE} as well, 
+then a log CPM assay will also be created. Default is \code{TRUE}.}
 
 \item{prior.counts}{an integer specifying the average count to be added to 
 each observation to avoid taking the log of zero. Used only if 
-\code{type = "all"} or \code{"logCPM"}. The default is 3.}
+\code{log = TRUE}. The default is \code{3}.}
 }
 \value{
 This function returns a \code{SummarizedExperiment} object with up 
 to 3 additional assay types attached to the original inputted object.
 \item{cpm}{Counts per million}
 \item{logcpm}{Log counts per million}
-\item{logcounts}{Log counts}
+\item{log_<output_name>}{Log of original inputted assay. 
+\code{<output_name>} will be replaced }
 }
 \description{
-This function creates additional assays for a gene expression count dataset 
+Given an input of a Summarized Experiment with a counts or CPM assay, This 
+function creates additional assays for a gene expression count dataset 
 to be used in further analysis.
 }
 \examples{
-## You can add a log counts, log CPM, and CPM assay by default
-testrun_all <- mkAssay(TB_hiv)
-assays(testrun_all)
+# Create a log assay of the original assay input
+# TB_hiv dataset already has counts data
+log_only <- mkAssay(TB_hiv, log = TRUE, counts_to_CPM = FALSE)
+log_only
 
-## If a vector is passed to 'type' then all specified options will be added
-testrun_CPM <- mkAssay(TB_hiv, type = c("CPM", "logCPM"))
-assays(testrun_CPM)
+# Create a CPM assay
+CPM_only <- mkAssay(TB_hiv)
+CPM_only
 
-## Pass a single option to 'type'
-testrun_lc <- mkAssay(TB_hiv, type = "logcounts")
-assays(testrun_lc)
+# Create a logCPM, logcounts, and CPM assay
+all_assays <- mkAssay(TB_hiv, log = TRUE)
+all_assays
+
 }
 \author{
 Aubrey Odom

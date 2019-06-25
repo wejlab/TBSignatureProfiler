@@ -17,24 +17,25 @@ annotation data as columns in the colData, or alternatively be of the classes
 \code{data.frame} or \code{matrix} and contain only the gene expression data. 
 Required.}
 
-\item{annotationData}{a data.frame or matrix of annotation data, with one 
-column. Only required if \code{inputData} is a data.frame or matrix of 
-signature data.}
+\item{annotationData}{a \code{data.frame} or \code{matrix} of annotation 
+data, with one column. Only required if \code{inputData} is a
+\code{data.frame} or \code{matrix} of signature data.}
 
 \item{name}{a character string with the plot title of the heatmap. The 
 default is \code{"Signatures"}.}
 
-\item{signatureColNames}{a vector of the column names in the colData that 
+\item{signatureColNames}{a vector of the column names in \code{colData} that 
 contain the signature data. Only required if \code{inputData} is a 
 SummarizedExperiment object.}
 
-\item{annotationColNames}{a vector of the column names in the colData that 
+\item{annotationColNames}{a vector of the column names in \code{colData} that 
 contain the annotation data. Only required if \code{inputData} is a 
-SummarizedExperiment object.}
+\code{SummarizedExperiment}.}
 
-\item{colList}{a named list specifying custom color information to pass to
-ComplexHeatmap. By default, ColorBrewer color sets will be used. See the 
-the parameter \code{colorSets} for additional details.}
+\item{colList}{a named \code{list} specifying custom color information to 
+pass to \code{ComplexHeatmap::Heatmap()}. By default, \code{ColorBrewer} 
+color sets will be used. See the the parameter \code{colorSets} for 
+additional details.}
 
 \item{scale}{logical. Setting \code{scale = TRUE} scales the signature data. 
 The default is \code{FALSE}.}

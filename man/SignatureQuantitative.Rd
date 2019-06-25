@@ -4,8 +4,8 @@
 \alias{SignatureQuantitative}
 \title{Use Logistic Regression and Bootstrap LOOCV to Evaluate Signatures.}
 \usage{
-SignatureQuantitative(df.input, target.vec.num, signature.list,
-  signature.name.vec, num.boot = 100, pb.show = TRUE)
+SignatureQuantitative(df.input, target.vec.num, signature.list = NULL,
+  signature.name.vec = NULL, num.boot = 100, pb.show = TRUE)
 }
 \arguments{
 \item{df.input}{a \code{data.frame} of gene expression count data. Required.}
@@ -15,12 +15,14 @@ The vector should be the same number of rows as \code{df}. Required.}
 
 \item{signature.list}{a \code{list} of signatures to run with their 
 associated genes. This list should be in the same format as \code{TBsignatures}, 
-included in the TBSignatureProfiler package. If \code{signatures = NULL}, the 
-default set of signatures \code{TBsignatures} list is used. For details, 
+included in the TBSignatureProfiler package. If \code{signature.list = NULL}, 
+the default set of signatures \code{TBsignatures} list is used. For details, 
 run \code{?TBsignatures}.}
 
 \item{signature.name.vec}{A vector specifying the names of the signatures
-to be compared. This should be the same length as \code{signature.list}.}
+to be compared. This should be the same length as \code{signature.list}.
+If \code{signature.name.vec = NULL}, the default set of signatures 
+\code{TBsignatures} list is used.}
 
 \item{num.boot}{an integer specifying the number of bootstrap iterations.}
 
