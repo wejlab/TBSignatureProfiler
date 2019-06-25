@@ -2,35 +2,49 @@
 % Please edit documentation in R/bootstrap.R
 \name{compareBoxplots}
 \alias{compareBoxplots}
-\title{Create a comparison plot of boxplots for bootstrapped AUC values.}
+\title{Create a Comparison Plot of Boxplots for Bootstrapped AUC Values.}
 \usage{
-compareBoxplots(SE_scored, annotationData, signatureColNames,
+compareBoxplots(SE_scored, annotationColName, signatureColNames,
   num.boot = 100, cex.axis = 0.7, cex = 0.25,
-  name = "Boxplot Comparison of Signatures", pb_show = TRUE)
+  name = "Boxplot Comparison of Signatures", pb.show = TRUE)
 }
 \arguments{
-\item{SE_scored}{A SummarizedExperiment object with genes in the rows,
-and signature scores in the columns. There should also be a column indicating TB status.}
+\item{SE_scored}{a \code{SummarizedExperiment} object with genes as the 
+row features and signature scores in the \code{colData}. There should also 
+be a column of annotation data. Required.}
 
-\item{annotationData}{A vector of annotation data, typically indicating TB status.}
+\item{annotationColName}{a character string giving the column name in 
+\code{colData} that contains the annotation data. Required.}
 
-\item{num.boot}{The number of times to bootstrap the data.}
+\item{num.boot}{an integer indicating the number of times to bootstrap the 
+data.}
 
-\item{cex.axis}{The magnification to be used for axis annotation relative to the current setting of cex.}
+\item{cex.axis}{a number between 0 and 1 specifying the magnification to be 
+used for axis annotation relative to the current setting of \code{cex}.}
 
-\item{cex}{A numerical value giving the amount by which plotting text and symbols should be magnified 
-relative to the default.}
+\item{cex}{a number between 0 and 1 giving the amount by which plotting text 
+and symbols should be magnified relative to the default.}
 
-\item{name}{A character string giving the overall title for the plot.}
+\item{name}{a character string giving the overall title for the plot.}
 
-\item{pb_show}{Logical for whether to show a progress bar while running code.}
-
-\item{SignatureColNames}{The column names in the SE_scored colData that contain 
-the signature score data.}
+\item{pb.show}{logical for whether to show a progress bar while running code.}
 }
 \value{
-A plot with side-by-side boxplots of bootstrapped AUC values for each specified signature.
+A plot with side-by-side boxplots of bootstrapped AUC values for 
+each specified signature.
 }
 \description{
-Present the results of AUC bootstrapping for the various scored signatures via boxplots.
+Present the results of AUC bootstrapping for a collection of scored 
+signatures via boxplots.
+}
+\examples{
+# Run signature profiling
+ choose_sigs <- TBsignatures[-c(18, 22)]
+ prof_indian <- runTBsigProfiler(TB_indian, useAssay = "logcounts",  
+                                 algorithm = "ssGSEA",
+                                 signatures = choose_sigs)
+ # Create boxplots
+ compareBoxplots(prof_indian, "label", names(choose_sigs),
+                 cex.axis = 0.5)
+          
 }

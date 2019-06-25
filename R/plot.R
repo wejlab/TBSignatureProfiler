@@ -34,9 +34,10 @@
 #' \code{TRUE}.
 #' @param colorSets a vector of names listing the color sets in the order 
 #' that they should be used in creating the heatmap. By default, this function 
-#' will use the color sets in the order listed below for annotation information. 
-#' You may replace this with the sets in order that you want to use them, or 
-#' provide custom color sets with the \code{colList} parameter.
+#' will use the color sets in the order listed in \code{Usage} for annotation 
+#' information. You may replace the default with the same collection of sets 
+#' in order that you want to use them, or provide custom color sets with the 
+#' \code{colList} parameter.
 #' @param ... Additional arguments to be passed to \code{ComplexHeatmap::Heatmap()}.
 #'
 #' @return A ComplexHeatmap plot.

@@ -277,6 +277,15 @@ runTBsigProfiler <- function(input, useAssay = NULL,
     sig_result <- as.matrix(combined_res)
   }
 
+  if (sum(names(signatures) %in% rownames(sig_result)) != length(signatures)) {
+    absent <- subset(names(signatures), !(names(signatures) %in% 
+                                            rownames(sig_result)))
+    warning(
+      paste("No identifiers in the gene sets could be matched to the identifiers 
+          in the expression data for the following signatures: ", 
+            paste(absent, collapse = ", ")))
+  }
+  
   if (is.null(outputFormat)) {
     #output same as input
     if (class(input) %in% c("SummarizedExperiment", "SingleCellExperiment",

@@ -52,7 +52,7 @@ The following code will read in the data count matrix (assay) and sample meta da
 ```{r setup, include = FALSE}
 suppressPackageStartupMessages({
   library(SummarizedExperiment)
-library(TBSignatureProfiler)
+  library(TBSignatureProfiler)
 })
 ```
 
@@ -83,7 +83,7 @@ The SummarizedExperiment object allows for the generation, storage and easy subs
 
 ```{r Add assays}
 ## Make a logcounts, CPM and logCPM assay
-hivtb_data <- mkAssay(SE_obj = hivtb_data)
+hivtb_data <- mkAssay(hivtb_data, log = TRUE, counts_to_CPM = TRUE)
 
 ### Note that we now have 4 assays
 assays(hivtb_data)
@@ -182,17 +182,18 @@ for (i in names(TBsignatures)){
 
 ### Table with T-tests & AUC 
 ```{r AUC table, message = FALSE}
-tableAUC(SE_scored = ssgsea_res, 
-         annotationData = ssgsea_res$Disease, 
-         signatureColNames = TBsignatures,
+tableAUC(ssgsea_res, 
+         annotationColName = "Disease", 
+         signatureColNames = names(TBsignatures),
          num.boot = 100, 
-         pb_show = FALSE)
+         pb.show = FALSE)
 ```
 
 ### Boxplots for the bootstrapped AUCs
 ```{r BS Boxplots, message = FALSE}
-compareBoxplots(ssgsea_res, ssgsea_res$Disease,             
-                TBsignatures, pb_show = FALSE)
+compareBoxplots(ssgsea_res, annotationColName = "Disease",
+                signatureColNames = names(TBsignatures),
+                pb.show = FALSE)
 ```
 
 
@@ -211,14 +212,14 @@ for (i in names(TBsignatures)){
 }
 ```
 
-### AUC plots for all signatures
-Currently when I run this function with all signatures it spits them out one at a time, but I want them to print out on one page.
+### ROC plots for all signatures
+ Note that, in some cases, signatures will be positive identifiers of TB whereas others are negative identifiers. This should be taken into account when creating ROC curves and computing any AUC estimates.
+ 
 ```{r SUCssgsea, message = FALSE, fig.height = 9, fig.width = 12}
 
   signatureROCplot(inputData = ssgsea_res,
-                 annotationData = ssgsea_res$Disease,
-                 signatureColNames = names(TBsignatures),
-                 annotationColName = "Disease")
+                   signatureColNames = names(TBsignatures),
+                   annotationColName = "Disease")
 
 ```
 
@@ -238,13 +239,22 @@ quantitative.result <- SignatureQuantitative(df.input = hivtb_norm,
                        num.boot = 10,
                        pb.show = FALSE)
 
-kable(head(quantitative.result$df.auc.ci), digits = 4)
-kable(head(quantitative.result$df.sensitivity.ci), digits = 4)
-kable(head(quantitative.result$df.specificity.ci), digits = 4)
+DT::datatable(round(quantitative.result$df.auc.ci, 4),
+              options = list(scrollX = T, pageLength = 30), 
+              rownames = F)
+DT::datatable(round(quantitative.result$df.sensitivity.ci, 4),
+              options = list(scrollX = T, pageLength = 30), 
+              rownames = F)
+DT::datatable(round(quantitative.result$df.specificity.ci, 4),
+              options = list(scrollX = T, pageLength = 30), 
+              rownames = F)
+
 
 ## Order by area under the curve.
 ordered_AUC <- quantitative.result$df.auc.ci[order(
   quantitative.result$df.auc.ci$`Estimate`, decreasing = TRUE),]
-kable(head(ordered_AUC), digits = 4)
+DT::datatable(round(ordered_AUC, 4),
+              options = list(scrollX = T, pageLength = 30), 
+              rownames = F)
 
 ```

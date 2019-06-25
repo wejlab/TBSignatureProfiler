@@ -5,27 +5,53 @@
 \title{Create an array of ROC plots to compare signatures.}
 \usage{
 signatureROCplot(inputData, annotationData, signatureColNames,
-  annotationColName, scale = FALSE)
+  annotationColName, scale = FALSE, choose_colors = c("cornflowerblue",
+  "grey24"), name = "Signatures", nrow = NULL, ncol = NULL)
 }
 \arguments{
-\item{inputData}{Either a SummarizedExperiment object that contains the
-signature data and annotation as colData columns, or a data.frame or matrix
-of signature data. Required.}
+\item{inputData}{an input data object. It should either be of the class 
+\code{SummarizedExperiment} and contain the profiled signature data and 
+annotation data as columns in the \code{colData}, or alternatively be of the 
+classes \code{data.frame} or \code{matrix} and contain only the gene 
+expression data. Required.}
 
-\item{annotationData}{If inputData is a data.frame or matrix of signature
-data, a data.frame or matrix of annotation data.}
+\item{annotationData}{a \code{data.frame} or \code{matrix} of annotation data, 
+with one column. Only required if \code{inputData} is a \code{data.frame} or 
+\code{matrix} of signature data.}
 
-\item{signatureColNames}{If inputData is a SummarizedExperiment, the column
-names in colData that contain the signature data.}
+\item{signatureColNames}{a \code{vector} of the column names in \code{colData} 
+that contain the signature data. Only required if \code{inputData} is a 
+\code{SummarizedExperiment} object.}
 
-\item{annotationColName}{If inputData is a SummarizedExperiment, the column
-name in colData that contains the annotation data.}
+\item{annotationColName}{a character string naming the column name in the 
+\code{colData} that contains the annotation data to be used in making the 
+boxplot. Only required if inputData is a \code{SummarizedExperiment} object.}
 
-\item{scale}{Scale the signature data. The default is FALSE.}
+\item{scale}{logical. Setting \code{scale = TRUE} scales the signature data. 
+The default is \code{FALSE}.}
+
+\item{name}{a character string giving the title of the boxplot. The default 
+is \code{"Signatures"}.}
+
+\item{nrow}{integer giving the number of rows in the resulting array.}
+
+\item{ncol}{integer giving the number of columns in the resulting array.}
 }
 \value{
 An array of ROC plots.
 }
 \description{
 Create an array of ROC plots to compare signatures.
+}
+\examples{
+# Run signature profiling
+ choose_sigs <- TBsignatures[-c(18, 22)]
+ prof_indian <- runTBsigProfiler(TB_indian, useAssay = "logcounts",  
+                                 algorithm = "ssGSEA",
+                                 signatures = choose_sigs)
+                                 
+# Create ROC plots
+signatureROCplot(prof_indian, signatureColNames = names(choose_sigs),
+                 annotationColName = "label")
+
 }

@@ -1,37 +1,51 @@
-#' Bootstrap the AUC and compute a p-value for each profiled signature
+#' Bootstrap the AUC and Conduct T-Tests for a Collection of Signatures
 #'
-#' Run bootstrapping of the AUC and derive the p-value for a t-test.
+#' Run bootstrapping of the AUC and derive the p-value for a 2-sample t-test
 #' for all signatures tested on a given dataset.
-#' @param SE_scored A SummarizedExperiment object with genes in the rows,
-#' and signature scores in the columns. There should also be a column indicating TB status.
-#' @param annotationData A factor of annotation data, indicating TB status.
-#' @param SignatureColNames The column names in the SE_scored colData that contain 
-#' the signature score data.
-#' @param num.boot The number of times to bootstrap the data.
-#' @param pb.show Logical for whether to show a progress bar while running code.
 #' 
-#' @return A list of length 3 returning a vector of p-values for a 2-sample t-test, bootstrapped AUC values,
-#' and AUC value for using all scored values for all signatures specified in SignatureColNames.
+#' @param SE_scored a \code{SummarizedExperiment} object with genes as the 
+#' row features and signature scores in the \code{colData}. There should also 
+#' be a column of annotation data. Required.
+#' @param annotationColName a character string giving the column name in 
+#' \code{colData} that contains the annotation data. Required.
+#' @param SignatureColNames a vector of column names in the 
+#' \code{colData} that contain the signature score data. Required.
+#' @param num.boot integer. The number of times to bootstrap the data. The 
+#' default is \code{100}.
+#' @param pb.show logical for whether to show a progress bar while running code.
+#' The default is \code{TRUE}.
+#' 
+#' @return A list of length 3 returning a vector of p-values for a 2-sample 
+#' t-test, bootstrapped AUC values, and an AUC value for using all scored values 
+#' for all signatures specified in \code{SignatureColNames}.
 #' 
 #' @export
 #' 
 #' @examples 
-
-bootstrapAUC <- function(SE_scored, annotationData, signatureColNames, num.boot = 100,
-                         pb.show = TRUE){
+#'  # Run signature profiling
+#'  choose_sigs <- TBsignatures[-c(18, 22)]
+#'  prof_indian <- runTBsigProfiler(TB_indian, useAssay = "logcounts",  
+#'                                  algorithm = "ssGSEA",
+#'                                  signatures = choose_sigs)
+#'  # Bootstrapping
+#'  booted <- bootstrapAUC(SE_scored = prof_indian, annotationColName = "label",
+#'                         signatureColNames = names(choose_sigs))
+#'  str(booted)
+#'  
+bootstrapAUC <- function(SE_scored, annotationColName, signatureColNames, 
+                         num.boot = 100, pb.show = TRUE){
   pvals <- aucs <- aucs_boot <- NULL
   
+  annotationData <- colData(SE_scored)[annotationColName][, 1]
   if (!is.factor(annotationData)) annotationData <- as.factor(annotationData)
   
   # Create progress bar
-  total <- length(names(signatureColNames))
+  total <- length(signatureColNames)
   counter <- 0
-  if(pb.show)  pb <- txtProgressBar(min = 0, max = total, 
-                 label = "Computing bootstrapped AUC for each signature.",
-                 style = 3)
+  if(pb.show)  pb <- txtProgressBar(min = 0, max = total, style = 3)
   
-  for (i in names(signatureColNames)){
-    score <- SummarizedExperiment::colData(SE_scored)[i][,1]
+  for (i in signatureColNames) {
+    score <- SummarizedExperiment::colData(SE_scored)[i][, 1]
     # Conduct a 2-sample t-test on the scores and their
     # corresponding Tuberculosis group status
     pvals <- c(pvals, t.test(score ~ annotationData)$p.value)
@@ -43,7 +57,7 @@ bootstrapAUC <- function(SE_scored, annotationData, signatureColNames, num.boot 
     
     # Proceed with bootstrapping
     tmp_aucs <- NULL
-    for (j in 1:num.boot){
+    for (j in 1:num.boot) {
       index <- sample(1:length(score), replace = T)
       tmp_score <- score[index]
       tmp_annotationData <- annotationData[index]
@@ -63,133 +77,157 @@ bootstrapAUC <- function(SE_scored, annotationData, signatureColNames, num.boot 
          "Non-Boot AUC Values" = aucs))
 }
 
-#' Create an interactive table of results for the bootstrapped AUC and p-values for a scored dataset.
+#' Create a Table of Results for T-tests and Rootstrapped AUC for a Collection of Scored Signatures.
 #' 
-#' Collect the results of bootstrapping and t-tests for a scored gene expression dataset
-#' and present using a JavaScript table with an R interface.
+#' This function collects the results of bootstrapping and t-tests for a scored 
+#' gene expression dataset and presents them using a JavaScript table with an 
+#' R interface.
 #'
-#' @param SE_scored A SummarizedExperiment object with genes in the rows,
-#' and signature scores in the columns. There should also be a column indicating TB status.
-#' @param annotationData A vector of annotation data, typically indicating TB status.
-#' @param SignatureColNames The column names in the SE_scored colData that contain 
-#' the signature score data.
-#' @param num.boot The number of times to bootstrap the data.
-#' @param pb_show Logical for whether to show a progress bar while running code.
+#' @inheritParams bootstrapAUC
 #' 
 #' @export
 #' 
-#' @return 
+#' @return A JavaScript table with an R interface using the \code{DT} package. 
 #' 
-#' @example 
-
-tableAUC <- function(SE_scored, annotationData, signatureColNames, num.boot, pb_show = TRUE){
+#' @examples 
+#' # Run signature profiling
+#'  choose_sigs <- TBsignatures[-c(18, 22)]
+#'  prof_indian <- runTBsigProfiler(TB_indian, useAssay = "logcounts",  
+#'                                  algorithm = "ssGSEA",
+#'                                  signatures = choose_sigs)
+#'  # Create table
+#'  tableAUC(SE_scored = prof_indian, annotationColName = "label", 
+#'           signatureColNames = names(choose_sigs))
+#'  
+tableAUC <- function(SE_scored, annotationColName, signatureColNames, 
+                     num.boot = 100, pb.show = TRUE){
   # Run the bootstrapping function
-  BS.Results <- bootstrapAUC(SE_scored, annotationData, signatureColNames, num.boot, pb.show = pb_show)
+  BS.Results <- bootstrapAUC(SE_scored, annotationColName, signatureColNames, 
+                             num.boot, pb.show)
   pvals <- BS.Results[["P-values"]]
   aucs_boot <- BS.Results[["Boot AUC Values"]]
   aucs <- BS.Results[["Non-Boot AUC Values"]]
   
   # Create interactive table
-  return(DT::datatable(cbind("Signatures" = names(signatureColNames), 
+  return(DT::datatable(cbind("Signatures" = signatureColNames, 
                              "P-values" = round(pvals, 4), 
                              "-10*Log(p-values)" = round(-10 * log(pvals), 4), 
-                             "LowerAUC" = round(apply(aucs_boot, 2, quantile, probs = .05), 4), 
+                             "LowerAUC" = round(apply(aucs_boot, 2, quantile, 
+                                                      probs = .05), 4), 
                              "AUCs" = round(aucs, 4), 
-                             "UpperAUC"= round(apply(aucs_boot, 2, quantile, probs = .95), 4)
+                             "UpperAUC"= round(apply(aucs_boot, 2, quantile, 
+                                                     probs = .95), 4)
                              )[order(aucs, decreasing = T),], 
-                       options = list(scrollX = T, pageLength = 30), rownames = F))
+                       options = list(scrollX = T, pageLength = 30), 
+                       rownames = F))
 }
 
-#' Create a comparison plot of boxplots for bootstrapped AUC values.
+#' Create a Comparison Plot of Boxplots for Bootstrapped AUC Values.
 #' 
-#' Present the results of AUC bootstrapping for the various scored signatures via boxplots.
+#' Present the results of AUC bootstrapping for a collection of scored 
+#' signatures via boxplots.
 #'
-#' @param SE_scored A SummarizedExperiment object with genes in the rows,
-#' and signature scores in the columns. There should also be a column indicating TB status.
-#' @param annotationData A vector of annotation data, typically indicating TB status.
-#' @param SignatureColNames The column names in the SE_scored colData that contain 
-#' the signature score data.
-#' @param num.boot The number of times to bootstrap the data.
-#' @param cex.axis The magnification to be used for axis annotation relative to the current setting of cex.
-#' @param cex A numerical value giving the amount by which plotting text and symbols should be magnified 
-#' relative to the default.
-#' @param name A character string giving the overall title for the plot.
-#' @param pb_show Logical for whether to show a progress bar while running code.
+#' @inheritParams bootstrapAUC
+#' @param num.boot an integer indicating the number of times to bootstrap the 
+#' data.
+#' @param cex.axis a number between 0 and 1 specifying the magnification to be 
+#' used for axis annotation relative to the current setting of \code{cex}. 
+#' @param cex a number between 0 and 1 giving the amount by which plotting text 
+#' and symbols should be magnified relative to the default.
+#' @param name a character string giving the overall title for the plot.
+#' @param pb.show logical for whether to show a progress bar while running code.
 #' 
 #' @export
 #' 
-#' @return A plot with side-by-side boxplots of bootstrapped AUC values for each specified signature.
+#' @return A plot with side-by-side boxplots of bootstrapped AUC values for 
+#' each specified signature.
 #' 
-#' @example 
-compareBoxplots <- function(SE_scored, annotationData, signatureColNames, num.boot = 100,
-                            cex.axis = 0.7, cex = 0.25,
+#' @examples 
+#' # Run signature profiling
+#'  choose_sigs <- TBsignatures[-c(18, 22)]
+#'  prof_indian <- runTBsigProfiler(TB_indian, useAssay = "logcounts",  
+#'                                  algorithm = "ssGSEA",
+#'                                  signatures = choose_sigs)
+#'  # Create boxplots
+#'  compareBoxplots(prof_indian, "label", names(choose_sigs),
+#'                  cex.axis = 0.5)
+#'           
+compareBoxplots <- function(SE_scored, annotationColName, signatureColNames, 
+                            num.boot = 100, cex.axis = 0.7, cex = 0.25,
                             name = "Boxplot Comparison of Signatures",
-                            pb_show = TRUE){
-  # Run the bootstrapping function
-  BS.Results <- bootstrapAUC(SE_scored, annotationData, signatureColNames, num.boot, pb.show = pb_show)
+                            pb.show = TRUE){
+  BS.Results <- bootstrapAUC(SE_scored, annotationColName, signatureColNames, 
+                             num.boot, pb.show)
   aucs_boot <- BS.Results[["Boot AUC Values"]]
   aucs <- BS.Results[["Non-Boot AUC Values"]]
-  
-  colnames(aucs_boot) <- names(signatureColNames)
-  boxplot(aucs_boot[,order(aucs)], las = 2, cex.axis = cex.axis, cex = cex,
+  colnames(aucs_boot) <- signatureColNames
+  boxplot(aucs_boot[, order(aucs)], las = 2, cex.axis = cex.axis, cex = cex,
           main = name, ylab = "Bootstrapped AUC Values")
   abline(h = 0.5, col = "red", lty = 2)
 }
 
 #' Create an array of ROC plots to compare signatures.
 #' 
-#' @param inputData Either a SummarizedExperiment object that contains the
-#' signature data and annotation as colData columns, or a data.frame or matrix
-#' of signature data. Required.
-#' @param annotationData If inputData is a data.frame or matrix of signature
-#' data, a data.frame or matrix of annotation data.
-#' @param signatureColNames If inputData is a SummarizedExperiment, the column
-#' names in colData that contain the signature data.
-#' @param annotationColName If inputData is a SummarizedExperiment, the column
-#' name in colData that contains the annotation data.
-#' @param scale Scale the signature data. The default is FALSE.
+#' @inheritParams signatureBoxplot
 #' 
 #' @return An array of ROC plots.
 #' 
 #' @export
 #' 
-#' @example 
+#' @examples 
+#' # Run signature profiling
+#'  choose_sigs <- TBsignatures[-c(18, 22)]
+#'  prof_indian <- runTBsigProfiler(TB_indian, useAssay = "logcounts",  
+#'                                  algorithm = "ssGSEA",
+#'                                  signatures = choose_sigs)
+#'                                  
+#' # Create ROC plots
+#' signatureROCplot(prof_indian, signatureColNames = names(choose_sigs),
+#'                  annotationColName = "label")
+#' 
 signatureROCplot <- function(inputData, annotationData, signatureColNames,
-                             annotationColName, scale = FALSE) {
+                             annotationColName, scale = FALSE,
+                             choose_colors = c("cornflowerblue", "grey24"),
+                             name = "Signatures", nrow = NULL, ncol = NULL) {
   
   # Error catches and variable creation
-  if (methods::is(inputData, "SummarizedExperiment")){
-    if (any(duplicated(signatureColNames))){
+  if (methods::is(inputData, "SummarizedExperiment")) {
+    if (any(duplicated(signatureColNames))) {
       signatureColNames <- unique(signatureColNames)
     }
-    if (!all(signatureColNames %in% colnames(SummarizedExperiment::colData(inputData)))){
+    if (!all(signatureColNames %in% colnames(SummarizedExperiment::colData(
+      inputData)))) {
       stop("Signature column name not found in inputData.")
     }
-    if (!all(annotationColName %in% colnames(SummarizedExperiment::colData(inputData)))){
+    if (!all(annotationColName %in% colnames(SummarizedExperiment::colData(
+      inputData)))) {
       stop("Annotation column name not found in inputData.")
     }
-    annotationData <- data.frame(SummarizedExperiment::colData(inputData)[, annotationColName, drop = FALSE])
-    inputData <-  data.frame(SummarizedExperiment::colData(inputData)[, signatureColNames, drop = FALSE])
+    annotationData <- data.frame(SummarizedExperiment::colData(
+      inputData)[, annotationColName, drop = FALSE])
+    inputData <-  data.frame(SummarizedExperiment::colData(
+      inputData)[, signatureColNames, drop = FALSE])
   } else {
-    if (ncol(annotationData) != 1){
+    if (ncol(annotationData) != 1) {
       stop("annotationData must have only one column.")
     }
     annotationColName <- colnames(annotationData)
   }
-  if (length(annotationColName) != 1){
-    stop("You must specify a single annotation column name to color boxplots by.")
+  if (length(annotationColName) != 1) {
+    stop("You must specify a single annotation column name with which
+    to color boxplots.")
   }
   if (!is.factor(annotationData[, 1])) {
     annotationData[, 1] <- as.factor(annotationData[, 1])
   }
   # The number of rows of annotation data should equal the
   # number of rows of the input data.
-  if (nrow(annotationData) == nrow(inputData)){
-    if (!all(rownames(annotationData) == rownames(inputData))){
+  if (nrow(annotationData) == nrow(inputData)) {
+    if (!all(rownames(annotationData) == rownames(inputData))) {
       stop("Annotation data and signature data does not match.")
     }
-  } else if (nrow(annotationData) == ncol(inputData)){
-    if (!all(rownames(annotationData) == colnames(inputData))){
+  } else if (nrow(annotationData) == ncol(inputData)) {
+    if (!all(rownames(annotationData) == colnames(inputData))) {
       stop("Annotation data and signature data does not match.")
     }
     inputData <- t(inputData)
@@ -207,19 +245,130 @@ signatureROCplot <- function(inputData, annotationData, signatureColNames,
   
   # If there are multiple annotationColNames, we will produce
   # an array of AUC plots as output.
-
-  par(mfrow = c(1,1))
-  for (k in signatureColNames){
+  plot_dat <- NULL
+  for (k in signatureColNames) {
     pred <- ROCit::rocit(inputdf[, k], inputdf$Group)
-    auc <- pred$AUC
-    auc <- max(auc, 1 - auc)
-    plot(pred, YIndex = F, values = F, 
-         col = c("cornflowerblue", "grey29"))
-    title(paste("ROC Curve,", k, "\n","(AUC = ", 
-                round(auc, 3),")", sep = " ")) 
+    plot_n <- as.data.frame(cbind(FPR = round(pred$FPR, 4), 
+                                  TPR = round(pred$TPR, 4), Signature = k))
+    plot_dat <- rbind(plot_dat, plot_n)
+  }
+  plot_dat$Signature <- paste(plot_dat$Signature)
+  plot_dat$FPR <- as.numeric(paste(plot_dat$FPR))
+  plot_dat$TPR <- as.numeric(paste(plot_dat$TPR))
+  
+  theplot <- ggplot2::ggplot(data = plot_dat, ggplot2::aes(x = FPR, y = TPR)) +
+    ggplot2::geom_line(ggplot2::aes(x = FPR, y = TPR, col = paste(
+      "Empirical ROC curve")), size = 1) + 
+    ggplot2::facet_wrap(~Signature, scales = 'free', 
+                        nrow = nrow, ncol = ncol) +
+    ggplot2::geom_abline(ggplot2::aes(intercept = 0, slope = 1, 
+                                      col = choose_colors[2]), size = 1, 
+                         linetype = "dashed", show.legend = FALSE) +
+    ggplot2::labs(x = "1-Specificity (FPR)", y = "Sensitivity (TPR)",
+                  title = name) +
+    ggplot2::scale_color_manual("", 
+                                labels = c("Empirical ROC curve", "Chance line"),
+                                values = c(choose_colors[1], choose_colors[2])) +
+    ggplot2::theme(legend.position = "right") +
+    ggplot2::theme_classic()
+  
+  return(theplot)
+}
+
+#' Add SummarizedExperiment Assays to the Data Structure.
+#' 
+#' Given an input of a Summarized Experiment with a counts or CPM assay, This 
+#' function creates additional assays for a gene expression count dataset 
+#' to be used in further analysis.
+#' 
+#' @param SE_obj a \code{SummarizedExperiment} object containing gene expression
+#' data. Required.
+#' @param input_name a character string specifying the name of the assay to
+#' be referenced for creating additional assays. Default is \code{"counts"}.
+#' @param output_name a character string to concatenate to "log" when computing
+#' a log assay. If \code{NULL}, then \code{input_name} will be substituted.
+#' Only used if \code{log = TRUE}. Default is \code{NULL}.
+#' @param log logical. Indicate whether an assay returned should be the log
+#' of whichever assay is specified in \code{"output_name"}. If 
+#' \code{counts_to_CPM = TRUE} as well, then a log CPM assay will also
+#' be created. Default is \code{FALSE}. 
+#' @param counts_to_CPM logical. This argument only applies if the 
+#' \code{input_type} is a counts assay. If \code{TRUE}, then the output assays
+#' will include a normalized CPM assay. If \code{counts_to_CPM = TRUE} as well, 
+#' then a log CPM assay will also be created. Default is \code{TRUE}.  
+#' @param  prior.counts an integer specifying the average count to be added to 
+#' each observation to avoid taking the log of zero. Used only if 
+#' \code{log = TRUE}. The default is \code{3}.
+#' 
+#' @return This function returns a \code{SummarizedExperiment} object with up 
+#' to 3 additional assay types attached to the original inputted object.
+#' \item{cpm}{Counts per million}
+#' \item{logcpm}{Log counts per million}
+#' \item{log_<output_name>}{Log of original inputted assay. 
+#' \code{<output_name>} will be replaced }
+#' 
+#' 
+#' @author Aubrey Odom
+#' 
+#' @export
+#' 
+#' @examples 
+#' # Create a log assay of the original assay input
+#' # TB_hiv dataset already has counts data
+#' log_only <- mkAssay(TB_hiv, log = TRUE, counts_to_CPM = FALSE)
+#' log_only
+#' 
+#' # Create a CPM assay
+#' CPM_only <- mkAssay(TB_hiv)
+#' CPM_only
+#' 
+#' # Create a logCPM, logcounts, and CPM assay
+#' all_assays <- mkAssay(TB_hiv, log = TRUE)
+#' all_assays
+#' 
+
+mkAssay <- function(SE_obj, input_name = "counts", output_name = NULL,
+                    log = FALSE, counts_to_CPM = TRUE,
+                    prior_counts = 3) {
+  
+  if (!(log | counts_to_CPM)) stop("At least counts_to_CPM or log must be TRUE.")
+  
+  # Identify the main assay to be referenced
+  assay_main <- SummarizedExperiment::assay(SE_obj, input_name)
+  if (is.null(output_name)) output_name <- input_name
+  
+  if (counts_to_CPM) {
+    data.norm <- edgeR::DGEList(counts = assay_main)
+    dge_data.norm <- edgeR::calcNormFactors(data.norm)
+    CPM_data.norm <- edgeR::cpm(dge_data.norm, log = FALSE)
+    SummarizedExperiment::assay(SE_obj, "cpm") <- CPM_data.norm
+  } 
+  
+  if (log) {
+    SummarizedExperiment::assay(
+      SE_obj, paste("log", output_name, sep = "_")) <- log(assay_main + 
+                                                             prior_counts)
+  } 
+  
+  if (counts_to_CPM & log) {
+    logCPM_data.norm <- edgeR::cpm(
+      dge_data.norm, log = TRUE, prior.counts = prior_counts)
+    SummarizedExperiment::assay(SE_obj, "logcpm") <- logCPM_data.norm
   }
   
+  return(SE_obj)
 }
+
+
+
+
+
+
+
+
+
+
+
 
 
 

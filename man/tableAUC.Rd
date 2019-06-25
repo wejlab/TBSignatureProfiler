@@ -2,28 +2,41 @@
 % Please edit documentation in R/bootstrap.R
 \name{tableAUC}
 \alias{tableAUC}
-\title{Create an interactive table of results for the bootstrapped AUC and p-values for a scored dataset.}
+\title{Create a Table of Results for T-tests and Rootstrapped AUC for a Collection of Scored Signatures.}
 \usage{
-tableAUC(SE_scored, annotationData, signatureColNames, num.boot,
-  pb_show = TRUE)
+tableAUC(SE_scored, annotationColName, signatureColNames, num.boot = 100,
+  pb.show = TRUE)
 }
 \arguments{
-\item{SE_scored}{A SummarizedExperiment object with genes in the rows,
-and signature scores in the columns. There should also be a column indicating TB status.}
+\item{SE_scored}{a \code{SummarizedExperiment} object with genes as the 
+row features and signature scores in the \code{colData}. There should also 
+be a column of annotation data. Required.}
 
-\item{annotationData}{A vector of annotation data, typically indicating TB status.}
+\item{annotationColName}{a character string giving the column name in 
+\code{colData} that contains the annotation data. Required.}
 
-\item{num.boot}{The number of times to bootstrap the data.}
+\item{num.boot}{integer. The number of times to bootstrap the data. The 
+default is \code{100}.}
 
-\item{pb_show}{Logical for whether to show a progress bar while running code.}
-
-\item{SignatureColNames}{The column names in the SE_scored colData that contain 
-the signature score data.}
+\item{pb.show}{logical for whether to show a progress bar while running code.
+The default is \code{TRUE}.}
 }
 \value{
-
+A JavaScript table with an R interface using the \code{DT} package.
 }
 \description{
-Collect the results of bootstrapping and t-tests for a scored gene expression dataset
-and present using a JavaScript table with an R interface.
+This function collects the results of bootstrapping and t-tests for a scored 
+gene expression dataset and presents them using a JavaScript table with an 
+R interface.
+}
+\examples{
+# Run signature profiling
+ choose_sigs <- TBsignatures[-c(18, 22)]
+ prof_indian <- runTBsigProfiler(TB_indian, useAssay = "logcounts",  
+                                 algorithm = "ssGSEA",
+                                 signatures = choose_sigs)
+ # Create table
+ tableAUC(SE_scored = prof_indian, annotationColName = "label", 
+          signatureColNames = names(choose_sigs))
+ 
 }

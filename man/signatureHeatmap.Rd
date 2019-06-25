@@ -50,9 +50,10 @@ show the row names (i.e. signature names) on the heatmap. The default is
 
 \item{colorSets}{a vector of names listing the color sets in the order 
 that they should be used in creating the heatmap. By default, this function 
-will use the color sets in the order listed below for annotation information. 
-You may replace this with the sets in order that you want to use them, or 
-provide custom color sets with the \code{colList} parameter.}
+will use the color sets in the order listed in \code{Usage} for annotation 
+information. You may replace the default with the same collection of sets 
+in order that you want to use them, or provide custom color sets with the 
+\code{colList} parameter.}
 
 \item{...}{Additional arguments to be passed to \code{ComplexHeatmap::Heatmap()}.}
 }
