@@ -166,9 +166,11 @@ compareBoxplots <- function(SE_scored, annotationColName, signatureColNames,
   abline(h = 0.5, col = "red", lty = 2)
 }
 
-#' Create an array of ROC plots to compare signatures.
+#' Create an Array of ROC Plots to Compare Signatures.
 #' 
 #' @inheritParams signatureBoxplot
+#' @param choose_colors a vector of length 2 definining the colors to be used
+#' in the ROC plots. The default is c("cornflowerblue", "grey24").
 #' 
 #' @return An array of ROC plots.
 #' 
@@ -269,8 +271,144 @@ signatureROCplot <- function(inputData, annotationData, signatureColNames,
     ggplot2::scale_color_manual("", 
                                 labels = c("Empirical ROC curve", "Chance line"),
                                 values = c(choose_colors[1], choose_colors[2])) +
-    ggplot2::theme(legend.position = "right") +
-    ggplot2::theme_classic()
+    ggplot2::theme(legend.position = "right")
+  
+  return(theplot)
+}
+
+#' Create an array of ROC plots with Confidence Interval Bands to Compare Signatures.
+#' 
+#' @inheritParams signatureROCplot
+#' @param choose_colors a vector of length 3 definining the colors to be used
+#' in the ROC plots. The default is \code{c("cornflowerblue", 
+#' "grey50", "grey79")}.
+#' @param name a character string giving the title of the boxplot. If 
+#' \code{NULL}, the plot title will be 
+#' \code{"ROC plots for Gene Signatures, <ci.lev>\% Confidence"}. 
+#' The default is \code{NULL}.
+#' @param ci.lev a number between 0 and 1 giving the desired level of 
+#' confidence for computing ROC curve estimations.
+#' 
+#' @return An array of ROC plots.
+#' 
+#' @export
+#' 
+#' @examples 
+#' # Run signature profiling
+#'  choose_sigs <- TBsignatures[-c(18, 22)]
+#'  prof_indian <- runTBsigProfiler(TB_indian, useAssay = "logcounts",  
+#'                                  algorithm = "ssGSEA",
+#'                                  signatures = choose_sigs)
+#'                                  
+#' # Create ROC plots with cocnfidence intervals
+#' signatureROCplot_CI(prof_indian, signatureColNames = names(choose_sigs),
+#'                     annotationColName = "label")
+#' 
+signatureROCplot_CI <- function(inputData, annotationData, signatureColNames,
+                                annotationColName, scale = FALSE,
+                                choose_colors = c("cornflowerblue", 
+                                                  "grey50", "grey79"),
+                                name = NULL, nrow = NULL, ncol = NULL,
+                                ci.lev = 0.95) {
+  
+  # Error catches and variable creation
+  if (methods::is(inputData, "SummarizedExperiment")) {
+    if (any(duplicated(signatureColNames))) {
+      signatureColNames <- unique(signatureColNames)
+    }
+    if (!all(signatureColNames %in% colnames(SummarizedExperiment::colData(
+      inputData)))) {
+      stop("Signature column name not found in inputData.")
+    }
+    if (!all(annotationColName %in% colnames(SummarizedExperiment::colData(
+      inputData)))) {
+      stop("Annotation column name not found in inputData.")
+    }
+    annotationData <- data.frame(SummarizedExperiment::colData(
+      inputData)[, annotationColName, drop = FALSE])
+    inputData <-  data.frame(SummarizedExperiment::colData(
+      inputData)[, signatureColNames, drop = FALSE])
+  } else {
+    if (ncol(annotationData) != 1) {
+      stop("annotationData must have only one column.")
+    }
+    annotationColName <- colnames(annotationData)
+  }
+  if (length(annotationColName) != 1) {
+    stop("You must specify a single annotation column name with which
+    to color boxplots.")
+  }
+  if (!is.factor(annotationData[, 1])) {
+    annotationData[, 1] <- as.factor(annotationData[, 1])
+  }
+  # The number of rows of annotation data should equal the
+  # number of rows of the input data.
+  if (nrow(annotationData) == nrow(inputData)) {
+    if (!all(rownames(annotationData) == rownames(inputData))) {
+      stop("Annotation data and signature data does not match.")
+    }
+  } else if (nrow(annotationData) == ncol(inputData)) {
+    if (!all(rownames(annotationData) == colnames(inputData))) {
+      stop("Annotation data and signature data does not match.")
+    }
+    inputData <- t(inputData)
+  } else {
+    stop("Annotation data and signature data does not match.")
+  }
+  
+  # Begin plot creation
+  pathwaydata <- t(inputData)
+  if (scale) {
+    pathwaydata <- t(scale(t(pathwaydata)))
+  }
+  inputdf <- data.frame(t(pathwaydata),
+                        Group = annotationData[, 1])
+  
+  # If there are multiple annotationColNames, we will produce
+  # an array of AUC plots as output.
+  
+  plot_dat <- NULL
+  for (k in signatureColNames) {
+    pred <- ROCit::rocit(inputdf[, k], inputdf$Group)
+    this.conf <- suppressWarnings(ROCit::ciROC(pred, level = ci.lev))
+    if(any(is.nan(this.conf$UpperTPR))) {
+      this.conf$UpperTPR[which(is.nan(this.conf$UpperTPR))] <- 1
+    }
+    
+    plot_n <- as.data.frame(cbind(FPR = round(this.conf$FPR, 4), 
+                                  TPR = round(this.conf$TPR, 4), 
+                                  LowerTPR = round(this.conf$LowerTPR, 4),
+                                  UpperTPR = round(this.conf$UpperTPR, 4),
+                                  Signature = k))
+    plot_dat <- rbind(plot_dat, plot_n)
+  }
+  
+  plot_dat <- as.data.frame(apply(plot_dat, 2, paste))
+  plot_dat[,1:4] <- as.data.frame(apply(plot_dat[,1:4], 2, as.numeric))
+  
+  if(is.null(name)) name <- paste("ROC plots for Gene Signatures, ", ci.lev, 
+                                  "% Confidence", sep = "")
+  
+  theplot <- ggplot2::ggplot(data = plot_dat, ggplot2::aes(x = FPR, y = TPR)) +
+    ggplot2::geom_ribbon(ggplot2::aes(ymin = LowerTPR, ymax = UpperTPR, 
+                                      fill = "Confidence Interval"), 
+                         show.legend = FALSE) +
+    ggplot2::geom_line(ggplot2::aes(x = FPR, y = TPR, col = 
+                                      "Empirical ROC curve"), size = 1) + 
+    ggplot2::facet_wrap(~Signature, scales = 'free', 
+                        nrow = nrow, ncol = ncol) +
+    ggplot2::geom_abline(ggplot2::aes(intercept = 0, slope = 1, 
+                                      col = choose_colors[2]), size = 1, 
+                         linetype = "dashed", show.legend = FALSE) +
+    ggplot2::scale_color_manual("", 
+                                labels = c("Empirical ROC curve", "Chance line"),
+                                values = c(choose_colors[1], choose_colors[2])) +
+    ggplot2::scale_fill_manual("", 
+                               labels = c("Confidence Interval"),
+                               values = c(choose_colors[3])) +
+    ggplot2::labs(x = "1-Specificity (FPR)", y = "Sensitivity (TPR)",
+                  title = name) +
+    ggplot2::theme(legend.position = "right")
   
   return(theplot)
 }

@@ -197,23 +197,23 @@ compareBoxplots(ssgsea_res, annotationColName = "Disease",
 ```
 
 
-### Separate AUC plots {.tabset}
+### Separate ROC plots {.tabset}
 ```{r AUC plots, results = 'asis', message = FALSE}
 for (i in names(TBsignatures)){
   
   cat("####", i, "\n")
   
-  signatureROCplot(inputData = ssgsea_res, 
+  print(signatureROCplot(inputData = ssgsea_res, 
                    signatureColNames = i,
                    annotationColName = "Disease",
-                   annotationData = ssgsea_res$Disease)
+                   name = paste("ROC plot,", i, sep = " ")))
   
   cat("\n\n")
 }
 ```
 
 ### ROC plots for all signatures
- Note that, in some cases, signatures will be positive identifiers of TB whereas others are negative identifiers. This should be taken into account when creating ROC curves and computing any AUC estimates.
+Note that, in some cases, signatures will be positive identifiers of TB whereas others are negative identifiers, hence some ROC curves will be below the chance line.
  
 ```{r SUCssgsea, message = FALSE, fig.height = 9, fig.width = 12}
 
