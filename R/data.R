@@ -9,43 +9,6 @@
 #' whereas others are negative identifiers. This should be taken into account 
 #' when creating ROC curves and computing any AUC estimates.
 #'
-#' \itemize{
-#'  \item{\strong{ACS_COR_16}}{: TB vs. healthy/LTBI - 16 gene signature}
-#'  \item{\strong{Anderson_TB_vs_LTBI_42}}{: TB vs LTBI - 42 gene signature (37 genes after filtering)}
-#'  \item{\strong{Anderson_TB_vs_other_LTBI_51}}{: TB vs OD/LTBI - 51 gene signature (41 genes after filtering)}
-#'  \item{\strong{Berry_393}}{: TB vs. healthy/LTBI - 393 gene signature (290 genes after filtering)}
-#'  \item{\strong{Berry_86}}{: TB vs. OD - 86 gene signature (74 genes after filtering)}
-#'  \item{\strong{Blankley_380}}{: TB vs. healthy/LTBI - 380 gene signature (383 genes after filtering)}
-#'  \item{\strong{Blankley_5}}{: TB vs. healthy/LTBI/post treat - 5 gene signature}
-#'  \item{\strong{Bloom_140}}{: TB vs. LTBI/OD - 140 gene signature (115 genes after filtering)}
-#'  \item{\strong{DISEASE_9}}{: Treatment Failure and PET-CT resolution - 9 gene signature (8 genes after filtering)}
-#'  \item{\strong{Esmail_subclinical_203}}{: Subclinical/TB vs LTBI - 203 gene signature (155 genes after filtering)}
-#'  \item{\strong{Esmail_subclinical_82}}{: Subclinical/TB vs LTBI - 82 gene signature (66 genes after filtering)}
-#'  \item{\strong{Esmail_TB_vs_LTBI_893}}{: TB vs. LTBI - 893 gene signature (700 genes after filtering)}
-#'  \item{\strong{FAILURE_13}}{: Treatment Failure - 13 gene signature}
-#'  \item{\strong{Jacobsen_3}}{: TB vs. healthy/LTBI - 3 gene signature}
-#'  \item{\strong{Kaforou_TB_vs_LTBI_27}}{: TB vs. LTBI - 27 gene signature (24 genes after filtering)}
-#'  \item{\strong{Kaforou_TB_vs_LTBI_other_53}}{: TB vs. LTBI/OD - 53 gene signature (45 genes after filtering)}
-#'  \item{\strong{Kaforou_TB_vs_other_44}}{: TB vs. OD - 44 gene signature (32 genes after filtering)}
-#'  \item{\strong{Lee_4}}{: TB vs. healthy/LTBI - 4 gene signature}
-#'  \item{\strong{Maertzdorf_100}}{: TB vs. LTBI/OD - 100 gene signature (65 genes after filtering)}
-#'  \item{\strong{Maertzdorf_4}}{: TB vs. healthy/LTBI/OD - 4 gene signature}
-#'  \item{\strong{RESPONSE5}}{: Treatment Failures vs. Cures - 5 gene signature}
-#'  \item{\strong{Roe_4}}{: TB vs. OD - 4 gene signature}
-#'  \item{\strong{Sambarey_10}}{: TB vs. LTBI/HIV - 10 gene signature}
-#'  \item{\strong{Singhania_20}}{: TB vs. LTBI/OD - 20 gene signature}
-#'  \item{\strong{Sloot_2}}{: TB progression vs HIV - 2 gene signature}
-#'  \item{\strong{Suliman_RISK4}}{: TB vs. healthy/LTBI - 4 gene signature (3 genes after filtering)}
-#'  \item{\strong{Sweeney_DIAG3}}{: TB vs. LTBI/OD - 3 gene signature}
-#'  \item{\strong{Walter_TB_vs_LTBI_51}}{: TB vs. LTBI - 51 gene signature (50 genes after filtering)}
-#'  \item{\strong{Walter_TB_vs_Pneumonia_47}}{: TB vs. Pneumonia - 47 gene signature (41 genes after filtering)}
-#'  \item{\strong{Walter_TB_vs_Pneumonia_LTBI_119}}{: TB vs. Pneumonia/LTBI - 119 gene signature (113 genes after filtering)}
-#'  \item{\strong{Rajan_5}}{: TB vs. HIV - 5 gene signature}
-#'  \item{\strong{Gliddon_4}}{: TB vs. OD/HIV- 4 gene signature}
-#'  \item{\strong{Gliddon_3}}{: TB vs. LTBI/HIV - 3 gene signature}
-#'  \item{\strong{Roe_COR_3}}{: : TB vs. healthy/LTBI - 3 gene signature}
-#' }
-#'
 #' @name TBsignatures
 #' @docType data
 #' @format list

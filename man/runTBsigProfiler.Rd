@@ -109,10 +109,10 @@ approach for interpreting genome-wide expression profiles. \emph{PNAS},
 \strong{102}, 15545-15550. doi:
 \href{https://doi.org/10.1073/pnas.0506580102}{10.1073/pnas.0506580102}.
 
-Hanzelmann, S., Castelo, R. and Guinney J. (2013). GSVA: gene set variation 
-analysis for microarray and RNA-Seq data. \emph{BMC Bioinformatics}, 
-\strong{14}. doi: 
-\href{https://doi.org/10.1186/1471-2105-14-7}{10.1186/1471-2105-14-7}.
+Barbie,  D.A., Tamayo, P., Boehm, J.S., Kim, S.Y., Moody,	 S.E., Dunn, I.F., Schinzel, A.C., 
+Sandy, P., Meylan, E., Scholl, C., et al. (2009).  Systematic RNA interference reveals 
+that oncogenic	KRAS-driven cancers require TBK1. \emph{Nature} \strong{462}, 108-112.
+doi: \href{https://doi.org/10.1038/nature08460}{10.1038/nature08460}.
 
 Shen, Y. et al. (2015). ASSIGN: context-specific genomic profiling of 
 multiple heterogeneous biological pathways. \emph{Bioinformatics}, \bold{31},
