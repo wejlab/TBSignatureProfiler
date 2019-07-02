@@ -32,8 +32,6 @@ deseq2_norm_rle <- function(inputData){
 #' predictive value, negative predictive value, precision, recall, F1, 
 #' prevalence, detection rate, detection prevalence and balanced accuracy.}
 #' \item{prob}{A vector of the test prediction probabilities.}
-#' 
-#' @export
 #'
 #' @examples
 #' inputTest <- as.data.frame(assay(TB_indian, "counts"))
@@ -85,8 +83,6 @@ LOOAUC_simple_multiple_noplot_one_df <- function(df, targetVec){
 #' value, negative predictive value, precision, recall, F1, prevalence,
 #' detection rate, detection prevalence and balanced accuracy for that 
 #' bootstrap iteration.}
-#' 
-#' @export
 #'
 #' @examples
 #' inputTest <- matrix(rnorm(1000), 100, 20,
