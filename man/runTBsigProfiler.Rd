@@ -103,3 +103,19 @@ GSVA_res <- runTBsigProfiler(input = TB_indian,
 GSVA_res$ACS_COR_16
  
 }
+\references{
+Subramanian, A. et al. (2005). Gene set enrichment analysis: A knowledge-based 
+approach for interpreting genome-wide expression profiles. \emph{PNAS},
+\strong{102}, 15545-15550. doi:
+\href{https://doi.org/10.1073/pnas.0506580102}{10.1073/pnas.0506580102}.
+
+Hanzelmann, S., Castelo, R. and Guinney J. (2013). GSVA: gene set variation 
+analysis for microarray and RNA-Seq data. \emph{BMC Bioinformatics}, 
+\strong{14}. doi: 
+\href{https://doi.org/10.1186/1471-2105-14-7}{10.1186/1471-2105-14-7}.
+
+Shen, Y. et al. (2015). ASSIGN: context-specific genomic profiling of 
+multiple heterogeneous biological pathways. \emph{Bioinformatics}, \bold{31},
+1745-1753. doi: 
+\href{https://doi.org/10.1093/bioinformatics/btv031}{10.1093/bioinformatics/btv031}.
+}
