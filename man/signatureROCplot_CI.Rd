@@ -32,7 +32,8 @@ boxplot. Only required if inputData is a \code{SummarizedExperiment} object.}
 The default is \code{FALSE}.}
 
 \item{choose_colors}{a vector of length 3 definining the colors to be used
-in the ROC plots. The default is \code{c("cornflowerblue", "grey50", "grey79")}.}
+in the ROC plots. The default is \code{c("cornflowerblue", 
+"grey50", "grey79")}.}
 
 \item{name}{a character string giving the title of the boxplot. If 
 \code{NULL}, the plot title will be 
@@ -43,8 +44,8 @@ The default is \code{NULL}.}
 
 \item{ncol}{integer giving the number of columns in the resulting array.}
 
-\item{ci.lev}{a number between 0 and 1 giving the desired level of confidence
-for computing ROC curve estimations.}
+\item{ci.lev}{a number between 0 and 1 giving the desired level of 
+confidence for computing ROC curve estimations.}
 }
 \value{
 An array of ROC plots.
