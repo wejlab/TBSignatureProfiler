@@ -118,7 +118,7 @@ tableAUC <- function(SE_scored, annotationColName, signatureColNames,
                              "UpperAUC"= round(apply(aucs_boot, 2, quantile, 
                                                      probs = .95), 4)
                              )[order(aucs, decreasing = T),], 
-                       options = list(scrollX = T, pageLength = 30), 
+                       options = list(scrollX = T, pageLength = 10), 
                        rownames = F))
 }
 
