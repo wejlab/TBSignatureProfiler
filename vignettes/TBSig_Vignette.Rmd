@@ -138,7 +138,7 @@ signatureHeatmap(ssgsea_result, name = "Heatmap of Signatures,
 
 Another method of visualization for scores is that of boxplots. When multiple signatures in the input data are to be compared, the `signatureBoxplot` function takes the scores for each signature and produces an individual boxplot, with jittered points representing individual sample scores. For this specific example, it is clear that some signatures do a better job at differentiating the TB/HIV and HIV only samples than others, as seen by overlapping or separate spreads of the adjacent boxplots.
 
-```{r Boxplots indiv, message = FALSE, results = 'hide', fig.height = 9, fig.width=12}
+```{r Boxplots all, message = FALSE, results = 'hide', fig.height = 9, fig.width=12}
 signatureBoxplot(inputData = ssgsea_result, 
                  name = "Boxplots of Signatures, ssGSEA", 
                  signatureColNames = names(TBsignatures),
