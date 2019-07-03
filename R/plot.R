@@ -45,7 +45,8 @@
 #' in order that you want to use them, or provide custom color sets with the 
 #' \code{colList} parameter.
 #' @param choose_color a vector of color names to be interpolated for the 
-#' heatmap gradient. The defailt is \code{c("red", "white", "blue")}
+#' heatmap gradient,, or a colorRamp function produced by 
+#' \code{circlize::colorRamp2}. The default is \code{c("red", "white", "blue")}.
 #' @param ... Additional arguments to be passed to \code{ComplexHeatmap::Heatmap()}.
 #'
 #' @return A ComplexHeatmap plot.
@@ -313,6 +314,7 @@ signatureBoxplot <- function(inputData, annotationData, signatureColNames,
 #' This function takes the profiled gene expression data for a single signature
 #' and creates a heatmap based on the expression scores. 
 #'
+#' @inheritParams signatureHeatmap
 #' @param inputData a \code{SummarizedExperiment} object containing the profiled 
 #' signature data and annotation data as columns in the \code{colData}.
 #' Required.
@@ -335,14 +337,6 @@ signatureBoxplot <- function(inputData, annotationData, signatureColNames,
 #' @param showRowNames logical. Setting \code{showColumnNames = TRUE} will 
 #' show the row names (i.e. signature names) on the heatmap. The default is 
 #' \code{TRUE}.
-#' @param colList a named \code{list} specifying custom color information to 
-#' pass to \code{ComplexHeatmap::Heatmap()}. By default, \code{ColorBrewer} 
-#' color sets will be used. See the the parameter \code{colorSets} for additional 
-#' details.
-#' @param colorSets By default, this function will use the color sets in the
-#' order listed below for annotation information. Replace this with the sets
-#' in order that you want to use them, or provide custom color sets with
-#' \code{colList}.
 #' @param ... Additional parameters to pass to \code{ComplexHeatmap::Heatmap()}.
 #'
 #' @return  A \code{ComplexHeatmap} plot.
@@ -383,7 +377,9 @@ signatureGeneHeatmap <- function(inputData, useAssay, sigGenes,
                                  showColumnNames = TRUE, showRowNames = TRUE,
                                  colList = list(), colorSets = c("Set1", "Set2",
                                  "Set3", "Pastel1", "Pastel2", "Accent",
-                                 "Dark2", "Paired"), ...) {
+                                 "Dark2", "Paired"), 
+                                 choose_color = c("red", "white", "blue"), 
+                                 ...) {
   if (!is.null(signatureColNames)) {
     pathwaycols <- list()
     pathwaydata <- data.frame(SummarizedExperiment::
@@ -477,6 +473,7 @@ signatureGeneHeatmap <- function(inputData, useAssay, sigGenes,
   return(ComplexHeatmap::draw(
     ComplexHeatmap::Heatmap(
       heatdata, show_column_names = showColumnNames,
+      col = choose_color,
       show_row_names = showRowNames, top_annotation = topha,
       name = heatname, column_title = name, ...),
     annotation_legend_side = "bottom")
