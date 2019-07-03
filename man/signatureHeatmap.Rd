@@ -8,7 +8,7 @@ signatureHeatmap(inputData, annotationData, name = "Signatures",
   signatureColNames, annotationColNames, colList = list(),
   scale = FALSE, showColumnNames = TRUE, showRowNames = TRUE,
   colorSets = c("Set1", "Set2", "Set3", "Pastel1", "Pastel2", "Accent",
-  "Dark2", "Paired"), ...)
+  "Dark2", "Paired"), choose_color = c("red", "white", "blue"), ...)
 }
 \arguments{
 \item{inputData}{an input data object. It should either be of the class 
@@ -32,10 +32,16 @@ SummarizedExperiment object.}
 contain the annotation data. Only required if \code{inputData} is a 
 \code{SummarizedExperiment}.}
 
-\item{colList}{a named \code{list} specifying custom color information to 
-pass to \code{ComplexHeatmap::Heatmap()}. By default, \code{ColorBrewer} 
-color sets will be used. See the the parameter \code{colorSets} for 
-additional details.}
+\item{colList}{a named \code{list} of named vectors specifying custom color information to 
+pass to \code{ComplexHeatmap::Heatmap()}. The list should have as many
+elements as there are annotation columns, and each element name should
+correspond exactly with the name of each annotation column. 
+The colors in the vector elements should be named according to the 
+levels of the factor in that column's annotation data if the annotation
+is discrete, or it should be produced with \code{circlize::colorRamp2}
+if the annotation is continuous.
+By default, \code{ColorBrewer} color sets will be used. 
+See the the parameter \code{colorSets} for additional details.}
 
 \item{scale}{logical. Setting \code{scale = TRUE} scales the signature data. 
 The default is \code{FALSE}.}
@@ -54,6 +60,9 @@ will use the color sets in the order listed in \code{Usage} for annotation
 information. You may replace the default with the same collection of sets 
 in order that you want to use them, or provide custom color sets with the 
 \code{colList} parameter.}
+
+\item{choose_color}{a vector of color names to be interpolated for the 
+heatmap gradient. The defailt is \code{c("red", "white", "blue")}}
 
 \item{...}{Additional arguments to be passed to \code{ComplexHeatmap::Heatmap()}.}
 }
@@ -87,4 +96,15 @@ signatureHeatmap(res, signatureColNames = c("GSVA_ACS_COR_16",
                                             "ssGSEA_ACS_COR_16"),
                  annotationColNames = "sample", scale = TRUE,
                  showColumnNames = FALSE)
+                 
+# Example using custom colors for the annotation information
+color2 <- stats::setNames(c("purple", "black"), c("down", "up"))
+color.list <- list("sample" = color2)
+
+signatureHeatmap(res, signatureColNames = c("GSVA_ACS_COR_16",
+                                            "ssGSEA_ACS_COR_16"),
+                 annotationColNames = "sample", scale = TRUE,
+                 showColumnNames = FALSE,
+                 colList = color.list)
+                  
 }

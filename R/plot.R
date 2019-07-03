@@ -20,10 +20,16 @@
 #' @param annotationColNames a vector of the column names in \code{colData} that 
 #' contain the annotation data. Only required if \code{inputData} is a 
 #' \code{SummarizedExperiment}.
-#' @param colList a named \code{list} specifying custom color information to 
-#' pass to \code{ComplexHeatmap::Heatmap()}. By default, \code{ColorBrewer} 
-#' color sets will be used. See the the parameter \code{colorSets} for 
-#' additional details.
+#' @param colList a named \code{list} of named vectors specifying custom color information to 
+#' pass to \code{ComplexHeatmap::Heatmap()}. The list should have as many
+#' elements as there are annotation columns, and each element name should
+#' correspond exactly with the name of each annotation column. 
+#' The colors in the vector elements should be named according to the 
+#' levels of the factor in that column's annotation data if the annotation
+#' is discrete, or it should be produced with \code{circlize::colorRamp2}
+#' if the annotation is continuous.
+#' By default, \code{ColorBrewer} color sets will be used. 
+#' See the the parameter \code{colorSets} for additional details.
 #' @param scale logical. Setting \code{scale = TRUE} scales the signature data. 
 #' The default is \code{FALSE}.
 #' @param showColumnNames logical. Setting \code{showColumnNames = TRUE} will 
@@ -38,6 +44,8 @@
 #' information. You may replace the default with the same collection of sets 
 #' in order that you want to use them, or provide custom color sets with the 
 #' \code{colList} parameter.
+#' @param choose_color a vector of color names to be interpolated for the 
+#' heatmap gradient. The defailt is \code{c("red", "white", "blue")}
 #' @param ... Additional arguments to be passed to \code{ComplexHeatmap::Heatmap()}.
 #'
 #' @return A ComplexHeatmap plot.
@@ -66,13 +74,25 @@
 #'                                             "ssGSEA_ACS_COR_16"),
 #'                  annotationColNames = "sample", scale = TRUE,
 #'                  showColumnNames = FALSE)
+#'                  
+#' # Example using custom colors for the annotation information
+#' color2 <- stats::setNames(c("purple", "black"), c("down", "up"))
+#' color.list <- list("sample" = color2)
+#' 
+#' signatureHeatmap(res, signatureColNames = c("GSVA_ACS_COR_16",
+#'                                             "ssGSEA_ACS_COR_16"),
+#'                  annotationColNames = "sample", scale = TRUE,
+#'                  showColumnNames = FALSE,
+#'                  colList = color.list)
+#'                   
 signatureHeatmap <- function(inputData, annotationData, name = "Signatures",
                              signatureColNames, annotationColNames,
                              colList = list(), scale = FALSE, 
                              showColumnNames = TRUE,
                              showRowNames = TRUE, colorSets = c("Set1", "Set2",
                              "Set3", "Pastel1", "Pastel2", "Accent", "Dark2",
-                             "Paired"), ...) {
+                             "Paired"),
+                             choose_color = c("red", "white", "blue"), ...) {
   if (methods::is(inputData, "SummarizedExperiment")){
     if (any(duplicated(signatureColNames))){
       stop("Duplicate signature column name is not supported.")
@@ -137,9 +157,11 @@ signatureHeatmap <- function(inputData, annotationData, name = "Signatures",
     sigresults <- t(scale(t(sigresults)))
     keyname <- "Scaled\nScore"
   }
+  
   return(ComplexHeatmap::draw(
     ComplexHeatmap::Heatmap(sigresults, column_title = name,
                             show_column_names = showColumnNames,
+                            col = choose_color,
                             show_row_names = showRowNames,
                             top_annotation = topha2, name = keyname, ...),
     annotation_legend_side = "bottom"
