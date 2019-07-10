@@ -25,7 +25,7 @@ knitr::opts_chunk$set(echo = TRUE,
 # A Brief Introduction to the TBSignatureProfiler
 
 The TBSignatureProfiler is an R package to compare the performance of various published gene signatures in distinguishing Tuberculosis-diseased cells from those in other states (e.g. HIV, Pneumonia, latent Tuberculosis) on any provided gene expression dataset. It is our objective to consistently update this package with additional signatures as they become published, and possibly add functionality to evaluate signatures for other pathogenic diseases in the near future. 
-<<<<<<< HEAD
+ 
 
 In order to install the TBSignatureProfiler, run the following code:
 
@@ -35,22 +35,18 @@ devtools::install_github("aubreyodom/TBSignatureProfiler")
 
 ## Compatability with SummarizedExperiment objects
 While the TBSignatureProfiler often allows for the form of a `data.frame` or `matrix` as input data, the most ideal form of input for this package is that of the `SummarizedExperiment` object. This is an amazing data structure that is being developed by the Bioconductor team. It allows for additional information to be attached to the main data object without taking up additional rows or columns in the frame, which is exceptionally helpful when dealing with gene expression data. To learn more about proper usage and context of the `SummarizedExperiment` object, you may want to take a look at the [package description](https://bioconductor.org/packages/release/bioc/html/SummarizedExperiment.html) and [package vignette](https://bioconductor.org/packages/release/bioc/vignettes/SummarizedExperiment/inst/doc/SummarizedExperiment.html). A basic understanding of the `assay` and `colData` properties of a `SummarizedExperiment` will be useful for the purposes of this vignette.
-=======
+
 
 In order to install the TBSignatureProfiler, run the following code:
->>>>>>> 9dac62228911fa5226a1f7b5ec1f54c7c598a44f
 
 ```{r load profiler, eval = FALSE, results = FALSE}
 devtools::install_github("aubreyodom/TBSignatureProfiler")
 ```
 
-<<<<<<< HEAD
-=======
 ## Compatability with SummarizedExperiment objects
 While the TBSignatureProfiler often allows for the form of a `data.frame` or `matrix` as input data, the most ideal form of input for this package is that of the `SummarizedExperiment` object. This is an amazing data structure that is being developed by the Bioconductor team. It allows for additional information to be attached to the main data object without taking up additional rows or columns in the frame, which is exceptionally helpful when dealing with gene expression data. To learn more about proper usage and context of the `SummarizedExperiment` object, you may want to take a look at the [package description](https://bioconductor.org/packages/release/bioc/html/SummarizedExperiment.html) and [package vignette](https://bioconductor.org/packages/release/bioc/vignettes/SummarizedExperiment/inst/doc/SummarizedExperiment.html). A basic understanding of the `assay` and `colData` properties of a `SummarizedExperiment` will be useful for the purposes of this vignette.
 
 
->>>>>>> 9dac62228911fa5226a1f7b5ec1f54c7c598a44f
 To install the `SummarizedExperiment` package, run the following code:
 ```{r SE install, eval = FALSE}
 if (!requireNamespace("BiocManager", quietly = TRUE))
@@ -69,19 +65,17 @@ suppressPackageStartupMessages({
 ```
 
 ## Loading the dataset
-In this tutorial, we will work with HIV and Tuberculosis (TB) gene expression data in a `SummarizedExperiment` format. This dataset is included in the TBSignatureProfiler package and can be loaded into the global environment with `data("TB_hiv")`. THe 31 samples in the dataset are marked as either having both TB and HIV infection, or HIV infection only.
+In this tutorial, we will work with HIV and Tuberculosis (TB) gene expression data in a `SummarizedExperiment` format. This dataset is included in the TBSignatureProfiler package and can be loaded into the global environment with `data("TB_hiv")`. The 31 samples in the dataset are marked as either having both TB and HIV infection, or HIV infection only.
 
 We begin by examining the dataset, which contains a matrix of counts information (an "assay" in SummarizedExperiment terms) and another matrix of meta data information on our samples (the "colData"). We will also generate a few additional assays; therse are the log(counts), the counts per million (CPM) reads mapped, and the log(CPM) assays. 
 
 ```{r loading data}
-
 ## HIV/TB gene expression data, included in the package
 hivtb_data <- TB_hiv
 
 ### Note that we have 25,369 genes, 33 samples, and 1 assay of counts
 dim(hivtb_data)
 assays(hivtb_data)
-
 ```
 
 ```{r add assays}
@@ -98,13 +92,10 @@ The TBSignatureProfiler enables comparison of multiple Tuberculosis gene signatu
 
 Here, we opt to evaluate all signatures included in the package with ssGSEA. Paraphrasing from the [ssGSEA documentation](http://software.broadinstitute.org/cancer/software/genepattern/modules/docs/ssGSEAProjection/4), for each pairing of one of the 31 samples and its gene set, ssGSEA calculates a seperate enrichment score independent of the phenotypic labeling (in this case, whether a sample has HIV/TB, or HIV only). The single sample's gene expression profile is then transformed to a gene set enrichment profile. A score from the set profile represents the activity level of the biological process in which the gene set's members are coordinately up- or down-regulated.  
 
-=======
-
 The TBSignatureProfiler enables comparison of multiple Tuberculosis gene signatures. The package currently contains information on 34 signatures for comparison. With the `runTBSigProfiler` function, we are able to score these signatures with a selection of algorithms, including [gene set variation analysis](https://bmcbioinformatics.biomedcentral.com/articles/10.1186/1471-2105-14-7) (GSVA) (Hänzelmann et al, 2013), [single-sample GSEA](https://bmcbioinformatics.biomedcentral.com/articles/10.1186/1471-2105-14-7) (ssGSEA) (Barbie et al, 2009), and the [ASSIGN](https://bmcbioinformatics.biomedcentral.com/articles/10.1186/1471-2105-14-7) pathway profiling toolkit (Shen et al, 2015).
 
 Here, we opt to evaluate all signatures included in the package with ssGSEA. Paraphrasing from the [ssGSEA documentation](http://software.broadinstitute.org/cancer/software/genepattern/modules/docs/ssGSEAProjection/4), for each pairing of one of the 31 samples and its gene set, ssGSEA calculates a seperate enrichment score independent of the phenotypic labeling (in this case, whether a sample has HIV/TB, or HIV only). The single sample's gene expression profile is then transformed to a gene set enrichment profile. A score from the set profile represents the activity level of the biological process in which the gene set's members are coordinately up- or down-regulated.  
 
->>>>>>> 9dac62228911fa5226a1f7b5ec1f54c7c598a44f
 ```{r run profiler, message = FALSE, results = 'hide'}
 
 ## List all 34 signatures in the profiler
@@ -124,11 +115,10 @@ ssgsea_result <- runTBsigProfiler(input = hivtb_data,
 
 When a `SummarizedExperiment` is the format of the input data for `runTBsigprofiler`,  the returned object is also of the `SummarizedExperiment`. The scores will be returned as a part of the colData. 
 
-<<<<<<< HEAD
+ 
 Below, we compare the enrichment scores for the ZAK_RISK_16, Anderson_42, and Anderson_OD_51 signatures. 
-=======
+
 Below, we subset the data to compare the enrichment scores for the ACS_COR_16 signature and the Anderson_42 signature. 
->>>>>>> 9dac62228911fa5226a1f7b5ec1f54c7c598a44f
 
 
 ```{r show scores, message = FALSE}
@@ -139,21 +129,17 @@ DT::datatable(as.data.frame(colData(ssgsea_result))[,2:5])
 ## Visualization with TBSignatureProfiler Plots{.tabset}
 
 ### Heatmap with all Signatures
-<<<<<<< HEAD
+ 
 
 Commonly, enrichment scores are compared across signatures by means of a heatmap combined with clustering methods to group samples and/or scores. The `signatureHeatmap` function uses the information from the score data to visualize changes in gene expression across samples and signatures (or genes, if only one signature is selected). 
 
 Here, the columns of the heatmap represent samples, and rows represent signatures. As we move across the colums, we see different patterns of gene expression as indicated by the varying color and intensity of individial rectangles. In the top bar, the solid red represents a sample is HIV infected only, and solid blue indicates that the sample is both HIV and TB infected. In the gradient area of the heatmap, the scaled scores are associated with either up-regulated or down-regulated genes. A cluster of samples near the bottom of the heatmap reveals that some signatures are inversely associated with TB/HIV identification, as their pheotypic mapping for lower/higher scores is nearly the opposite of most of the other signatures.  
-
-```{r heatmaps all, message = FALSE, fig.height = 8, fig.width = 10}
-=======
 
 Commonly, enrichment scores are compared across signatures by means of a heatmap combined with clustering methods to group samples and/or scores. The `signatureHeatmap` function uses the information from the score data to visualize changes in gene expression across samples and signatures (or genes, if only one signature is selected). 
 
 Here, the columns of the heatmap represent samples, and rows represent signatures. As we move across the colums, we see different patterns of gene expression as indicated by the varying color and intensity of individial rectangles. In the top bar, the solid red represents a sample is HIV infected only, and solid blue indicates that the sample is both HIV and TB infected. In the gradient area of the heatmap, the scaled scores are associated with either up-regulated or down-regulated genes. A cluster of samples near the bottom of the heatmap reveals that some signatures are inversely associated with TB/HIV identification, as their pheotypic mapping for lower/higher scores is nearly the opposite of most of the other signatures.  
 
 ```{r all sigs heatmap, message = FALSE, fig.height = 8, fig.width = 10}
->>>>>>> 9dac62228911fa5226a1f7b5ec1f54c7c598a44f
 # Colors for gradient
 colors <- RColorBrewer::brewer.pal(6, "Spectral")
 col.me <- circlize::colorRamp2(seq(from = -2, to = 2, 
@@ -173,11 +159,9 @@ signatureHeatmap(ssgsea_result, name = "Heatmap of Signatures,
 
 Another method of visualization for scores is that of boxplots. When multiple signatures in the input data are to be compared, the `signatureBoxplot` function takes the scores for each signature and produces an individual boxplot, with jittered points representing individual sample scores. For this specific example, it is clear that some signatures do a better job at differentiating the TB/HIV and HIV only samples than others, as seen by overlapping or separate spreads of the adjacent boxplots.
 
-<<<<<<< HEAD
+ 
 ```{r Boxplots all, message = FALSE, results = 'hide', fig.height = 9, fig.width=12}
-=======
-```{r boxssgsea, message = FALSE, results = 'hide', fig.height = 9, fig.width=12}
->>>>>>> 9dac62228911fa5226a1f7b5ec1f54c7c598a44f
+
 signatureBoxplot(inputData = ssgsea_result, 
                  name = "Boxplots of Signatures, ssGSEA", 
                  signatureColNames = names(TBsignatures),
@@ -186,7 +170,7 @@ signatureBoxplot(inputData = ssgsea_result,
 
 
 ### Boxplots of Scores, Individual Signatures {.tabset}
-<<<<<<< HEAD
+ 
 If only one boxplot of a signature is desired, then that signature alone should be specified in `signatureColNames`. Otherwise, an array of plots for all signatures will be produced.
 =======
 One signature at a time can be fed to the `signatureBoxplot` function if only one plot is desired.
@@ -206,7 +190,7 @@ for (i in names(TBsignatures)){
 ```
 
 ### Heatmaps for Individual Signatures {.tabset}
-<<<<<<< HEAD
+ 
 =======
 
 The `signatureGeneHeatmap` function produces heatmaps that highlight a single selected signature. The resulting plots feature samples on the columns, and the genes in the signature on the rows. The annotation rows at the top are related to both the disease phenotype and to the signature score itself.  The gradient of the heatmap is created using the gene expression values in the assay specified by the `useAssay` parameter. Here, we observe how the log(CPM) values for specific genes relate to the signanture score for each sample.
@@ -257,7 +241,7 @@ The `signatureROCplot_CI` function plots the ROC curves for signature scores in 
 
 Note that, in some cases, signatures will be positive identifiers of TB whereas others are negative identifiers, hence some ROC curves will be below the chance line.
  
-<<<<<<< HEAD
+ 
 ```{r ROC all, message = FALSE, fig.height = 9, fig.width = 12}
 =======
 ```{r SUCssgsea, message = FALSE, fig.height = 9, fig.width = 12}
@@ -269,7 +253,7 @@ signatureROCplot_CI(inputData = ssgsea_result,
 ```
 
 ### Separate ROC plots, 95% CI bands {.tabset}
-<<<<<<< HEAD
+ 
 ```{r ROC indiv, results = 'asis', message = FALSE}
 =======
 ```{r AUC plots, results = 'asis', message = FALSE}
@@ -315,7 +299,7 @@ DT::datatable(round(quantitative.result$df.sensitivity.ci, 4),
               rownames = F)
 DT::datatable(round(quantitative.result$df.specificity.ci, 4),
               options = list(scrollX = T, pageLength = 10), 
-<<<<<<< HEAD
+ 
 =======
               rownames = F)
 
