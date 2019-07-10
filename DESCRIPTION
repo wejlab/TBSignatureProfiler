@@ -38,7 +38,8 @@ Imports:
     ggfortify,
     e1071,
     DT,
-    edgeR
+    edgeR,
+    singscore
 Suggests:
     testthat,
     spelling,
