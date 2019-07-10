@@ -3,10 +3,16 @@
 \name{runTBsigProfiler}
 \alias{runTBsigProfiler}
 \title{Run Tuberculosis Gene Signature profiling}
+\source{
+Profiling for the Z-Score, PLAGE, GSVA, ssGSEA algorithms are all 
+conducted with the Bioconductor \score{GSVA} package. Profiling for the
+singscore algorithm is conducted with the Bioconductor \code{singscore}
+package.
+}
 \usage{
 runTBsigProfiler(input, useAssay = NULL, signatures = NULL,
-  algorithm = c("GSVA", "ssGSEA", "ASSIGN"),
-  combineSigAndAlgorithm = FALSE, assignDir = NULL,
+  algorithm = c("GSVA", "ssGSEA", "ASSIGN", "PLAGE", "Zscore",
+  "singscore"), combineSigAndAlgorithm = FALSE, assignDir = NULL,
   outputFormat = NULL, parallel.sz = 0, ASSIGNiter = 1e+05,
   ASSIGNburnin = 50000)
 }
@@ -25,7 +31,8 @@ of signatures \code{TBsignatures} list is used. For details, run
 \code{?TBsignatures}.}
 
 \item{algorithm}{a vector of algorithms to run, or character string if only 
-one is desired. The default is \code{c("GSVA", "ssGSEA", "ASSIGN")}.}
+one is desired. The default is \code{c("GSVA", "ssGSEA", "ASSIGN",
+"PLAGE", "Zscore", "singscore")}.}
 
 \item{combineSigAndAlgorithm}{logical, not supported if \code{input} is a 
 SummarizedExperiment object (in which case, the default is \code{TRUE}). 
@@ -77,10 +84,10 @@ provided in the TBSignatureProfiler package.
 }
 \examples{
 ## Using a matrix input/output
- # Create some toy data to test ACS_COR_16 signature, using 5 samples with low 
+ # Create some toy data to test Zak_RISK_16 signature, using 5 samples with low 
  # expression & five samples with high expression of the signatures genes.
 mat_testdata <- rbind(matrix(c(rnorm(80), rnorm(80) + 5), 16, 10,
-                             dimnames = list(TBsignatures$ACS_COR_16,
+                             dimnames = list(TBsignatures$Zak_RISK_16,
                              paste0("sample", 1:10))),
                       matrix(rnorm(1000), 100, 10,
                              dimnames = list(paste0("gene", 1:100),
@@ -90,7 +97,7 @@ res <- runTBsigProfiler(input = mat_testdata,
                         algorithm = c("GSVA", "ssGSEA"), 
                         combineSigAndAlgorithm = FALSE,
                         parallel.sz = 1)
-res["ACS_COR_16", ]
+res["Zak_RISK_16", ]
 
 ## Using a SummarizedExperiment input/output
  # The TB_indian SummarizedExperiment data is included in the package.
@@ -100,7 +107,7 @@ GSVA_res <- runTBsigProfiler(input = TB_indian,
                              algorithm = c("GSVA"),
                              combineSigAndAlgorithm = FALSE,
                              parallel.sz = 4)
-GSVA_res$ACS_COR_16
+GSVA_res$Zak_RISK_16
  
 }
 \references{
@@ -118,4 +125,16 @@ Shen, Y. et al. (2015). ASSIGN: context-specific genomic profiling of
 multiple heterogeneous biological pathways. \emph{Bioinformatics}, \bold{31},
 1745-1753. doi: 
 \href{https://doi.org/10.1093/bioinformatics/btv031}{10.1093/bioinformatics/btv031}.
+
+Foroutan, M. et al. (2018). Single sample scoring of molecular phenotypes. 
+\emph{BMC Bioinformatics}, \bold{19}. doi: 
+\href{https://doi.org/10.1186/s12859-018-2435-4}{10.1186/s12859-018-2435-4}.
+
+Lee, E. et al. (2008). Inferring pathway activity toward precise disease 
+classification. \emph{PLoS Comp Biol}, 4(11):e1000217. doi: 
+\href{https://doi.org/10.1371/journal.pcbi.1000217}{10.1371/journal.pcbi.1000217}
+
+Tomfohr, J. et al. (2005). Pathway level analysis of gene expression using 
+singular value decomposition. \emph{BMC Bioinformatics}, 6:225. doi:
+\href{https://doi.org/10.1186/1471-2105-6-225}{10.1186/1471-2105-6-225}
 }

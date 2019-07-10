@@ -19,7 +19,8 @@
 #' of signatures \code{TBsignatures} list is used. For details, run 
 #' \code{?TBsignatures}.
 #' @param algorithm a vector of algorithms to run, or character string if only 
-#' one is desired. The default is \code{c("GSVA", "ssGSEA", "ASSIGN")}.
+#' one is desired. The default is \code{c("GSVA", "ssGSEA", "ASSIGN",
+#' "PLAGE", "Zscore", "singscore")}.
 #' @param combineSigAndAlgorithm logical, not supported if \code{input} is a 
 #' SummarizedExperiment object (in which case, the default is \code{TRUE}). 
 #' For a matrix or data frame, if \code{TRUE}, the row names will be in the form 
@@ -70,15 +71,32 @@
 #' multiple heterogeneous biological pathways. \emph{Bioinformatics}, \bold{31},
 #' 1745-1753. doi: 
 #' \href{https://doi.org/10.1093/bioinformatics/btv031}{10.1093/bioinformatics/btv031}.
+#' 
+#' Foroutan, M. et al. (2018). Single sample scoring of molecular phenotypes. 
+#' \emph{BMC Bioinformatics}, \bold{19}. doi: 
+#' \href{https://doi.org/10.1186/s12859-018-2435-4}{10.1186/s12859-018-2435-4}.
+#'
+#' Lee, E. et al. (2008). Inferring pathway activity toward precise disease 
+#' classification. \emph{PLoS Comp Biol}, 4(11):e1000217. doi: 
+#' \href{https://doi.org/10.1371/journal.pcbi.1000217}{10.1371/journal.pcbi.1000217}
+#'
+#' Tomfohr, J. et al. (2005). Pathway level analysis of gene expression using 
+#' singular value decomposition. \emph{BMC Bioinformatics}, 6:225. doi:
+#' \href{https://doi.org/10.1186/1471-2105-6-225}{10.1186/1471-2105-6-225}
+#'
+#' @source Profiling for the Z-Score, PLAGE, GSVA, ssGSEA algorithms are all 
+#' conducted with the Bioconductor \score{GSVA} package. Profiling for the
+#' singscore algorithm is conducted with the Bioconductor \code{singscore}
+#' package.
 #'
 #' @export
 #'
 #' @examples
 #' ## Using a matrix input/output
-#'  # Create some toy data to test ACS_COR_16 signature, using 5 samples with low 
+#'  # Create some toy data to test Zak_RISK_16 signature, using 5 samples with low 
 #'  # expression & five samples with high expression of the signatures genes.
 #' mat_testdata <- rbind(matrix(c(rnorm(80), rnorm(80) + 5), 16, 10,
-#'                              dimnames = list(TBsignatures$ACS_COR_16,
+#'                              dimnames = list(TBsignatures$Zak_RISK_16,
 #'                              paste0("sample", 1:10))),
 #'                       matrix(rnorm(1000), 100, 10,
 #'                              dimnames = list(paste0("gene", 1:100),
@@ -88,7 +106,7 @@
 #'                         algorithm = c("GSVA", "ssGSEA"), 
 #'                         combineSigAndAlgorithm = FALSE,
 #'                         parallel.sz = 1)
-#' res["ACS_COR_16", ]
+#' res["Zak_RISK_16", ]
 #' 
 #' ## Using a SummarizedExperiment input/output
 #'  # The TB_indian SummarizedExperiment data is included in the package.
@@ -98,11 +116,12 @@
 #'                              algorithm = c("GSVA"),
 #'                              combineSigAndAlgorithm = FALSE,
 #'                              parallel.sz = 4)
-#' GSVA_res$ACS_COR_16
+#' GSVA_res$Zak_RISK_16
 #'  
 runTBsigProfiler <- function(input, useAssay = NULL,
                              signatures = NULL,
-                             algorithm = c("GSVA", "ssGSEA", "ASSIGN"),
+                             algorithm = c("GSVA", "ssGSEA", "ASSIGN", 
+                                           "PLAGE", "Zscore", "singscore"),
                              combineSigAndAlgorithm = FALSE, assignDir = NULL,
                              outputFormat = NULL, parallel.sz = 0,
                              ASSIGNiter = 100000, ASSIGNburnin = 50000) {
@@ -120,7 +139,7 @@ runTBsigProfiler <- function(input, useAssay = NULL,
   runindata <- input
   if (methods::is(runindata, "SummarizedExperiment")) {
     if (!is.null(useAssay)) {
-        runindata <- SummarizedExperiment::assay(input, useAssay)
+      runindata <- SummarizedExperiment::assay(input, useAssay)
     } else {
       stop("useAssay required for SummarizedExperiment Input")
     }
@@ -139,24 +158,55 @@ runTBsigProfiler <- function(input, useAssay = NULL,
          "data.frame, or SummarizedExperiment. Your input: ",
          as.character(class(input)))
   }
-  if (!all(algorithm %in% c("GSVA", "ssGSEA", "ASSIGN"))) {
-    stop("Invalid algorithm. Supported algorithms are GSVA, ssGSEA, and ASSIGN")
+  if (!all(algorithm %in% c("GSVA", "ssGSEA", "ASSIGN", 
+                            "PLAGE", "Zscore", "singscore"))) {
+    stop("Invalid algorithm. Supported algorithms are GSVA, ssGSEA, 
+         PLAGE, Zscore, singscore, and ASSIGN")
   }
-
+  
   gsvaRes <- NULL
   if ("GSVA" %in% algorithm) {
     message("Running GSVA")
     gsvaRes <- GSVA::gsva(runindata, signatures,
                           parallel.sz = parallel.sz)
   }
-
+  
   gsvaRes_ssgsea <- NULL
   if ("ssGSEA" %in% algorithm) {
     message("Running ssGSEA")
     gsvaRes_ssgsea <- GSVA::gsva(runindata, signatures, method = "ssgsea",
                                  parallel.sz = parallel.sz)
   }
-
+  
+  gsvaRes_PLAGE <- NULL
+  if ("PLAGE" %in% algorithm) {
+    message("Running PLAGE")
+    gsvaRes_PLAGE <- GSVA::gsva(runindata, signatures, method = "plage",
+                                parallel.sz = parallel.sz)
+  }
+  
+  gsvaRes_Z <- NULL
+  if ("Zscore" %in% algorithm) {
+    message("Running Z-score profiling")
+    gsvaRes_Z <- GSVA::gsva(runindata, signatures, method = "zscore",
+                            parallel.sz = parallel.sz)
+  }
+  
+  singscore_res <- NULL
+  if ("singscore" %in% algorithm) {
+    singscore_res <- matrix(ncol = ncol(runindata), 
+                            nrow = length(signatures),
+                            dimnames = list(names(signatures),
+                                            colnames(runindata)))
+    rankDat <- singscore::rankGenes(runindata)
+    for (sig in names(signatures)) {
+      singscore_res[sig,] <- suppressWarnings(singscore::simpleScore(
+        rankData = rankDat, 
+        upSet = TBsignatures[[sig]],
+        knownDirection = FALSE)$TotalScore)
+    }
+  }
+  
   assign_res <- NULL
   if ("ASSIGN" %in% algorithm) {
     predir <- getwd()
@@ -198,7 +248,7 @@ runTBsigProfiler <- function(input, useAssay = NULL,
       message("Intermediate ASSIGN results available at ", assignDir)
     }
   }
-
+  
   sig_result <- NULL
   if (length(algorithm) == 1) {
     if (!is.null(gsvaRes)) {
@@ -207,6 +257,12 @@ runTBsigProfiler <- function(input, useAssay = NULL,
       sig_result <- gsvaRes_ssgsea
     } else if (!is.null(assign_res)) {
       sig_result <- assign_res
+    } else if (!is.null(gsvaRes_Z)) {
+      sig_result <- gsvaRes_Z
+    } else if (!is.null(gsvaRes_PLAGE)) {
+      sig_result <- gsvaRes_PLAGE
+    } else if (!is.null(singscore_res)) {
+      sig_result <- singscore_res
     } else {
       stop("ERROR: all valid outputs are empty.")
     }
@@ -238,6 +294,33 @@ runTBsigProfiler <- function(input, useAssay = NULL,
           combined_res <- assign_res
         } else {
           combined_res <- rbind(combined_res, assign_res)
+        }
+      }
+      if (!is.null(gsvaRes_PLAGE)) {
+        rownames(gsvaRes_PLAGE) <- paste("PLAGE", rownames(gsvaRes_PLAGE), 
+                                         sep = "_")
+        if (nrow(combined_res) == 0) {
+          combined_res <- gsvaRes_PLAGE
+        } else {
+          combined_res <- rbind(combined_res, gsvaRes_PLAGE)
+        }
+      }
+      if (!is.null(gsvaRes_Z)) {
+        rownames(gsvaRes_Z) <- paste("Z-score", rownames(gsvaRes_Z), 
+                                     sep = "_")
+        if (nrow(combined_res) == 0) {
+          combined_res <- gsvaRes_Z
+        } else {
+          combined_res <- rbind(combined_res, gsvaRes_Z)
+        }
+      }
+      if (!is.null(singscore_res)) {
+        rownames(singscore_res) <- paste("Z-Score", rownames(singscore_res), 
+                                         sep = "_")
+        if (nrow(combined_res) == 0) {
+          combined_res <- singscore_res
+        } else {
+          combined_res <- rbind(combined_res, singscore_res)
         }
       }
     } else {
@@ -288,11 +371,53 @@ runTBsigProfiler <- function(input, useAssay = NULL,
           combined_res <- rbind(combined_res, assign_res)
         }
       }
+      if (!is.null(gsvaRes_PLAGE)) {
+        alg_col <- gsvaRes_PLAGE[, 1, drop = FALSE]
+        colnames(alg_col) <- "algorithm"
+        alg_col[, 1] <- rep("PLAGE", nrow(gsvaRes_PLAGE))
+        pathcol <- alg_col
+        pathcol[, 1] <- rownames(gsvaRes_PLAGE)
+        colnames(pathcol) <- "pathway"
+        gsvaRes_PLAGE <- cbind(pathcol, alg_col, gsvaRes_PLAGE)
+        if (nrow(combined_res) == 0) {
+          combined_res <- gsvaRes_PLAGE
+        } else {
+          combined_res <- rbind(combined_res, gsvaRes_PLAGE)
+        }
+      }
+      if (!is.null(gsvaRes_Z)) {
+        alg_col <- gsvaRes_Z[, 1, drop = FALSE]
+        colnames(alg_col) <- "algorithm"
+        alg_col[, 1] <- rep("Z-Score", nrow(gsvaRes_Z))
+        pathcol <- alg_col
+        pathcol[, 1] <- rownames(gsvaRes_Z)
+        colnames(pathcol) <- "pathway"
+        gsvaRes_Z <- cbind(pathcol, alg_col, gsvaRes_Z)
+        if (nrow(combined_res) == 0) {
+          combined_res <- gsvaRes_Z
+        } else {
+          combined_res <- rbind(combined_res, gsvaRes_Z)
+        }
+      }
+      if (!is.null(singscore_res)) {
+        alg_col <- singscore_res[, 1, drop = FALSE]
+        colnames(alg_col) <- "algorithm"
+        alg_col[, 1] <- rep("singscore", nrow(singscore_res))
+        pathcol <- alg_col
+        pathcol[, 1] <- rownames(singscore_res)
+        colnames(pathcol) <- "pathway"
+        singscore_res <- cbind(pathcol, alg_col, singscore_res)
+        if (nrow(combined_res) == 0) {
+          combined_res <- singscore_res
+        } else {
+          combined_res <- rbind(combined_res, singscore_res)
+        }
+      }
       rownames(combined_res) <- NULL
     }
     sig_result <- as.matrix(combined_res)
   }
-
+  
   if (sum(names(signatures) %in% rownames(sig_result)) != length(signatures)) {
     absent <- subset(names(signatures), !(names(signatures) %in% 
                                             rownames(sig_result)))
@@ -305,7 +430,7 @@ runTBsigProfiler <- function(input, useAssay = NULL,
   if (is.null(outputFormat)) {
     #output same as input
     if (class(input) %in% c("SummarizedExperiment", "SingleCellExperiment",
-                             "SCtkExperiment")) {
+                            "SCtkExperiment")) {
       SummarizedExperiment::colData(input) <-
         S4Vectors::cbind(SummarizedExperiment::colData(input),
                          S4Vectors::DataFrame(t(sig_result)))
