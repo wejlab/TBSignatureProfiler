@@ -12,7 +12,7 @@
 #' \code{data.frame}, or \code{matrix} containing gene expression data. Required.
 #' @param useAssay a character string specifying the assay to use for signature 
 #' profiling when \code{input} is a SummarizedExperiment. Required only for input 
-#' data of the class \code{SummarizedExperiment}.
+#' data of the class \code{SummarizedExperiment}. Default is \code{"counts"}.
 #' @param signatures a \code{list} of signatures to run with their associated genes. 
 #' This list should be in the same format as \code{TBsignatures}, included in 
 #' the TBSignatureProfiler package. If \code{signatures = NULL}, the default set 
@@ -85,7 +85,7 @@
 #' \href{https://doi.org/10.1186/1471-2105-6-225}{10.1186/1471-2105-6-225}
 #'
 #' @source Profiling for the Z-Score, PLAGE, GSVA, ssGSEA algorithms are all 
-#' conducted with the Bioconductor \score{GSVA} package. Profiling for the
+#' conducted with the Bioconductor \code{GSVA} package. Profiling for the
 #' singscore algorithm is conducted with the Bioconductor \code{singscore}
 #' package.
 #'
@@ -118,7 +118,7 @@
 #'                              parallel.sz = 4)
 #' GSVA_res$Zak_RISK_16
 #'  
-runTBsigProfiler <- function(input, useAssay = NULL,
+runTBsigProfiler <- function(input, useAssay = "counts",
                              signatures = NULL,
                              algorithm = c("GSVA", "ssGSEA", "ASSIGN", 
                                            "PLAGE", "Zscore", "singscore"),
@@ -459,6 +459,69 @@ runTBsigProfiler <- function(input, useAssay = NULL,
     return(outdata)
   } else {
     stop("Output format error.")
+  }
+}
+
+#' Compare Scoring Algorithms on a Single Signature via Heatmap
+#' 
+#' It may be useful to compare the results of scoring across several different
+#' scoring algorithms via a method of visualization, such as a heatmap. The
+#' \code{compareSigs} function allows the input of a data object and conducts 
+#' profiling on each signature desired, and outputting a heatmap for each 
+#' signature.
+#'
+#' @inheritParams runTBsigProfiler
+#' @inheritParams signatureHeatmap
+#' 
+#' @return A heatmap for each signature specified comparing the enumerated
+#' algorithms.
+#' 
+#' @export
+#' 
+#' @examples 
+#' 
+#' # Example using the TB_hiv data set, two signatures, and 3 algorithms
+#' data("TB_hiv")
+#' compareSigs(TB_hiv, signatures = TBsignatures[c(1,2)],
+#'             annotationColNames = "Disease",
+#'             algorithm = c("GSVA", "ssGSEA", "PLAGE"),
+#'             scale = TRUE)
+#'             
+
+compareSigs <- function (input, signatures = NULL, annotationColNames,
+                         annotationData, 
+                         algorithm = c("GSVA", "ssGSEA", "ASSIGN", "PLAGE", 
+                                       "Zscore", "singscore"),
+                         showColumnNames = TRUE, 
+                         showRowNames = TRUE, scale = FALSE,
+                         useAssay = "counts", 
+                         colorSets = c("Set1", "Set2", "Set3", "Pastel1", 
+                                       "Pastel2", "Accent", "Dark2", 
+                                       "Paired"),
+                         choose_color = c("red", "white", "blue")) {
+  for (sig in names(signatures)) {
+    new.name <- paste("Scoring Methods for", sig)
+ 
+    scored <- suppressWarnings(runTBsigProfiler(input, useAssay = useAssay,
+                                                combineSigAndAlgorithm = TRUE,
+                                                signatures = signatures[sig],
+                                                algorithm = algorithm))
+    
+    if (class(input) == "SummarizedExperiment") {
+      already.there <- names(colData(input))
+      col.names <- subset(names(colData(scored)), 
+                          !(names(colData(scored)) %in% already.there))
+    } else col.names <- colnames(scored)
+    
+    signatureHeatmap(scored, 
+                     name = new.name,
+                     annotationData = annotationData,
+                     signatureColNames = col.names,
+                     annotationColNames = annotationColNames,
+                     scale = scale,
+                     showColumnNames = showColumnNames,
+                     showRowNames = showRowNames,
+                     colorSets = colorSets, choose_color = choose_color)
   }
 }
 
