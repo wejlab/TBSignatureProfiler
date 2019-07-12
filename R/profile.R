@@ -306,7 +306,7 @@ runTBsigProfiler <- function(input, useAssay = NULL,
         }
       }
       if (!is.null(gsvaRes_Z)) {
-        rownames(gsvaRes_Z) <- paste("Z-score", rownames(gsvaRes_Z), 
+        rownames(gsvaRes_Z) <- paste("Zscore", rownames(gsvaRes_Z), 
                                      sep = "_")
         if (nrow(combined_res) == 0) {
           combined_res <- gsvaRes_Z
@@ -315,7 +315,7 @@ runTBsigProfiler <- function(input, useAssay = NULL,
         }
       }
       if (!is.null(singscore_res)) {
-        rownames(singscore_res) <- paste("Z-Score", rownames(singscore_res), 
+        rownames(singscore_res) <- paste("singscore", rownames(singscore_res), 
                                          sep = "_")
         if (nrow(combined_res) == 0) {
           combined_res <- singscore_res
@@ -421,10 +421,12 @@ runTBsigProfiler <- function(input, useAssay = NULL,
   if (sum(names(signatures) %in% rownames(sig_result)) != length(signatures)) {
     absent <- subset(names(signatures), !(names(signatures) %in% 
                                             rownames(sig_result)))
-    warning(
-      paste("No identifiers in the gene sets could be matched to the identifiers 
+    if(length(algorithm) == 1) {
+      warning(
+        paste("No identifiers in the gene sets could be matched to the identifiers 
           in the expression data for the following signatures: ", 
-            paste(absent, collapse = ", ")))
+              paste(absent, collapse = ", ")))
+    }
   }
   
   if (is.null(outputFormat)) {
