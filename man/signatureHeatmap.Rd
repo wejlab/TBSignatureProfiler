@@ -77,9 +77,9 @@ signature performance.
 }
 \examples{
 library(SummarizedExperiment)
-# Generate some artificial data that shows a difference in ACS_COR_16
+# Generate some artificial data that shows a difference in Zak_RISK_16
 mat_testdata <- rbind(matrix(c(rnorm(80), rnorm(80) + 5), 16, 10,
-                             dimnames = list(TBsignatures$ACS_COR_16,
+                             dimnames = list(TBsignatures$Zak_RISK_16,
                                              paste0("sample", 1:10))),
                       matrix(rnorm(1000), 100, 10,
                              dimnames = list(paste0("gene", 1:100),
@@ -90,11 +90,11 @@ testdataSE <- SummarizedExperiment(assays = SimpleList(data = mat_testdata),
                                                            c(rep("down", 5),
                                                                 rep("up", 5))))
 res <- runTBsigProfiler(testdataSE, useAssay = "data",
-                        signatures = TBsignatures["ACS_COR_16"],
+                        signatures = TBsignatures["Zak_RISK_16"],
                         algorithm = c("GSVA", "ssGSEA"), parallel.sz = 1,
                         combineSigAndAlgorithm = TRUE)
-signatureHeatmap(res, signatureColNames = c("GSVA_ACS_COR_16",
-                                            "ssGSEA_ACS_COR_16"),
+signatureHeatmap(res, signatureColNames = c("GSVA_Zak_RISK_16",
+                                            "ssGSEA_Zak_RISK_16"),
                  annotationColNames = "sample", scale = TRUE,
                  showColumnNames = FALSE)
                  
@@ -102,8 +102,8 @@ signatureHeatmap(res, signatureColNames = c("GSVA_ACS_COR_16",
 color2 <- stats::setNames(c("purple", "black"), c("down", "up"))
 color.list <- list("sample" = color2)
 
-signatureHeatmap(res, signatureColNames = c("GSVA_ACS_COR_16",
-                                            "ssGSEA_ACS_COR_16"),
+signatureHeatmap(res, signatureColNames = c("GSVA_Zak_RISK_16",
+                                            "ssGSEA_Zak_RISK_16"),
                  annotationColNames = "sample", scale = TRUE,
                  showColumnNames = FALSE,
                  colList = color.list)

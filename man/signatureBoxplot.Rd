@@ -59,9 +59,9 @@ Plot a Boxplot of Signature Genes.
 \examples{
 library(SummarizedExperiment)
 
-# Generate some artificial data that shows a difference in ACS_COR_16
+# Generate some artificial data that shows a difference in Zak_RISK_16
 mat_testdata <- rbind(matrix(c(rnorm(80), rnorm(80) + 5), 16, 10,
-                             dimnames = list(TBsignatures$ACS_COR_16,
+                             dimnames = list(TBsignatures$Zak_RISK_16,
                                              paste0("sample", 1:10))),
                       matrix(rnorm(1000), 100, 10,
                              dimnames = list(paste0("gene", 1:100),
@@ -73,12 +73,12 @@ testdataSE <- SummarizedExperiment(assays = SimpleList(data = mat_testdata),
                                                          c(rep("down", 5),
                                                            rep("up", 5))))
                                                            
-# Run profiler using GSVA and ssGSEA on ACS_COR_16 signature
+# Run profiler using GSVA and ssGSEA on Zak_RISK_16 signature
 res <- runTBsigProfiler(testdataSE, useAssay = "data",
-                        signatures = TBsignatures["ACS_COR_16"],
+                        signatures = TBsignatures["Zak_RISK_16"],
                         algorithm = c("GSVA", "ssGSEA"), parallel.sz = 1,
                         combineSigAndAlgorithm = TRUE)
-signatureBoxplot(res, signatureColNames = c("GSVA_ACS_COR_16",
-                                            "ssGSEA_ACS_COR_16"),
-                 annotationColName = "sample", name = "ACS_COR_16 Signatures")
+signatureBoxplot(res, signatureColNames = c("GSVA_Zak_RISK_16",
+                                            "ssGSEA_Zak_RISK_16"),
+                 annotationColName = "sample", name = "Zak_RISK_16 Signatures")
 }

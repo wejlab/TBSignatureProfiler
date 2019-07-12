@@ -55,9 +55,9 @@
 #'
 #' @examples
 #' library(SummarizedExperiment)
-#' # Generate some artificial data that shows a difference in ACS_COR_16
+#' # Generate some artificial data that shows a difference in Zak_RISK_16
 #' mat_testdata <- rbind(matrix(c(rnorm(80), rnorm(80) + 5), 16, 10,
-#'                              dimnames = list(TBsignatures$ACS_COR_16,
+#'                              dimnames = list(TBsignatures$Zak_RISK_16,
 #'                                              paste0("sample", 1:10))),
 #'                       matrix(rnorm(1000), 100, 10,
 #'                              dimnames = list(paste0("gene", 1:100),
@@ -68,11 +68,11 @@
 #'                                                            c(rep("down", 5),
 #'                                                                 rep("up", 5))))
 #' res <- runTBsigProfiler(testdataSE, useAssay = "data",
-#'                         signatures = TBsignatures["ACS_COR_16"],
+#'                         signatures = TBsignatures["Zak_RISK_16"],
 #'                         algorithm = c("GSVA", "ssGSEA"), parallel.sz = 1,
 #'                         combineSigAndAlgorithm = TRUE)
-#' signatureHeatmap(res, signatureColNames = c("GSVA_ACS_COR_16",
-#'                                             "ssGSEA_ACS_COR_16"),
+#' signatureHeatmap(res, signatureColNames = c("GSVA_Zak_RISK_16",
+#'                                             "ssGSEA_Zak_RISK_16"),
 #'                  annotationColNames = "sample", scale = TRUE,
 #'                  showColumnNames = FALSE)
 #'                  
@@ -80,8 +80,8 @@
 #' color2 <- stats::setNames(c("purple", "black"), c("down", "up"))
 #' color.list <- list("sample" = color2)
 #' 
-#' signatureHeatmap(res, signatureColNames = c("GSVA_ACS_COR_16",
-#'                                             "ssGSEA_ACS_COR_16"),
+#' signatureHeatmap(res, signatureColNames = c("GSVA_Zak_RISK_16",
+#'                                             "ssGSEA_Zak_RISK_16"),
 #'                  annotationColNames = "sample", scale = TRUE,
 #'                  showColumnNames = FALSE,
 #'                  colList = color.list)
@@ -156,7 +156,7 @@ signatureHeatmap <- function(inputData, annotationData, name = "Signatures",
   keyname <- "Score"
   if (scale){
     sigresults <- t(scale(t(sigresults)))
-    keyname <- "Scaled\nScore"
+    keyname <- "Scaled Score"
   }
   
   return(ComplexHeatmap::draw(
@@ -208,9 +208,9 @@ signatureHeatmap <- function(inputData, annotationData, name = "Signatures",
 #' @examples
 #' library(SummarizedExperiment)
 #' 
-#' # Generate some artificial data that shows a difference in ACS_COR_16
+#' # Generate some artificial data that shows a difference in Zak_RISK_16
 #' mat_testdata <- rbind(matrix(c(rnorm(80), rnorm(80) + 5), 16, 10,
-#'                              dimnames = list(TBsignatures$ACS_COR_16,
+#'                              dimnames = list(TBsignatures$Zak_RISK_16,
 #'                                              paste0("sample", 1:10))),
 #'                       matrix(rnorm(1000), 100, 10,
 #'                              dimnames = list(paste0("gene", 1:100),
@@ -222,14 +222,14 @@ signatureHeatmap <- function(inputData, annotationData, name = "Signatures",
 #'                                                          c(rep("down", 5),
 #'                                                            rep("up", 5))))
 #'                                                            
-#' # Run profiler using GSVA and ssGSEA on ACS_COR_16 signature
+#' # Run profiler using GSVA and ssGSEA on Zak_RISK_16 signature
 #' res <- runTBsigProfiler(testdataSE, useAssay = "data",
-#'                         signatures = TBsignatures["ACS_COR_16"],
+#'                         signatures = TBsignatures["Zak_RISK_16"],
 #'                         algorithm = c("GSVA", "ssGSEA"), parallel.sz = 1,
 #'                         combineSigAndAlgorithm = TRUE)
-#' signatureBoxplot(res, signatureColNames = c("GSVA_ACS_COR_16",
-#'                                             "ssGSEA_ACS_COR_16"),
-#'                  annotationColName = "sample", name = "ACS_COR_16 Signatures")
+#' signatureBoxplot(res, signatureColNames = c("GSVA_Zak_RISK_16",
+#'                                             "ssGSEA_Zak_RISK_16"),
+#'                  annotationColName = "sample", name = "Zak_RISK_16 Signatures")
 signatureBoxplot <- function(inputData, annotationData, signatureColNames,
                              annotationColName, name = "Signatures", 
                              scale = FALSE, includePoints = TRUE, 
@@ -345,9 +345,9 @@ signatureBoxplot <- function(inputData, annotationData, signatureColNames,
 #'
 #' @examples
 #' library(SummarizedExperiment)
-#' # Generate some artificial data that shows a difference in ACS_COR_16
+#' # Generate some artificial data that shows a difference in Zak_RISK_16
 #' mat_testdata <- rbind(matrix(c(rnorm(80), rnorm(80) + 5), 16, 10,
-#'                              dimnames = list(TBsignatures$ACS_COR_16,
+#'                              dimnames = list(TBsignatures$Zak_RISK_16,
 #'                                              paste0("sample", 1:10))),
 #'                       matrix(rnorm(1000), 100, 10,
 #'                              dimnames = list(paste0("gene", 1:100),
@@ -358,19 +358,19 @@ signatureBoxplot <- function(inputData, annotationData, signatureColNames,
 #'                                    colData = DataFrame(sample = 
 #'                                                        c(rep("down", 5),
 #'                                                          rep("up", 5))))
-#' # Run profiler using GSVA and ssGSEA on ACS_COR_16
+#' # Run profiler using GSVA and ssGSEA on Zak_RISK_16
 #' res <- runTBsigProfiler(testdataSE, useAssay = "data",
-#'                         signatures = TBsignatures["ACS_COR_16"],
+#'                         signatures = TBsignatures["Zak_RISK_16"],
 #'                         algorithm = c("GSVA", "ssGSEA"), parallel.sz = 1,
 #'                         combineSigAndAlgorithm = TRUE)
 #'                         
 #' # Plot a heatmap of signature genes and pathway predictions
 #' signatureGeneHeatmap(res, useAssay = "data",
-#'                      sigGenes = TBsignatures[["ACS_COR_16"]],
-#'                      signatureColNames = c("GSVA_ACS_COR_16",
-#'                                            "ssGSEA_ACS_COR_16"),
+#'                      sigGenes = TBsignatures[["Zak_RISK_16"]],
+#'                      signatureColNames = c("GSVA_Zak_RISK_16",
+#'                                            "ssGSEA_Zak_RISK_16"),
 #'                      annotationColNames = c("sample"), showColumnNames = FALSE,
-#'                      name = "ACS_COR_16")
+#'                      name = "Zak_RISK_16")
 signatureGeneHeatmap <- function(inputData, useAssay, sigGenes,
                                  name = "Signature", signatureColNames = NULL,
                                  annotationColNames = NULL, scale = TRUE,
