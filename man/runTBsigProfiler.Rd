@@ -5,12 +5,12 @@
 \title{Run Tuberculosis Gene Signature profiling}
 \source{
 Profiling for the Z-Score, PLAGE, GSVA, ssGSEA algorithms are all 
-conducted with the Bioconductor \score{GSVA} package. Profiling for the
+conducted with the Bioconductor \code{GSVA} package. Profiling for the
 singscore algorithm is conducted with the Bioconductor \code{singscore}
 package.
 }
 \usage{
-runTBsigProfiler(input, useAssay = NULL, signatures = NULL,
+runTBsigProfiler(input, useAssay = "counts", signatures = NULL,
   algorithm = c("GSVA", "ssGSEA", "ASSIGN", "PLAGE", "Zscore",
   "singscore"), combineSigAndAlgorithm = FALSE, assignDir = NULL,
   outputFormat = NULL, parallel.sz = 0, ASSIGNiter = 1e+05,
@@ -22,7 +22,7 @@ runTBsigProfiler(input, useAssay = NULL, signatures = NULL,
 
 \item{useAssay}{a character string specifying the assay to use for signature 
 profiling when \code{input} is a SummarizedExperiment. Required only for input 
-data of the class \code{SummarizedExperiment}.}
+data of the class \code{SummarizedExperiment}. Default is \code{"counts"}.}
 
 \item{signatures}{a \code{list} of signatures to run with their associated genes. 
 This list should be in the same format as \code{TBsignatures}, included in 
