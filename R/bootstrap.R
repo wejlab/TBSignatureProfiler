@@ -491,7 +491,7 @@ mkAssay <- function(SE_obj, input_name = "counts", output_name = NULL,
   if (counts_to_CPM & log) {
     logCPM_data.norm <- edgeR::cpm(
       dge_data.norm, log = TRUE, prior.counts = prior_counts)
-    SummarizedExperiment::assay(SE_obj, "logcpm") <- logCPM_data.norm
+    SummarizedExperiment::assay(SE_obj, "log_cpm") <- logCPM_data.norm
   }
   
   return(SE_obj)
