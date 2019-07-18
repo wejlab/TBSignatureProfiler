@@ -482,13 +482,13 @@ runTBsigProfiler <- function(input, useAssay = "counts",
 #' 
 #' # Example using the TB_hiv data set, two signatures, and 3 algorithms
 #' data("TB_hiv")
-#' compareSigs(TB_hiv, signatures = TBsignatures[c(1,2)],
+#' compareAlgs(TB_hiv, signatures = TBsignatures[c(1,2)],
 #'             annotationColNames = "Disease",
 #'             algorithm = c("GSVA", "ssGSEA", "PLAGE"),
 #'             scale = TRUE)
 #'             
 
-compareSigs <- function (input, signatures = NULL, annotationColNames,
+compareAlgs <- function (input, signatures = NULL, annotationColNames,
                          annotationData, 
                          algorithm = c("GSVA", "ssGSEA", "ASSIGN", "PLAGE", 
                                        "Zscore", "singscore"),
