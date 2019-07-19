@@ -2,8 +2,8 @@
 
 export(SignatureQuantitative)
 export(bootstrapAUC)
+export(compareAlgs)
 export(compareBoxplots)
-export(compareSigs)
 export(deseq2_norm_rle)
 export(distinctColors)
 export(mkAssay)
