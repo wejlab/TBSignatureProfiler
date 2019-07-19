@@ -57,20 +57,10 @@
 #' object will have signatures on the rows and samples on the columns. 
 #' 
 #' @references 
-#' Subramanian, A. et al. (2005). Gene set enrichment analysis: A knowledge-based 
-#' approach for interpreting genome-wide expression profiles. \emph{PNAS},
-#' \strong{102}, 15545-15550. doi:
-#' \href{https://doi.org/10.1073/pnas.0506580102}{10.1073/pnas.0506580102}.
-#' 
 #' Barbie,  D.A., Tamayo, P., Boehm, J.S., Kim, S.Y., Moody,	 S.E., Dunn, I.F., Schinzel, A.C., 
 #' Sandy, P., Meylan, E., Scholl, C., et al. (2009).  Systematic RNA interference reveals 
 #' that oncogenic	KRAS-driven cancers require TBK1. \emph{Nature} \strong{462}, 108-112.
 #' doi: \href{https://doi.org/10.1038/nature08460}{10.1038/nature08460}.
-#' 
-#' Shen, Y. et al. (2015). ASSIGN: context-specific genomic profiling of 
-#' multiple heterogeneous biological pathways. \emph{Bioinformatics}, \bold{31},
-#' 1745-1753. doi: 
-#' \href{https://doi.org/10.1093/bioinformatics/btv031}{10.1093/bioinformatics/btv031}.
 #' 
 #' Foroutan, M. et al. (2018). Single sample scoring of molecular phenotypes. 
 #' \emph{BMC Bioinformatics}, \bold{19}. doi: 
@@ -80,6 +70,16 @@
 #' classification. \emph{PLoS Comp Biol}, 4(11):e1000217. doi: 
 #' \href{https://doi.org/10.1371/journal.pcbi.1000217}{10.1371/journal.pcbi.1000217}
 #'
+#' Shen, Y. et al. (2015). ASSIGN: context-specific genomic profiling of 
+#' multiple heterogeneous biological pathways. \emph{Bioinformatics}, \bold{31},
+#' 1745-1753. doi: 
+#' \href{https://doi.org/10.1093/bioinformatics/btv031}{10.1093/bioinformatics/btv031}.
+#' 
+#' Subramanian, A. et al. (2005). Gene set enrichment analysis: A knowledge-based 
+#' approach for interpreting genome-wide expression profiles. \emph{PNAS},
+#' \strong{102}, 15545-15550. doi:
+#' \href{https://doi.org/10.1073/pnas.0506580102}{10.1073/pnas.0506580102}.
+#' 
 #' Tomfohr, J. et al. (2005). Pathway level analysis of gene expression using 
 #' singular value decomposition. \emph{BMC Bioinformatics}, 6:225. doi:
 #' \href{https://doi.org/10.1186/1471-2105-6-225}{10.1186/1471-2105-6-225}
@@ -135,7 +135,6 @@ runTBsigProfiler <- function(input, useAssay = "counts",
       signatures <- .myenv$TBsignatures
     }
   } 
-  
   runindata <- input
   if (methods::is(runindata, "SummarizedExperiment")) {
     if (!is.null(useAssay)) {
@@ -163,35 +162,30 @@ runTBsigProfiler <- function(input, useAssay = "counts",
     stop("Invalid algorithm. Supported algorithms are GSVA, ssGSEA, 
          PLAGE, Zscore, singscore, and ASSIGN")
   }
-  
   gsvaRes <- NULL
   if ("GSVA" %in% algorithm) {
     message("Running GSVA")
     gsvaRes <- GSVA::gsva(runindata, signatures,
                           parallel.sz = parallel.sz)
   }
-  
   gsvaRes_ssgsea <- NULL
   if ("ssGSEA" %in% algorithm) {
     message("Running ssGSEA")
     gsvaRes_ssgsea <- GSVA::gsva(runindata, signatures, method = "ssgsea",
                                  parallel.sz = parallel.sz)
   }
-  
   gsvaRes_PLAGE <- NULL
   if ("PLAGE" %in% algorithm) {
     message("Running PLAGE")
     gsvaRes_PLAGE <- GSVA::gsva(runindata, signatures, method = "plage",
                                 parallel.sz = parallel.sz)
   }
-  
   gsvaRes_Z <- NULL
   if ("Zscore" %in% algorithm) {
     message("Running Z-score profiling")
     gsvaRes_Z <- GSVA::gsva(runindata, signatures, method = "zscore",
                             parallel.sz = parallel.sz)
   }
-  
   singscore_res <- NULL
   if ("singscore" %in% algorithm) {
     singscore_res <- matrix(ncol = ncol(runindata), 
@@ -206,7 +200,6 @@ runTBsigProfiler <- function(input, useAssay = "counts",
         knownDirection = FALSE)$TotalScore)
     }
   }
-  
   assign_res <- NULL
   if ("ASSIGN" %in% algorithm) {
     predir <- getwd()
@@ -248,7 +241,6 @@ runTBsigProfiler <- function(input, useAssay = "counts",
       message("Intermediate ASSIGN results available at ", assignDir)
     }
   }
-  
   sig_result <- NULL
   if (length(algorithm) == 1) {
     if (!is.null(gsvaRes)) {
@@ -417,7 +409,6 @@ runTBsigProfiler <- function(input, useAssay = "counts",
     }
     sig_result <- as.matrix(combined_res)
   }
-  
   if (sum(names(signatures) %in% rownames(sig_result)) != length(signatures)) {
     absent <- subset(names(signatures), !(names(signatures) %in% 
                                             rownames(sig_result)))
@@ -428,7 +419,6 @@ runTBsigProfiler <- function(input, useAssay = "counts",
               paste(absent, collapse = ", ")))
     }
   }
-  
   if (is.null(outputFormat)) {
     #output same as input
     if (class(input) %in% c("SummarizedExperiment", "SingleCellExperiment",

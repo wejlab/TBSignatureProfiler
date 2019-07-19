@@ -111,20 +111,10 @@ GSVA_res$Zak_RISK_16
  
 }
 \references{
-Subramanian, A. et al. (2005). Gene set enrichment analysis: A knowledge-based 
-approach for interpreting genome-wide expression profiles. \emph{PNAS},
-\strong{102}, 15545-15550. doi:
-\href{https://doi.org/10.1073/pnas.0506580102}{10.1073/pnas.0506580102}.
-
 Barbie,  D.A., Tamayo, P., Boehm, J.S., Kim, S.Y., Moody,	 S.E., Dunn, I.F., Schinzel, A.C., 
 Sandy, P., Meylan, E., Scholl, C., et al. (2009).  Systematic RNA interference reveals 
 that oncogenic	KRAS-driven cancers require TBK1. \emph{Nature} \strong{462}, 108-112.
 doi: \href{https://doi.org/10.1038/nature08460}{10.1038/nature08460}.
-
-Shen, Y. et al. (2015). ASSIGN: context-specific genomic profiling of 
-multiple heterogeneous biological pathways. \emph{Bioinformatics}, \bold{31},
-1745-1753. doi: 
-\href{https://doi.org/10.1093/bioinformatics/btv031}{10.1093/bioinformatics/btv031}.
 
 Foroutan, M. et al. (2018). Single sample scoring of molecular phenotypes. 
 \emph{BMC Bioinformatics}, \bold{19}. doi: 
@@ -133,6 +123,16 @@ Foroutan, M. et al. (2018). Single sample scoring of molecular phenotypes.
 Lee, E. et al. (2008). Inferring pathway activity toward precise disease 
 classification. \emph{PLoS Comp Biol}, 4(11):e1000217. doi: 
 \href{https://doi.org/10.1371/journal.pcbi.1000217}{10.1371/journal.pcbi.1000217}
+
+Shen, Y. et al. (2015). ASSIGN: context-specific genomic profiling of 
+multiple heterogeneous biological pathways. \emph{Bioinformatics}, \bold{31},
+1745-1753. doi: 
+\href{https://doi.org/10.1093/bioinformatics/btv031}{10.1093/bioinformatics/btv031}.
+
+Subramanian, A. et al. (2005). Gene set enrichment analysis: A knowledge-based 
+approach for interpreting genome-wide expression profiles. \emph{PNAS},
+\strong{102}, 15545-15550. doi:
+\href{https://doi.org/10.1073/pnas.0506580102}{10.1073/pnas.0506580102}.
 
 Tomfohr, J. et al. (2005). Pathway level analysis of gene expression using 
 singular value decomposition. \emph{BMC Bioinformatics}, 6:225. doi:
