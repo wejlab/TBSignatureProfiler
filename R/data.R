@@ -14,7 +14,6 @@
 #' @format list
 #' @source
 #' \itemize{
-#' \itemize{
 #'  \item{\strong{Anderson_42}}{: Anderson, Suzanne T., Myrsini Kaforou, Andrew J. Brent, Victoria J. Wright, Claire M. Banwell, George Chagaluka, Amelia C. Crampin, et al. 2014. "Diagnosis of Childhood Tuberculosis and Host RNA Expression in Africa." The New England Journal of Medicine 370 (18): 1712–23. \href{http://dx.doi.org/10.1056/NEJMoa1303657}{10.1056/NEJMoa1303657}}
 #'  \item{\strong{Anderson_OD_51}}{: Anderson, Suzanne T., Myrsini Kaforou, Andrew J. Brent, Victoria J. Wright, Claire M. Banwell, George Chagaluka, Amelia C. Crampin, et al. 2014. "Diagnosis of Childhood Tuberculosis and Host RNA Expression in Africa." The New England Journal of Medicine 370 (18): 1712–23. \href{http://dx.doi.org/10.1056/NEJMoa1303657}{10.1056/NEJMoa1303657}}
 #'  \item{\strong{Berry_393}}{: Berry, Matthew P. R., Christine M. Graham, Finlay W. McNab, Zhaohui Xu, Susannah A. A. Bloch, Tolu Oni, Katalin A. Wilkinson, et al. 2010. "An Interferon-Inducible Neutrophil-Driven Blood Transcriptional Signature in Human Tuberculosis." Nature 466 (7309): 973–77. \href{http://dx.doi.org/10.1038/nature09247}{10.1038/nature09247}}
