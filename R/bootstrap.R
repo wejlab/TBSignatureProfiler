@@ -386,7 +386,7 @@ signatureROCplot_CI <- function(inputData, annotationData, signatureColNames,
   plot_dat <- as.data.frame(apply(plot_dat, 2, paste))
   plot_dat[,1:4] <- as.data.frame(apply(plot_dat[,1:4], 2, as.numeric))
   
-  if(is.null(name)) name <- paste("ROC plots for Gene Signatures, ", ci.lev, 
+  if(is.null(name)) name <- paste("ROC plots for Gene Signatures, ", ci.lev*100, 
                                   "% Confidence", sep = "")
   
   theplot <- ggplot2::ggplot(data = plot_dat, ggplot2::aes(x = FPR, y = TPR)) +
