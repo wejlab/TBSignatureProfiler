@@ -462,6 +462,8 @@ runTBsigProfiler <- function(input, useAssay = "counts",
 #'
 #' @inheritParams runTBsigProfiler
 #' @inheritParams signatureHeatmap
+#' @param SuppressMessages logical, whether messages from the profiling should
+#' be suppressed (including progress bar output). Default is \code{FALSE}.
 #' 
 #' @return A heatmap for each signature specified comparing the enumerated
 #' algorithms.
@@ -478,7 +480,7 @@ runTBsigProfiler <- function(input, useAssay = "counts",
 #'             scale = TRUE)
 #'             
 
-compareAlgs <- function (input, signatures = NULL, annotationColNames,
+compareAlgs <- function (input, signatures = TBsignatures, annotationColNames,
                          annotationData, 
                          algorithm = c("GSVA", "ssGSEA", "ASSIGN", "PLAGE", 
                                        "Zscore", "singscore"),
@@ -488,30 +490,38 @@ compareAlgs <- function (input, signatures = NULL, annotationColNames,
                          colorSets = c("Set1", "Set2", "Set3", "Pastel1", 
                                        "Pastel2", "Accent", "Dark2", 
                                        "Paired"),
-                         choose_color = c("red", "white", "blue")) {
+                         choose_color = c("red", "white", "blue"),
+                         SuppressMessages = FALSE) {
   for (sig in names(signatures)) {
     new.name <- paste("Scoring Methods for", sig)
- 
-    scored <- suppressWarnings(runTBsigProfiler(input, useAssay = useAssay,
-                                                combineSigAndAlgorithm = TRUE,
-                                                signatures = signatures[sig],
-                                                algorithm = algorithm))
+    if (SuppressMessages) {
+      scored <- suppressMessages(runTBsigProfiler(input, useAssay = useAssay,
+                                 combineSigAndAlgorithm = TRUE,
+                                 signatures = signatures[sig],
+                                 algorithm = algorithm))
+    } else if (!SuppressMessages) {
+      scored <- runTBsigProfiler(input, useAssay = useAssay,
+                                 combineSigAndAlgorithm = TRUE,
+                                 signatures = signatures[sig],
+                                 algorithm = algorithm)
+    }
     
     if (class(input) == "SummarizedExperiment") {
-      already.there <- names(colData(input))
-      col.names <- subset(names(colData(scored)), 
-                          !(names(colData(scored)) %in% already.there))
+      already.there <- names(SummarizedExperiment::colData(input))
+      col.names <- subset(names(SummarizedExperiment::colData(scored)), 
+                          !(names(SummarizedExperiment::colData(scored)) 
+                            %in% already.there))
     } else col.names <- colnames(scored)
     
-    signatureHeatmap(scored, 
-                     name = new.name,
-                     annotationData = annotationData,
-                     signatureColNames = col.names,
-                     annotationColNames = annotationColNames,
-                     scale = scale,
-                     showColumnNames = showColumnNames,
-                     showRowNames = showRowNames,
-                     colorSets = colorSets, choose_color = choose_color)
+    return(signatureHeatmap(scored, 
+                            name = new.name,
+                            annotationData = annotationData,
+                            signatureColNames = col.names,
+                            annotationColNames = annotationColNames,
+                            scale = scale,
+                            showColumnNames = showColumnNames,
+                            showRowNames = showRowNames,
+                            colorSets = colorSets, choose_color = choose_color))
   }
 }
 

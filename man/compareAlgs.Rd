@@ -4,12 +4,12 @@
 \alias{compareAlgs}
 \title{Compare Scoring Algorithms on a Single Signature via Heatmap}
 \usage{
-compareAlgs(input, signatures = NULL, annotationColNames, annotationData,
-  algorithm = c("GSVA", "ssGSEA", "ASSIGN", "PLAGE", "Zscore",
-  "singscore"), showColumnNames = TRUE, showRowNames = TRUE,
+compareAlgs(input, signatures = TBsignatures, annotationColNames,
+  annotationData, algorithm = c("GSVA", "ssGSEA", "ASSIGN", "PLAGE",
+  "Zscore", "singscore"), showColumnNames = TRUE, showRowNames = TRUE,
   scale = FALSE, useAssay = "counts", colorSets = c("Set1", "Set2",
   "Set3", "Pastel1", "Pastel2", "Accent", "Dark2", "Paired"),
-  choose_color = c("red", "white", "blue"))
+  choose_color = c("red", "white", "blue"), SuppressMessages = FALSE)
 }
 \arguments{
 \item{input}{an input data object of the class \code{SummarizedExperiment}, 
@@ -58,6 +58,9 @@ in order that you want to use them, or provide custom color sets with the
 \item{choose_color}{a vector of color names to be interpolated for the 
 heatmap gradient,, or a colorRamp function produced by 
 \code{circlize::colorRamp2}. The default is \code{c("red", "white", "blue")}.}
+
+\item{SuppressMessages}{logical, whether messages from the profiling should
+be suppressed (including progress bar output). Default is \code{FALSE}.}
 }
 \value{
 A heatmap for each signature specified comparing the enumerated
