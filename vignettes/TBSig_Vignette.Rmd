@@ -23,10 +23,9 @@ editor_options:
 
 # Introduction to the TBSignatureProfiler
 
-Tuberculosis (TB) is the leading cause of infectious disease mortality worldwide, causing on average nearly 1.4 million deaths per year. A consistent issue faced in controlling TB outbreak is difficulty in diagnosing individuals with particular types of TB infections for which bacteria tests (e.g., via phlegm/sputum) prove inaccurate. As an alternative mechanism of diagnosis for these infections, researchers have discovered and published multiple gene expression signatures as blood-based disease biomarkers. In this context, gene signatures are defined as a combined group of genes with a uniquely characteristic pattern of gene expression that occurs as a result of a medical condition. To date, upwards of 30 signatures have been published by researchers, though most have relatively low cross-condition validation (e.g., testing TB in samples from diverse geographic and comorbidity backgrounds). Furthermore, these signatures have never been formally collected and made available as a single unified resource. 
+Tuberculosis (TB) is the leading cause of infectious disease mortality worldwide, causing on average nearly 1.4 million deaths per year. A consistent issue faced in controlling TB outbreak is difficulty in diagnosing individuals with particular types of TB infections for which bacteria tests (e.g., via GeneXpert, sputum) prove inaccurate. As an alternative mechanism of diagnosis for these infections, researchers have discovered and published multiple gene expression signatures as blood-based disease biomarkers. In this context, gene signatures are defined as a combined group of genes with a uniquely characteristic pattern of gene expression that occurs as a result of a medical condition. To date, more than 30 signatures have been published by researchers, though most have relatively low cross-condition validation (e.g., testing TB in samples from diverse geographic and comorbidity backgrounds). Furthermore, these signatures have never been formally collected and made available as a single unified resource. 
 
-We aim to provide the scientific community with proper access to these aggregated signatures and to create an efficient means for their visual and quantitative comparison via open source software. This necessitated the development of the TBSignatureProfiler, a novel R package which delivers a computational profiling platform for researchers to characterize the diagnostic ability of existing signatures in multiple comorbidity settings. This software allows for signature strength estimation via several enrichment methods and subsequent visualization of single- and multi-pathway results. Its signature evaluation functionalities include signature profiling, AUC bootstrapping, and leave-one-out cross-validation (LOOCV) of logistic regression to approximate TB samples’ status. Its plotting functionalities include sample-signature score heatmaps, bootstrap AUC and LOOCV boxplots, and tables for presenting results.
-
+We aim to provide the scientific community with a resource to access these aggregated signatures and to create an efficient means for their visual and quantitative comparison via open source software. This necessitated the development of the TBSignatureProfiler, a novel R package which delivers a computational profiling platform for researchers to characterize the diagnostic ability of existing signatures in multiple comorbidity settings. This software allows for signature strength estimation via several enrichment methods and subsequent visualization of single- and multi-pathway results. Its signature evaluation functionalities include signature profiling, AUC bootstrapping, and leave-one-out cross-validation (LOOCV) of logistic regression to approximate TB samples’ status. Its plotting functionalities include sample-signature score heatmaps, bootstrap AUC and LOOCV boxplots, and tables for presenting results.
  
 # Installation
 
@@ -35,7 +34,7 @@ In order to install the TBSignatureProfiler, run the following code:
 ```{r load profiler, eval = FALSE}
 devtools::install_github("aubreyodom/TBSignatureProfiler")
 ```
-
+                                                                      
 # Compatability with SummarizedExperiment objects
 
 While the TBSignatureProfiler often allows for the form of a `data.frame` or `matrix` as input data, the most ideal form of input for this package is that of the `SummarizedExperiment` object. This is an amazing data structure that is being developed by the \emph{Bioconductor team} as part of the `r Biocpkg("SummarizedExperiment")` package. It is able to store data matrices along with annotation information, metadata, and reduced dimensionality data
@@ -111,7 +110,7 @@ When a `SummarizedExperiment` is the format of the input data for `runTBsigprofi
 
 Below, we subset the data to compare the enrichment scores for the Zak_Risk_16, Anderson_42, and Anderson_OD_51 signatures. 
 
-
+Signature Scores
 ```{r show scores, message = FALSE}
 ## New colData entries from the Profiler
 DT::datatable(as.data.frame(colData(ssgsea_result))[,2:5])
@@ -127,7 +126,7 @@ Commonly, enrichment scores are compared across signatures by means of a heatmap
 Here, the columns of the heatmap represent samples, and rows represent signatures. As we move across the colums, we see different patterns of gene expression as indicated by the varying color and intensity of individial rectangles. In the top bar, the solid red represents a sample is HIV infected only, and solid blue indicates that the sample is both HIV and TB infected. In the gradient area of the heatmap, the scaled scores are associated with either up-regulated or down-regulated genes. A cluster of samples near the bottom of the heatmap reveals that some signatures are inversely associated with TB/HIV identification, as their pheotypic mapping for lower/higher scores is nearly the opposite of most of the other signatures.  
 
 
-```{r all sigs heatmap, message = FALSE}
+```{r all sigs heatmap, message = FALSE, fig.height = 9}
 # Colors for gradient
 colors <- RColorBrewer::brewer.pal(6, "Spectral")
 col.me <- circlize::colorRamp2(seq(from = -2, to = 2, 
@@ -179,7 +178,7 @@ for (i in names(TBsignatures)){
 
 The `signatureGeneHeatmap` function produces heatmaps that highlight a single selected signature. The resulting plots feature samples on the columns, and the genes in the signature on the rows. The annotation rows at the top are related to both the disease phenotype and to the signature score itself.  The gradient of the heatmap is created using the gene expression values in the assay specified by the `useAssay` parameter. Here, we observe how the log(CPM) values for specific genes relate to the signanture score for each sample.
 
-```{r Heatmaps indiv, results = "asis", message = FALSE}
+```{r Heatmaps indiv, results = "asis", message = FALSE, fig.height = 11}
 for (i in names(TBsignatures)){
 
   cat("####", i, "\n")
@@ -201,12 +200,12 @@ The `compareAlgs` function allows multiple scoring methods to be compared via a 
 
 ```{r compareAlgs ex}
 compareAlgs(hivtb_data, annotationColNames = "Disease",
-            scale = TRUE, SuppressMessages = FALSE, 
+            scale = TRUE, 
             algorithm = c("GSVA", "ssGSEA", 
                           "singscore", "PLAGE", "Zscore"),
             useAssay = "log_counts",
             signatures = TBsignatures[1],
-            SuppressMessages = TRUE)
+            show.pb = TRUE)
 
 ```
 
@@ -269,7 +268,7 @@ Another method of signature evaluation featured in the TBSignatureProfiler packa
 
 During the training process, we bootstrap the samples, cross-validate the logistic regression predicition of the TB?HIV status of each sample, and calculate the validation set AUCs from each cross-validation iteration. In theory, if a signature is a useful predictor of status, it should have a higher average AUC from these logistic regression bootstraps. We then create a boxplot of AUC for each signature, which provides a clear comparison between the signatures. 
 
-```{r SigEVAL, message = FALSE}
+```{r sigeval, message = FALSE}
 ### Make an additional binary indicator for signature evaluation
 hivtb_data$BinaryTB <- as.numeric(hivtb_data$Disease)-1
 
@@ -282,13 +281,27 @@ quantitative.result <- SignatureQuantitative(df.input = hivtb_norm,
                        signature.name.vec = names(TBsignatures),
                        num.boot = 10,
                        pb.show = FALSE)
+```
 
+
+Table of AUC Results
+```{r AUC sigeval}
 DT::datatable(round(quantitative.result$df.auc.ci, 4),
               options = list(scrollX = T, pageLength = 10), 
               rownames = F)
+```
+
+
+Table of Sensitivity Results
+```{r sens sigeval}
 DT::datatable(round(quantitative.result$df.sensitivity.ci, 4),
               options = list(scrollX = T, pageLength = 10), 
               rownames = F)
+```
+
+
+Table of Specificity Results
+```{r spec sigeval}
 DT::datatable(round(quantitative.result$df.specificity.ci, 4),
               options = list(scrollX = T, pageLength = 10), 
               rownames = F)
