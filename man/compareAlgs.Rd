@@ -9,8 +9,7 @@ compareAlgs(input, signatures = TBsignatures, annotationColNames,
   "Zscore", "singscore"), showColumnNames = TRUE, showRowNames = TRUE,
   scale = FALSE, useAssay = "counts", colorSets = c("Set1", "Set2",
   "Set3", "Pastel1", "Pastel2", "Accent", "Dark2", "Paired"),
-  choose_color = c("red", "white", "blue"),
-  suppressProfilerOutput = FALSE)
+  choose_color = c("red", "white", "blue"), show.pb = FALSE)
 }
 \arguments{
 \item{input}{an input data object of the class \code{SummarizedExperiment}, 
@@ -60,7 +59,7 @@ in order that you want to use them, or provide custom color sets with the
 heatmap gradient,, or a colorRamp function produced by 
 \code{circlize::colorRamp2}. The default is \code{c("red", "white", "blue")}.}
 
-\item{suppressProfilerOutput}{logical, whether warnings and other output
+\item{show.pb}{logical, whether warnings and other output
 from the profiling should be suppressed (including progress bar output). 
 Default is \code{FALSE}.}
 }

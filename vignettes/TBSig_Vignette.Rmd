@@ -127,6 +127,7 @@ Here, the columns of the heatmap represent samples, and rows represent signature
 
 
 ```{r all sigs heatmap, message = FALSE, fig.height = 9}
+
 # Colors for gradient
 colors <- RColorBrewer::brewer.pal(6, "Spectral")
 col.me <- circlize::colorRamp2(seq(from = -2, to = 2, 
@@ -206,7 +207,6 @@ compareAlgs(hivtb_data, annotationColNames = "Disease",
             useAssay = "log_counts",
             signatures = TBsignatures[1],
             show.pb = TRUE)
-
 ```
 
 ## Comparing scores via bootstrapped AUCs {.tabset}
