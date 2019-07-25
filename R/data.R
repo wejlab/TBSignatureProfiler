@@ -5,8 +5,8 @@
 #' symbols and remove symbols that did not match the most recent annotation.
 #' Additional sets for Entrez IDs and Ensembl IDs are forthcoming. The assigned
 #' signature name ends with the number of genes in the original signature.
-#' Note that, in some cases, signatures will be positive identifiers of TB
-#' whereas others are negative identifiers. This should be taken into account
+#' Note that in some cases signatures will be positive identifiers of TB
+#' whereas others are negative identifiers; this should be taken into account
 #' when creating ROC curves and computing any AUC estimates.
 #'
 #' @name TBsignatures
@@ -58,31 +58,63 @@
 
 #' TB Example dataset with Indian population data
 #'
-#' An example dataset containing the gene expression and metadata in a SummarizedExperiment object for an Indian
-#' population. Active TB contamination of the 44 subjects is denoted for each as a "1"(active) or "0" (latent/not present),
-#' and can be accessed via \code{TB_indian$label}. The SummarizedExperiment object
-#' contains 2 assays (counts and log(counts)), and the column names give the unique
-#' subject identification number along with the subject's gender.
+#' An example dataset containing the gene expression and metadata in a
+#' SummarizedExperiment object for an Indian population. Active TB contamination
+#' of the 44 subjects is denoted for each as a "1"(active) or "0"
+#' (latent/not present), and can be accessed via \code{TB_indian$label}. The
+#' SummarizedExperiment object contains 2 assays (counts and log(counts)),
+#' and the column names give the unique subject identification number along
+#' with the subject's gender.
+#'
+#' This dataset was published as part of a study to assess performance of published
+#' TB signatures in a South Indian population (Leong et. al 2018). RNA sequencing
+#' was performed on whole blood PAXgene samples collected from 28 TB patients and
+#' 16 latently TB infected (LTBI) subjects enrolled as part of an ongoing
+#' household contact study.
 #'
 #' @name TB_indian
 #' @docType data
 #' @format SummarizedExperiment
 #' @keywords datasets
+#' @references 
+#' Leong S., Zhao Y., et. al. (2018). Existing blood transcriptional classifiers
+#' accurately discriminate active tuberculosis from latent infection in
+#' individuals from south India. \emph{Tuberculosis} \strong{109}, 41-51.
+#' doi: \href{https://doi.org/10.1016/j.tube.2018.01.002}{10.1016/j.tube.2018.01.002}.
+#' 
 #' @examples
 #' data("TB_indian")
 "TB_indian"
 
+
 #' TB Example dataset with TB/HIV data
 #'
-#' An example dataset containing the gene expression and metadata in a SummarizedExperiment object for 31 subjects
-#' with HIV and/or Tuberculosis diseases. Information on subject infection status can be accessed with \code{TB_hiv$Disease}.
-#' Samples with both TB and HIV contamination are marked as \code{tb_hiv}, while samples
-#' with HIV and no TB are marked as \code{hiv_only}.
+#' An example dataset containing the gene expression and metadata in a
+#' SummarizedExperiment object for 31 subjects with HIV and/or Tuberculosis
+#' diseases. Information on subject infection status can be accessed with 
+#' \code{TB_hiv$Disease}. Samples with both TB and HIV contamination are
+#' marked as \code{tb_hiv}, while samples with HIV and no TB are marked
+#' as \code{hiv_only}.
+#'
+#' This dataset was published as part of a study to assess assess if gene expression
+#' signatures and cytokine levels would distinguish active TB in advanced HIV
+#' in a cohort residing in Sub-Saharan Africa (Verma et. al 2018).
+#' Participants were severely immunosuppressed TB-HIV patients who had
+#' not yet recieved TB treatment or anti-retroviral therapy (ART). The dataset included
+#' in this package has been lightly edited from the originally published dataset
+#' due to the removal of one participant who was HIV positive, on ART and developed
+#' TB during follow-up.
 #'
 #' @name TB_hiv
 #' @docType data
 #' @format SummarizedExperiment
 #' @keywords datasets
+#' @references
+#' Verma S., Du P., et. al. (2018). Tuberculosis in advanced HIV infection is
+#' associated with increased expression of IFN and its downstream targets.
+#' \emph{BMC Infectious Diseases} \strong{18:220}.
+#' doi: \href{https://doi.org/10.1186/s12879-018-3127-4}{10.1186/s12879-018-3127-4}.
+#'
 #' @examples
 #' data("TB_hiv")
 "TB_hiv"
