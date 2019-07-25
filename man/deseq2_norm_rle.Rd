@@ -7,7 +7,7 @@
 deseq2_norm_rle(inputData)
 }
 \arguments{
-\item{inputData}{a \code{data.frame} or \code{matrix} of gene expression 
+\item{inputData}{a \code{data.frame} or \code{matrix} of gene expression
 count data. Required.}
 }
 \value{

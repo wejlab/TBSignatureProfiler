@@ -42,26 +42,26 @@ show the column names (i.e. sample names) on the heatmap. The default is
 show the row names (i.e. signature names) on the heatmap. The default is 
 \code{TRUE}.}
 
-\item{colList}{a named \code{list} of named vectors specifying custom color information to 
+\item{colList}{a named \code{list} of named vectors specifying custom color information to
 pass to \code{ComplexHeatmap::Heatmap()}. The list should have as many
 elements as there are annotation columns, and each element name should
-correspond exactly with the name of each annotation column. 
-The colors in the vector elements should be named according to the 
+correspond exactly with the name of each annotation column.
+The colors in the vector elements should be named according to the
 levels of the factor in that column's annotation data if the annotation
 is discrete, or it should be produced with \code{circlize::colorRamp2}
 if the annotation is continuous.
-By default, \code{ColorBrewer} color sets will be used. 
+By default, \code{ColorBrewer} color sets will be used.
 See the the parameter \code{colorSets} for additional details.}
 
-\item{colorSets}{a vector of names listing the color sets in the order 
-that they should be used in creating the heatmap. By default, this function 
-will use the color sets in the order listed in \code{Usage} for annotation 
-information. You may replace the default with the same collection of sets 
-in order that you want to use them, or provide custom color sets with the 
+\item{colorSets}{a vector of names listing the color sets in the order
+that they should be used in creating the heatmap. By default, this function
+will use the color sets in the order listed in \code{Usage} for annotation
+information. You may replace the default with the same collection of sets
+in order that you want to use them, or provide custom color sets with the
 \code{colList} parameter.}
 
-\item{choose_color}{a vector of color names to be interpolated for the 
-heatmap gradient,, or a colorRamp function produced by 
+\item{choose_color}{a vector of color names to be interpolated for the
+heatmap gradient,, or a colorRamp function produced by
 \code{circlize::colorRamp2}. The default is \code{c("red", "white", "blue")}.}
 
 \item{...}{Additional parameters to pass to \code{ComplexHeatmap::Heatmap()}.}

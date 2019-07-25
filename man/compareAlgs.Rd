@@ -21,11 +21,11 @@ the TBSignatureProfiler package. If \code{signatures = NULL}, the default set
 of signatures \code{TBsignatures} list is used. For details, run 
 \code{?TBsignatures}. The default is \code{NULL}.}
 
-\item{annotationColNames}{a vector of the column names in \code{colData} that 
-contain the annotation data. Only required if \code{inputData} is a 
+\item{annotationColNames}{a vector of the column names in \code{colData} that
+contain the annotation data. Only required if \code{inputData} is a
 \code{SummarizedExperiment}.}
 
-\item{annotationData}{a \code{data.frame} or \code{matrix} of annotation 
+\item{annotationData}{a \code{data.frame} or \code{matrix} of annotation
 data, with one column. Only required if \code{inputData} is a
 \code{data.frame} or \code{matrix} of signature data.}
 
@@ -33,15 +33,15 @@ data, with one column. Only required if \code{inputData} is a
 one is desired. The default is \code{c("GSVA", "ssGSEA", "ASSIGN",
 "PLAGE", "Zscore", "singscore")}.}
 
-\item{showColumnNames}{logical. Setting \code{showColumnNames = TRUE} will 
-show the column names (i.e. sample names) on the heatmap. The default is 
+\item{showColumnNames}{logical. Setting \code{showColumnNames = TRUE} will
+show the column names (i.e. sample names) on the heatmap. The default is
 \code{TRUE}.}
 
-\item{showRowNames}{logical. Setting \code{showColumnNames = TRUE} will 
-show the row names (i.e. signature names) on the heatmap. The default is 
+\item{showRowNames}{logical. Setting \code{showColumnNames = TRUE} will
+show the row names (i.e. signature names) on the heatmap. The default is
 \code{TRUE}.}
 
-\item{scale}{logical. Setting \code{scale = TRUE} scales the signature data. 
+\item{scale}{logical. Setting \code{scale = TRUE} scales the signature data.
 The default is \code{FALSE}.}
 
 \item{useAssay}{a character string specifying the assay to use for signature 
@@ -49,15 +49,15 @@ profiling when \code{input} is a \code{SummarizedExperiment}. Required only for
 input data of the class \code{SummarizedExperiment}. If null, the assay 
 used will be \code{"counts"}. The default is \code{NULL.}}
 
-\item{colorSets}{a vector of names listing the color sets in the order 
-that they should be used in creating the heatmap. By default, this function 
-will use the color sets in the order listed in \code{Usage} for annotation 
-information. You may replace the default with the same collection of sets 
-in order that you want to use them, or provide custom color sets with the 
+\item{colorSets}{a vector of names listing the color sets in the order
+that they should be used in creating the heatmap. By default, this function
+will use the color sets in the order listed in \code{Usage} for annotation
+information. You may replace the default with the same collection of sets
+in order that you want to use them, or provide custom color sets with the
 \code{colList} parameter.}
 
-\item{choose_color}{a vector of color names to be interpolated for the 
-heatmap gradient,, or a colorRamp function produced by 
+\item{choose_color}{a vector of color names to be interpolated for the
+heatmap gradient,, or a colorRamp function produced by
 \code{circlize::colorRamp2}. The default is \code{c("red", "white", "blue")}.}
 
 \item{show.pb}{logical, whether warnings and other output

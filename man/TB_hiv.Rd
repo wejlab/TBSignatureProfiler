@@ -11,7 +11,7 @@ TB_hiv
 \description{
 An example dataset containing the gene expression and metadata in a SummarizedExperiment object for 31 subjects
 with HIV and/or Tuberculosis diseases. Information on subject infection status can be accessed with \code{TB_hiv$Disease}.
-Samples with both TB and HIV contamination are marked as \code{tb_hiv}, while samples 
+Samples with both TB and HIV contamination are marked as \code{tb_hiv}, while samples
 with HIV and no TB are marked as \code{hiv_only}.
 }
 \examples{

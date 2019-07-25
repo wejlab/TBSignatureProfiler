@@ -11,16 +11,16 @@ Bootstrap_LOOCV_LR_AUC(df, target.vec, nboot)
 
 \item{nboot}{an integer specifying the number of bootstrap iterations.}
 
-\item{targetVec}{a binary vector of the response variable. Should be 
+\item{targetVec}{a binary vector of the response variable. Should be
 the same number of rows as \code{df}. Required.}
 }
 \value{
-A list of length 2 with elements \item{auc}{A vector the length of 
+A list of length 2 with elements \item{auc}{A vector the length of
 \code{nboot} with the AUC from each bootstrap iteration.}
 \item{byClass}{A dataframe with number of rows equal to \code{nboot}. Each
 row contains the sensitivity, specificity, positive predictive
 value, negative predictive value, precision, recall, F1, prevalence,
-detection rate, detection prevalence and balanced accuracy for that 
+detection rate, detection prevalence and balanced accuracy for that
 bootstrap iteration.}
 }
 \description{

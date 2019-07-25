@@ -9,9 +9,9 @@
 TB_indian
 }
 \description{
-An example dataset containing the gene expression and metadata in a SummarizedExperiment object for an Indian 
+An example dataset containing the gene expression and metadata in a SummarizedExperiment object for an Indian
 population. Active TB contamination of the 44 subjects is denoted for each as a "1"(active) or "0" (latent/not present),
-and can be accessed via \code{TB_indian$label}. The SummarizedExperiment object 
+and can be accessed via \code{TB_indian$label}. The SummarizedExperiment object
 contains 2 assays (counts and log(counts)), and the column names give the unique
 subject identification number along with the subject's gender.
 }

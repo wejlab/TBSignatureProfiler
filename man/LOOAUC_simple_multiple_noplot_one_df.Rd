@@ -9,14 +9,14 @@ LOOAUC_simple_multiple_noplot_one_df(df, targetVec)
 \arguments{
 \item{df}{a \code{data.frame} of gene expression count data. Required.}
 
-\item{targetVec}{a binary vector of the response variable. Should be 
+\item{targetVec}{a binary vector of the response variable. Should be
 the same number of rows as \code{df}. Required.}
 }
 \value{
-A list of length 3 with elements 
-\item{auc}{The AUC from the LOOCV procedure.} 
-\item{byClass}{A vector containing the sensitivity, specificity, positive 
-predictive value, negative predictive value, precision, recall, F1, 
+A list of length 3 with elements
+\item{auc}{The AUC from the LOOCV procedure.}
+\item{byClass}{A vector containing the sensitivity, specificity, positive
+predictive value, negative predictive value, precision, recall, F1,
 prevalence, detection rate, detection prevalence and balanced accuracy.}
 \item{prob}{A vector of the test prediction probabilities.}
 }
