@@ -48,8 +48,8 @@ Suggests:
     knitr,
     rmarkdown,
     BiocStyle
-URL: https://github.com/dfjenkins3/TBSignatureProfiler
-BugReports: https://github.com/dfjenkins3/TBSignatureProfiler/issues
+URL: https://github.com/compbiomed/TBSignatureProfiler
+BugReports: https://github.com/compbiomed/TBSignatureProfiler/issues
 Language: en-US
 Depends:
     R (>= 2.10)
