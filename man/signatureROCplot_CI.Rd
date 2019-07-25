@@ -32,19 +32,19 @@ boxplot. Only required if inputData is a \code{SummarizedExperiment} object.}
 The default is \code{FALSE}.}
 
 \item{choose_colors}{a vector of length 3 definining the colors to be used
-in the ROC plots. The default is \code{c("cornflowerblue", 
+in the ROC plots. The default is \code{c("cornflowerblue",
 "grey50", "grey79")}.}
 
-\item{name}{a character string giving the title of the boxplot. If 
-\code{NULL}, the plot title will be 
-\code{"ROC plots for Gene Signatures, <ci.lev>\% Confidence"}. 
+\item{name}{a character string giving the title of the boxplot. If
+\code{NULL}, the plot title will be
+\code{"ROC plots for Gene Signatures, <ci.lev>\% Confidence"}.
 The default is \code{NULL}.}
 
 \item{nrow}{integer giving the number of rows in the resulting array.}
 
 \item{ncol}{integer giving the number of columns in the resulting array.}
 
-\item{ci.lev}{a number between 0 and 1 giving the desired level of 
+\item{ci.lev}{a number between 0 and 1 giving the desired level of
 confidence for computing ROC curve estimations.}
 }
 \value{
@@ -55,11 +55,12 @@ Create an array of ROC plots with Confidence Interval Bands to Compare Signature
 }
 \examples{
 # Run signature profiling
- choose_sigs <- TBsignatures[-c(18, 22)]
- prof_indian <- runTBsigProfiler(TB_indian, useAssay = "logcounts",  
+ choose_sigs <- subset(TBsignatures,
+                       !(names(TBsignatures) \%in\% c("Lee_4", "Roe_OD_4")))
+ prof_indian <- runTBsigProfiler(TB_indian, useAssay = "logcounts",
                                  algorithm = "ssGSEA",
                                  signatures = choose_sigs)
-                                 
+
 # Create ROC plots with cocnfidence intervals
 signatureROCplot_CI(prof_indian, signatureColNames = names(choose_sigs),
                     annotationColName = "label")

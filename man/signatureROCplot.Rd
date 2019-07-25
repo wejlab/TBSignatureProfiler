@@ -48,8 +48,9 @@ Create an Array of ROC Plots to Compare Signatures.
 }
 \examples{
 # Run signature profiling
- choose_sigs <- TBsignatures[-c(18, 22)]
- prof_indian <- runTBsigProfiler(TB_indian, useAssay = "logcounts",  
+ choose_sigs <- subset(TBsignatures,
+                       !(names(TBsignatures) \%in\% c("Lee_4", "Roe_OD_4")))
+ prof_indian <- runTBsigProfiler(TB_indian, useAssay = "logcounts",
                                  algorithm = "ssGSEA",
                                  signatures = choose_sigs)
                                  

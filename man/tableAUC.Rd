@@ -8,14 +8,14 @@ tableAUC(SE_scored, annotationColName, signatureColNames, num.boot = 100,
   pb.show = TRUE)
 }
 \arguments{
-\item{SE_scored}{a \code{SummarizedExperiment} object with genes as the 
-row features and signature scores in the \code{colData}. There should also 
+\item{SE_scored}{a \code{SummarizedExperiment} object with genes as the
+row features and signature scores in the \code{colData}. There should also
 be a column of annotation data. Required.}
 
-\item{annotationColName}{a character string giving the column name in 
+\item{annotationColName}{a character string giving the column name in
 \code{colData} that contains the annotation data. Required.}
 
-\item{num.boot}{integer. The number of times to bootstrap the data. The 
+\item{num.boot}{integer. The number of times to bootstrap the data. The
 default is \code{100}.}
 
 \item{pb.show}{logical for whether to show a progress bar while running code.
@@ -25,18 +25,19 @@ The default is \code{TRUE}.}
 A JavaScript table with an R interface using the \code{DT} package.
 }
 \description{
-This function collects the results of bootstrapping and t-tests for a scored 
-gene expression dataset and presents them using a JavaScript table with an 
+This function collects the results of bootstrapping and t-tests for a scored
+gene expression dataset and presents them using a JavaScript table with an
 R interface.
 }
 \examples{
 # Run signature profiling
- choose_sigs <- TBsignatures[-c(18, 22)]
- prof_indian <- runTBsigProfiler(TB_indian, useAssay = "logcounts",  
+ choose_sigs <- subset(TBsignatures, 
+                       !(names(TBsignatures) \%in\% c("Lee_4", "Roe_OD_4")))
+ prof_indian <- runTBsigProfiler(TB_indian, useAssay = "logcounts",
                                  algorithm = "ssGSEA",
                                  signatures = choose_sigs)
  # Create table
- tableAUC(SE_scored = prof_indian, annotationColName = "label", 
+ tableAUC(SE_scored = prof_indian, annotationColName = "label",
           signatureColNames = names(choose_sigs))
  
 }
