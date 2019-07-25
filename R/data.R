@@ -1,12 +1,12 @@
 #' TB Signatures
 #'
-#' A set of 34 Tuberculosis gene signatures from various publications. This set 
-#' of signatures uses gene symbols. Attempts have been made to use updated gene 
-#' symbols and remove symbols that did not match the most recent annotation. 
-#' Additional sets for Entrez IDs and Ensembl IDs are forthcoming. The assigned 
-#' signature name ends with the number of genes in the original signature. 
+#' A set of 34 Tuberculosis gene signatures from various publications. This set
+#' of signatures uses gene symbols. Attempts have been made to use updated gene
+#' symbols and remove symbols that did not match the most recent annotation.
+#' Additional sets for Entrez IDs and Ensembl IDs are forthcoming. The assigned
+#' signature name ends with the number of genes in the original signature.
 #' Note that, in some cases, signatures will be positive identifiers of TB
-#' whereas others are negative identifiers. This should be taken into account 
+#' whereas others are negative identifiers. This should be taken into account
 #' when creating ROC curves and computing any AUC estimates.
 #'
 #' @name TBsignatures
@@ -49,7 +49,7 @@
 #'  \item{\strong{Walter_PNA_119}}{: Walter, Nicholas D., Mikaela A. Miller, Joshua Vasquez, Marc Weiner, Adam Chapman, Melissa Engle, Michael Higgins, et al. 2016. "Blood Transcriptional Biomarkers for Active Tuberculosis among Patients in the United States: A Case-Control Study with Systematic Cross-Classifier Evaluation." Journal of Clinical Microbiology 54 (2): 274–82. \href{http://dx.doi.org/10.1128/JCM.01990-15}{10.1128/JCM.01990-15}}
 #'  \item{\strong{Zak_RISK_16}}{: Zak, Daniel E., Adam Penn-Nicholson, Thomas J. Scriba, Ethan Thompson, Sara Suliman, Lynn M. Amon, Hassan Mahomed, et al. 2016. "A Blood RNA Signature for Tuberculosis Disease Risk: A Prospective Cohort Study." The Lancet 387 (10035): 2312–22. \href{http://dx.doi.org/10.1016/S0140-6736(15)01316-1}{10.1016/S0140-6736(15)01316-1}}
 #'  }
-#'  
+#'
 #' @keywords datasets
 #' @examples
 #' data("TBsignatures")
@@ -58,9 +58,9 @@
 
 #' TB Example dataset with Indian population data
 #'
-#' An example dataset containing the gene expression and metadata in a SummarizedExperiment object for an Indian 
+#' An example dataset containing the gene expression and metadata in a SummarizedExperiment object for an Indian
 #' population. Active TB contamination of the 44 subjects is denoted for each as a "1"(active) or "0" (latent/not present),
-#' and can be accessed via \code{TB_indian$label}. The SummarizedExperiment object 
+#' and can be accessed via \code{TB_indian$label}. The SummarizedExperiment object
 #' contains 2 assays (counts and log(counts)), and the column names give the unique
 #' subject identification number along with the subject's gender.
 #'
@@ -76,7 +76,7 @@
 #'
 #' An example dataset containing the gene expression and metadata in a SummarizedExperiment object for 31 subjects
 #' with HIV and/or Tuberculosis diseases. Information on subject infection status can be accessed with \code{TB_hiv$Disease}.
-#' Samples with both TB and HIV contamination are marked as \code{tb_hiv}, while samples 
+#' Samples with both TB and HIV contamination are marked as \code{tb_hiv}, while samples
 #' with HIV and no TB are marked as \code{hiv_only}.
 #'
 #' @name TB_hiv

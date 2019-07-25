@@ -11,13 +11,14 @@
 #' @param input an input data object of the class \code{SummarizedExperiment}, 
 #' \code{data.frame}, or \code{matrix} containing gene expression data. Required.
 #' @param useAssay a character string specifying the assay to use for signature 
-#' profiling when \code{input} is a SummarizedExperiment. Required only for input 
-#' data of the class \code{SummarizedExperiment}. Default is \code{"counts"}.
+#' profiling when \code{input} is a \code{SummarizedExperiment}. Required only for 
+#' input data of the class \code{SummarizedExperiment}. If null, the assay 
+#' used will be \code{"counts"}. The default is \code{NULL.}
 #' @param signatures a \code{list} of signatures to run with their associated genes. 
 #' This list should be in the same format as \code{TBsignatures}, included in 
 #' the TBSignatureProfiler package. If \code{signatures = NULL}, the default set 
 #' of signatures \code{TBsignatures} list is used. For details, run 
-#' \code{?TBsignatures}.
+#' \code{?TBsignatures}. The default is \code{NULL}.
 #' @param algorithm a vector of algorithms to run, or character string if only 
 #' one is desired. The default is \code{c("GSVA", "ssGSEA", "ASSIGN",
 #' "PLAGE", "Zscore", "singscore")}.
@@ -92,21 +93,21 @@
 #' @export
 #'
 #' @examples
-#' ## Using a matrix input/output
+#' ## Using a data.frame input/output
 #'  # Create some toy data to test Zak_RISK_16 signature, using 5 samples with low 
 #'  # expression & five samples with high expression of the signatures genes.
-#' mat_testdata <- rbind(matrix(c(rnorm(80), rnorm(80) + 5), 16, 10,
+#' df_testdata <- as.data.frame(rbind(matrix(c(rnorm(80), rnorm(80) + 5), 16, 10,
 #'                              dimnames = list(TBsignatures$Zak_RISK_16,
 #'                              paste0("sample", 1:10))),
 #'                       matrix(rnorm(1000), 100, 10,
 #'                              dimnames = list(paste0("gene", 1:100),
-#'                              paste0("sample", 1:10))))
-#' res <- runTBsigProfiler(input = mat_testdata,
+#'                              paste0("sample", 1:10)))))
+#' res <- runTBsigProfiler(input = df_testdata,
 #'                         signatures = TBsignatures, 
 #'                         algorithm = c("GSVA", "ssGSEA"), 
 #'                         combineSigAndAlgorithm = FALSE,
 #'                         parallel.sz = 1)
-#' res["Zak_RISK_16", ]
+#' subset(res, res$pathway == "Zak_RISK_16")
 #' 
 #' ## Using a SummarizedExperiment input/output
 #'  # The TB_indian SummarizedExperiment data is included in the package.
@@ -118,7 +119,7 @@
 #'                              parallel.sz = 4)
 #' GSVA_res$Zak_RISK_16
 #'  
-runTBsigProfiler <- function(input, useAssay = "counts",
+runTBsigProfiler <- function(input, useAssay = NULL,
                              signatures = NULL,
                              algorithm = c("GSVA", "ssGSEA", "ASSIGN", 
                                            "PLAGE", "Zscore", "singscore"),
@@ -137,11 +138,8 @@ runTBsigProfiler <- function(input, useAssay = "counts",
   } 
   runindata <- input
   if (methods::is(runindata, "SummarizedExperiment")) {
-    if (!is.null(useAssay)) {
-      runindata <- SummarizedExperiment::assay(input, useAssay)
-    } else {
-      stop("useAssay required for SummarizedExperiment Input")
-    }
+    if (is.null(useAssay)) useAssay <- "counts"
+    runindata <- SummarizedExperiment::assay(input, useAssay)
     if (!combineSigAndAlgorithm & length(algorithm) > 1) {
       stop("SummarizedExperiment not supported with ",
            "combineSigAndAlgorithm FALSE.")
@@ -481,7 +479,7 @@ runTBsigProfiler <- function(input, useAssay = "counts",
 #'             scale = TRUE)
 #'             
 
-compareAlgs <- function (input, signatures = TBsignatures, annotationColNames,
+compareAlgs <- function (input, signatures = NULL, annotationColNames,
                          annotationData, 
                          algorithm = c("GSVA", "ssGSEA", "ASSIGN", "PLAGE", 
                                        "Zscore", "singscore"),
@@ -493,6 +491,17 @@ compareAlgs <- function (input, signatures = TBsignatures, annotationColNames,
                                        "Paired"),
                          choose_color = c("red", "white", "blue"),
                          show.pb = FALSE) {
+  
+  if (is.null(signatures)) {
+    # Override with global environment
+    if ("TBsignatures" %in% ls(envir = .GlobalEnv)) {
+      get("TBsignatures", envir = .GlobalEnv)
+      signatures <- TBsignatures
+    } else {
+      data("TBsignatures", package = "TBSignatureProfiler", envir = .myenv)
+      signatures <- .myenv$TBsignatures
+    }
+  } 
   for (sig in names(signatures)) {
     new.name <- paste("Scoring Methods for", sig)
     if (show.pb) {

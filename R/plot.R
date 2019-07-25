@@ -1,51 +1,51 @@
 #' Plot a Heatmap of Signature Scores.
-#' 
+#'
 #' This function takes a dataset of scored gene expression data as an input
-#' and returns a ComplexHeatmap plot for for visual comparison of 
+#' and returns a ComplexHeatmap plot for for visual comparison of
 #' signature performance.
 #'
-#' @param inputData an input data object. It should either be of the class 
-#' \code{SummarizedExperiment} and contain the profiled signature data and 
-#' annotation data as columns in the colData, or alternatively be of the classes 
-#' \code{data.frame} or \code{matrix} and contain only the gene expression data. 
+#' @param inputData an input data object. It should either be of the class
+#' \code{SummarizedExperiment} and contain the profiled signature data and
+#' annotation data as columns in the colData, or alternatively be of the classes
+#' \code{data.frame} or \code{matrix} and contain only the gene expression data.
 #' Required.
-#' @param annotationData a \code{data.frame} or \code{matrix} of annotation 
+#' @param annotationData a \code{data.frame} or \code{matrix} of annotation
 #' data, with one column. Only required if \code{inputData} is a
 #' \code{data.frame} or \code{matrix} of signature data.
-#' @param name a character string with the plot title of the heatmap. The 
+#' @param name a character string with the plot title of the heatmap. The
 #' default is \code{"Signatures"}.
-#' @param signatureColNames a vector of the column names in \code{colData} that 
-#' contain the signature data. Only required if \code{inputData} is a 
+#' @param signatureColNames a vector of the column names in \code{colData} that
+#' contain the signature data. Only required if \code{inputData} is a
 #' SummarizedExperiment object.
-#' @param annotationColNames a vector of the column names in \code{colData} that 
-#' contain the annotation data. Only required if \code{inputData} is a 
+#' @param annotationColNames a vector of the column names in \code{colData} that
+#' contain the annotation data. Only required if \code{inputData} is a
 #' \code{SummarizedExperiment}.
-#' @param colList a named \code{list} of named vectors specifying custom color information to 
+#' @param colList a named \code{list} of named vectors specifying custom color information to
 #' pass to \code{ComplexHeatmap::Heatmap()}. The list should have as many
 #' elements as there are annotation columns, and each element name should
-#' correspond exactly with the name of each annotation column. 
-#' The colors in the vector elements should be named according to the 
+#' correspond exactly with the name of each annotation column.
+#' The colors in the vector elements should be named according to the
 #' levels of the factor in that column's annotation data if the annotation
 #' is discrete, or it should be produced with \code{circlize::colorRamp2}
 #' if the annotation is continuous.
-#' By default, \code{ColorBrewer} color sets will be used. 
+#' By default, \code{ColorBrewer} color sets will be used.
 #' See the the parameter \code{colorSets} for additional details.
-#' @param scale logical. Setting \code{scale = TRUE} scales the signature data. 
+#' @param scale logical. Setting \code{scale = TRUE} scales the signature data.
 #' The default is \code{FALSE}.
-#' @param showColumnNames logical. Setting \code{showColumnNames = TRUE} will 
-#' show the column names (i.e. sample names) on the heatmap. The default is 
+#' @param showColumnNames logical. Setting \code{showColumnNames = TRUE} will
+#' show the column names (i.e. sample names) on the heatmap. The default is
 #' \code{TRUE}.
-#' @param showRowNames logical. Setting \code{showColumnNames = TRUE} will 
-#' show the row names (i.e. signature names) on the heatmap. The default is 
+#' @param showRowNames logical. Setting \code{showColumnNames = TRUE} will
+#' show the row names (i.e. signature names) on the heatmap. The default is
 #' \code{TRUE}.
-#' @param colorSets a vector of names listing the color sets in the order 
-#' that they should be used in creating the heatmap. By default, this function 
-#' will use the color sets in the order listed in \code{Usage} for annotation 
-#' information. You may replace the default with the same collection of sets 
-#' in order that you want to use them, or provide custom color sets with the 
+#' @param colorSets a vector of names listing the color sets in the order
+#' that they should be used in creating the heatmap. By default, this function
+#' will use the color sets in the order listed in \code{Usage} for annotation
+#' information. You may replace the default with the same collection of sets
+#' in order that you want to use them, or provide custom color sets with the
 #' \code{colList} parameter.
-#' @param choose_color a vector of color names to be interpolated for the 
-#' heatmap gradient,, or a colorRamp function produced by 
+#' @param choose_color a vector of color names to be interpolated for the
+#' heatmap gradient,, or a colorRamp function produced by
 #' \code{circlize::colorRamp2}. The default is \code{c("red", "white", "blue")}.
 #' @param ... Additional arguments to be passed to \code{ComplexHeatmap::Heatmap()}.
 #'

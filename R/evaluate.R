@@ -1,13 +1,13 @@
 #' Normalize Gene Expression Count Data.
-#' 
-#' @param inputData a \code{data.frame} or \code{matrix} of gene expression 
+#'
+#' @param inputData a \code{data.frame} or \code{matrix} of gene expression
 #' count data. Required.
-#' 
+#'
 #' @return A \code{data.frame} or \code{matrix} of normalized count data.
 #'
 #' @export
 #'
-#' @examples 
+#' @examples
 #' # Example using the counts assay from a SummarizedExperiment
 #' data_in <- assay(TB_indian, "counts")
 #' res <- deseq2_norm_rle(data_in)
@@ -23,13 +23,13 @@ deseq2_norm_rle <- function(inputData){
 #' Perform Leave-one-out CV with Logistic Regression.
 #'
 #' @param df a \code{data.frame} of gene expression count data. Required.
-#' @param targetVec a binary vector of the response variable. Should be 
+#' @param targetVec a binary vector of the response variable. Should be
 #' the same number of rows as \code{df}. Required.
-#' 
-#' @return A list of length 3 with elements 
-#' \item{auc}{The AUC from the LOOCV procedure.} 
-#' \item{byClass}{A vector containing the sensitivity, specificity, positive 
-#' predictive value, negative predictive value, precision, recall, F1, 
+#'
+#' @return A list of length 3 with elements
+#' \item{auc}{The AUC from the LOOCV procedure.}
+#' \item{byClass}{A vector containing the sensitivity, specificity, positive
+#' predictive value, negative predictive value, precision, recall, F1,
 #' prevalence, detection rate, detection prevalence and balanced accuracy.}
 #' \item{prob}{A vector of the test prediction probabilities.}
 #'
@@ -46,7 +46,7 @@ LOOAUC_simple_multiple_noplot_one_df <- function(df, targetVec){
   for (j in 1:nSample){
     train <- t(as.matrix(df[, -j]))
     test <- t(as.matrix(df[, j]))
-    fit <- suppressWarnings(glmnet::glmnet(train, targetVec[-j], 
+    fit <- suppressWarnings(glmnet::glmnet(train, targetVec[-j],
                                            family = "binomial"))
     testPredictionClassVec[j] <- suppressWarnings(
       stats::predict(fit, type = "class", newx = test, s = 0))
@@ -59,7 +59,7 @@ LOOAUC_simple_multiple_noplot_one_df <- function(df, targetVec){
   auc.vec <- c(auc.vec, aucRound)
   testPredictionClassVec <- as.numeric(testPredictionClassVec)
   conf.mat <- suppressWarnings(
-    caret::confusionMatrix(as.factor(testPredictionClassVec), 
+    caret::confusionMatrix(as.factor(testPredictionClassVec),
                                          as.factor(targetVec)))
   output.list <- list()
   output.list[[1]] <- auc.vec
@@ -72,16 +72,16 @@ LOOAUC_simple_multiple_noplot_one_df <- function(df, targetVec){
 #' Bootstrap on Leave-one-out CV with Logistic Regression.
 #'
 #' @param df a \code{data.frame} of gene expression count data. Required.
-#' @param targetVec a binary vector of the response variable. Should be 
+#' @param targetVec a binary vector of the response variable. Should be
 #' the same number of rows as \code{df}. Required.
 #' @param nboot an integer specifying the number of bootstrap iterations.
 #'
-#' @return A list of length 2 with elements \item{auc}{A vector the length of 
+#' @return A list of length 2 with elements \item{auc}{A vector the length of
 #' \code{nboot} with the AUC from each bootstrap iteration.}
 #' \item{byClass}{A dataframe with number of rows equal to \code{nboot}. Each
 #' row contains the sensitivity, specificity, positive predictive
 #' value, negative predictive value, precision, recall, F1, prevalence,
-#' detection rate, detection prevalence and balanced accuracy for that 
+#' detection rate, detection prevalence and balanced accuracy for that
 #' bootstrap iteration.}
 #'
 #' @examples
@@ -112,29 +112,29 @@ Bootstrap_LOOCV_LR_AUC <- function(df, target.vec, nboot){
 }
 
 #' Use Logistic Regression and Bootstrap LOOCV to Evaluate Signatures.
-#' 
+#'
 #' This function takes as input a \code{data.frame} with genetic expression
 #' count data, and uses a bootstrapped leave-one-out cross validation procedure
-#' with logistic regression to allow for numeric and graphical comparison 
+#' with logistic regression to allow for numeric and graphical comparison
 #' across any number of genetic signatures.
 #'
 #' @param df.input a \code{data.frame} of gene expression count data. Required.
-#' @param target.vec.num a numeric binary vector of the response variable. 
+#' @param target.vec.num a numeric binary vector of the response variable.
 #' The vector should be the same number of rows as \code{df}. Required.
-#' @param signature.list a \code{list} of signatures to run with their 
-#' associated genes. This list should be in the same format as \code{TBsignatures}, 
-#' included in the TBSignatureProfiler package. If \code{signature.list = NULL}, 
-#' the default set of signatures \code{TBsignatures} list is used. For details, 
+#' @param signature.list a \code{list} of signatures to run with their
+#' associated genes. This list should be in the same format as \code{TBsignatures},
+#' included in the TBSignatureProfiler package. If \code{signature.list = NULL},
+#' the default set of signatures \code{TBsignatures} list is used. For details,
 #' run \code{?TBsignatures}.
 #' @param signature.name.vec A vector specifying the names of the signatures
 #' to be compared. This should be the same length as \code{signature.list}.
-#' If \code{signature.name.vec = NULL}, the default set of signatures 
+#' If \code{signature.name.vec = NULL}, the default set of signatures
 #' \code{TBsignatures} list is used.
 #' @param num.boot an integer specifying the number of bootstrap iterations.
-#' @param pb.show logical. If \code{TRUE} then a progress bar for the 
-#' bootstrapping procedure will be displayed as output. The default is 
+#' @param pb.show logical. If \code{TRUE} then a progress bar for the
+#' bootstrapping procedure will be displayed as output. The default is
 #' \code{TRUE}.
-#' 
+#'
 #' @return the AUC, sensitivity and specificity
 #'
 #' @export
@@ -151,12 +151,12 @@ Bootstrap_LOOCV_LR_AUC <- function(df, target.vec, nboot){
 #' num.boot <- 3
 #' res <- SignatureQuantitative(inputTest, targetVec, signature.list,
 #'                              signature.name.vec, num.boot)
-SignatureQuantitative <- function(df.input, target.vec.num, 
+SignatureQuantitative <- function(df.input, target.vec.num,
                                   signature.list = NULL,
-                                  signature.name.vec = NULL, 
+                                  signature.name.vec = NULL,
                                   num.boot = 100,
                                   pb.show = TRUE) {
-  
+
   if ((is.null(signature.name.vec) & !is.null(signature.list)
        | (!is.null(signature.name.vec) & is.null(signature.list)))){
     stop("Please specify arguments for both signature.list and
@@ -196,12 +196,13 @@ SignatureQuantitative <- function(df.input, target.vec.num,
                                                nboot = num.boot))
     # AUC
     auc.result[[i]] <- boot.output.list[[1]]
-    result <- LOOAUC_simple_multiple_noplot_one_df(df.list[[i]], 
+    result <- LOOAUC_simple_multiple_noplot_one_df(df.list[[i]],
                                                    targetVec = target.vec.num)
     est <- result[[1]]
     ci.lower <- quantile(auc.result[[i]], probs = 0.05)
     ci.upper <- quantile(auc.result[[i]], probs = 0.95)
-    st.error <- (1/(num.boot-1))*sum(auc.result[[i]] - mean(auc.result[[i]]))
+    st.error <- (1 / (num.boot - 1)) * sum(auc.result[[i]] -
+                                             mean(auc.result[[i]]))
     auc.result.ci[[i]] <- c("Estimate" = est, "CI lower" = ci.lower,
                             "CI upper" = ci.upper, "Std. Error" = st.error)
     names(auc.result)[i] <- signature.name.vec[i]
@@ -210,24 +211,24 @@ SignatureQuantitative <- function(df.input, target.vec.num,
     est2 <- result$byClass["Sensitivity"]
     ci.lower2 <- quantile(boot.output.list[[2]]$Sensitivity, probs = 0.05)
     ci.upper2 <- quantile(boot.output.list[[2]]$Sensitivity, probs = 0.95)
-    st.error2 <- (1 / (num.boot - 1)) * 
-      sum(boot.output.list[[2]]$Sensitivity - 
-            mean(boot.output.list[[2]]$Sensitivity)) 
+    st.error2 <- (1 / (num.boot - 1)) *
+      sum(boot.output.list[[2]]$Sensitivity -
+            mean(boot.output.list[[2]]$Sensitivity))
     sensitivity.ci[[i]] <- c("Estimate" = est2, "CI lower" = ci.lower2,
                              "CI upper" = ci.upper2, "Std. Error" = st.error2)
     names(sensitivity.ci)[i] <- signature.name.vec[i]
     est3 <- result$byClass["Specificity"]
     ci.lower3 <- quantile(boot.output.list[[2]]$Specificity, probs = 0.05)
     ci.upper3 <- quantile(boot.output.list[[2]]$Specificity, probs = 0.95)
-    st.error3 <- (1 / (num.boot - 1)) * 
-      sum(boot.output.list[[2]]$Specificity - 
-            mean(boot.output.list[[2]]$Specificity)) 
+    st.error3 <- (1 / (num.boot - 1)) *
+      sum(boot.output.list[[2]]$Specificity -
+            mean(boot.output.list[[2]]$Specificity))
     specificity.ci[[i]] <- c("Estimate" = est3, "CI lower" = ci.lower3,
                              "CI upper" = ci.upper3, "Std. Error" = st.error3)
     specificity.ci[[i]] <- suppressWarnings(
       gmodels::ci(boot.output.list[[2]]$Specificity))
     names(specificity.ci)[i] <- signature.name.vec[i]
-    
+
     counter <- counter + 1
     if (pb.show) setTxtProgressBar(pb, counter)
   }
@@ -239,7 +240,7 @@ SignatureQuantitative <- function(df.input, target.vec.num,
           main = "Quantitative evaluation of signatures: AUC",
           cex.axis = 0.6,
           las = 2)
-  
+
   # output data.frame instead of list
   df.auc.ci <- data.frame(matrix(unlist(auc.result.ci),
                                  nrow = length(auc.result.ci),
@@ -258,11 +259,10 @@ SignatureQuantitative <- function(df.input, target.vec.num,
                                          byrow = TRUE))
   colnames(df.specificity.ci) <- names(specificity.ci[[1]])
   rownames(df.specificity.ci) <- signature.name.vec
-  
+
   if (pb.show) close(pb)
 
   return(list(df.auc.ci = df.auc.ci,
               df.sensitivity.ci = df.sensitivity.ci,
               df.specificity.ci = df.specificity.ci))
 }
-
