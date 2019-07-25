@@ -2,90 +2,90 @@
 
 #' Run Tuberculosis Gene Signature profiling
 #'
-#' Using some subset of the signatures listed in \code{TBsignatures} and 
-#' specified scoring algorithms, this function runs gene signature profiling 
-#' on an input gene expression dataset. It allows for scores to be computed for 
+#' Using some subset of the signatures listed in \code{TBsignatures} and
+#' specified scoring algorithms, this function runs gene signature profiling
+#' on an input gene expression dataset. It allows for scores to be computed for
 #' these signatures which can be compared using various visualization tools also
 #' provided in the TBSignatureProfiler package.
 #'
-#' @param input an input data object of the class \code{SummarizedExperiment}, 
+#' @param input an input data object of the class \code{SummarizedExperiment},
 #' \code{data.frame}, or \code{matrix} containing gene expression data. Required.
-#' @param useAssay a character string specifying the assay to use for signature 
-#' profiling when \code{input} is a \code{SummarizedExperiment}. Required only for 
-#' input data of the class \code{SummarizedExperiment}. If null, the assay 
+#' @param useAssay a character string specifying the assay to use for signature
+#' profiling when \code{input} is a \code{SummarizedExperiment}. Required only for
+#' input data of the class \code{SummarizedExperiment}. If null, the assay
 #' used will be \code{"counts"}. The default is \code{NULL.}
-#' @param signatures a \code{list} of signatures to run with their associated genes. 
-#' This list should be in the same format as \code{TBsignatures}, included in 
-#' the TBSignatureProfiler package. If \code{signatures = NULL}, the default set 
-#' of signatures \code{TBsignatures} list is used. For details, run 
+#' @param signatures a \code{list} of signatures to run with their associated genes.
+#' This list should be in the same format as \code{TBsignatures}, included in
+#' the TBSignatureProfiler package. If \code{signatures = NULL}, the default set
+#' of signatures \code{TBsignatures} list is used. For details, run
 #' \code{?TBsignatures}. The default is \code{NULL}.
-#' @param algorithm a vector of algorithms to run, or character string if only 
+#' @param algorithm a vector of algorithms to run, or character string if only
 #' one is desired. The default is \code{c("GSVA", "ssGSEA", "ASSIGN",
 #' "PLAGE", "Zscore", "singscore")}.
-#' @param combineSigAndAlgorithm logical, not supported if \code{input} is a 
-#' SummarizedExperiment object (in which case, the default is \code{TRUE}). 
-#' For a matrix or data frame, if \code{TRUE}, the row names will be in the form 
+#' @param combineSigAndAlgorithm logical, not supported if \code{input} is a
+#' SummarizedExperiment object (in which case, the default is \code{TRUE}).
+#' For a matrix or data frame, if \code{TRUE}, the row names will be in the form
 #' <algorithm>_<signature>. If \code{FALSE}, there will be a column named
 #' 'algorithm' that lists which algorithm is used, and a column named 'pathway'
 #' that lists the signature profiled. If \code{NULL}, and one algorithm was used,
 #' the algorithm will not be listed. The default is \code{FALSE}.
 #' @param assignDir a character string naming a directory to save intermediate
-#' ASSIGN results if \code{algorithm} specifies \code{"ASSIGN"}. The default is 
+#' ASSIGN results if \code{algorithm} specifies \code{"ASSIGN"}. The default is
 #' \code{NULL}, in which case intermediate results will not be saved.
-#' @param outputFormat a character string specifying the output data format. 
-#' Possible values are \code{"SummarizedExperiment"}, \code{"matrix"}, or 
-#' \code{"data.frame"}. The default is to return the same type as the 
+#' @param outputFormat a character string specifying the output data format.
+#' Possible values are \code{"SummarizedExperiment"}, \code{"matrix"}, or
+#' \code{"data.frame"}. The default is to return the same type as the
 #' \code{input} object.
-#' @param parallel.sz an integer identifying the number of processors to use 
-#' when running the calculations in parallel for the GSVA and ssGSEA algorithms. 
+#' @param parallel.sz an integer identifying the number of processors to use
+#' when running the calculations in parallel for the GSVA and ssGSEA algorithms.
 #' If \code{parallel.sz = 0}, all cores are used. The default is \code{0}.
-#' @param ASSIGNiter an integer indicating the number of iterations to use in 
+#' @param ASSIGNiter an integer indicating the number of iterations to use in
 #' the MCMC for the ASSIGN algorithm. The default is \code{100,000}.
-#' @param ASSIGNburnin an integer indicating the number of burn-in iterations 
-#' to use in the MCMC for the ASSIGN algorithm. These iterations are discarded 
-#' when computing the posterior means of the model parameters. The default is 
+#' @param ASSIGNburnin an integer indicating the number of burn-in iterations
+#' to use in the MCMC for the ASSIGN algorithm. These iterations are discarded
+#' when computing the posterior means of the model parameters. The default is
 #' \code{50,000}.
 #'
-#' @return A \code{SummarizedExperiment} object, \code{data.frame}, or 
-#' \code{matrix} of signature profiling results. The returned object will be 
-#' of the format specified in \code{outputFormat}. 
-#' If \code{input} is a \code{SummarizedExperiment} and 
-#' \code{outputFormat = "SummarizedExperiment"}, then the output will retain 
-#' any input information stored in the input colData. In general, if 
-#' \code{outputFormat = "SummarizedExperiment"} then columns in the \code{colData} 
-#' will include the scores for each desired signature with samples on the rows. 
-#' If \code{input} is a \code{data.frame} or \code{matrix}, then the returned 
-#' object will have signatures on the rows and samples on the columns. 
-#' 
-#' @references 
-#' Barbie,  D.A., Tamayo, P., Boehm, J.S., Kim, S.Y., Moody,	 S.E., Dunn, I.F., Schinzel, A.C., 
-#' Sandy, P., Meylan, E., Scholl, C., et al. (2009).  Systematic RNA interference reveals 
+#' @return A \code{SummarizedExperiment} object, \code{data.frame}, or
+#' \code{matrix} of signature profiling results. The returned object will be
+#' of the format specified in \code{outputFormat}.
+#' If \code{input} is a \code{SummarizedExperiment} and
+#' \code{outputFormat = "SummarizedExperiment"}, then the output will retain
+#' any input information stored in the input colData. In general, if
+#' \code{outputFormat = "SummarizedExperiment"} then columns in the \code{colData}
+#' will include the scores for each desired signature with samples on the rows.
+#' If \code{input} is a \code{data.frame} or \code{matrix}, then the returned
+#' object will have signatures on the rows and samples on the columns.
+#'
+#' @references
+#' Barbie,  D.A., Tamayo, P., Boehm, J.S., Kim, S.Y., Moody,	 S.E., Dunn, I.F., Schinzel, A.C.,
+#' Sandy, P., Meylan, E., Scholl, C., et al. (2009).  Systematic RNA interference reveals
 #' that oncogenic	KRAS-driven cancers require TBK1. \emph{Nature} \strong{462}, 108-112.
 #' doi: \href{https://doi.org/10.1038/nature08460}{10.1038/nature08460}.
-#' 
-#' Foroutan, M. et al. (2018). Single sample scoring of molecular phenotypes. 
-#' \emph{BMC Bioinformatics}, \bold{19}. doi: 
+#'
+#' Foroutan, M. et al. (2018). Single sample scoring of molecular phenotypes.
+#' \emph{BMC Bioinformatics}, \bold{19}. doi:
 #' \href{https://doi.org/10.1186/s12859-018-2435-4}{10.1186/s12859-018-2435-4}.
 #'
-#' Lee, E. et al. (2008). Inferring pathway activity toward precise disease 
-#' classification. \emph{PLoS Comp Biol}, 4(11):e1000217. doi: 
+#' Lee, E. et al. (2008). Inferring pathway activity toward precise disease
+#' classification. \emph{PLoS Comp Biol}, 4(11):e1000217. doi:
 #' \href{https://doi.org/10.1371/journal.pcbi.1000217}{10.1371/journal.pcbi.1000217}
 #'
-#' Shen, Y. et al. (2015). ASSIGN: context-specific genomic profiling of 
+#' Shen, Y. et al. (2015). ASSIGN: context-specific genomic profiling of
 #' multiple heterogeneous biological pathways. \emph{Bioinformatics}, \bold{31},
-#' 1745-1753. doi: 
+#' 1745-1753. doi:
 #' \href{https://doi.org/10.1093/bioinformatics/btv031}{10.1093/bioinformatics/btv031}.
-#' 
-#' Subramanian, A. et al. (2005). Gene set enrichment analysis: A knowledge-based 
+#'
+#' Subramanian, A. et al. (2005). Gene set enrichment analysis: A knowledge-based
 #' approach for interpreting genome-wide expression profiles. \emph{PNAS},
 #' \strong{102}, 15545-15550. doi:
 #' \href{https://doi.org/10.1073/pnas.0506580102}{10.1073/pnas.0506580102}.
-#' 
-#' Tomfohr, J. et al. (2005). Pathway level analysis of gene expression using 
+#'
+#' Tomfohr, J. et al. (2005). Pathway level analysis of gene expression using
 #' singular value decomposition. \emph{BMC Bioinformatics}, 6:225. doi:
 #' \href{https://doi.org/10.1186/1471-2105-6-225}{10.1186/1471-2105-6-225}
 #'
-#' @source Profiling for the Z-Score, PLAGE, GSVA, ssGSEA algorithms are all 
+#' @source Profiling for the Z-Score, PLAGE, GSVA, ssGSEA algorithms are all
 #' conducted with the Bioconductor \code{GSVA} package. Profiling for the
 #' singscore algorithm is conducted with the Bioconductor \code{singscore}
 #' package.
@@ -94,7 +94,7 @@
 #'
 #' @examples
 #' ## Using a data.frame input/output
-#'  # Create some toy data to test Zak_RISK_16 signature, using 5 samples with low 
+#'  # Create some toy data to test Zak_RISK_16 signature, using 5 samples with low
 #'  # expression & five samples with high expression of the signatures genes.
 #' df_testdata <- as.data.frame(rbind(matrix(c(rnorm(80), rnorm(80) + 5), 16, 10,
 #'                              dimnames = list(TBsignatures$Zak_RISK_16,
@@ -103,12 +103,12 @@
 #'                              dimnames = list(paste0("gene", 1:100),
 #'                              paste0("sample", 1:10)))))
 #' res <- runTBsigProfiler(input = df_testdata,
-#'                         signatures = TBsignatures, 
-#'                         algorithm = c("GSVA", "ssGSEA"), 
+#'                         signatures = TBsignatures,
+#'                         algorithm = c("GSVA", "ssGSEA"),
 #'                         combineSigAndAlgorithm = FALSE,
 #'                         parallel.sz = 1)
 #' subset(res, res$pathway == "Zak_RISK_16")
-#' 
+#'
 #' ## Using a SummarizedExperiment input/output
 #'  # The TB_indian SummarizedExperiment data is included in the package.
 #' GSVA_res <- runTBsigProfiler(input = TB_indian,
@@ -118,10 +118,10 @@
 #'                              combineSigAndAlgorithm = FALSE,
 #'                              parallel.sz = 4)
 #' GSVA_res$Zak_RISK_16
-#'  
+#'
 runTBsigProfiler <- function(input, useAssay = NULL,
                              signatures = NULL,
-                             algorithm = c("GSVA", "ssGSEA", "ASSIGN", 
+                             algorithm = c("GSVA", "ssGSEA", "ASSIGN",
                                            "PLAGE", "Zscore", "singscore"),
                              combineSigAndAlgorithm = FALSE, assignDir = NULL,
                              outputFormat = NULL, parallel.sz = 0,
@@ -135,7 +135,7 @@ runTBsigProfiler <- function(input, useAssay = NULL,
       data("TBsignatures", package = "TBSignatureProfiler", envir = .myenv)
       signatures <- .myenv$TBsignatures
     }
-  } 
+  }
   runindata <- input
   if (methods::is(runindata, "SummarizedExperiment")) {
     if (is.null(useAssay)) useAssay <- "counts"
@@ -155,10 +155,10 @@ runTBsigProfiler <- function(input, useAssay = NULL,
          "data.frame, or SummarizedExperiment. Your input: ",
          as.character(class(input)))
   }
-  if (!all(algorithm %in% c("GSVA", "ssGSEA", "ASSIGN", 
+  if (!all(algorithm %in% c("GSVA", "ssGSEA", "ASSIGN",
                             "PLAGE", "Zscore", "singscore"))) {
-    stop("Invalid algorithm. Supported algorithms are GSVA, ssGSEA, 
-         PLAGE, Zscore, singscore, and ASSIGN")
+    stop("Invalid algorithm. Supported algorithms are
+    GSVA, ssGSEA, PLAGE, Zscore, singscore, and ASSIGN")
   }
   gsvaRes <- NULL
   if ("GSVA" %in% algorithm) {
@@ -186,14 +186,14 @@ runTBsigProfiler <- function(input, useAssay = NULL,
   }
   singscore_res <- NULL
   if ("singscore" %in% algorithm) {
-    singscore_res <- matrix(ncol = ncol(runindata), 
+    singscore_res <- matrix(ncol = ncol(runindata),
                             nrow = length(signatures),
                             dimnames = list(names(signatures),
                                             colnames(runindata)))
     rankDat <- singscore::rankGenes(runindata)
     for (sig in names(signatures)) {
-      singscore_res[sig,] <- suppressWarnings(singscore::simpleScore(
-        rankData = rankDat, 
+      singscore_res[sig, ] <- suppressWarnings(singscore::simpleScore(
+        rankData = rankDat,
         upSet = TBsignatures[[sig]],
         knownDirection = FALSE)$TotalScore)
     }
@@ -214,7 +214,7 @@ runTBsigProfiler <- function(input, useAssay = NULL,
       currlist <- signatures[i]
       currlist[[1]] <- currlist[[1]][currlist[[1]] %in% rownames(runindata)]
       if (length(currlist[[1]]) < 2) {
-        message("Not enough signature genes in ", i, ", 
+        message("Not enough signature genes in ", i, ",
                 so analysis will not run.")
       } else {
         if (!file.exists(i)) {
@@ -258,7 +258,7 @@ runTBsigProfiler <- function(input, useAssay = NULL,
     }
   } else {
     combined_res <- data.frame()
-    # if combineSigAndAlgorithm TRUE, we can just concatenate the name to the 
+    # if combineSigAndAlgorithm TRUE, we can just concatenate the name to the
     # sig name and combine. Otherwise we need to add an 'algorithm' column and
     # SummarizedExperiment output is not supported.
     if (is.null(combineSigAndAlgorithm)) {
@@ -287,7 +287,7 @@ runTBsigProfiler <- function(input, useAssay = NULL,
         }
       }
       if (!is.null(gsvaRes_PLAGE)) {
-        rownames(gsvaRes_PLAGE) <- paste("PLAGE", rownames(gsvaRes_PLAGE), 
+        rownames(gsvaRes_PLAGE) <- paste("PLAGE", rownames(gsvaRes_PLAGE),
                                          sep = "_")
         if (nrow(combined_res) == 0) {
           combined_res <- gsvaRes_PLAGE
@@ -296,7 +296,7 @@ runTBsigProfiler <- function(input, useAssay = NULL,
         }
       }
       if (!is.null(gsvaRes_Z)) {
-        rownames(gsvaRes_Z) <- paste("Zscore", rownames(gsvaRes_Z), 
+        rownames(gsvaRes_Z) <- paste("Zscore", rownames(gsvaRes_Z),
                                      sep = "_")
         if (nrow(combined_res) == 0) {
           combined_res <- gsvaRes_Z
@@ -305,7 +305,7 @@ runTBsigProfiler <- function(input, useAssay = NULL,
         }
       }
       if (!is.null(singscore_res)) {
-        rownames(singscore_res) <- paste("singscore", rownames(singscore_res), 
+        rownames(singscore_res) <- paste("singscore", rownames(singscore_res),
                                          sep = "_")
         if (nrow(combined_res) == 0) {
           combined_res <- singscore_res
@@ -408,12 +408,12 @@ runTBsigProfiler <- function(input, useAssay = NULL,
     sig_result <- as.matrix(combined_res)
   }
   if (sum(names(signatures) %in% rownames(sig_result)) != length(signatures)) {
-    absent <- subset(names(signatures), !(names(signatures) %in% 
+    absent <- subset(names(signatures), !(names(signatures) %in%
                                             rownames(sig_result)))
-    if(length(algorithm) == 1) {
+    if (length(algorithm) == 1) {
       warning(
-        paste("No identifiers in the gene sets could be matched to the identifiers 
-          in the expression data for the following signatures: ", 
+        paste("No identifiers in the gene sets could be matched to the identifiers
+          in the expression data for the following signatures: ",
               paste(absent, collapse = ", ")))
     }
   }
@@ -451,47 +451,47 @@ runTBsigProfiler <- function(input, useAssay = NULL,
 }
 
 #' Compare Scoring Algorithms on a Single Signature via Heatmap
-#' 
+#'
 #' It may be useful to compare the results of scoring across several different
 #' scoring algorithms via a method of visualization, such as a heatmap. The
-#' \code{compareSigs} function allows the input of a data object and conducts 
-#' profiling on each signature desired, and outputting a heatmap for each 
+#' \code{compareSigs} function allows the input of a data object and conducts
+#' profiling on each signature desired, and outputting a heatmap for each
 #' signature.
 #'
 #' @inheritParams runTBsigProfiler
 #' @inheritParams signatureHeatmap
 #' @param show.pb logical, whether warnings and other output
-#' from the profiling should be suppressed (including progress bar output). 
+#' from the profiling should be suppressed (including progress bar output).
 #' Default is \code{FALSE}.
-#' 
+#'
 #' @return A heatmap for each signature specified comparing the enumerated
 #' algorithms.
-#' 
+#'
 #' @export
-#' 
-#' @examples 
-#' 
+#'
+#' @examples
+#'
 #' # Example using the TB_hiv data set, two signatures, and 3 algorithms
 #' data("TB_hiv")
 #' compareAlgs(TB_hiv, signatures = TBsignatures[c(1,2)],
 #'             annotationColNames = "Disease",
 #'             algorithm = c("GSVA", "ssGSEA", "PLAGE"),
 #'             scale = TRUE)
-#'             
+#'
 
 compareAlgs <- function (input, signatures = NULL, annotationColNames,
-                         annotationData, 
-                         algorithm = c("GSVA", "ssGSEA", "ASSIGN", "PLAGE", 
+                         annotationData,
+                         algorithm = c("GSVA", "ssGSEA", "ASSIGN", "PLAGE",
                                        "Zscore", "singscore"),
-                         showColumnNames = TRUE, 
+                         showColumnNames = TRUE,
                          showRowNames = TRUE, scale = FALSE,
-                         useAssay = "counts", 
-                         colorSets = c("Set1", "Set2", "Set3", "Pastel1", 
-                                       "Pastel2", "Accent", "Dark2", 
+                         useAssay = "counts",
+                         colorSets = c("Set1", "Set2", "Set3", "Pastel1",
+                                       "Pastel2", "Accent", "Dark2",
                                        "Paired"),
                          choose_color = c("red", "white", "blue"),
                          show.pb = FALSE) {
-  
+
   if (is.null(signatures)) {
     # Override with global environment
     if ("TBsignatures" %in% ls(envir = .GlobalEnv)) {
@@ -501,7 +501,7 @@ compareAlgs <- function (input, signatures = NULL, annotationColNames,
       data("TBsignatures", package = "TBSignatureProfiler", envir = .myenv)
       signatures <- .myenv$TBsignatures
     }
-  } 
+  }
   for (sig in names(signatures)) {
     new.name <- paste("Scoring Methods for", sig)
     if (show.pb) {
@@ -515,15 +515,15 @@ compareAlgs <- function (input, signatures = NULL, annotationColNames,
                                  signatures = signatures[sig],
                                  algorithm = algorithm)
     }
-    
+
     if (class(input) == "SummarizedExperiment") {
       already.there <- names(SummarizedExperiment::colData(input))
-      col.names <- subset(names(SummarizedExperiment::colData(scored)), 
-                          !(names(SummarizedExperiment::colData(scored)) 
+      col.names <- subset(names(SummarizedExperiment::colData(scored)),
+                          !(names(SummarizedExperiment::colData(scored))
                             %in% already.there))
     } else col.names <- colnames(scored)
-    
-    return(signatureHeatmap(scored, 
+
+    return(signatureHeatmap(scored,
                             name = new.name,
                             annotationData = annotationData,
                             signatureColNames = col.names,
@@ -534,5 +534,4 @@ compareAlgs <- function (input, signatures = NULL, annotationColNames,
                             colorSets = colorSets, choose_color = choose_color))
   }
 }
-
 

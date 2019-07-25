@@ -11,35 +11,35 @@ signatureGeneHeatmap(inputData, useAssay, sigGenes, name = "Signature",
   "Dark2", "Paired"), choose_color = c("red", "white", "blue"), ...)
 }
 \arguments{
-\item{inputData}{a \code{SummarizedExperiment} object containing the profiled 
+\item{inputData}{a \code{SummarizedExperiment} object containing the profiled
 signature data and annotation data as columns in the \code{colData}.
 Required.}
 
 \item{useAssay}{a character string specifying the assay to use for the gene
 expression data. Required.}
 
-\item{sigGenes}{a vector identifying the genes in the signature to use in 
+\item{sigGenes}{a vector identifying the genes in the signature to use in
 the heatmap. For inbuilt signatures, you can use \code{TBsignatures}
 (eg. \code{TBsignatures[["ACS_COR"]]}). Required.}
 
-\item{name}{a character string with the plot title of the heatmap. The 
+\item{name}{a character string with the plot title of the heatmap. The
 default is \code{"Signatures"}.}
 
-\item{signatureColNames}{a vector of the column names in the \code{colData} 
+\item{signatureColNames}{a vector of the column names in the \code{colData}
 that contain the signature data. Required.}
 
-\item{annotationColNames}{a vector of the column names in the \code{colData} 
+\item{annotationColNames}{a vector of the column names in the \code{colData}
 that contain the annotation data.}
 
-\item{scale}{logical. Setting \code{scale = TRUE} scales the signature data. 
+\item{scale}{logical. Setting \code{scale = TRUE} scales the signature data.
 The default is \code{TRUE}.}
 
-\item{showColumnNames}{logical. Setting \code{showColumnNames = TRUE} will 
-show the column names (i.e. sample names) on the heatmap. The default is 
+\item{showColumnNames}{logical. Setting \code{showColumnNames = TRUE} will
+show the column names (i.e. sample names) on the heatmap. The default is
 \code{TRUE}.}
 
-\item{showRowNames}{logical. Setting \code{showColumnNames = TRUE} will 
-show the row names (i.e. signature names) on the heatmap. The default is 
+\item{showRowNames}{logical. Setting \code{showColumnNames = TRUE} will
+show the row names (i.e. signature names) on the heatmap. The default is
 \code{TRUE}.}
 
 \item{colList}{a named \code{list} of named vectors specifying custom color information to
@@ -82,10 +82,10 @@ mat_testdata <- rbind(matrix(c(rnorm(80), rnorm(80) + 5), 16, 10,
                       matrix(rnorm(1000), 100, 10,
                              dimnames = list(paste0("gene", 1:100),
                                              paste0("sample", 1:10))))
-                                             
+
 # Create a SummarizedExperiment object that contains the data
 testdataSE <- SummarizedExperiment(assays = SimpleList(data = mat_testdata),
-                                   colData = DataFrame(sample = 
+                                   colData = DataFrame(sample =
                                                        c(rep("down", 5),
                                                          rep("up", 5))))
 # Run profiler using GSVA and ssGSEA on Zak_RISK_16
@@ -93,7 +93,7 @@ res <- runTBsigProfiler(testdataSE, useAssay = "data",
                         signatures = TBsignatures["Zak_RISK_16"],
                         algorithm = c("GSVA", "ssGSEA"), parallel.sz = 1,
                         combineSigAndAlgorithm = TRUE)
-                        
+
 # Plot a heatmap of signature genes and pathway predictions
 signatureGeneHeatmap(res, useAssay = "data",
                      sigGenes = TBsignatures[["Zak_RISK_16"]],

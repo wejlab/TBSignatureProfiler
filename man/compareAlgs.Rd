@@ -12,13 +12,13 @@ compareAlgs(input, signatures = NULL, annotationColNames, annotationData,
   choose_color = c("red", "white", "blue"), show.pb = FALSE)
 }
 \arguments{
-\item{input}{an input data object of the class \code{SummarizedExperiment}, 
+\item{input}{an input data object of the class \code{SummarizedExperiment},
 \code{data.frame}, or \code{matrix} containing gene expression data. Required.}
 
-\item{signatures}{a \code{list} of signatures to run with their associated genes. 
-This list should be in the same format as \code{TBsignatures}, included in 
-the TBSignatureProfiler package. If \code{signatures = NULL}, the default set 
-of signatures \code{TBsignatures} list is used. For details, run 
+\item{signatures}{a \code{list} of signatures to run with their associated genes.
+This list should be in the same format as \code{TBsignatures}, included in
+the TBSignatureProfiler package. If \code{signatures = NULL}, the default set
+of signatures \code{TBsignatures} list is used. For details, run
 \code{?TBsignatures}. The default is \code{NULL}.}
 
 \item{annotationColNames}{a vector of the column names in \code{colData} that
@@ -29,7 +29,7 @@ contain the annotation data. Only required if \code{inputData} is a
 data, with one column. Only required if \code{inputData} is a
 \code{data.frame} or \code{matrix} of signature data.}
 
-\item{algorithm}{a vector of algorithms to run, or character string if only 
+\item{algorithm}{a vector of algorithms to run, or character string if only
 one is desired. The default is \code{c("GSVA", "ssGSEA", "ASSIGN",
 "PLAGE", "Zscore", "singscore")}.}
 
@@ -44,9 +44,9 @@ show the row names (i.e. signature names) on the heatmap. The default is
 \item{scale}{logical. Setting \code{scale = TRUE} scales the signature data.
 The default is \code{FALSE}.}
 
-\item{useAssay}{a character string specifying the assay to use for signature 
-profiling when \code{input} is a \code{SummarizedExperiment}. Required only for 
-input data of the class \code{SummarizedExperiment}. If null, the assay 
+\item{useAssay}{a character string specifying the assay to use for signature
+profiling when \code{input} is a \code{SummarizedExperiment}. Required only for
+input data of the class \code{SummarizedExperiment}. If null, the assay
 used will be \code{"counts"}. The default is \code{NULL.}}
 
 \item{colorSets}{a vector of names listing the color sets in the order
@@ -61,7 +61,7 @@ heatmap gradient,, or a colorRamp function produced by
 \code{circlize::colorRamp2}. The default is \code{c("red", "white", "blue")}.}
 
 \item{show.pb}{logical, whether warnings and other output
-from the profiling should be suppressed (including progress bar output). 
+from the profiling should be suppressed (including progress bar output).
 Default is \code{FALSE}.}
 }
 \value{
@@ -71,8 +71,8 @@ algorithms.
 \description{
 It may be useful to compare the results of scoring across several different
 scoring algorithms via a method of visualization, such as a heatmap. The
-\code{compareSigs} function allows the input of a data object and conducts 
-profiling on each signature desired, and outputting a heatmap for each 
+\code{compareSigs} function allows the input of a data object and conducts
+profiling on each signature desired, and outputting a heatmap for each
 signature.
 }
 \examples{
@@ -83,5 +83,5 @@ compareAlgs(TB_hiv, signatures = TBsignatures[c(1,2)],
             annotationColNames = "Disease",
             algorithm = c("GSVA", "ssGSEA", "PLAGE"),
             scale = TRUE)
-            
+
 }

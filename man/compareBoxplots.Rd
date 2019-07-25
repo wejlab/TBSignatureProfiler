@@ -47,5 +47,5 @@ signatures via boxplots.
  # Create boxplots
  compareBoxplots(prof_indian, "label", names(choose_sigs),
                  cex.axis = 0.5)
-          
+        
 }

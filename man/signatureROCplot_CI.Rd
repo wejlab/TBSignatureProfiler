@@ -10,25 +10,25 @@ signatureROCplot_CI(inputData, annotationData, signatureColNames,
   ci.lev = 0.95)
 }
 \arguments{
-\item{inputData}{an input data object. It should either be of the class 
-\code{SummarizedExperiment} and contain the profiled signature data and 
-annotation data as columns in the \code{colData}, or alternatively be of the 
-classes \code{data.frame} or \code{matrix} and contain only the gene 
+\item{inputData}{an input data object. It should either be of the class
+\code{SummarizedExperiment} and contain the profiled signature data and
+annotation data as columns in the \code{colData}, or alternatively be of the
+classes \code{data.frame} or \code{matrix} and contain only the gene
 expression data. Required.}
 
-\item{annotationData}{a \code{data.frame} or \code{matrix} of annotation data, 
-with one column. Only required if \code{inputData} is a \code{data.frame} or 
+\item{annotationData}{a \code{data.frame} or \code{matrix} of annotation data,
+with one column. Only required if \code{inputData} is a \code{data.frame} or
 \code{matrix} of signature data.}
 
-\item{signatureColNames}{a \code{vector} of the column names in \code{colData} 
-that contain the signature data. Only required if \code{inputData} is a 
+\item{signatureColNames}{a \code{vector} of the column names in \code{colData}
+that contain the signature data. Only required if \code{inputData} is a
 \code{SummarizedExperiment} object.}
 
-\item{annotationColName}{a character string naming the column name in the 
-\code{colData} that contains the annotation data to be used in making the 
+\item{annotationColName}{a character string naming the column name in the
+\code{colData} that contains the annotation data to be used in making the
 boxplot. Only required if inputData is a \code{SummarizedExperiment} object.}
 
-\item{scale}{logical. Setting \code{scale = TRUE} scales the signature data. 
+\item{scale}{logical. Setting \code{scale = TRUE} scales the signature data.
 The default is \code{FALSE}.}
 
 \item{choose_colors}{a vector of length 3 definining the colors to be used

@@ -86,7 +86,7 @@ mat_testdata <- rbind(matrix(c(rnorm(80), rnorm(80) + 5), 16, 10,
                                              paste0("sample", 1:10))))
 # Create a SummarizedExperiment object that contains the data
 testdataSE <- SummarizedExperiment(assays = SimpleList(data = mat_testdata),
-                                     colData = DataFrame(sample = 
+                                     colData = DataFrame(sample =
                                                            c(rep("down", 5),
                                                                 rep("up", 5))))
 res <- runTBsigProfiler(testdataSE, useAssay = "data",
@@ -97,7 +97,7 @@ signatureHeatmap(res, signatureColNames = c("GSVA_Zak_RISK_16",
                                             "ssGSEA_Zak_RISK_16"),
                  annotationColNames = "sample", scale = TRUE,
                  showColumnNames = FALSE)
-                 
+
 # Example using custom colors for the annotation information
 color2 <- stats::setNames(c("purple", "black"), c("down", "up"))
 color.list <- list("sample" = color2)
@@ -107,5 +107,5 @@ signatureHeatmap(res, signatureColNames = c("GSVA_Zak_RISK_16",
                  annotationColNames = "sample", scale = TRUE,
                  showColumnNames = FALSE,
                  colList = color.list)
-                  
+          
 }

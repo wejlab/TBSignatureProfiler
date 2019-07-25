@@ -37,7 +37,7 @@ for all signatures tested on a given dataset.
  # Run signature profiling
  choose_sigs <- subset(TBsignatures,
                        !(names(TBsignatures) \%in\% c("Lee_4", "Roe_OD_4")))
- prof_indian <- runTBsigProfiler(TB_indian, useAssay = "logcounts",  
+ prof_indian <- runTBsigProfiler(TB_indian, useAssay = "logcounts",
                                  algorithm = "ssGSEA",
                                  combineSigAndAlgorithm = TRUE,
                                  signatures = choose_sigs)

@@ -31,7 +31,7 @@ R interface.
 }
 \examples{
 # Run signature profiling
- choose_sigs <- subset(TBsignatures, 
+ choose_sigs <- subset(TBsignatures,
                        !(names(TBsignatures) \%in\% c("Lee_4", "Roe_OD_4")))
  prof_indian <- runTBsigProfiler(TB_indian, useAssay = "logcounts",
                                  algorithm = "ssGSEA",
@@ -39,5 +39,5 @@ R interface.
  # Create table
  tableAUC(SE_scored = prof_indian, annotationColName = "label",
           signatureColNames = names(choose_sigs))
- 
+
 }

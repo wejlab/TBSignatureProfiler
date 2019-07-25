@@ -66,22 +66,22 @@
 #' and the column names give the unique subject identification number along
 #' with the subject's gender.
 #'
-#' This dataset was published as part of a study to assess performance of published
-#' TB signatures in a South Indian population (Leong et. al 2018). RNA sequencing
-#' was performed on whole blood PAXgene samples collected from 28 TB patients and
-#' 16 latently TB infected (LTBI) subjects enrolled as part of an ongoing
-#' household contact study.
+#' This dataset was published as part of a study to assess performance of
+#' published TB signatures in a South Indian population (Leong et. al 2018).
+#' RNA sequencing was performed on whole blood PAXgene samples collected
+#' from 28 TB patients and 16 latently TB infected (LTBI) subjects enrolled
+#' as part of an ongoing household contact study.
 #'
 #' @name TB_indian
 #' @docType data
 #' @format SummarizedExperiment
 #' @keywords datasets
-#' @references 
+#' @references
 #' Leong S., Zhao Y., et. al. (2018). Existing blood transcriptional classifiers
 #' accurately discriminate active tuberculosis from latent infection in
 #' individuals from south India. \emph{Tuberculosis} \strong{109}, 41-51.
 #' doi: \href{https://doi.org/10.1016/j.tube.2018.01.002}{10.1016/j.tube.2018.01.002}.
-#' 
+#'
 #' @examples
 #' data("TB_indian")
 "TB_indian"
@@ -91,7 +91,7 @@
 #'
 #' An example dataset containing the gene expression and metadata in a
 #' SummarizedExperiment object for 31 subjects with HIV and/or Tuberculosis
-#' diseases. Information on subject infection status can be accessed with 
+#' diseases. Information on subject infection status can be accessed with
 #' \code{TB_hiv$Disease}. Samples with both TB and HIV contamination are
 #' marked as \code{tb_hiv}, while samples with HIV and no TB are marked
 #' as \code{hiv_only}.
@@ -118,3 +118,4 @@
 #' @examples
 #' data("TB_hiv")
 "TB_hiv"
+

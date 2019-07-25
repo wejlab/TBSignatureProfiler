@@ -11,16 +11,16 @@ distinctColors(n, hues = c("red", "cyan", "orange", "blue", "yellow",
 \arguments{
 \item{n}{an integer decribing the number of colors to generate. Required.}
 
-\item{hues}{a vector of character strings indicating the R colors available 
-from the \code{colors()} function. These will be used as the base colors for 
-the clustering scheme. Different saturations and values (i.e. darkness) 
-will be generated for each hue. Default is \code{c("red", "cyan", "orange", 
+\item{hues}{a vector of character strings indicating the R colors available
+from the \code{colors()} function. These will be used as the base colors for
+the clustering scheme. Different saturations and values (i.e. darkness)
+will be generated for each hue. Default is \code{c("red", "cyan", "orange",
 "blue", "yellow", "purple", "green", "magenta")}}
 
-\item{saturation.range}{a numeric vector of length 2 with values between 0 
+\item{saturation.range}{a numeric vector of length 2 with values between 0
 and 1 giving the range of saturation. The default is \code{c(0.25, 1)}.}
 
-\item{value.range}{a numeric vector of length 2 with values between 0 and 1 
+\item{value.range}{a numeric vector of length 2 with values between 0 and 1
 giving the range of values. The default is \code{c(0.5, 1)}.}
 }
 \value{

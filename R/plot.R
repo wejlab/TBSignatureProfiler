@@ -64,7 +64,7 @@
 #'                                              paste0("sample", 1:10))))
 #' # Create a SummarizedExperiment object that contains the data
 #' testdataSE <- SummarizedExperiment(assays = SimpleList(data = mat_testdata),
-#'                                      colData = DataFrame(sample = 
+#'                                      colData = DataFrame(sample =
 #'                                                            c(rep("down", 5),
 #'                                                                 rep("up", 5))))
 #' res <- runTBsigProfiler(testdataSE, useAssay = "data",
@@ -75,20 +75,20 @@
 #'                                             "ssGSEA_Zak_RISK_16"),
 #'                  annotationColNames = "sample", scale = TRUE,
 #'                  showColumnNames = FALSE)
-#'                  
+#'
 #' # Example using custom colors for the annotation information
 #' color2 <- stats::setNames(c("purple", "black"), c("down", "up"))
 #' color.list <- list("sample" = color2)
-#' 
+#'
 #' signatureHeatmap(res, signatureColNames = c("GSVA_Zak_RISK_16",
 #'                                             "ssGSEA_Zak_RISK_16"),
 #'                  annotationColNames = "sample", scale = TRUE,
 #'                  showColumnNames = FALSE,
 #'                  colList = color.list)
-#'                   
+#'           
 signatureHeatmap <- function(inputData, annotationData, name = "Signatures",
                              signatureColNames, annotationColNames,
-                             colList = list(), scale = FALSE, 
+                             colList = list(), scale = FALSE,
                              showColumnNames = TRUE,
                              showRowNames = TRUE, colorSets = c("Set1", "Set2",
                              "Set3", "Pastel1", "Pastel2", "Accent", "Dark2",
@@ -158,7 +158,7 @@ signatureHeatmap <- function(inputData, annotationData, name = "Signatures",
     sigresults <- t(scale(t(sigresults)))
     keyname <- "Scaled Score"
   }
-  
+
   return(ComplexHeatmap::draw(
     ComplexHeatmap::Heatmap(sigresults, column_title = name,
                             show_column_names = showColumnNames,
@@ -171,31 +171,31 @@ signatureHeatmap <- function(inputData, annotationData, name = "Signatures",
 
 #' Plot a Boxplot of Signature Genes.
 #'
-#' @param inputData an input data object. It should either be of the class 
-#' \code{SummarizedExperiment} and contain the profiled signature data and 
-#' annotation data as columns in the \code{colData}, or alternatively be of the 
-#' classes \code{data.frame} or \code{matrix} and contain only the gene 
+#' @param inputData an input data object. It should either be of the class
+#' \code{SummarizedExperiment} and contain the profiled signature data and
+#' annotation data as columns in the \code{colData}, or alternatively be of the
+#' classes \code{data.frame} or \code{matrix} and contain only the gene
 #' expression data. Required.
-#' @param annotationData a \code{data.frame} or \code{matrix} of annotation data, 
-#' with one column. Only required if \code{inputData} is a \code{data.frame} or 
+#' @param annotationData a \code{data.frame} or \code{matrix} of annotation data,
+#' with one column. Only required if \code{inputData} is a \code{data.frame} or
 #' \code{matrix} of signature data.
-#' @param signatureColNames a \code{vector} of the column names in \code{colData} 
-#' that contain the signature data. Only required if \code{inputData} is a 
+#' @param signatureColNames a \code{vector} of the column names in \code{colData}
+#' that contain the signature data. Only required if \code{inputData} is a
 #' \code{SummarizedExperiment} object.
-#' @param annotationColName a character string naming the column name in the 
-#' \code{colData} that contains the annotation data to be used in making the 
+#' @param annotationColName a character string naming the column name in the
+#' \code{colData} that contains the annotation data to be used in making the
 #' boxplot. Only required if inputData is a \code{SummarizedExperiment} object.
-#' @param name a character string giving the title of the boxplot. The default 
+#' @param name a character string giving the title of the boxplot. The default
 #' is \code{"Signatures"}.
-#' @param scale logical. Setting \code{scale = TRUE} scales the signature data. 
+#' @param scale logical. Setting \code{scale = TRUE} scales the signature data.
 #' The default is \code{FALSE}.
-#' @param includePoints logical. If \code{TRUE}, points will be included over 
+#' @param includePoints logical. If \code{TRUE}, points will be included over
 #' the boxplots. The default is \code{TRUE}.
-#' @param notch logical. Notches are used to compare groups; if the notches of 
-#' two boxes do not overlap, this suggests that the medians are significantly 
-#' different. If \code{TRUE}, the boxplot will be notched. The default is 
+#' @param notch logical. Notches are used to compare groups; if the notches of
+#' two boxes do not overlap, this suggests that the medians are significantly
+#' different. If \code{TRUE}, the boxplot will be notched. The default is
 #' \code{FALSE}.
-#' @param rotateLabels logical. If \code{TRUE}, the x-axis labels will be 
+#' @param rotateLabels logical. If \code{TRUE}, the x-axis labels will be
 #' rotated. The default is \code{FALSE}.
 #' @param nrow integer giving the number of rows in the resulting array.
 #' @param ncol integer giving the number of columns in the resulting array.
@@ -207,7 +207,7 @@ signatureHeatmap <- function(inputData, annotationData, name = "Signatures",
 #'
 #' @examples
 #' library(SummarizedExperiment)
-#' 
+#'
 #' # Generate some artificial data that shows a difference in Zak_RISK_16
 #' mat_testdata <- rbind(matrix(c(rnorm(80), rnorm(80) + 5), 16, 10,
 #'                              dimnames = list(TBsignatures$Zak_RISK_16,
@@ -215,13 +215,13 @@ signatureHeatmap <- function(inputData, annotationData, name = "Signatures",
 #'                       matrix(rnorm(1000), 100, 10,
 #'                              dimnames = list(paste0("gene", 1:100),
 #'                                              paste0("sample", 1:10))))
-#'                                              
+#'                 
 #' # Create a SummarizedExperiment object that contains the data
 #' testdataSE <- SummarizedExperiment(assays = SimpleList(data = mat_testdata),
-#'                                    colData = DataFrame(sample = 
+#'                                    colData = DataFrame(sample =
 #'                                                          c(rep("down", 5),
 #'                                                            rep("up", 5))))
-#'                                                            
+#'                               
 #' # Run profiler using GSVA and ssGSEA on Zak_RISK_16 signature
 #' res <- runTBsigProfiler(testdataSE, useAssay = "data",
 #'                         signatures = TBsignatures["Zak_RISK_16"],
@@ -231,9 +231,9 @@ signatureHeatmap <- function(inputData, annotationData, name = "Signatures",
 #'                                             "ssGSEA_Zak_RISK_16"),
 #'                  annotationColName = "sample", name = "Zak_RISK_16 Signatures")
 signatureBoxplot <- function(inputData, annotationData, signatureColNames,
-                             annotationColName, name = "Signatures", 
-                             scale = FALSE, includePoints = TRUE, 
-                             notch = FALSE, rotateLabels = FALSE, nrow = NULL, 
+                             annotationColName, name = "Signatures",
+                             scale = FALSE, includePoints = TRUE,
+                             notch = FALSE, rotateLabels = FALSE, nrow = NULL,
                              ncol = NULL) {
   if (methods::is(inputData, "SummarizedExperiment")){
     if (any(duplicated(signatureColNames))){
@@ -246,10 +246,10 @@ signatureBoxplot <- function(inputData, annotationData, signatureColNames,
       stop("Annotation column name not found in inputData.")
     }
     annotationData <- data.frame(
-      SummarizedExperiment::colData(inputData)[, annotationColName, 
+      SummarizedExperiment::colData(inputData)[, annotationColName,
                                                drop = FALSE])
     inputData <-  data.frame(
-      SummarizedExperiment::colData(inputData)[, signatureColNames, 
+      SummarizedExperiment::colData(inputData)[, signatureColNames,
                                                drop = FALSE])
   } else {
     if (ncol(annotationData) != 1){
@@ -286,13 +286,13 @@ signatureBoxplot <- function(inputData, annotationData, signatureColNames,
   boxplotdf <- data.frame(t(pathwaydata),
                           Group = annotationData[, 1])
   boxplotdfm <- reshape2::melt(boxplotdf, value.name = "Score",
-                               variable.name = "Signature", 
+                               variable.name = "Signature",
                                id.vars = "Group")
-  theplot <- ggplot2::ggplot(boxplotdfm, 
+  theplot <- ggplot2::ggplot(boxplotdfm,
                              ggplot2::aes_string("Group", "Score")) +
-    ggplot2::facet_wrap(~Signature, scales = 'free', 
+    ggplot2::facet_wrap(~Signature, scales = 'free',
                          nrow = nrow, ncol = ncol) +
-    ggplot2::geom_boxplot(outlier.shape = NA, 
+    ggplot2::geom_boxplot(outlier.shape = NA,
                           ggplot2::aes_string(fill = "Group"),
                           notch = notch) +
     ggplot2::theme_classic()
@@ -312,30 +312,30 @@ signatureBoxplot <- function(inputData, annotationData, signatureColNames,
 #' Plot a Heatmap of a Single Signature Score and Pathway Predictions.
 #'
 #' This function takes the profiled gene expression data for a single signature
-#' and creates a heatmap based on the expression scores. 
+#' and creates a heatmap based on the expression scores.
 #'
 #' @inheritParams signatureHeatmap
-#' @param inputData a \code{SummarizedExperiment} object containing the profiled 
+#' @param inputData a \code{SummarizedExperiment} object containing the profiled
 #' signature data and annotation data as columns in the \code{colData}.
 #' Required.
 #' @param useAssay a character string specifying the assay to use for the gene
 #' expression data. Required.
-#' @param sigGenes a vector identifying the genes in the signature to use in 
+#' @param sigGenes a vector identifying the genes in the signature to use in
 #' the heatmap. For inbuilt signatures, you can use \code{TBsignatures}
 #' (eg. \code{TBsignatures[["ACS_COR"]]}). Required.
-#' @param name a character string with the plot title of the heatmap. The 
+#' @param name a character string with the plot title of the heatmap. The
 #' default is \code{"Signatures"}.
-#' @param signatureColNames a vector of the column names in the \code{colData} 
+#' @param signatureColNames a vector of the column names in the \code{colData}
 #' that contain the signature data. Required.
-#' @param annotationColNames a vector of the column names in the \code{colData} 
+#' @param annotationColNames a vector of the column names in the \code{colData}
 #' that contain the annotation data.
-#' @param scale logical. Setting \code{scale = TRUE} scales the signature data. 
+#' @param scale logical. Setting \code{scale = TRUE} scales the signature data.
 #' The default is \code{TRUE}.
-#' @param showColumnNames logical. Setting \code{showColumnNames = TRUE} will 
-#' show the column names (i.e. sample names) on the heatmap. The default is 
+#' @param showColumnNames logical. Setting \code{showColumnNames = TRUE} will
+#' show the column names (i.e. sample names) on the heatmap. The default is
 #' \code{TRUE}.
-#' @param showRowNames logical. Setting \code{showColumnNames = TRUE} will 
-#' show the row names (i.e. signature names) on the heatmap. The default is 
+#' @param showRowNames logical. Setting \code{showColumnNames = TRUE} will
+#' show the row names (i.e. signature names) on the heatmap. The default is
 #' \code{TRUE}.
 #' @param ... Additional parameters to pass to \code{ComplexHeatmap::Heatmap()}.
 #'
@@ -352,10 +352,10 @@ signatureBoxplot <- function(inputData, annotationData, signatureColNames,
 #'                       matrix(rnorm(1000), 100, 10,
 #'                              dimnames = list(paste0("gene", 1:100),
 #'                                              paste0("sample", 1:10))))
-#'                                              
+#'
 #' # Create a SummarizedExperiment object that contains the data
 #' testdataSE <- SummarizedExperiment(assays = SimpleList(data = mat_testdata),
-#'                                    colData = DataFrame(sample = 
+#'                                    colData = DataFrame(sample =
 #'                                                        c(rep("down", 5),
 #'                                                          rep("up", 5))))
 #' # Run profiler using GSVA and ssGSEA on Zak_RISK_16
@@ -363,7 +363,7 @@ signatureBoxplot <- function(inputData, annotationData, signatureColNames,
 #'                         signatures = TBsignatures["Zak_RISK_16"],
 #'                         algorithm = c("GSVA", "ssGSEA"), parallel.sz = 1,
 #'                         combineSigAndAlgorithm = TRUE)
-#'                         
+#'
 #' # Plot a heatmap of signature genes and pathway predictions
 #' signatureGeneHeatmap(res, useAssay = "data",
 #'                      sigGenes = TBsignatures[["Zak_RISK_16"]],
@@ -377,22 +377,22 @@ signatureGeneHeatmap <- function(inputData, useAssay, sigGenes,
                                  showColumnNames = TRUE, showRowNames = TRUE,
                                  colList = list(), colorSets = c("Set1", "Set2",
                                  "Set3", "Pastel1", "Pastel2", "Accent",
-                                 "Dark2", "Paired"), 
-                                 choose_color = c("red", "white", "blue"), 
+                                 "Dark2", "Paired"),
+                                 choose_color = c("red", "white", "blue"),
                                  ...) {
   if (!is.null(signatureColNames)) {
     pathwaycols <- list()
     pathwaydata <- data.frame(SummarizedExperiment::
-                                colData(inputData)[, signatureColNames, 
+                                colData(inputData)[, signatureColNames,
                                                    drop = FALSE])
     for (i in colnames(pathwaydata)) {
       t1min <- min(pathwaydata[, i], na.rm = TRUE)
       t1max <- max(pathwaydata[, i], na.rm = TRUE)
-      pathwaycols[[i]] <- circlize::colorRamp2(c(t1min, 
-                                                 mean(c(t1min, t1max)), 
+      pathwaycols[[i]] <- circlize::colorRamp2(c(t1min,
+                                                 mean(c(t1min, t1max)),
                                                  t1max),
-                                               c("darkgreen", 
-                                                 "white", 
+                                               c("darkgreen",
+                                                 "white",
                                                  "darkorange"))
     }
   } else {
@@ -401,7 +401,7 @@ signatureGeneHeatmap <- function(inputData, useAssay, sigGenes,
   }
 
   annotationData <- data.frame(SummarizedExperiment::
-                                 colData(inputData)[, annotationColNames, 
+                                 colData(inputData)[, annotationColNames,
                                                     drop = FALSE])
 
   if (!is.null(annotationColNames)) {
@@ -442,12 +442,12 @@ signatureGeneHeatmap <- function(inputData, useAssay, sigGenes,
   if (!is.null(pathwaydata) | !is.null(annotationColNames)) {
     if (!is.null(annotationColNames) & !is.null(pathwaydata)) {
       annotDF <- cbind(data.frame(SummarizedExperiment::
-                                    colData(inputData)[, annotationColNames, 
+                                    colData(inputData)[, annotationColNames,
                                                        drop = FALSE]),
                        pathwaydata)
     } else if (!is.null(annotationColNames)) {
       annotDF <- cbind(data.frame(SummarizedExperiment::
-                                    colData(inputData)[, annotationColNames, 
+                                    colData(inputData)[, annotationColNames,
                                                        drop = FALSE]))
     } else {
       annotDF <- pathwaydata
@@ -455,9 +455,9 @@ signatureGeneHeatmap <- function(inputData, useAssay, sigGenes,
     topha <- ComplexHeatmap::HeatmapAnnotation(
       df = annotDF,
       col = c(colList, pathwaycols),
-      height = grid::unit(0.4 * length(c(annotationColNames, 
-                                         signatureColNames)), "cm"), 
-      show_legend = TRUE, 
+      height = grid::unit(0.4 * length(c(annotationColNames,
+                                         signatureColNames)), "cm"),
+      show_legend = TRUE,
       show_annotation_name = TRUE)
   } else {
     topha <- NULL
@@ -487,21 +487,21 @@ signatureGeneHeatmap <- function(inputData, useAssay, sigGenes,
 #' \code{signatureGeneHeatmap()} and \code{signatureHeatmap}.
 #'
 #' @param n an integer decribing the number of colors to generate. Required.
-#' @param hues a vector of character strings indicating the R colors available 
-#' from the \code{colors()} function. These will be used as the base colors for 
-#' the clustering scheme. Different saturations and values (i.e. darkness) 
-#' will be generated for each hue. Default is \code{c("red", "cyan", "orange", 
+#' @param hues a vector of character strings indicating the R colors available
+#' from the \code{colors()} function. These will be used as the base colors for
+#' the clustering scheme. Different saturations and values (i.e. darkness)
+#' will be generated for each hue. Default is \code{c("red", "cyan", "orange",
 #' "blue", "yellow", "purple", "green", "magenta")}
-#' @param saturation.range a numeric vector of length 2 with values between 0 
+#' @param saturation.range a numeric vector of length 2 with values between 0
 #' and 1 giving the range of saturation. The default is \code{c(0.25, 1)}.
-#' @param value.range a numeric vector of length 2 with values between 0 and 1 
+#' @param value.range a numeric vector of length 2 with values between 0 and 1
 #' giving the range of values. The default is \code{c(0.5, 1)}.
-#' 
+#'
 #' @return A vector of distinct colors that have been converted to HEX from
 #' HSV.
-#' 
+#'
 #' @seealso signatureGeneHeatmap, signatureHeatmap
-#' 
+#'
 #' @export
 distinctColors <- function(n, hues = c("red", "cyan", "orange", "blue",
                                        "yellow", "purple", "green", "magenta"),
@@ -518,11 +518,11 @@ distinctColors <- function(n, hues = c("red", "cyan", "orange", "blue",
 
   ## Calculate all combination of saturation/value pairs.
   ## Note that low saturation with low value (i.e. high darkness) is too dark
-  ## for all hues. Likewise, high saturation with high value (i.e. low darkness) 
-  ## is hard to distinguish. Therefore, saturation and value are set to be 
+  ## for all hues. Likewise, high saturation with high value (i.e. low darkness)
+  ## is hard to distinguish. Therefore, saturation and value are set to be
   ## anticorrelated.
   num.vs <- ceiling(n / length(hues))
-  s <- seq(from = saturation.range[1], to = saturation.range[2], 
+  s <- seq(from = saturation.range[1], to = saturation.range[2],
            length = num.vs)
   v <- seq(from = value.range[2], to = value.range[1], length = num.vs)
 
@@ -538,5 +538,4 @@ distinctColors <- function(n, hues = c("red", "cyan", "orange", "blue",
 
   return(col[1:n])
 }
-
 

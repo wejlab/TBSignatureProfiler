@@ -18,11 +18,11 @@ and the column names give the unique subject identification number along
 with the subject's gender.
 }
 \details{
-This dataset was published as part of a study to assess performance of published
-TB signatures in a South Indian population (Leong et. al 2018). RNA sequencing
-was performed on whole blood PAXgene samples collected from 28 TB patients and
-16 latently TB infected (LTBI) subjects enrolled as part of an ongoing
-household contact study.
+This dataset was published as part of a study to assess performance of
+published TB signatures in a South Indian population (Leong et. al 2018).
+RNA sequencing was performed on whole blood PAXgene samples collected
+from 28 TB patients and 16 latently TB infected (LTBI) subjects enrolled
+as part of an ongoing household contact study.
 }
 \examples{
 data("TB_indian")

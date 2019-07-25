@@ -24,7 +24,7 @@
 #'  # Run signature profiling
 #'  choose_sigs <- subset(TBsignatures,
 #'                        !(names(TBsignatures) %in% c("Lee_4", "Roe_OD_4")))
-#'  prof_indian <- runTBsigProfiler(TB_indian, useAssay = "logcounts",  
+#'  prof_indian <- runTBsigProfiler(TB_indian, useAssay = "logcounts",
 #'                                  algorithm = "ssGSEA",
 #'                                  combineSigAndAlgorithm = TRUE,
 #'                                  signatures = choose_sigs)
@@ -32,13 +32,13 @@
 #'  booted <- bootstrapAUC(SE_scored = prof_indian, annotationColName = "label",
 #'                         signatureColNames = names(choose_sigs))
 #'  str(booted)
-bootstrapAUC <- function(SE_scored, annotationColName, signatureColNames, 
+bootstrapAUC <- function(SE_scored, annotationColName, signatureColNames,
                          num.boot = 100, pb.show = TRUE){
   pvals <- aucs <- aucs_boot <- NULL
-  
+
   annotationData <- colData(SE_scored)[annotationColName][, 1]
   if (!is.factor(annotationData)) annotationData <- as.factor(annotationData)
-  
+
   # Create progress bar
   total <- length(signatureColNames)
   counter <- 0
@@ -48,12 +48,12 @@ bootstrapAUC <- function(SE_scored, annotationColName, signatureColNames,
     # Conduct a 2-sample t-test on the scores and their
     # corresponding Tuberculosis group status
     pvals <- c(pvals, t.test(score ~ annotationData)$p.value)
-    
+  
     # Obtain AUC based on entire dataset
     pred <- ROCit::rocit(score, annotationData)
     auc <- pred$AUC
     aucs <- c(aucs, max(auc, 1 - auc))
-    
+
     # Proceed with bootstrapping
     tmp_aucs <- NULL
     for (j in 1:num.boot) {
@@ -65,32 +65,32 @@ bootstrapAUC <- function(SE_scored, annotationColName, signatureColNames,
       tmp_aucs <- c(tmp_aucs, tmp_auc)
     }
     aucs_boot <- cbind(aucs_boot, tmp_aucs)
-    
+
     # Update the progress bar
     counter <- counter + 1
     if (pb.show) setTxtProgressBar(pb, counter)
   }
-  
+
   if (pb.show) close(pb)
   return(list("P-values" = pvals, "Boot AUC Values" = aucs_boot,
          "Non-Boot AUC Values" = aucs))
 }
 
 #' Create a Table of Results for T-tests and Rootstrapped AUC for a Collection of Scored Signatures.
-#' 
+#'
 #' This function collects the results of bootstrapping and t-tests for a scored
 #' gene expression dataset and presents them using a JavaScript table with an
 #' R interface.
 #'
 #' @inheritParams bootstrapAUC
-#' 
+#'
 #' @export
-#' 
+#'
 #' @return A JavaScript table with an R interface using the \code{DT} package.
-#' 
+#'
 #' @examples
 #' # Run signature profiling
-#'  choose_sigs <- subset(TBsignatures, 
+#'  choose_sigs <- subset(TBsignatures,
 #'                        !(names(TBsignatures) %in% c("Lee_4", "Roe_OD_4")))
 #'  prof_indian <- runTBsigProfiler(TB_indian, useAssay = "logcounts",
 #'                                  algorithm = "ssGSEA",
@@ -98,8 +98,8 @@ bootstrapAUC <- function(SE_scored, annotationColName, signatureColNames,
 #'  # Create table
 #'  tableAUC(SE_scored = prof_indian, annotationColName = "label",
 #'           signatureColNames = names(choose_sigs))
-#'  
-tableAUC <- function(SE_scored, annotationColName, signatureColNames, 
+#'
+tableAUC <- function(SE_scored, annotationColName, signatureColNames,
                      num.boot = 100, pb.show = TRUE){
   # Run the bootstrapping function
   BS.Results <- bootstrapAUC(SE_scored, annotationColName, signatureColNames,
@@ -107,7 +107,7 @@ tableAUC <- function(SE_scored, annotationColName, signatureColNames,
   pvals <- BS.Results[["P-values"]]
   aucs_boot <- BS.Results[["Boot AUC Values"]]
   aucs <- BS.Results[["Non-Boot AUC Values"]]
-  
+
   # Create interactive table
   return(DT::datatable(cbind("Signatures" = signatureColNames,
                              "P-values" = round(pvals, 4),
@@ -123,7 +123,7 @@ tableAUC <- function(SE_scored, annotationColName, signatureColNames,
 }
 
 #' Create a Comparison Plot of Boxplots for Bootstrapped AUC Values.
-#' 
+#'
 #' Present the results of AUC bootstrapping for a collection of scored
 #' signatures via boxplots.
 #'
@@ -136,12 +136,12 @@ tableAUC <- function(SE_scored, annotationColName, signatureColNames,
 #' and symbols should be magnified relative to the default.
 #' @param name a character string giving the overall title for the plot.
 #' @param pb.show logical for whether to show a progress bar while running code.
-#' 
+#'
 #' @export
-#' 
+#'
 #' @return A plot with side-by-side boxplots of bootstrapped AUC values for
 #' each specified signature.
-#' 
+#'
 #' @examples
 #' # Run signature profiling
 #'  choose_sigs <- subset(TBsignatures,
@@ -152,7 +152,7 @@ tableAUC <- function(SE_scored, annotationColName, signatureColNames,
 #'  # Create boxplots
 #'  compareBoxplots(prof_indian, "label", names(choose_sigs),
 #'                  cex.axis = 0.5)
-#'           
+#'         
 compareBoxplots <- function(SE_scored, annotationColName, signatureColNames,
                             num.boot = 100, cex.axis = 0.7, cex = 0.25,
                             name = "Boxplot Comparison of Signatures",
@@ -168,15 +168,15 @@ compareBoxplots <- function(SE_scored, annotationColName, signatureColNames,
 }
 
 #' Create an Array of ROC Plots to Compare Signatures.
-#' 
+#'
 #' @inheritParams signatureBoxplot
 #' @param choose_colors a vector of length 2 definining the colors to be used
 #' in the ROC plots. The default is c("cornflowerblue", "grey24").
-#' 
+#'
 #' @return An array of ROC plots.
-#' 
+#'
 #' @export
-#' 
+#'
 #' @examples
 #' # Run signature profiling
 #'  choose_sigs <- subset(TBsignatures,
@@ -184,11 +184,11 @@ compareBoxplots <- function(SE_scored, annotationColName, signatureColNames,
 #'  prof_indian <- runTBsigProfiler(TB_indian, useAssay = "logcounts",
 #'                                  algorithm = "ssGSEA",
 #'                                  signatures = choose_sigs)
-#'                                  
+#'                              
 #' # Create ROC plots
 #' signatureROCplot(prof_indian, signatureColNames = names(choose_sigs),
 #'                  annotationColName = "label")
-#' 
+#'
 signatureROCplot <- function(inputData, annotationData, signatureColNames,
                              annotationColName, scale = FALSE,
                              choose_colors = c("cornflowerblue", "grey24"),
@@ -236,7 +236,7 @@ signatureROCplot <- function(inputData, annotationData, signatureColNames,
   } else {
     stop("Annotation data and signature data does not match.")
   }
-  
+
   # Begin plot creation
   pathwaydata <- t(inputData)
   if (scale) {
@@ -244,7 +244,7 @@ signatureROCplot <- function(inputData, annotationData, signatureColNames,
   }
   inputdf <- data.frame(t(pathwaydata),
                         Group = annotationData[, 1])
-  
+
   # If there are multiple annotationColNames, we will produce
   # an array of AUC plots as output.
   plot_dat <- NULL
@@ -257,7 +257,7 @@ signatureROCplot <- function(inputData, annotationData, signatureColNames,
   plot_dat$Signature <- paste(plot_dat$Signature)
   plot_dat$FPR <- as.numeric(paste(plot_dat$FPR))
   plot_dat$TPR <- as.numeric(paste(plot_dat$TPR))
-  
+
   theplot <- ggplot2::ggplot(data = plot_dat, ggplot2::aes(x = FPR, y = TPR)) +
     ggplot2::geom_line(ggplot2::aes(x = FPR, y = TPR, col = paste(
       "Empirical ROC curve")), size = 1) +
@@ -268,11 +268,11 @@ signatureROCplot <- function(inputData, annotationData, signatureColNames,
                          linetype = "dashed", show.legend = FALSE) +
     ggplot2::labs(x = "1-Specificity (FPR)", y = "Sensitivity (TPR)",
                   title = name) +
-    ggplot2::scale_color_manual("", 
+    ggplot2::scale_color_manual("",
                                 labels = c("Empirical ROC curve", "Chance line"),
                                 values = c(choose_colors[1], choose_colors[2])) +
     ggplot2::theme(legend.position = "right")
-  
+
   return(theplot)
 }
 
@@ -356,7 +356,7 @@ signatureROCplot_CI <- function(inputData, annotationData, signatureColNames,
   } else {
     stop("Annotation data and signature data does not match.")
   }
-  
+
   # Begin plot creation
   pathwaydata <- t(inputData)
   if (scale) {
@@ -372,7 +372,7 @@ signatureROCplot_CI <- function(inputData, annotationData, signatureColNames,
   for (k in signatureColNames) {
     pred <- ROCit::rocit(inputdf[, k], inputdf$Group)
     this.conf <- suppressWarnings(ROCit::ciROC(pred, level = ci.lev))
-    if(any(is.nan(this.conf$UpperTPR))) {
+    if (any(is.nan(this.conf$UpperTPR))) {
       this.conf$UpperTPR[which(is.nan(this.conf$UpperTPR))] <- 1
     }
 
@@ -387,7 +387,8 @@ signatureROCplot_CI <- function(inputData, annotationData, signatureColNames,
   plot_dat <- as.data.frame(apply(plot_dat, 2, paste))
   plot_dat[, 1:4] <- as.data.frame(apply(plot_dat[, 1:4], 2, as.numeric))
 
-  if (is.null(name)) name <- paste("ROC plots for Gene Signatures, ", ci.lev * 100, 
+  if (is.null(name)) name <- paste("ROC plots for Gene Signatures, ",
+                                   ci.lev * 100,
                                   "% Confidence", sep = "")
 
   theplot <- ggplot2::ggplot(data = plot_dat, ggplot2::aes(x = FPR, y = TPR)) +
@@ -438,7 +439,7 @@ signatureROCplot_CI <- function(inputData, annotationData, signatureColNames,
 #' @param  prior.counts an integer specifying the average count to be added to
 #' each observation to avoid taking the log of zero. Used only if
 #' \code{log = TRUE}. The default is \code{3}.
-#' 
+#'
 #' @return This function returns a \code{SummarizedExperiment} object with up
 #' to 3 additional assay types attached to the original inputted object.
 #' \item{cpm}{Counts per million}
@@ -497,3 +498,4 @@ mkAssay <- function(SE_obj, input_name = "counts", output_name = NULL,
 
   return(SE_obj)
 }
+

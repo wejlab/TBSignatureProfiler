@@ -169,18 +169,18 @@ SignatureQuantitative <- function(df.input, target.vec.num,
     signature.list <- TBsignatures
     signature.name.vec <- names(signature.list)
   }
-  
+
   if (length(signature.list) != length(signature.name.vec)){
     stop("The inputs signature.list and signature.name.vec are not the same
          length.")
   }
-  
+
   df.list <- list()
   # progress bar
   counter <- 0
   total <- length(signature.list)
   if (pb.show) pb <- txtProgressBar(min = 0, max = total, style = 3)
-  
+
   for (i in 1:length(signature.list)) {
     df.list[[i]] <- df.input[signature.list[[i]], ]
   }
@@ -189,7 +189,7 @@ SignatureQuantitative <- function(df.input, target.vec.num,
   auc.result.ci <- list()
   sensitivity.ci <- list()
   specificity.ci <- list()
-  
+
   for (i in 1:length(df.list)) {
     boot.output.list <- suppressWarnings(Bootstrap_LOOCV_LR_AUC(df.list[[i]],
                                                target.vec.num,
@@ -266,3 +266,4 @@ SignatureQuantitative <- function(df.input, target.vec.num,
               df.sensitivity.ci = df.sensitivity.ci,
               df.specificity.ci = df.specificity.ci))
 }
+
