@@ -19,30 +19,30 @@ a log assay. If \code{NULL}, then \code{input_name} will be substituted.
 Only used if \code{log = TRUE}. Default is \code{NULL}.}
 
 \item{log}{logical. Indicate whether an assay returned should be the log
-of whichever assay is specified in \code{"output_name"}. If 
+of whichever assay is specified in \code{"output_name"}. If
 \code{counts_to_CPM = TRUE} as well, then a log CPM assay will also
 be created. Default is \code{FALSE}.}
 
-\item{counts_to_CPM}{logical. This argument only applies if the 
+\item{counts_to_CPM}{logical. This argument only applies if the
 \code{input_type} is a counts assay. If \code{TRUE}, then the output assays
-will include a normalized CPM assay. If \code{counts_to_CPM = TRUE} as well, 
+will include a normalized CPM assay. If \code{counts_to_CPM = TRUE} as well,
 then a log CPM assay will also be created. Default is \code{TRUE}.}
 
-\item{prior.counts}{an integer specifying the average count to be added to 
-each observation to avoid taking the log of zero. Used only if 
+\item{prior.counts}{an integer specifying the average count to be added to
+each observation to avoid taking the log of zero. Used only if
 \code{log = TRUE}. The default is \code{3}.}
 }
 \value{
-This function returns a \code{SummarizedExperiment} object with up 
+This function returns a \code{SummarizedExperiment} object with up
 to 3 additional assay types attached to the original inputted object.
 \item{cpm}{Counts per million}
 \item{logcpm}{Log counts per million}
-\item{log_<output_name>}{Log of original inputted assay. 
-\code{<output_name>} will be replaced }
+\item{log_<output_name>}{Log of original inputted assay.
+\code{<output_name>} will be replaced by inputted parameter.}
 }
 \description{
-Given an input of a Summarized Experiment with a counts or CPM assay, This 
-function creates additional assays for a gene expression count dataset 
+Given an input of a Summarized Experiment with a counts or CPM assay, This
+function creates additional assays for a gene expression count dataset
 to be used in further analysis.
 }
 \examples{
