@@ -48,7 +48,7 @@ bootstrapAUC <- function(SE_scored, annotationColName, signatureColNames,
     # Conduct a 2-sample t-test on the scores and their
     # corresponding Tuberculosis group status
     pvals <- c(pvals, t.test(score ~ annotationData)$p.value)
-  
+
     # Obtain AUC based on entire dataset
     pred <- ROCit::rocit(score, annotationData)
     auc <- pred$AUC
@@ -152,7 +152,7 @@ tableAUC <- function(SE_scored, annotationColName, signatureColNames,
 #'  # Create boxplots
 #'  compareBoxplots(prof_indian, "label", names(choose_sigs),
 #'                  cex.axis = 0.5)
-#'         
+#'
 compareBoxplots <- function(SE_scored, annotationColName, signatureColNames,
                             num.boot = 100, cex.axis = 0.7, cex = 0.25,
                             name = "Boxplot Comparison of Signatures",
@@ -184,7 +184,7 @@ compareBoxplots <- function(SE_scored, annotationColName, signatureColNames,
 #'  prof_indian <- runTBsigProfiler(TB_indian, useAssay = "logcounts",
 #'                                  algorithm = "ssGSEA",
 #'                                  signatures = choose_sigs)
-#'                              
+#'
 #' # Create ROC plots
 #' signatureROCplot(prof_indian, signatureColNames = names(choose_sigs),
 #'                  annotationColName = "label")

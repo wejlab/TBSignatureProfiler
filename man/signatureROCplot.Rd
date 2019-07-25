@@ -53,7 +53,7 @@ Create an Array of ROC Plots to Compare Signatures.
  prof_indian <- runTBsigProfiler(TB_indian, useAssay = "logcounts",
                                  algorithm = "ssGSEA",
                                  signatures = choose_sigs)
-                             
+
 # Create ROC plots
 signatureROCplot(prof_indian, signatureColNames = names(choose_sigs),
                  annotationColName = "label")

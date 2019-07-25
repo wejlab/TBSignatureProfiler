@@ -46,7 +46,7 @@
 #' \code{colList} parameter.
 #' @param choose_color a vector of color names to be interpolated for the
 #' heatmap gradient,, or a colorRamp function produced by
-#' \code{circlize::colorRamp2}. The default is \code{c("red", "white", "blue")}.
+#' \code{circlize::colorRamp2}. The default is \code{c("blue", "white", "red")}.
 #' @param ... Additional arguments to be passed to \code{ComplexHeatmap::Heatmap()}.
 #'
 #' @return A ComplexHeatmap plot.
@@ -85,7 +85,7 @@
 #'                  annotationColNames = "sample", scale = TRUE,
 #'                  showColumnNames = FALSE,
 #'                  colList = color.list)
-#'           
+#'
 signatureHeatmap <- function(inputData, annotationData, name = "Signatures",
                              signatureColNames, annotationColNames,
                              colList = list(), scale = FALSE,
@@ -93,7 +93,7 @@ signatureHeatmap <- function(inputData, annotationData, name = "Signatures",
                              showRowNames = TRUE, colorSets = c("Set1", "Set2",
                              "Set3", "Pastel1", "Pastel2", "Accent", "Dark2",
                              "Paired"),
-                             choose_color = c("red", "white", "blue"), ...) {
+                             choose_color = c("blue", "white", "red"), ...) {
   if (methods::is(inputData, "SummarizedExperiment")){
     if (any(duplicated(signatureColNames))){
       stop("Duplicate signature column name is not supported.")
@@ -215,13 +215,13 @@ signatureHeatmap <- function(inputData, annotationData, name = "Signatures",
 #'                       matrix(rnorm(1000), 100, 10,
 #'                              dimnames = list(paste0("gene", 1:100),
 #'                                              paste0("sample", 1:10))))
-#'                 
+#'
 #' # Create a SummarizedExperiment object that contains the data
 #' testdataSE <- SummarizedExperiment(assays = SimpleList(data = mat_testdata),
 #'                                    colData = DataFrame(sample =
 #'                                                          c(rep("down", 5),
 #'                                                            rep("up", 5))))
-#'                               
+#'              
 #' # Run profiler using GSVA and ssGSEA on Zak_RISK_16 signature
 #' res <- runTBsigProfiler(testdataSE, useAssay = "data",
 #'                         signatures = TBsignatures["Zak_RISK_16"],
@@ -378,7 +378,7 @@ signatureGeneHeatmap <- function(inputData, useAssay, sigGenes,
                                  colList = list(), colorSets = c("Set1", "Set2",
                                  "Set3", "Pastel1", "Pastel2", "Accent",
                                  "Dark2", "Paired"),
-                                 choose_color = c("red", "white", "blue"),
+                                 choose_color = c("blue", "white", "red"),
                                  ...) {
   if (!is.null(signatureColNames)) {
     pathwaycols <- list()

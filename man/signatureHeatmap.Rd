@@ -8,7 +8,7 @@ signatureHeatmap(inputData, annotationData, name = "Signatures",
   signatureColNames, annotationColNames, colList = list(),
   scale = FALSE, showColumnNames = TRUE, showRowNames = TRUE,
   colorSets = c("Set1", "Set2", "Set3", "Pastel1", "Pastel2", "Accent",
-  "Dark2", "Paired"), choose_color = c("red", "white", "blue"), ...)
+  "Dark2", "Paired"), choose_color = c("blue", "white", "red"), ...)
 }
 \arguments{
 \item{inputData}{an input data object. It should either be of the class
@@ -63,7 +63,7 @@ in order that you want to use them, or provide custom color sets with the
 
 \item{choose_color}{a vector of color names to be interpolated for the
 heatmap gradient,, or a colorRamp function produced by
-\code{circlize::colorRamp2}. The default is \code{c("red", "white", "blue")}.}
+\code{circlize::colorRamp2}. The default is \code{c("blue", "white", "red")}.}
 
 \item{...}{Additional arguments to be passed to \code{ComplexHeatmap::Heatmap()}.}
 }
@@ -107,5 +107,5 @@ signatureHeatmap(res, signatureColNames = c("GSVA_Zak_RISK_16",
                  annotationColNames = "sample", scale = TRUE,
                  showColumnNames = FALSE,
                  colList = color.list)
-          
+
 }

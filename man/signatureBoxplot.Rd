@@ -66,13 +66,13 @@ mat_testdata <- rbind(matrix(c(rnorm(80), rnorm(80) + 5), 16, 10,
                       matrix(rnorm(1000), 100, 10,
                              dimnames = list(paste0("gene", 1:100),
                                              paste0("sample", 1:10))))
-                
+
 # Create a SummarizedExperiment object that contains the data
 testdataSE <- SummarizedExperiment(assays = SimpleList(data = mat_testdata),
                                    colData = DataFrame(sample =
                                                          c(rep("down", 5),
                                                            rep("up", 5))))
-                              
+             
 # Run profiler using GSVA and ssGSEA on Zak_RISK_16 signature
 res <- runTBsigProfiler(testdataSE, useAssay = "data",
                         signatures = TBsignatures["Zak_RISK_16"],

@@ -58,7 +58,7 @@ in order that you want to use them, or provide custom color sets with the
 
 \item{choose_color}{a vector of color names to be interpolated for the
 heatmap gradient,, or a colorRamp function produced by
-\code{circlize::colorRamp2}. The default is \code{c("red", "white", "blue")}.}
+\code{circlize::colorRamp2}. The default is \code{c("blue", "white", "red")}.}
 
 \item{show.pb}{logical, whether warnings and other output
 from the profiling should be suppressed (including progress bar output).
