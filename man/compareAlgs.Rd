@@ -4,9 +4,9 @@
 \alias{compareAlgs}
 \title{Compare Scoring Algorithms on a Single Signature via Heatmap}
 \usage{
-compareAlgs(input, signatures = TBsignatures, annotationColNames,
-  annotationData, algorithm = c("GSVA", "ssGSEA", "ASSIGN", "PLAGE",
-  "Zscore", "singscore"), showColumnNames = TRUE, showRowNames = TRUE,
+compareAlgs(input, signatures = NULL, annotationColNames, annotationData,
+  algorithm = c("GSVA", "ssGSEA", "ASSIGN", "PLAGE", "Zscore",
+  "singscore"), showColumnNames = TRUE, showRowNames = TRUE,
   scale = FALSE, useAssay = "counts", colorSets = c("Set1", "Set2",
   "Set3", "Pastel1", "Pastel2", "Accent", "Dark2", "Paired"),
   choose_color = c("red", "white", "blue"), show.pb = FALSE)
@@ -19,7 +19,7 @@ compareAlgs(input, signatures = TBsignatures, annotationColNames,
 This list should be in the same format as \code{TBsignatures}, included in 
 the TBSignatureProfiler package. If \code{signatures = NULL}, the default set 
 of signatures \code{TBsignatures} list is used. For details, run 
-\code{?TBsignatures}.}
+\code{?TBsignatures}. The default is \code{NULL}.}
 
 \item{annotationColNames}{a vector of the column names in \code{colData} that 
 contain the annotation data. Only required if \code{inputData} is a 
@@ -45,8 +45,9 @@ show the row names (i.e. signature names) on the heatmap. The default is
 The default is \code{FALSE}.}
 
 \item{useAssay}{a character string specifying the assay to use for signature 
-profiling when \code{input} is a SummarizedExperiment. Required only for input 
-data of the class \code{SummarizedExperiment}. Default is \code{"counts"}.}
+profiling when \code{input} is a \code{SummarizedExperiment}. Required only for 
+input data of the class \code{SummarizedExperiment}. If null, the assay 
+used will be \code{"counts"}. The default is \code{NULL.}}
 
 \item{colorSets}{a vector of names listing the color sets in the order 
 that they should be used in creating the heatmap. By default, this function 

@@ -10,7 +10,7 @@ singscore algorithm is conducted with the Bioconductor \code{singscore}
 package.
 }
 \usage{
-runTBsigProfiler(input, useAssay = "counts", signatures = NULL,
+runTBsigProfiler(input, useAssay = NULL, signatures = NULL,
   algorithm = c("GSVA", "ssGSEA", "ASSIGN", "PLAGE", "Zscore",
   "singscore"), combineSigAndAlgorithm = FALSE, assignDir = NULL,
   outputFormat = NULL, parallel.sz = 0, ASSIGNiter = 1e+05,
@@ -21,14 +21,15 @@ runTBsigProfiler(input, useAssay = "counts", signatures = NULL,
 \code{data.frame}, or \code{matrix} containing gene expression data. Required.}
 
 \item{useAssay}{a character string specifying the assay to use for signature 
-profiling when \code{input} is a SummarizedExperiment. Required only for input 
-data of the class \code{SummarizedExperiment}. Default is \code{"counts"}.}
+profiling when \code{input} is a \code{SummarizedExperiment}. Required only for 
+input data of the class \code{SummarizedExperiment}. If null, the assay 
+used will be \code{"counts"}. The default is \code{NULL.}}
 
 \item{signatures}{a \code{list} of signatures to run with their associated genes. 
 This list should be in the same format as \code{TBsignatures}, included in 
 the TBSignatureProfiler package. If \code{signatures = NULL}, the default set 
 of signatures \code{TBsignatures} list is used. For details, run 
-\code{?TBsignatures}.}
+\code{?TBsignatures}. The default is \code{NULL}.}
 
 \item{algorithm}{a vector of algorithms to run, or character string if only 
 one is desired. The default is \code{c("GSVA", "ssGSEA", "ASSIGN",
@@ -83,21 +84,21 @@ these signatures which can be compared using various visualization tools also
 provided in the TBSignatureProfiler package.
 }
 \examples{
-## Using a matrix input/output
+## Using a data.frame input/output
  # Create some toy data to test Zak_RISK_16 signature, using 5 samples with low 
  # expression & five samples with high expression of the signatures genes.
-mat_testdata <- rbind(matrix(c(rnorm(80), rnorm(80) + 5), 16, 10,
+df_testdata <- as.data.frame(rbind(matrix(c(rnorm(80), rnorm(80) + 5), 16, 10,
                              dimnames = list(TBsignatures$Zak_RISK_16,
                              paste0("sample", 1:10))),
                       matrix(rnorm(1000), 100, 10,
                              dimnames = list(paste0("gene", 1:100),
-                             paste0("sample", 1:10))))
-res <- runTBsigProfiler(input = mat_testdata,
+                             paste0("sample", 1:10)))))
+res <- runTBsigProfiler(input = df_testdata,
                         signatures = TBsignatures, 
                         algorithm = c("GSVA", "ssGSEA"), 
                         combineSigAndAlgorithm = FALSE,
                         parallel.sz = 1)
-res["Zak_RISK_16", ]
+subset(res, res$pathway == "Zak_RISK_16")
 
 ## Using a SummarizedExperiment input/output
  # The TB_indian SummarizedExperiment data is included in the package.
