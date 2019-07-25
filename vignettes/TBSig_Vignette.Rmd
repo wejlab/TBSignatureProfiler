@@ -74,7 +74,7 @@ assays(hivtb_data)
 ```
 
 
-Now we make a logcounts, CPM and log_cpm assay, and check to ensure that the assays were indeed created.
+We now make a logcounts, CPM and log_cpm assay.
 ```{r add assays}
 ## Make a logcounts, CPM and log_cpm assay
 hivtb_data <- mkAssay(hivtb_data, log = TRUE, counts_to_CPM = TRUE)
@@ -113,7 +113,10 @@ Below, we subset the data to compare the enrichment scores for the Zak_Risk_16, 
 Signature Scores
 ```{r show scores, message = FALSE}
 ## New colData entries from the Profiler
-DT::datatable(as.data.frame(colData(ssgsea_result))[,2:5])
+ssgsea_print_results <- as.data.frame(colData(ssgsea_result))[,2:5]
+ssgsea_print_results[,2:4] <- round(ssgsea_print_results[,2:4], 4)
+
+DT::datatable(ssgsea_print_results)
 ```
 
 ## Visualization with TBSignatureProfiler Plots{.tabset}
@@ -138,7 +141,7 @@ signatureHeatmap(ssgsea_result, name = "Heatmap of Signatures,
                  signatureColNames = names(TBsignatures),
                  annotationColNames = "Disease",
                  scale = TRUE,
-                 showColumnNames = FALSE,
+                 showColumnNames = TRUE,
                  choose_color = col.me)
 ```
 
@@ -188,7 +191,7 @@ for (i in names(TBsignatures)){
                        TBsignatures[[i]],
                        name = i, signatureColNames = i, 
                        annotationColNames = c("Disease"),
-                       showColumnNames = FALSE)
+                       showColumnNames = TRUE)
   
   cat("\n\n")
 }
@@ -200,13 +203,13 @@ for (i in names(TBsignatures)){
 The `compareAlgs` function allows multiple scoring methods to be compared via a heatmap with samples on the columns and methods on the rows. Here, we compare scoring methods for the "Anderson_42" signature. It seems that singscore may be the best method here, as its sample scores most closely align with the information provided by the annotation data.
 
 ```{r compareAlgs ex}
-compareAlgs(hivtb_data, annotationColNames = "Disease",
-            scale = TRUE, 
-            algorithm = c("GSVA", "ssGSEA", 
-                          "singscore", "PLAGE", "Zscore"),
-            useAssay = "log_counts",
-            signatures = TBsignatures[1],
-            show.pb = TRUE)
+suppressWarnings(compareAlgs(hivtb_data, annotationColNames = "Disease",
+                 scale = TRUE, 
+                 algorithm = c("GSVA", "ssGSEA", 
+                               "singscore", "PLAGE", "Zscore"),
+                 useAssay = "log_counts",
+                 signatures = TBsignatures[1],
+                 show.pb = TRUE))
 ```
 
 ## Comparing scores via bootstrapped AUCs {.tabset}
@@ -262,7 +265,7 @@ for (i in names(TBsignatures)){
 }
 ```
 
-## Signature Evaluation with Logistic Regression
+## Signature Evaluation with Logistic Regression {.tabset}
 
 Another method of signature evaluation featured in the TBSignatureProfiler package is available with the `SignatureQuantitative` function. 
 
@@ -284,7 +287,7 @@ quantitative.result <- SignatureQuantitative(df.input = hivtb_norm,
 ```
 
 
-Table of AUC Results
+### Table of AUC Results
 ```{r AUC sigeval}
 DT::datatable(round(quantitative.result$df.auc.ci, 4),
               options = list(scrollX = T, pageLength = 10), 
@@ -292,7 +295,7 @@ DT::datatable(round(quantitative.result$df.auc.ci, 4),
 ```
 
 
-Table of Sensitivity Results
+### Table of Sensitivity Results
 ```{r sens sigeval}
 DT::datatable(round(quantitative.result$df.sensitivity.ci, 4),
               options = list(scrollX = T, pageLength = 10), 
@@ -300,7 +303,7 @@ DT::datatable(round(quantitative.result$df.sensitivity.ci, 4),
 ```
 
 
-Table of Specificity Results
+### Table of Specificity Results
 ```{r spec sigeval}
 DT::datatable(round(quantitative.result$df.specificity.ci, 4),
               options = list(scrollX = T, pageLength = 10), 
