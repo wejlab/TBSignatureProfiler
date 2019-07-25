@@ -9,20 +9,20 @@ compareBoxplots(SE_scored, annotationColName, signatureColNames,
   name = "Boxplot Comparison of Signatures", pb.show = TRUE)
 }
 \arguments{
-\item{SE_scored}{a \code{SummarizedExperiment} object with genes as the 
-row features and signature scores in the \code{colData}. There should also 
+\item{SE_scored}{a \code{SummarizedExperiment} object with genes as the
+row features and signature scores in the \code{colData}. There should also
 be a column of annotation data. Required.}
 
-\item{annotationColName}{a character string giving the column name in 
+\item{annotationColName}{a character string giving the column name in
 \code{colData} that contains the annotation data. Required.}
 
-\item{num.boot}{an integer indicating the number of times to bootstrap the 
+\item{num.boot}{an integer indicating the number of times to bootstrap the
 data.}
 
-\item{cex.axis}{a number between 0 and 1 specifying the magnification to be 
+\item{cex.axis}{a number between 0 and 1 specifying the magnification to be
 used for axis annotation relative to the current setting of \code{cex}.}
 
-\item{cex}{a number between 0 and 1 giving the amount by which plotting text 
+\item{cex}{a number between 0 and 1 giving the amount by which plotting text
 and symbols should be magnified relative to the default.}
 
 \item{name}{a character string giving the overall title for the plot.}
@@ -30,17 +30,18 @@ and symbols should be magnified relative to the default.}
 \item{pb.show}{logical for whether to show a progress bar while running code.}
 }
 \value{
-A plot with side-by-side boxplots of bootstrapped AUC values for 
+A plot with side-by-side boxplots of bootstrapped AUC values for
 each specified signature.
 }
 \description{
-Present the results of AUC bootstrapping for a collection of scored 
+Present the results of AUC bootstrapping for a collection of scored
 signatures via boxplots.
 }
 \examples{
 # Run signature profiling
- choose_sigs <- TBsignatures[-c(18, 22)]
- prof_indian <- runTBsigProfiler(TB_indian, useAssay = "logcounts",  
+ choose_sigs <- subset(TBsignatures,
+                       !(names(TBsignatures) \%in\% c("Lee_4", "Roe_OD_4")))
+ prof_indian <- runTBsigProfiler(TB_indian, useAssay = "logcounts",
                                  algorithm = "ssGSEA",
                                  signatures = choose_sigs)
  # Create boxplots
