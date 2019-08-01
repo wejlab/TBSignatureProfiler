@@ -39,7 +39,8 @@ Imports:
     e1071,
     DT,
     edgeR,
-    singscore
+    singscore,
+    DescTools
 Suggests:
     testthat,
     spelling,
