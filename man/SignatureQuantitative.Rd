@@ -5,7 +5,9 @@
 \title{Use Logistic Regression and Bootstrap LOOCV to Evaluate Signatures.}
 \usage{
 SignatureQuantitative(df.input, targetVec.num, signature.list = NULL,
-  signature.name.vec = NULL, num.boot = 100, pb.show = TRUE)
+  signature.name.vec = NULL, num.boot = 100, pb.show = TRUE,
+  name = "Quantitative Evaluation of Signatures via Bootstrapped AUCs",
+  fill.col = "white", outline.col = "black", abline.col = "red")
 }
 \arguments{
 \item{df.input}{a \code{data.frame} of gene expression count data. Required.}
@@ -29,6 +31,19 @@ If \code{signature.name.vec = NULL}, the default set of signatures
 \item{pb.show}{logical. If \code{TRUE} then a progress bar for the
 bootstrapping procedure will be displayed as output. The default is
 \code{TRUE}.}
+
+\item{name}{a character string giving a name for the outputted boxplot of
+bootstrapped AUCs. The default is \code{"Quantitative Evaluation of
+Signatures via Bootstrapped AUCs"}.}
+
+\item{fill.col}{the color to be used to fill the boxplots.
+The default is \code{"white"}.}
+
+\item{outline.col}{the color to be used for the boxplot outlines.
+The default is \code{"black"}.}
+
+\item{abline.col}{the color to be used for the dotted line at AUC = 0.5
+(the chance line). The default is \code{"red"}.}
 }
 \value{
 the AUC, sensitivity and specificity
@@ -48,7 +63,7 @@ targetVec <- sample(c(0,1), replace = TRUE, size = 20)
 signature.list <- list(sig1 = c("gene1", "gene2", "gene3"),
                        sig2 = c("gene4", "gene5", "gene6"))
 signature.name.vec <- c("sig1", "sig2")
-num.boot <- 3
+num.boot <- 20
 res <- SignatureQuantitative(inputTest, targetVec, signature.list,
                              signature.name.vec, num.boot)
 }
