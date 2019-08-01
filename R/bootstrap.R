@@ -137,9 +137,11 @@ tableAUC <- function(SE_scored, annotationColName, signatureColNames,
 #' The default is \code{"Boxplot Comparison of Signature AUCs"}.
 #' @param pb.show logical for whether to show a progress bar while running code.
 #' @param abline.col the color to be used for the dotted line at AUC = 0.5
-#' (the chance line).
+#' (the chance line). The default is \code{"red"}.
 #' @param fill.col the color to be used to fill the boxplots.
+#' The default is \code{"white"}.
 #' @param outline.col the color to be used for the boxplot outlines.
+#' The default is \code{"black"}.
 #'
 #' @export
 #'
@@ -166,8 +168,8 @@ compareBoxplots <- function(SE_scored, annotationColName, signatureColNames,
   BS.Results <- bootstrapAUC(SE_scored, annotationColName, signatureColNames,
                              num.boot, pb.show)
   aucs_boot <- data.frame(BS.Results[["Boot AUC Values"]])
-  aucs <- stats::setNames(BS.Results[["Non-Boot AUC Values"]],
-                          colnames(aucs_boot) <- signatureColNames)
+  colnames(aucs_boot) <- signatureColNames
+  aucs <- apply(aucs_boot, 2, stats::median)
   
   # Create boxplots with ggplot2
   melted_data <- reshape2::melt(aucs_boot, measure.vars = signatureColNames,
@@ -189,7 +191,7 @@ compareBoxplots <- function(SE_scored, annotationColName, signatureColNames,
                    panel.grid.major = ggplot2::element_blank(),
                    panel.grid.minor = ggplot2::element_blank(),
                    panel.background = ggplot2::element_blank(),
-                   axis.line = ggplot2::element_line(colour = "black"),
+                   axis.line = ggplot2::element_line(color = "black"),
                    axis.title.y = ggplot2::element_text(
                      margin = ggplot2::margin(r = 10))) +
     ggplot2::ggtitle(label = name) +
