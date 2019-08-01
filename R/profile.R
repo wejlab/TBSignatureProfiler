@@ -507,13 +507,13 @@ compareAlgs <- function (input, signatures = NULL, annotationColNames,
   }
   for (sig in names(signatures)) {
     new.name <- paste("Scoring Methods for", sig)
-    if (show.pb) {
+    if (!show.pb) {
       utils::capture.output(scored <- runTBsigProfiler(input,
                                  useAssay = useAssay,
                                  combineSigAndAlgorithm = TRUE,
                                  signatures = signatures[sig],
                                  algorithm = algorithm))
-    } else if (!show.pb) {
+    } else if (show.pb) {
       scored <- runTBsigProfiler(input, useAssay = useAssay,
                                  combineSigAndAlgorithm = TRUE,
                                  signatures = signatures[sig],
