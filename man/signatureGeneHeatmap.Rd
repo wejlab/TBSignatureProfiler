@@ -20,7 +20,7 @@ expression data. Required.}
 
 \item{sigGenes}{a vector identifying the genes in the signature to use in
 the heatmap. For inbuilt signatures, you can use \code{TBsignatures}
-(eg. \code{TBsignatures[["ACS_COR"]]}). Required.}
+(e.g., \code{TBsignatures[["ACS_COR"]]}). Required.}
 
 \item{name}{a character string with the plot title of the heatmap. The
 default is \code{"Signatures"}.}

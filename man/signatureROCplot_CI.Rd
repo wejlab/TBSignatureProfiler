@@ -31,7 +31,7 @@ boxplot. Only required if inputData is a \code{SummarizedExperiment} object.}
 \item{scale}{logical. Setting \code{scale = TRUE} scales the signature data.
 The default is \code{FALSE}.}
 
-\item{choose_colors}{a vector of length 3 definining the colors to be used
+\item{choose_colors}{a vector of length 3 defining the colors to be used
 in the ROC plots. The default is \code{c("cornflowerblue",
 "grey50", "grey79")}.}
 

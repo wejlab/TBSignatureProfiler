@@ -2,7 +2,7 @@
 % Please edit documentation in R/bootstrap.R
 \name{tableAUC}
 \alias{tableAUC}
-\title{Create a Table of Results for T-tests and Rootstrapped AUC for a Collection of Scored Signatures.}
+\title{Create a Table of Results for T-tests and Bootstrapped AUC for a Collection of Scored Signatures.}
 \usage{
 tableAUC(SE_scored, annotationColName, signatureColNames, num.boot = 100,
   pb.show = TRUE)

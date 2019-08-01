@@ -23,8 +23,3 @@ prevalence, detection rate, detection prevalence and balanced accuracy.}
 \description{
 Perform Leave-one-out CV with Logistic Regression.
 }
-\examples{
-inputTest <- as.data.frame(assay(TB_indian, "counts"))
-targetVec <- TB_indian$label
-res <- LOOAUC_simple_multiple_noplot_one_df(inputTest, targetVec)
-}

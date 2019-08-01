@@ -9,7 +9,7 @@ distinctColors(n, hues = c("red", "cyan", "orange", "blue", "yellow",
   value.range = c(0.7, 1))
 }
 \arguments{
-\item{n}{an integer decribing the number of colors to generate. Required.}
+\item{n}{an integer describing the number of colors to generate. Required.}
 
 \item{hues}{a vector of character strings indicating the R colors available
 from the \code{colors()} function. These will be used as the base colors for
@@ -30,8 +30,5 @@ HSV.
 \description{
 Create a distinct palette for coloring different heatmap clusters. The
 function returns colors for input into \code{ComplexHeatmap:Heatmap()},
-\code{signatureGeneHeatmap()} and \code{signatureHeatmap}.
-}
-\seealso{
-signatureGeneHeatmap, signatureHeatmap
+\code{signatureGeneHeatmap()} and \code{signatureHeatmap()}.
 }

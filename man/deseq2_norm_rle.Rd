@@ -16,8 +16,3 @@ A \code{data.frame} or \code{matrix} of normalized count data.
 \description{
 Normalize Gene Expression Count Data.
 }
-\examples{
-# Example using the counts assay from a SummarizedExperiment
-data_in <- assay(TB_indian, "counts")
-res <- deseq2_norm_rle(data_in)
-}

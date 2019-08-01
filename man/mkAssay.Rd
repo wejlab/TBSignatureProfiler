@@ -28,7 +28,7 @@ be created. Default is \code{FALSE}.}
 will include a normalized CPM assay. If \code{counts_to_CPM = TRUE} as well,
 then a log CPM assay will also be created. Default is \code{TRUE}.}
 
-\item{prior.counts}{an integer specifying the average count to be added to
+\item{prior_counts}{an integer specifying the average count to be added to
 each observation to avoid taking the log of zero. Used only if
 \code{log = TRUE}. The default is \code{3}.}
 }
