@@ -29,11 +29,13 @@ The default is \code{"Boxplot Comparison of Signature AUCs"}.}
 \item{pb.show}{logical for whether to show a progress bar while running code.}
 
 \item{abline.col}{the color to be used for the dotted line at AUC = 0.5
-(the chance line).}
+(the chance line). The default is \code{"red"}.}
 
-\item{fill.col}{the color to be used to fill the boxplots.}
+\item{fill.col}{the color to be used to fill the boxplots.
+The default is \code{"white"}.}
 
-\item{outline.col}{the color to be used for the boxplot outlines.}
+\item{outline.col}{the color to be used for the boxplot outlines.
+The default is \code{"black"}.}
 }
 \value{
 A plot with side-by-side boxplots of bootstrapped AUC values for
