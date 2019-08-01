@@ -5,12 +5,6 @@
 #'
 #' @return A \code{data.frame} or \code{matrix} of normalized count data.
 #'
-#' @export
-#'
-#' @examples
-#' # Example using the counts assay from a SummarizedExperiment
-#' data_in <- assay(TB_indian, "counts")
-#' res <- deseq2_norm_rle(data_in)
 deseq2_norm_rle <- function(inputData){
     scalingFac <- DESeq2::estimateSizeFactorsForMatrix(inputData)
     inputDataScaled <- inputData
@@ -33,11 +27,6 @@ deseq2_norm_rle <- function(inputData){
 #' prevalence, detection rate, detection prevalence and balanced accuracy.}
 #' \item{prob}{A vector of the test prediction probabilities.}
 #'
-#' @examples
-#' inputTest <- as.data.frame(assay(TB_indian, "counts"))
-#' targetVec <- TB_indian$label
-#' res <- LOOAUC_simple_multiple_noplot_one_df(inputTest, targetVec)
-
 LOOAUC_simple_multiple_noplot_one_df <- function(df, targetVec){
   auc.vec <- c()
   nSample <- ncol(df)
@@ -92,14 +81,14 @@ LOOAUC_simple_multiple_noplot_one_df <- function(df, targetVec){
 #' targetVec <- sample(c(0,1), replace = TRUE, size = 20)
 #' nboot <- 3
 #' res <- Bootstrap_LOOCV_LR_AUC(inputTest, targetVec, nboot)
-Bootstrap_LOOCV_LR_AUC <- function(df, target.vec, nboot){
+Bootstrap_LOOCV_LR_AUC <- function(df, targetVec, nboot){
   output.auc.vec <- c()
   output.byClass.df <- NULL
   for (i in 1:nboot){
     index.boot <- sample(1:ncol(df), ncol(df), replace = TRUE)
     df.tmp <- df[, index.boot]
     loo.output.list <- suppressWarnings(
-      LOOAUC_simple_multiple_noplot_one_df(df.tmp, target.vec[index.boot]))
+      LOOAUC_simple_multiple_noplot_one_df(df.tmp, targetVec[index.boot]))
     output.auc.vec[i] <- loo.output.list[[1]]
     output.byClass.df <- rbind(output.byClass.df, loo.output.list[[2]])
   }
@@ -119,7 +108,7 @@ Bootstrap_LOOCV_LR_AUC <- function(df, target.vec, nboot){
 #' across any number of genetic signatures.
 #'
 #' @param df.input a \code{data.frame} of gene expression count data. Required.
-#' @param target.vec.num a numeric binary vector of the response variable.
+#' @param targetVec.num a numeric binary vector of the response variable.
 #' The vector should be the same number of rows as \code{df}. Required.
 #' @param signature.list a \code{list} of signatures to run with their
 #' associated genes. This list should be in the same format as \code{TBsignatures},
@@ -151,7 +140,7 @@ Bootstrap_LOOCV_LR_AUC <- function(df, target.vec, nboot){
 #' num.boot <- 3
 #' res <- SignatureQuantitative(inputTest, targetVec, signature.list,
 #'                              signature.name.vec, num.boot)
-SignatureQuantitative <- function(df.input, target.vec.num,
+SignatureQuantitative <- function(df.input, targetVec.num,
                                   signature.list = NULL,
                                   signature.name.vec = NULL,
                                   num.boot = 100,
@@ -179,7 +168,7 @@ SignatureQuantitative <- function(df.input, target.vec.num,
   # progress bar
   counter <- 0
   total <- length(signature.list)
-  if (pb.show) pb <- txtProgressBar(min = 0, max = total, style = 3)
+  if (pb.show) pb <- utils::txtProgressBar(min = 0, max = total, style = 3)
 
   for (i in 1:length(signature.list)) {
     df.list[[i]] <- df.input[signature.list[[i]], ]
@@ -192,15 +181,15 @@ SignatureQuantitative <- function(df.input, target.vec.num,
 
   for (i in 1:length(df.list)) {
     boot.output.list <- suppressWarnings(Bootstrap_LOOCV_LR_AUC(df.list[[i]],
-                                               target.vec.num,
+                                               targetVec.num,
                                                nboot = num.boot))
     # AUC
     auc.result[[i]] <- boot.output.list[[1]]
     result <- LOOAUC_simple_multiple_noplot_one_df(df.list[[i]],
-                                                   targetVec = target.vec.num)
+                                                   targetVec = targetVec.num)
     est <- result[[1]]
-    ci.lower <- quantile(auc.result[[i]], probs = 0.05)
-    ci.upper <- quantile(auc.result[[i]], probs = 0.95)
+    ci.lower <- stats::quantile(auc.result[[i]], probs = 0.05)
+    ci.upper <- stats::quantile(auc.result[[i]], probs = 0.95)
     st.error <- (1 / (num.boot - 1)) * sum(auc.result[[i]] -
                                              mean(auc.result[[i]]))
     auc.result.ci[[i]] <- c("Estimate" = est, "CI lower" = ci.lower,
@@ -230,16 +219,15 @@ SignatureQuantitative <- function(df.input, target.vec.num,
     names(specificity.ci)[i] <- signature.name.vec[i]
 
     counter <- counter + 1
-    if (pb.show) setTxtProgressBar(pb, counter)
+    if (pb.show) utils::setTxtProgressBar(pb, counter)
   }
 
   # Boxplot
-  m <- lapply(auc.result, median, na.rm = TRUE)
+  m <- lapply(auc.result, stats::median, na.rm = TRUE)
   o <- order(unlist(m))
-  boxplot(auc.result[o],
-          main = "Quantitative evaluation of signatures: AUC",
-          cex.axis = 0.6,
-          las = 2)
+  graphics::boxplot(auc.result[o],
+                    main = "Quantitative evaluation of signatures: AUC",
+                    cex.axis = 0.6, las = 2)
 
   # output data.frame instead of list
   df.auc.ci <- data.frame(matrix(unlist(auc.result.ci),

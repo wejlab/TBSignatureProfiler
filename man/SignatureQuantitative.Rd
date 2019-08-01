@@ -4,13 +4,13 @@
 \alias{SignatureQuantitative}
 \title{Use Logistic Regression and Bootstrap LOOCV to Evaluate Signatures.}
 \usage{
-SignatureQuantitative(df.input, target.vec.num, signature.list = NULL,
+SignatureQuantitative(df.input, targetVec.num, signature.list = NULL,
   signature.name.vec = NULL, num.boot = 100, pb.show = TRUE)
 }
 \arguments{
 \item{df.input}{a \code{data.frame} of gene expression count data. Required.}
 
-\item{target.vec.num}{a numeric binary vector of the response variable.
+\item{targetVec.num}{a numeric binary vector of the response variable.
 The vector should be the same number of rows as \code{df}. Required.}
 
 \item{signature.list}{a \code{list} of signatures to run with their
