@@ -4,15 +4,15 @@
 \alias{Bootstrap_LOOCV_LR_AUC}
 \title{Bootstrap on Leave-one-out CV with Logistic Regression.}
 \usage{
-Bootstrap_LOOCV_LR_AUC(df, target.vec, nboot)
+Bootstrap_LOOCV_LR_AUC(df, targetVec, nboot)
 }
 \arguments{
 \item{df}{a \code{data.frame} of gene expression count data. Required.}
 
-\item{nboot}{an integer specifying the number of bootstrap iterations.}
-
 \item{targetVec}{a binary vector of the response variable. Should be
 the same number of rows as \code{df}. Required.}
+
+\item{nboot}{an integer specifying the number of bootstrap iterations.}
 }
 \value{
 A list of length 2 with elements \item{auc}{A vector the length of

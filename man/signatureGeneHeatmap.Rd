@@ -42,14 +42,15 @@ show the column names (i.e. sample names) on the heatmap. The default is
 show the row names (i.e. signature names) on the heatmap. The default is
 \code{TRUE}.}
 
-\item{colList}{a named \code{list} of named vectors specifying custom color information to
-pass to \code{ComplexHeatmap::Heatmap()}. The list should have as many
-elements as there are annotation columns, and each element name should
-correspond exactly with the name of each annotation column.
+\item{colList}{a named \code{list} of named vectors specifying custom color
+information to pass to \code{ComplexHeatmap::Heatmap()}.
+The list should have as many elements as there are annotation columns
+and gene signatures (i.e. \code{sigGenes}), and each element name should
+correspond exactly with the name of each annotation column/signature.
 The colors in the vector elements should be named according to the
 levels of the factor in that column's annotation data if the annotation
 is discrete, or it should be produced with \code{circlize::colorRamp2}
-if the annotation is continuous.
+if the annotation/gene is continuous.
 By default, \code{ColorBrewer} color sets will be used.
 See the the parameter \code{colorSets} for additional details.}
 
@@ -61,7 +62,7 @@ in order that you want to use them, or provide custom color sets with the
 \code{colList} parameter.}
 
 \item{choose_color}{a vector of color names to be interpolated for the
-heatmap gradient,, or a colorRamp function produced by
+heatmap gradient, or a colorRamp function produced by
 \code{circlize::colorRamp2}. The default is \code{c("blue", "white", "red")}.}
 
 \item{...}{Additional parameters to pass to \code{ComplexHeatmap::Heatmap()}.}

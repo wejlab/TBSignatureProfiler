@@ -100,7 +100,7 @@
 #' signatures and cytokine levels would distinguish active TB in advanced HIV
 #' in a cohort residing in Sub-Saharan Africa (Verma et. al 2018).
 #' Participants were severely immunosuppressed TB-HIV patients who had
-#' not yet recieved TB treatment or anti-retroviral therapy (ART). The dataset included
+#' not yet received TB treatment or anti-retroviral therapy (ART). The dataset included
 #' in this package has been lightly edited from the originally published dataset
 #' due to the removal of one participant who was HIV positive, on ART and developed
 #' TB during follow-up.

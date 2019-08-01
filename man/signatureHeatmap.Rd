@@ -32,7 +32,8 @@ SummarizedExperiment object.}
 contain the annotation data. Only required if \code{inputData} is a
 \code{SummarizedExperiment}.}
 
-\item{colList}{a named \code{list} of named vectors specifying custom color information to
+\item{colList}{a named \code{list} of named vectors specifying custom color
+information to
 pass to \code{ComplexHeatmap::Heatmap()}. The list should have as many
 elements as there are annotation columns, and each element name should
 correspond exactly with the name of each annotation column.
@@ -62,10 +63,11 @@ in order that you want to use them, or provide custom color sets with the
 \code{colList} parameter.}
 
 \item{choose_color}{a vector of color names to be interpolated for the
-heatmap gradient,, or a colorRamp function produced by
+heatmap gradient, or a colorRamp function produced by
 \code{circlize::colorRamp2}. The default is \code{c("blue", "white", "red")}.}
 
-\item{...}{Additional arguments to be passed to \code{ComplexHeatmap::Heatmap()}.}
+\item{...}{Additional arguments to be passed to
+\code{ComplexHeatmap::Heatmap()}.}
 }
 \value{
 A ComplexHeatmap plot.

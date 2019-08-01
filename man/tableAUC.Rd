@@ -15,6 +15,9 @@ be a column of annotation data. Required.}
 \item{annotationColName}{a character string giving the column name in
 \code{colData} that contains the annotation data. Required.}
 
+\item{signatureColNames}{a vector of column names in the
+\code{colData} that contain the signature score data. Required.}
+
 \item{num.boot}{integer. The number of times to bootstrap the data. The
 default is \code{100}.}
 

@@ -8,7 +8,7 @@
 #' be a column of annotation data. Required.
 #' @param annotationColName a character string giving the column name in
 #' \code{colData} that contains the annotation data. Required.
-#' @param SignatureColNames a vector of column names in the
+#' @param signatureColNames a vector of column names in the
 #' \code{colData} that contain the signature score data. Required.
 #' @param num.boot integer. The number of times to bootstrap the data. The
 #' default is \code{100}.
@@ -17,7 +17,7 @@
 #'
 #' @return A list of length 3 returning a vector of p-values for a 2-sample
 #' t-test, bootstrapped AUC values, and an AUC value for using all scored values
-#' for all signatures specified in \code{SignatureColNames}.
+#' for all signatures specified in \code{signatureColNames}.
 #' @export
 #'
 #' @examples
@@ -36,18 +36,18 @@ bootstrapAUC <- function(SE_scored, annotationColName, signatureColNames,
                          num.boot = 100, pb.show = TRUE){
   pvals <- aucs <- aucs_boot <- NULL
 
-  annotationData <- colData(SE_scored)[annotationColName][, 1]
+  annotationData <- SummarizedExperiment::colData(SE_scored)[annotationColName][, 1]
   if (!is.factor(annotationData)) annotationData <- as.factor(annotationData)
 
   # Create progress bar
   total <- length(signatureColNames)
   counter <- 0
-  if (pb.show)  pb <- txtProgressBar(min = 0, max = total, style = 3)
+  if (pb.show)  pb <- utils::txtProgressBar(min = 0, max = total, style = 3)
   for (i in signatureColNames) {
     score <- SummarizedExperiment::colData(SE_scored)[i][, 1]
     # Conduct a 2-sample t-test on the scores and their
     # corresponding Tuberculosis group status
-    pvals <- c(pvals, t.test(score ~ annotationData)$p.value)
+    pvals <- c(pvals, stats::t.test(score ~ annotationData)$p.value)
 
     # Obtain AUC based on entire dataset
     pred <- ROCit::rocit(score, annotationData)
@@ -68,7 +68,7 @@ bootstrapAUC <- function(SE_scored, annotationColName, signatureColNames,
 
     # Update the progress bar
     counter <- counter + 1
-    if (pb.show) setTxtProgressBar(pb, counter)
+    if (pb.show) utils::setTxtProgressBar(pb, counter)
   }
 
   if (pb.show) close(pb)
@@ -76,7 +76,7 @@ bootstrapAUC <- function(SE_scored, annotationColName, signatureColNames,
          "Non-Boot AUC Values" = aucs))
 }
 
-#' Create a Table of Results for T-tests and Rootstrapped AUC for a Collection of Scored Signatures.
+#' Create a Table of Results for T-tests and Bootstrapped AUC for a Collection of Scored Signatures.
 #'
 #' This function collects the results of bootstrapping and t-tests for a scored
 #' gene expression dataset and presents them using a JavaScript table with an
@@ -112,10 +112,12 @@ tableAUC <- function(SE_scored, annotationColName, signatureColNames,
   return(DT::datatable(cbind("Signatures" = signatureColNames,
                              "P-values" = round(pvals, 4),
                              "-10*Log(p-values)" = round(-10 * log(pvals), 4),
-                             "LowerAUC" = round(apply(aucs_boot, 2, quantile,
+                             "LowerAUC" = round(apply(aucs_boot, 2,
+                                                      stats::quantile,
                                                       probs = .05), 4),
                              "AUCs" = round(aucs, 4),
-                             "UpperAUC" = round(apply(aucs_boot, 2, quantile,
+                             "UpperAUC" = round(apply(aucs_boot, 2,
+                                                      stats::quantile,
                                                      probs = .95), 4)
                              )[order(aucs, decreasing = TRUE), ],
                        options = list(scrollX = TRUE, pageLength = 10),
@@ -128,14 +130,16 @@ tableAUC <- function(SE_scored, annotationColName, signatureColNames,
 #' signatures via boxplots.
 #'
 #' @inheritParams bootstrapAUC
+#' @param signatureColNames
 #' @param num.boot an integer indicating the number of times to bootstrap the
 #' data.
-#' @param cex.axis a number between 0 and 1 specifying the magnification to be
-#' used for axis annotation relative to the current setting of \code{cex}.
-#' @param cex a number between 0 and 1 giving the amount by which plotting text
-#' and symbols should be magnified relative to the default.
-#' @param name a character string giving the overall title for the plot.
+#' @param name a character string giving the overall title for the plot. 
+#' The default is \code{"Boxplot Comparison of Signature AUCs"}.
 #' @param pb.show logical for whether to show a progress bar while running code.
+#' @param abline.col the color to be used for the dotted line at AUC = 0.5
+#' (the chance line).
+#' @param fill.col the color to be used to fill the boxplots.
+#' @param outline.col the color to be used for the boxplot outlines.
 #'
 #' @export
 #'
@@ -150,27 +154,54 @@ tableAUC <- function(SE_scored, annotationColName, signatureColNames,
 #'                                  algorithm = "ssGSEA",
 #'                                  signatures = choose_sigs)
 #'  # Create boxplots
-#'  compareBoxplots(prof_indian, "label", names(choose_sigs),
-#'                  cex.axis = 0.5)
+#'  compareBoxplots(prof_indian, annotationColName = "label",
+#'                  signatureColNames = names(choose_sigs))
 #'
 compareBoxplots <- function(SE_scored, annotationColName, signatureColNames,
-                            num.boot = 100, cex.axis = 0.7, cex = 0.25,
-                            name = "Boxplot Comparison of Signatures",
-                            pb.show = TRUE){
+                            num.boot = 100,
+                            name = "Boxplot Comparison of Signature AUCs",
+                            pb.show = TRUE, abline.col = "red",
+                            fill.col = "grey79", outline.col = "black"){
+  # Obtain AUCs
   BS.Results <- bootstrapAUC(SE_scored, annotationColName, signatureColNames,
                              num.boot, pb.show)
-  aucs_boot <- BS.Results[["Boot AUC Values"]]
-  aucs <- BS.Results[["Non-Boot AUC Values"]]
-  colnames(aucs_boot) <- signatureColNames
-  boxplot(aucs_boot[, order(aucs)], las = 2, cex.axis = cex.axis, cex = cex,
-          main = name, ylab = "Bootstrapped AUC Values")
-  abline(h = 0.5, col = "red", lty = 2)
+  aucs_boot <- data.frame(BS.Results[["Boot AUC Values"]])
+  aucs <- stats::setNames(BS.Results[["Non-Boot AUC Values"]],
+                          colnames(aucs_boot) <- signatureColNames)
+  
+  # Create boxplots with ggplot2
+  melted_data <- reshape2::melt(aucs_boot, measure.vars = signatureColNames,
+                                variable.name = "Signatures",
+                                value.name = "BS_AUC")
+  melted_data$Signatures <- DescTools::reorder.factor(
+    x = melted_data$Signatures,
+    new.order = names(sort(aucs)))
+  melted_data <- melted_data[order(melted_data$Signatures), ]
+  the_plot <- ggplot2::ggplot(data = melted_data, ggplot2::aes(Signatures,
+                                                               BS_AUC)) +
+    ggplot2::geom_boxplot(fill = fill.col, col = outline.col) +
+    ggplot2::geom_abline(ggplot2::aes(intercept = 0.5, slope = 0,
+                                      col = abline.col), size = 1,
+                         linetype = "dashed", show.legend = FALSE) +
+    ggplot2::theme(axis.title.x = ggplot2::element_blank(),
+                   axis.text.x = ggplot2::element_text(angle = 90,
+                                                       hjust = 1),
+                   panel.grid.major = ggplot2::element_blank(),
+                   panel.grid.minor = ggplot2::element_blank(),
+                   panel.background = ggplot2::element_blank(),
+                   axis.line = ggplot2::element_line(colour = "black"),
+                   axis.title.y = ggplot2::element_text(
+                     margin = ggplot2::margin(r = 10))) +
+    ggplot2::ggtitle(label = name) +
+    ggplot2::ylab(label = "Bootstrapped AUCs")
+
+  return(the_plot)
 }
 
 #' Create an Array of ROC Plots to Compare Signatures.
 #'
 #' @inheritParams signatureBoxplot
-#' @param choose_colors a vector of length 2 definining the colors to be used
+#' @param choose_colors a vector of length 2 defining the colors to be used
 #' in the ROC plots. The default is c("cornflowerblue", "grey24").
 #'
 #' @return An array of ROC plots.
@@ -250,8 +281,8 @@ signatureROCplot <- function(inputData, annotationData, signatureColNames,
   plot_dat <- NULL
   for (k in signatureColNames) {
     pred <- ROCit::rocit(inputdf[, k], inputdf$Group)
-    plot_n <- as.data.frame(cbind(FPR = round(pred$FPR, 4),
-                                  TPR = round(pred$TPR, 4), Signature = k))
+    plot_n <- as.data.frame(cbind("FPR" = round(pred$FPR, 4),
+                                  "TPR" = round(pred$TPR, 4), Signature = k))
     plot_dat <- rbind(plot_dat, plot_n)
   }
   plot_dat$Signature <- paste(plot_dat$Signature)
@@ -271,7 +302,11 @@ signatureROCplot <- function(inputData, annotationData, signatureColNames,
     ggplot2::scale_color_manual("",
                                 labels = c("Empirical ROC curve", "Chance line"),
                                 values = c(choose_colors[1], choose_colors[2])) +
-    ggplot2::theme(legend.position = "right")
+    ggplot2::theme(legend.position = "right",
+                   panel.grid.major = ggplot2::element_blank(),
+                   panel.grid.minor = ggplot2::element_blank(),
+                   panel.background = ggplot2::element_blank(),
+                   axis.line = ggplot2::element_line(colour = "black"))
 
   return(theplot)
 }
@@ -279,12 +314,12 @@ signatureROCplot <- function(inputData, annotationData, signatureColNames,
 #' Create an array of ROC plots with Confidence Interval Bands to Compare Signatures.
 #'
 #' @inheritParams signatureROCplot
-#' @param choose_colors a vector of length 3 definining the colors to be used
+#' @param choose_colors a vector of length 3 defining the colors to be used
 #' in the ROC plots. The default is \code{c("cornflowerblue",
 #' "grey50", "grey79")}.
 #' @param name a character string giving the title of the boxplot. If
 #' \code{NULL}, the plot title will be
-#' \code{"ROC plots for Gene Signatures, <ci.lev>\% Confidence"}.
+#' \code{"ROC Plots for Gene Signatures, <ci.lev>\% Confidence"}.
 #' The default is \code{NULL}.
 #' @param ci.lev a number between 0 and 1 giving the desired level of
 #' confidence for computing ROC curve estimations.
@@ -376,18 +411,18 @@ signatureROCplot_CI <- function(inputData, annotationData, signatureColNames,
       this.conf$UpperTPR[which(is.nan(this.conf$UpperTPR))] <- 1
     }
 
-    plot_n <- as.data.frame(cbind(FPR = round(this.conf$FPR, 4),
-                                  TPR = round(this.conf$TPR, 4),
-                                  LowerTPR = round(this.conf$LowerTPR, 4),
-                                  UpperTPR = round(this.conf$UpperTPR, 4),
-                                  Signature = k))
+    plot_n <- as.data.frame(cbind("FPR" = round(this.conf$FPR, 4),
+                                  "TPR" = round(this.conf$TPR, 4),
+                                  "LowerTPR" = round(this.conf$LowerTPR, 4),
+                                  "UpperTPR" = round(this.conf$UpperTPR, 4),
+                                  "Signature" = k))
     plot_dat <- rbind(plot_dat, plot_n)
   }
 
   plot_dat <- as.data.frame(apply(plot_dat, 2, paste))
   plot_dat[, 1:4] <- as.data.frame(apply(plot_dat[, 1:4], 2, as.numeric))
-
-  if (is.null(name)) name <- paste("ROC plots for Gene Signatures, ",
+  
+  if (is.null(name)) name <- paste("ROC Plots for Gene Signatures, ",
                                    ci.lev * 100,
                                   "% Confidence", sep = "")
 
@@ -410,7 +445,11 @@ signatureROCplot_CI <- function(inputData, annotationData, signatureColNames,
                                values = c(choose_colors[3])) +
     ggplot2::labs(x = "1-Specificity (FPR)", y = "Sensitivity (TPR)",
                   title = name) +
-    ggplot2::theme(legend.position = "right")
+    ggplot2::theme(legend.position = "right",
+                   panel.grid.major = ggplot2::element_blank(),
+                   panel.grid.minor = ggplot2::element_blank(),
+                   panel.background = ggplot2::element_blank(),
+                   axis.line = ggplot2::element_line(colour = "black"))
 
   return(theplot)
 }
@@ -436,7 +475,7 @@ signatureROCplot_CI <- function(inputData, annotationData, signatureColNames,
 #' \code{input_type} is a counts assay. If \code{TRUE}, then the output assays
 #' will include a normalized CPM assay. If \code{counts_to_CPM = TRUE} as well,
 #' then a log CPM assay will also be created. Default is \code{TRUE}.
-#' @param  prior.counts an integer specifying the average count to be added to
+#' @param  prior_counts an integer specifying the average count to be added to
 #' each observation to avoid taking the log of zero. Used only if
 #' \code{log = TRUE}. The default is \code{3}.
 #'

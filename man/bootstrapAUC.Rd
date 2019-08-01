@@ -15,19 +15,19 @@ be a column of annotation data. Required.}
 \item{annotationColName}{a character string giving the column name in
 \code{colData} that contains the annotation data. Required.}
 
+\item{signatureColNames}{a vector of column names in the
+\code{colData} that contain the signature score data. Required.}
+
 \item{num.boot}{integer. The number of times to bootstrap the data. The
 default is \code{100}.}
 
 \item{pb.show}{logical for whether to show a progress bar while running code.
 The default is \code{TRUE}.}
-
-\item{SignatureColNames}{a vector of column names in the
-\code{colData} that contain the signature score data. Required.}
 }
 \value{
 A list of length 3 returning a vector of p-values for a 2-sample
 t-test, bootstrapped AUC values, and an AUC value for using all scored values
-for all signatures specified in \code{SignatureColNames}.
+for all signatures specified in \code{signatureColNames}.
 }
 \description{
 Run bootstrapping of the AUC and derive the p-value for a 2-sample t-test

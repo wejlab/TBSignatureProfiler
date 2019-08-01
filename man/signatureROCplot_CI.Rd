@@ -37,7 +37,7 @@ in the ROC plots. The default is \code{c("cornflowerblue",
 
 \item{name}{a character string giving the title of the boxplot. If
 \code{NULL}, the plot title will be
-\code{"ROC plots for Gene Signatures, <ci.lev>\% Confidence"}.
+\code{"ROC Plots for Gene Signatures, <ci.lev>\% Confidence"}.
 The default is \code{NULL}.}
 
 \item{nrow}{integer giving the number of rows in the resulting array.}

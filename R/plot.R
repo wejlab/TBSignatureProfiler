@@ -20,7 +20,8 @@
 #' @param annotationColNames a vector of the column names in \code{colData} that
 #' contain the annotation data. Only required if \code{inputData} is a
 #' \code{SummarizedExperiment}.
-#' @param colList a named \code{list} of named vectors specifying custom color information to
+#' @param colList a named \code{list} of named vectors specifying custom color
+#' information to
 #' pass to \code{ComplexHeatmap::Heatmap()}. The list should have as many
 #' elements as there are annotation columns, and each element name should
 #' correspond exactly with the name of each annotation column.
@@ -45,9 +46,10 @@
 #' in order that you want to use them, or provide custom color sets with the
 #' \code{colList} parameter.
 #' @param choose_color a vector of color names to be interpolated for the
-#' heatmap gradient,, or a colorRamp function produced by
+#' heatmap gradient, or a colorRamp function produced by
 #' \code{circlize::colorRamp2}. The default is \code{c("blue", "white", "red")}.
-#' @param ... Additional arguments to be passed to \code{ComplexHeatmap::Heatmap()}.
+#' @param ... Additional arguments to be passed to
+#' \code{ComplexHeatmap::Heatmap()}.
 #'
 #' @return A ComplexHeatmap plot.
 #'
@@ -322,7 +324,7 @@ signatureBoxplot <- function(inputData, annotationData, signatureColNames,
 #' expression data. Required.
 #' @param sigGenes a vector identifying the genes in the signature to use in
 #' the heatmap. For inbuilt signatures, you can use \code{TBsignatures}
-#' (eg. \code{TBsignatures[["ACS_COR"]]}). Required.
+#' (e.g., \code{TBsignatures[["ACS_COR"]]}). Required.
 #' @param name a character string with the plot title of the heatmap. The
 #' default is \code{"Signatures"}.
 #' @param signatureColNames a vector of the column names in the \code{colData}
@@ -337,6 +339,17 @@ signatureBoxplot <- function(inputData, annotationData, signatureColNames,
 #' @param showRowNames logical. Setting \code{showColumnNames = TRUE} will
 #' show the row names (i.e. signature names) on the heatmap. The default is
 #' \code{TRUE}.
+#' @param colList a named \code{list} of named vectors specifying custom color
+#' information to pass to \code{ComplexHeatmap::Heatmap()}.
+#' The list should have as many elements as there are annotation columns
+#' and gene signatures (i.e. \code{sigGenes}), and each element name should
+#' correspond exactly with the name of each annotation column/signature.
+#' The colors in the vector elements should be named according to the
+#' levels of the factor in that column's annotation data if the annotation
+#' is discrete, or it should be produced with \code{circlize::colorRamp2}
+#' if the annotation/gene is continuous.
+#' By default, \code{ColorBrewer} color sets will be used.
+#' See the the parameter \code{colorSets} for additional details.
 #' @param ... Additional parameters to pass to \code{ComplexHeatmap::Heatmap()}.
 #'
 #' @return  A \code{ComplexHeatmap} plot.
@@ -431,10 +444,9 @@ signatureGeneHeatmap <- function(inputData, useAssay, sigGenes,
                                               condLevels)
         }
       }
+      colList <- c(colList, pathwaycols)
     }
-    if (any(annotationColNames != names(colList))) {
-      stop("The colList is out of sync with the annotation columns.")
-    }
+
   } else {
     colList <- NULL
   }
@@ -454,7 +466,7 @@ signatureGeneHeatmap <- function(inputData, useAssay, sigGenes,
     }
     topha <- ComplexHeatmap::HeatmapAnnotation(
       df = annotDF,
-      col = c(colList, pathwaycols),
+      col = colList,
       height = grid::unit(0.4 * length(c(annotationColNames,
                                          signatureColNames)), "cm"),
       show_legend = TRUE,
@@ -484,9 +496,9 @@ signatureGeneHeatmap <- function(inputData, useAssay, sigGenes,
 #'
 #' Create a distinct palette for coloring different heatmap clusters. The
 #' function returns colors for input into \code{ComplexHeatmap:Heatmap()},
-#' \code{signatureGeneHeatmap()} and \code{signatureHeatmap}.
+#' \code{signatureGeneHeatmap()} and \code{signatureHeatmap()}.
 #'
-#' @param n an integer decribing the number of colors to generate. Required.
+#' @param n an integer describing the number of colors to generate. Required.
 #' @param hues a vector of character strings indicating the R colors available
 #' from the \code{colors()} function. These will be used as the base colors for
 #' the clustering scheme. Different saturations and values (i.e. darkness)

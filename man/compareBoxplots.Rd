@@ -5,8 +5,9 @@
 \title{Create a Comparison Plot of Boxplots for Bootstrapped AUC Values.}
 \usage{
 compareBoxplots(SE_scored, annotationColName, signatureColNames,
-  num.boot = 100, cex.axis = 0.7, cex = 0.25,
-  name = "Boxplot Comparison of Signatures", pb.show = TRUE)
+  num.boot = 100, name = "Boxplot Comparison of Signature AUCs",
+  pb.show = TRUE, abline.col = "red", fill.col = "grey79",
+  outline.col = "black")
 }
 \arguments{
 \item{SE_scored}{a \code{SummarizedExperiment} object with genes as the
@@ -16,18 +17,23 @@ be a column of annotation data. Required.}
 \item{annotationColName}{a character string giving the column name in
 \code{colData} that contains the annotation data. Required.}
 
+\item{signatureColNames}{a vector of column names in the
+\code{colData} that contain the signature score data. Required.}
+
 \item{num.boot}{an integer indicating the number of times to bootstrap the
 data.}
 
-\item{cex.axis}{a number between 0 and 1 specifying the magnification to be
-used for axis annotation relative to the current setting of \code{cex}.}
-
-\item{cex}{a number between 0 and 1 giving the amount by which plotting text
-and symbols should be magnified relative to the default.}
-
-\item{name}{a character string giving the overall title for the plot.}
+\item{name}{a character string giving the overall title for the plot. 
+The default is \code{"Boxplot Comparison of Signature AUCs"}.}
 
 \item{pb.show}{logical for whether to show a progress bar while running code.}
+
+\item{abline.col}{the color to be used for the dotted line at AUC = 0.5
+(the chance line).}
+
+\item{fill.col}{the color to be used to fill the boxplots.}
+
+\item{outline.col}{the color to be used for the boxplot outlines.}
 }
 \value{
 A plot with side-by-side boxplots of bootstrapped AUC values for
@@ -45,7 +51,7 @@ signatures via boxplots.
                                  algorithm = "ssGSEA",
                                  signatures = choose_sigs)
  # Create boxplots
- compareBoxplots(prof_indian, "label", names(choose_sigs),
-                 cex.axis = 0.5)
+ compareBoxplots(prof_indian, annotationColName = "label",
+                 signatureColNames = names(choose_sigs))
 
 }

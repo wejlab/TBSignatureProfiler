@@ -132,7 +132,8 @@ runTBsigProfiler <- function(input, useAssay = NULL,
       get("TBsignatures", envir = .GlobalEnv)
       signatures <- TBsignatures
     } else {
-      data("TBsignatures", package = "TBSignatureProfiler", envir = .myenv)
+      utils::data("TBsignatures", package = "TBSignatureProfiler",
+                  envir = .myenv)
       signatures <- .myenv$TBsignatures
     }
   }
@@ -490,6 +491,7 @@ compareAlgs <- function (input, signatures = NULL, annotationColNames,
                                        "Pastel2", "Accent", "Dark2",
                                        "Paired"),
                          choose_color = c("red", "white", "blue"),
+                         colList = list(),
                          show.pb = FALSE) {
 
   if (is.null(signatures)) {
@@ -498,14 +500,16 @@ compareAlgs <- function (input, signatures = NULL, annotationColNames,
       get("TBsignatures", envir = .GlobalEnv)
       signatures <- TBsignatures
     } else {
-      data("TBsignatures", package = "TBSignatureProfiler", envir = .myenv)
+      utils::data("TBsignatures", package = "TBSignatureProfiler",
+                  envir = .myenv)
       signatures <- .myenv$TBsignatures
     }
   }
   for (sig in names(signatures)) {
     new.name <- paste("Scoring Methods for", sig)
     if (show.pb) {
-      capture.output(scored <- runTBsigProfiler(input, useAssay = useAssay,
+      utils::capture.output(scored <- runTBsigProfiler(input,
+                                 useAssay = useAssay,
                                  combineSigAndAlgorithm = TRUE,
                                  signatures = signatures[sig],
                                  algorithm = algorithm))
@@ -531,7 +535,8 @@ compareAlgs <- function (input, signatures = NULL, annotationColNames,
                             scale = scale,
                             showColumnNames = showColumnNames,
                             showRowNames = showRowNames,
-                            colorSets = colorSets, choose_color = choose_color))
+                            colorSets = colorSets, choose_color = choose_color,
+                            colList = colList))
   }
 }
 
