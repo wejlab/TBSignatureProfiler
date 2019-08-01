@@ -204,13 +204,13 @@ for (i in names(TBsignatures)){
 The `compareAlgs` function allows multiple scoring methods to be compared via a heatmap with samples on the columns and methods on the rows. Here, we compare scoring methods for the "Anderson_42" signature. It seems that singscore may be the best method here, as its sample scores most closely align with the information provided by the annotation data.
 
 ```{r compareAlgs ex}
-suppressWarnings(compareAlgs(hivtb_data, annotationColNames = "Disease",
-                 scale = TRUE, 
-                 algorithm = c("GSVA", "ssGSEA", 
-                               "singscore", "PLAGE", "Zscore"),
-                 useAssay = "log_counts",
-                 signatures = TBsignatures[1],
-                 show.pb = TRUE))
+compareAlgs(hivtb_data, annotationColNames = "Disease",
+            scale = TRUE,
+            algorithm = c("GSVA", "ssGSEA",
+                          "singscore", "PLAGE", "Zscore"),
+            useAssay = "log_counts",
+            signatures = TBsignatures[1],
+            choose_color = col.me, show.pb = FALSE)
 ```
 
 ## Comparing scores via bootstrapped AUCs {.tabset}
@@ -279,8 +279,8 @@ hivtb_data$BinaryTB <- as.numeric(hivtb_data$Disease)-1
 ## We can normalize the data and evaluate the signatures
 hivtb_norm <- deseq2_norm_rle(assay(hivtb_data, "counts"))
 
-quantitative.result <- SignatureQuantitative(df.input = hivtb_norm,
-                       target.vec.num = colData(hivtb_data)$BinaryTB,
+quantitative.result <- SignatureQuantitative(hivtb_norm,
+                       targetVec.num = colData(hivtb_data)$BinaryTB,
                        signature.list = TBsignatures,
                        signature.name.vec = names(TBsignatures),
                        num.boot = 10,
