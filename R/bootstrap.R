@@ -133,7 +133,7 @@ tableAUC <- function(SE_scored, annotationColName, signatureColNames,
 #' @param signatureColNames
 #' @param num.boot an integer indicating the number of times to bootstrap the
 #' data.
-#' @param name a character string giving the overall title for the plot. 
+#' @param name a character string giving the overall title for the plot.
 #' The default is \code{"Boxplot Comparison of Signature AUCs"}.
 #' @param pb.show logical for whether to show a progress bar while running code.
 #' @param abline.col the color to be used for the dotted line at AUC = 0.5
@@ -163,14 +163,14 @@ compareBoxplots <- function(SE_scored, annotationColName, signatureColNames,
                             num.boot = 100,
                             name = "Boxplot Comparison of Signature AUCs",
                             pb.show = TRUE, abline.col = "red",
-                            fill.col = "grey79", outline.col = "black"){
+                            fill.col = "gray79", outline.col = "black"){
   # Obtain AUCs
   BS.Results <- bootstrapAUC(SE_scored, annotationColName, signatureColNames,
                              num.boot, pb.show)
   aucs_boot <- data.frame(BS.Results[["Boot AUC Values"]])
   colnames(aucs_boot) <- signatureColNames
   aucs <- apply(aucs_boot, 2, stats::median)
-  
+
   # Create boxplots with ggplot2
   melted_data <- reshape2::melt(aucs_boot, measure.vars = signatureColNames,
                                 variable.name = "Signatures",
@@ -204,7 +204,7 @@ compareBoxplots <- function(SE_scored, annotationColName, signatureColNames,
 #'
 #' @inheritParams signatureBoxplot
 #' @param choose_colors a vector of length 2 defining the colors to be used
-#' in the ROC plots. The default is c("cornflowerblue", "grey24").
+#' in the ROC plots. The default is \code{c("cornflowerblue", "gray24")}.
 #'
 #' @return An array of ROC plots.
 #'
@@ -224,7 +224,7 @@ compareBoxplots <- function(SE_scored, annotationColName, signatureColNames,
 #'
 signatureROCplot <- function(inputData, annotationData, signatureColNames,
                              annotationColName, scale = FALSE,
-                             choose_colors = c("cornflowerblue", "grey24"),
+                             choose_colors = c("cornflowerblue", "gray24"),
                              name = "Signatures", nrow = NULL, ncol = NULL) {
   if (methods::is(inputData, "SummarizedExperiment")) {
     if (any(duplicated(signatureColNames))) {
@@ -318,7 +318,7 @@ signatureROCplot <- function(inputData, annotationData, signatureColNames,
 #' @inheritParams signatureROCplot
 #' @param choose_colors a vector of length 3 defining the colors to be used
 #' in the ROC plots. The default is \code{c("cornflowerblue",
-#' "grey50", "grey79")}.
+#' "gray50", "gray79")}.
 #' @param name a character string giving the title of the boxplot. If
 #' \code{NULL}, the plot title will be
 #' \code{"ROC Plots for Gene Signatures, <ci.lev>\% Confidence"}.
@@ -345,7 +345,7 @@ signatureROCplot <- function(inputData, annotationData, signatureColNames,
 signatureROCplot_CI <- function(inputData, annotationData, signatureColNames,
                                 annotationColName, scale = FALSE,
                                 choose_colors = c("cornflowerblue",
-                                                  "grey50", "grey79"),
+                                                  "gray50", "gray79"),
                                 name = NULL, nrow = NULL, ncol = NULL,
                                 ci.lev = 0.95) {
 
@@ -423,7 +423,7 @@ signatureROCplot_CI <- function(inputData, annotationData, signatureColNames,
 
   plot_dat <- as.data.frame(apply(plot_dat, 2, paste))
   plot_dat[, 1:4] <- as.data.frame(apply(plot_dat[, 1:4], 2, as.numeric))
-  
+
   if (is.null(name)) name <- paste("ROC Plots for Gene Signatures, ",
                                    ci.lev * 100,
                                   "% Confidence", sep = "")
