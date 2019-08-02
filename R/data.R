@@ -68,8 +68,8 @@
 #'
 #' This dataset was published as part of a study to assess performance of
 #' published TB signatures in a South Indian population (Leong et. al 2018).
-#' RNA sequencing was performed on whole blood PAXgene samples collected
-#' from 28 TB patients and 16 latently TB infected (LTBI) subjects enrolled
+#' RNA sequencing was performed on whole blood PAX gene samples collected
+#' from 28 TB patients and 16 latent TB infected (LTBI) subjects enrolled
 #' as part of an ongoing household contact study.
 #'
 #' @name TB_indian

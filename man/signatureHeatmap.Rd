@@ -63,7 +63,7 @@ in order that you want to use them, or provide custom color sets with the
 \code{colList} parameter.}
 
 \item{choose_color}{a vector of color names to be interpolated for the
-heatmap gradient, or a colorRamp function produced by
+heatmap gradient, or a \code{colorRamp} function produced by
 \code{circlize::colorRamp2}. The default is \code{c("blue", "white", "red")}.}
 
 \item{...}{Additional arguments to be passed to

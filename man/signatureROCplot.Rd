@@ -6,7 +6,7 @@
 \usage{
 signatureROCplot(inputData, annotationData, signatureColNames,
   annotationColName, scale = FALSE, choose_colors = c("cornflowerblue",
-  "grey24"), name = "Signatures", nrow = NULL, ncol = NULL)
+  "gray24"), name = "Signatures", nrow = NULL, ncol = NULL)
 }
 \arguments{
 \item{inputData}{an input data object. It should either be of the class
@@ -31,7 +31,7 @@ boxplot. Only required if inputData is a \code{SummarizedExperiment} object.}
 The default is \code{FALSE}.}
 
 \item{choose_colors}{a vector of length 2 defining the colors to be used
-in the ROC plots. The default is c("cornflowerblue", "grey24").}
+in the ROC plots. The default is \code{c("cornflowerblue", "gray24")}.}
 
 \item{name}{a character string giving the title of the boxplot. The default
 is \code{"Signatures"}.}

@@ -72,7 +72,7 @@ testdataSE <- SummarizedExperiment(assays = SimpleList(data = mat_testdata),
                                    colData = DataFrame(sample =
                                                          c(rep("down", 5),
                                                            rep("up", 5))))
-             
+
 # Run profiler using GSVA and ssGSEA on Zak_RISK_16 signature
 res <- runTBsigProfiler(testdataSE, useAssay = "data",
                         signatures = TBsignatures["Zak_RISK_16"],

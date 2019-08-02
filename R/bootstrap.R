@@ -130,7 +130,6 @@ tableAUC <- function(SE_scored, annotationColName, signatureColNames,
 #' signatures via boxplots.
 #'
 #' @inheritParams bootstrapAUC
-#' @param signatureColNames
 #' @param num.boot an integer indicating the number of times to bootstrap the
 #' data.
 #' @param name a character string giving the overall title for the plot.

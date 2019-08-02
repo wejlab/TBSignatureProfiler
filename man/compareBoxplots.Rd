@@ -6,7 +6,7 @@
 \usage{
 compareBoxplots(SE_scored, annotationColName, signatureColNames,
   num.boot = 100, name = "Boxplot Comparison of Signature AUCs",
-  pb.show = TRUE, abline.col = "red", fill.col = "grey79",
+  pb.show = TRUE, abline.col = "red", fill.col = "gray79",
   outline.col = "black")
 }
 \arguments{
@@ -23,7 +23,7 @@ be a column of annotation data. Required.}
 \item{num.boot}{an integer indicating the number of times to bootstrap the
 data.}
 
-\item{name}{a character string giving the overall title for the plot. 
+\item{name}{a character string giving the overall title for the plot.
 The default is \code{"Boxplot Comparison of Signature AUCs"}.}
 
 \item{pb.show}{logical for whether to show a progress bar while running code.}

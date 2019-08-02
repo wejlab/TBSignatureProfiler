@@ -60,7 +60,7 @@ suppressPackageStartupMessages({
 ## Load dataset from a SummarizedExperiment object
 In this tutorial, we will work with HIV and Tuberculosis (TB) gene expression data in a `SummarizedExperiment` format. This dataset is included in the TBSignatureProfiler package and can be loaded into the global environment with `data("TB_hiv")`. The 31 samples in the dataset are marked as either having both TB and HIV infection, or HIV infection only.
 
-We begin by examining the dataset, which contains a matrix of counts information (an "assay" in SummarizedExperiment terms) and another matrix of meta data information on our samples (the "colData"). We will also generate a few additional assays; therse are the log(counts), the counts per million (CPM) reads mapped, and the log(CPM) assays. 
+We begin by examining the dataset, which contains a matrix of counts information (an "assay" in SummarizedExperiment terms) and another matrix of meta data information on our samples (the "colData"). We will also generate a few additional assays; these are the log(counts), the counts per million (CPM) reads mapped, and the log(CPM) assays. 
 
 ```{r loading data}
 ## HIV/TB gene expression data, included in the package
@@ -126,7 +126,7 @@ DT::datatable(ssgsea_print_results)
 
 Commonly, enrichment scores are compared across signatures by means of a heatmap combined with clustering methods to group samples and/or scores. The `signatureHeatmap` function uses the information from the score data to visualize changes in gene expression across samples and signatures (or genes, if only one signature is selected). 
 
-Here, the columns of the heatmap represent samples, and rows represent signatures. As we move across the columns, we see different patterns of gene expression as indicated by the varying color and intensity of individial rectangles. In the top bar, the solid red represents a sample is HIV infected only, and solid blue indicates that the sample is both HIV and TB infected. In the gradient area of the heatmap, the scaled scores are associated with either up-regulated or down-regulated genes. A cluster of samples near the bottom of the heatmap reveals that some signatures are inversely associated with TB/HIV identification, as their phenotypic mapping for lower/higher scores is nearly the opposite of most of the other signatures.  
+Here, the columns of the heatmap represent samples, and rows represent signatures. As we move across the columns, we see different patterns of gene expression as indicated by the varying color and intensity of individual rectangles. In the top bar, the solid red represents a sample is HIV infected only, and solid blue indicates that the sample is both HIV and TB infected. In the gradient area of the heatmap, the scaled scores are associated with either up-regulated or down-regulated genes. A cluster of samples near the bottom of the heatmap reveals that some signatures are inversely associated with TB/HIV identification, as their phenotypic mapping for lower/higher scores is nearly the opposite of most of the other signatures.  
 
 
 ```{r all sigs heatmap, message = FALSE, fig.height = 9}

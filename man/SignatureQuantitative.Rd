@@ -64,6 +64,8 @@ signature.list <- list(sig1 = c("gene1", "gene2", "gene3"),
                        sig2 = c("gene4", "gene5", "gene6"))
 signature.name.vec <- c("sig1", "sig2")
 num.boot <- 20
-res <- SignatureQuantitative(inputTest, targetVec, signature.list,
-                             signature.name.vec, num.boot)
+res <- SignatureQuantitative(inputTest, targetVec.num = targetVec,
+                             signature.list = signature.list,
+                             signature.name.vec = signature.name.vec,
+                             num.boot = num.boot)
 }

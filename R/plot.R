@@ -46,7 +46,7 @@
 #' in order that you want to use them, or provide custom color sets with the
 #' \code{colList} parameter.
 #' @param choose_color a vector of color names to be interpolated for the
-#' heatmap gradient, or a colorRamp function produced by
+#' heatmap gradient, or a \code{colorRamp} function produced by
 #' \code{circlize::colorRamp2}. The default is \code{c("blue", "white", "red")}.
 #' @param ... Additional arguments to be passed to
 #' \code{ComplexHeatmap::Heatmap()}.
@@ -223,7 +223,7 @@ signatureHeatmap <- function(inputData, annotationData, name = "Signatures",
 #'                                    colData = DataFrame(sample =
 #'                                                          c(rep("down", 5),
 #'                                                            rep("up", 5))))
-#'              
+#'
 #' # Run profiler using GSVA and ssGSEA on Zak_RISK_16 signature
 #' res <- runTBsigProfiler(testdataSE, useAssay = "data",
 #'                         signatures = TBsignatures["Zak_RISK_16"],

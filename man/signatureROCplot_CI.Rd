@@ -6,7 +6,7 @@
 \usage{
 signatureROCplot_CI(inputData, annotationData, signatureColNames,
   annotationColName, scale = FALSE, choose_colors = c("cornflowerblue",
-  "grey50", "grey79"), name = NULL, nrow = NULL, ncol = NULL,
+  "gray50", "gray79"), name = NULL, nrow = NULL, ncol = NULL,
   ci.lev = 0.95)
 }
 \arguments{
@@ -33,7 +33,7 @@ The default is \code{FALSE}.}
 
 \item{choose_colors}{a vector of length 3 defining the colors to be used
 in the ROC plots. The default is \code{c("cornflowerblue",
-"grey50", "grey79")}.}
+"gray50", "gray79")}.}
 
 \item{name}{a character string giving the title of the boxplot. If
 \code{NULL}, the plot title will be
