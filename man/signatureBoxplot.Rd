@@ -7,7 +7,7 @@
 signatureBoxplot(inputData, annotationData, signatureColNames,
   annotationColName, name = "Signatures", scale = FALSE,
   includePoints = TRUE, notch = FALSE, rotateLabels = FALSE,
-  nrow = NULL, ncol = NULL)
+  nrow = NULL, ncol = NULL, fill_colors = c("#E41A1C", "#377EB8"))
 }
 \arguments{
 \item{inputData}{an input data object. It should either be of the class
@@ -48,6 +48,9 @@ rotated. The default is \code{FALSE}.}
 \item{nrow}{integer giving the number of rows in the resulting array.}
 
 \item{ncol}{integer giving the number of columns in the resulting array.}
+
+\item{fill_colors}{a vector of color names to be used as the fill colors for
+the boxplot. The default is fill_colors = c("#E41A1C", "#377EB8").}
 }
 \value{
 A \code{ggplot2} boxplot of the signature data using the provided
@@ -80,5 +83,5 @@ res <- runTBsigProfiler(testdataSE, useAssay = "data",
                         combineSigAndAlgorithm = TRUE)
 signatureBoxplot(res, signatureColNames = c("GSVA_Zak_RISK_16",
                                             "ssGSEA_Zak_RISK_16"),
-                 annotationColName = "sample", name = "Zak_RISK_16 Signatures")
+                 annotationColName = "sample", name = "Zak_RISK_16 Signature")
 }

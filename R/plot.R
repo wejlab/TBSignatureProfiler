@@ -47,7 +47,7 @@
 #' \code{colList} parameter.
 #' @param choose_color a vector of color names to be interpolated for the
 #' heatmap gradient, or a \code{colorRamp} function produced by
-#' \code{circlize::colorRamp2}. The default is \code{c("blue", "white", "red")}.
+#' \code{circlize::colorRamp2}. The default is \code{c("blue", "gray95", "red")}.
 #' @param ... Additional arguments to be passed to
 #' \code{ComplexHeatmap::Heatmap()}.
 #'
@@ -95,7 +95,7 @@ signatureHeatmap <- function(inputData, annotationData, name = "Signatures",
                              showRowNames = TRUE, colorSets = c("Set1", "Set2",
                              "Set3", "Pastel1", "Pastel2", "Accent", "Dark2",
                              "Paired"),
-                             choose_color = c("blue", "white", "red"), ...) {
+                             choose_color = c("blue", "gray95", "red"), ...) {
   if (methods::is(inputData, "SummarizedExperiment")){
     if (any(duplicated(signatureColNames))){
       stop("Duplicate signature column name is not supported.")
@@ -201,6 +201,8 @@ signatureHeatmap <- function(inputData, annotationData, name = "Signatures",
 #' rotated. The default is \code{FALSE}.
 #' @param nrow integer giving the number of rows in the resulting array.
 #' @param ncol integer giving the number of columns in the resulting array.
+#' @param fill_colors a vector of color names to be used as the fill colors for
+#' the boxplot. The default is \code{fill_colors = c("#E41A1C", "#377EB8").}
 #'
 #' @return A \code{ggplot2} boxplot of the signature data using the provided
 #' annotation information.
@@ -231,12 +233,12 @@ signatureHeatmap <- function(inputData, annotationData, name = "Signatures",
 #'                         combineSigAndAlgorithm = TRUE)
 #' signatureBoxplot(res, signatureColNames = c("GSVA_Zak_RISK_16",
 #'                                             "ssGSEA_Zak_RISK_16"),
-#'                  annotationColName = "sample", name = "Zak_RISK_16 Signatures")
+#'                  annotationColName = "sample", name = "Zak_RISK_16 Signature")
 signatureBoxplot <- function(inputData, annotationData, signatureColNames,
                              annotationColName, name = "Signatures",
                              scale = FALSE, includePoints = TRUE,
                              notch = FALSE, rotateLabels = FALSE, nrow = NULL,
-                             ncol = NULL) {
+                             ncol = NULL, fill_colors = c("#E41A1C", "#377EB8")) {
   if (methods::is(inputData, "SummarizedExperiment")){
     if (any(duplicated(signatureColNames))){
       stop("Duplicate signature column name is not supported.")
@@ -307,7 +309,7 @@ signatureBoxplot <- function(inputData, annotationData, signatureColNames,
                                           element_text(angle = 90, hjust = 1))
   }
   return(theplot +
-    ggplot2::scale_fill_brewer(palette = "Set1") +
+    ggplot2::scale_fill_manual(values = fill_colors) +
     ggplot2::ggtitle(name))
 }
 
@@ -391,7 +393,7 @@ signatureGeneHeatmap <- function(inputData, useAssay, sigGenes,
                                  colList = list(), colorSets = c("Set1", "Set2",
                                  "Set3", "Pastel1", "Pastel2", "Accent",
                                  "Dark2", "Paired"),
-                                 choose_color = c("blue", "white", "red"),
+                                 choose_color = c("blue", "gray95", "red"),
                                  ...) {
   if (!is.null(signatureColNames)) {
     pathwaycols <- list()

@@ -8,7 +8,7 @@ signatureGeneHeatmap(inputData, useAssay, sigGenes, name = "Signature",
   signatureColNames = NULL, annotationColNames = NULL, scale = TRUE,
   showColumnNames = TRUE, showRowNames = TRUE, colList = list(),
   colorSets = c("Set1", "Set2", "Set3", "Pastel1", "Pastel2", "Accent",
-  "Dark2", "Paired"), choose_color = c("blue", "white", "red"), ...)
+  "Dark2", "Paired"), choose_color = c("blue", "gray95", "red"), ...)
 }
 \arguments{
 \item{inputData}{a \code{SummarizedExperiment} object containing the profiled
@@ -63,7 +63,7 @@ in order that you want to use them, or provide custom color sets with the
 
 \item{choose_color}{a vector of color names to be interpolated for the
 heatmap gradient, or a \code{colorRamp} function produced by
-\code{circlize::colorRamp2}. The default is \code{c("blue", "white", "red")}.}
+\code{circlize::colorRamp2}. The default is \code{c("blue", "gray95", "red")}.}
 
 \item{...}{Additional parameters to pass to \code{ComplexHeatmap::Heatmap()}.}
 }

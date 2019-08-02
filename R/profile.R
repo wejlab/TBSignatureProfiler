@@ -490,7 +490,7 @@ compareAlgs <- function (input, signatures = NULL, annotationColNames,
                          colorSets = c("Set1", "Set2", "Set3", "Pastel1",
                                        "Pastel2", "Accent", "Dark2",
                                        "Paired"),
-                         choose_color = c("red", "white", "blue"),
+                         choose_color = c("blue", "gray95", "white"),
                          colList = list(),
                          show.pb = FALSE) {
 
