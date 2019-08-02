@@ -156,13 +156,14 @@ tableAUC <- function(SE_scored, annotationColName, signatureColNames,
 #'                                  signatures = choose_sigs)
 #'  # Create boxplots
 #'  compareBoxplots(prof_indian, annotationColName = "label",
-#'                  signatureColNames = names(choose_sigs))
-#'
+#'                  signatureColNames = names(choose_sigs), rotateLabels = TRUE)
+
 compareBoxplots <- function(SE_scored, annotationColName, signatureColNames,
                             num.boot = 100,
                             name = "Boxplot Comparison of Signature AUCs",
                             pb.show = TRUE, abline.col = "red",
-                            fill.col = "gray79", outline.col = "black"){
+                            fill.col = "gray79", outline.col = "black",
+                            rotateLabels = FALSE) {
   # Obtain AUCs
   BS.Results <- bootstrapAUC(SE_scored, annotationColName, signatureColNames,
                              num.boot, pb.show)
@@ -184,17 +185,16 @@ compareBoxplots <- function(SE_scored, annotationColName, signatureColNames,
     ggplot2::geom_abline(ggplot2::aes(intercept = 0.5, slope = 0,
                                       col = abline.col), size = 1,
                          linetype = "dashed", show.legend = FALSE) +
+    ggplot2::theme_classic() +
     ggplot2::theme(axis.title.x = ggplot2::element_blank(),
-                   axis.text.x = ggplot2::element_text(angle = 90,
-                                                       hjust = 1),
-                   panel.grid.major = ggplot2::element_blank(),
-                   panel.grid.minor = ggplot2::element_blank(),
-                   panel.background = ggplot2::element_blank(),
-                   axis.line = ggplot2::element_line(color = "black"),
                    axis.title.y = ggplot2::element_text(
                      margin = ggplot2::margin(r = 10))) +
     ggplot2::ggtitle(label = name) +
     ggplot2::ylab(label = "Bootstrapped AUCs")
+
+  if (rotateLabels) the_plot <- the_plot +
+    ggplot2::theme(axis.text.x = ggplot2::element_text(angle = 90,
+                                        hjust = 1))
 
   return(the_plot)
 }
@@ -303,11 +303,8 @@ signatureROCplot <- function(inputData, annotationData, signatureColNames,
     ggplot2::scale_color_manual("",
                                 labels = c("Empirical ROC curve", "Chance line"),
                                 values = c(choose_colors[1], choose_colors[2])) +
-    ggplot2::theme(legend.position = "right",
-                   panel.grid.major = ggplot2::element_blank(),
-                   panel.grid.minor = ggplot2::element_blank(),
-                   panel.background = ggplot2::element_blank(),
-                   axis.line = ggplot2::element_line(colour = "black"))
+    ggplot2::theme_classic() +
+    ggplot2::theme(axis.text.x = ggplot2::element_text(angle = 90, hjust = 1))
 
   return(theplot)
 }
@@ -446,11 +443,8 @@ signatureROCplot_CI <- function(inputData, annotationData, signatureColNames,
                                values = c(choose_colors[3])) +
     ggplot2::labs(x = "1-Specificity (FPR)", y = "Sensitivity (TPR)",
                   title = name) +
-    ggplot2::theme(legend.position = "right",
-                   panel.grid.major = ggplot2::element_blank(),
-                   panel.grid.minor = ggplot2::element_blank(),
-                   panel.background = ggplot2::element_blank(),
-                   axis.line = ggplot2::element_line(colour = "black"))
+    ggplot2::theme_classic() +
+    ggplot2::theme(axis.text.x = ggplot2::element_text(angle = 90, hjust = 1))
 
   return(theplot)
 }

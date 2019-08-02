@@ -50,7 +50,7 @@ rotated. The default is \code{FALSE}.}
 \item{ncol}{integer giving the number of columns in the resulting array.}
 
 \item{fill_colors}{a vector of color names to be used as the fill colors for
-the boxplot. The default is fill_colors = c("#E41A1C", "#377EB8").}
+the boxplot. The default is \code{fill_colors = c("#E41A1C", "#377EB8").}}
 }
 \value{
 A \code{ggplot2} boxplot of the signature data using the provided

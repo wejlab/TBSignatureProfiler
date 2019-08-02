@@ -140,16 +140,13 @@ Bootstrap_LOOCV_LR_AUC <- function(df, targetVec, nboot){
 #'                        sig2 = c("gene4", "gene5", "gene6"))
 #' signature.name.vec <- c("sig1", "sig2")
 #' num.boot <- 20
-#' res <- SignatureQuantitative(inputTest, targetVec.num = targetVec,
-#'                              signature.list = signature.list,
-#'                              signature.name.vec = signature.name.vec,
-#'                              num.boot = num.boot)
+#' SignatureQuantitative(inputTest, targetVec.num = targetVec,
+#'                       signature.list = signature.list,
+#'                       signature.name.vec = signature.name.vec,
+#'                       num.boot = num.boot)
 SignatureQuantitative <- function(df.input, targetVec.num, signature.list = NULL,
                                   signature.name.vec = NULL, num.boot = 100,
-                                  pb.show = TRUE,
-                                  name = "Quantitative Evaluation of Signatures via Bootstrapped AUCs",
-                                  fill.col = "white", outline.col = "black",
-                                  abline.col = "red") {
+                                  pb.show = TRUE) {
 
   if ((is.null(signature.name.vec) & !is.null(signature.list)
        | (!is.null(signature.name.vec) & is.null(signature.list)))){
@@ -231,40 +228,6 @@ SignatureQuantitative <- function(df.input, targetVec.num, signature.list = NULL
     if (pb.show) utils::setTxtProgressBar(pb, counter)
   }
 
-  # Boxplot
-  auc.result <- data.frame(matrix(unlist(auc.result),
-                                  ncol = length(signature.list),
-                                  dimnames = list(c(),names(signature.list))))
-  aucs <- apply(auc.result, 2, stats::median)
-
-
-  melted_data <- reshape2::melt(auc.result,
-                                measure.vars = names(signature.list),
-                                variable.name = "Signatures",
-                                value.name = "BS_AUC")
-  melted_data$Signatures <- DescTools::reorder.factor(
-    x = melted_data$Signatures,
-    new.order = names(sort(aucs)))
-  melted_data <- melted_data[order(melted_data$Signatures), ]
-  the_plot <- ggplot2::ggplot(data = melted_data, ggplot2::aes(Signatures,
-                                                               BS_AUC)) +
-    ggplot2::geom_boxplot(fill = fill.col, col = outline.col) +
-    ggplot2::geom_abline(ggplot2::aes(intercept = 0.5, slope = 0,
-                                      col = abline.col), size = 1,
-                         linetype = "dashed", show.legend = FALSE) +
-    ggplot2::theme(axis.title.x = ggplot2::element_blank(),
-                   axis.text.x = ggplot2::element_text(angle = 90,
-                                                       hjust = 1),
-                   panel.grid.major = ggplot2::element_blank(),
-                   panel.grid.minor = ggplot2::element_blank(),
-                   panel.background = ggplot2::element_blank(),
-                   axis.line = ggplot2::element_line(color = "black"),
-                   axis.title.y = ggplot2::element_text(
-                     margin = ggplot2::margin(r = 10))) +
-    ggplot2::ggtitle(label = name) +
-    ggplot2::ylab(label = "Bootstrapped AUCs")
-  the_plot
-
   # output data.frame instead of list
   df.auc.ci <- data.frame(matrix(unlist(auc.result.ci),
                                  nrow = length(auc.result.ci),
@@ -291,3 +254,120 @@ SignatureQuantitative <- function(df.input, targetVec.num, signature.list = NULL
               df.specificity.ci = df.specificity.ci))
 }
 
+#' Create a Boxplot Using Logistic Regression and Bootstrap LOOCV to Evaluate Signatures.
+#'
+#' This function takes as input a \code{data.frame} with genetic expression
+#' count data, and uses a bootstrapped leave-one-out cross validation procedure
+#' with logistic regression to allow for numeric and graphical comparison
+#' across any number of genetic signatures. It creates a boxplot of bootstrapped
+#' AUC values.
+#'
+#' @inheritParams signatureBoxplot
+#' @inheritParams SignatureQuantitative
+#' @inheritParams compareBoxplots
+#' @param name a character string giving a name for the outputted boxplot of
+#' bootstrapped AUCs. The default is \code{"Signature Evaluation:
+#' Bootstrapped AUCs"}.
+#'
+#' @return a boxplot comparing the bootstrapped AUCs of inputted signatures
+#'
+#' @export
+#'
+#' @examples
+#' inputTest <- matrix(rnorm(1000), 100, 20,
+#'                     dimnames = list(paste0("gene", 1:100),
+#'                                     paste0("sample", 1:20)))
+#' inputTest <- as.data.frame(inputTest)
+#' targetVec <- sample(c(0,1), replace = TRUE, size = 20)
+#' signature.list <- list(sig1 = c("gene1", "gene2", "gene3"),
+#'                        sig2 = c("gene4", "gene5", "gene6"))
+#' signature.name.vec <- c("sig1", "sig2")
+#' num.boot <- 20
+#' plotQuantitative(inputTest, targetVec.num = targetVec,
+#'                  signature.list = signature.list,
+#'                  signature.name.vec = signature.name.vec,
+#'                  num.boot = num.boot, rotateLabels = FALSE)
+
+plotQuantitative <- function(df.input, targetVec.num, signature.list = NULL,
+                             signature.name.vec = NULL, num.boot = 100,
+                             pb.show = TRUE, name = 
+                               "Signature Evaluation: Bootstrapped AUCs",
+                             fill.col = "white", outline.col = "black",
+                             abline.col = "red", rotateLabels = FALSE) {
+  if ((is.null(signature.name.vec) & !is.null(signature.list)
+       | (!is.null(signature.name.vec) & is.null(signature.list)))){
+    stop("Please specify arguments for both signature.list and
+         signature.name.vec, or leave them both empty to use
+         TBsignatures as the list of signatures for profiling.")
+  } else if (is.null(signature.list) & is.null(signature.name.vec)){
+    if ("TBsignatures" %in% ls(envir = .GlobalEnv)) {
+      get("TBsignatures", envir = .GlobalEnv)
+    }
+    signature.list <- TBsignatures
+    signature.name.vec <- names(signature.list)
+  }
+  
+  if (length(signature.list) != length(signature.name.vec)){
+    stop("The inputs signature.list and signature.name.vec are not the same
+         length.")
+  }
+  
+  df.list <- list()
+  # progress bar
+  counter <- 0
+  total <- length(signature.list)
+  if (pb.show) pb <- utils::txtProgressBar(min = 0, max = total, style = 3)
+  
+  for (i in 1:length(signature.list)) {
+    df.list[[i]] <- df.input[signature.list[[i]], ]
+  }
+  
+  auc.result <- list()
+
+  for (i in 1:length(df.list)) {
+    boot.output.list <- suppressWarnings(Bootstrap_LOOCV_LR_AUC(df.list[[i]],
+                                                                targetVec.num,
+                                                                nboot = num.boot))
+    # AUC
+    auc.result[[i]] <- boot.output.list[[1]]
+    counter <- counter + 1
+    if (pb.show) utils::setTxtProgressBar(pb, counter)
+  }
+  
+  # Boxplot
+  auc.result <- data.frame(matrix(unlist(auc.result),
+                                  ncol = length(signature.list),
+                                  dimnames = list(c(), names(signature.list))))
+  aucs <- apply(auc.result, 2, stats::median)
+  
+  
+  melted_data <- reshape2::melt(auc.result,
+                                measure.vars = names(signature.list),
+                                variable.name = "Signatures",
+                                value.name = "BS_AUC")
+  melted_data$Signatures <- DescTools::reorder.factor(
+    x = melted_data$Signatures,
+    new.order = names(sort(aucs)))
+  melted_data <- melted_data[order(melted_data$Signatures), ]
+  the_plot <- ggplot2::ggplot(data = melted_data, ggplot2::aes(Signatures,
+                                                               BS_AUC)) +
+    ggplot2::geom_boxplot(fill = fill.col, col = outline.col) +
+    ggplot2::geom_abline(ggplot2::aes(intercept = 0.5, slope = 0,
+                                      col = abline.col), size = 1,
+                         linetype = "dashed", show.legend = FALSE) +
+    ggplot2::ggtitle(label = name) +
+    ggplot2::ylab(label = "Bootstrapped AUCs") +
+    ggplot2::theme_classic() +
+    ggplot2::theme(axis.title.x = ggplot2::element_blank(),
+                   axis.title.y = ggplot2::element_text(
+                     margin = ggplot2::margin(r = 10)))
+  
+  if (rotateLabels) {
+    the_plot <- the_plot + ggplot2::theme(axis.text.x = ggplot2::
+                                          element_text(angle = 90, hjust = 1))
+  }
+  
+  if (pb.show) close(pb)
+  
+  return(the_plot)
+}

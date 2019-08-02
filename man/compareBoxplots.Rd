@@ -7,7 +7,7 @@
 compareBoxplots(SE_scored, annotationColName, signatureColNames,
   num.boot = 100, name = "Boxplot Comparison of Signature AUCs",
   pb.show = TRUE, abline.col = "red", fill.col = "gray79",
-  outline.col = "black")
+  outline.col = "black", rotateLabels = FALSE)
 }
 \arguments{
 \item{SE_scored}{a \code{SummarizedExperiment} object with genes as the
@@ -54,6 +54,5 @@ signatures via boxplots.
                                  signatures = choose_sigs)
  # Create boxplots
  compareBoxplots(prof_indian, annotationColName = "label",
-                 signatureColNames = names(choose_sigs))
-
+                 signatureColNames = names(choose_sigs), rotateLabels = TRUE)
 }
