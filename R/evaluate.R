@@ -79,14 +79,6 @@ LOOAUC_simple_multiple_noplot_one_df <- function(df, targetVec){
 #' detection rate, detection prevalence and balanced accuracy for that
 #' bootstrap iteration.}
 #'
-#' @examples
-#' inputTest <- matrix(rnorm(1000), 100, 20,
-#'                     dimnames = list(paste0("gene", 1:100),
-#'                                     paste0("sample", 1:20)))
-#' inputTest <- as.data.frame(inputTest)
-#' targetVec <- sample(c(0,1), replace = TRUE, size = 20)
-#' nboot <- 3
-#' res <- Bootstrap_LOOCV_LR_AUC(inputTest, targetVec, nboot)
 Bootstrap_LOOCV_LR_AUC <- function(df, targetVec, nboot){
   output.auc.vec <- c()
   output.byClass.df <- NULL
@@ -111,7 +103,7 @@ Bootstrap_LOOCV_LR_AUC <- function(df, targetVec, nboot){
 #' This function takes as input a \code{data.frame} with genetic expression
 #' count data, and uses a bootstrapped leave-one-out cross validation procedure
 #' with logistic regression to allow for numeric and graphical comparison
-#' across any number of genetic signatures. 
+#' across any number of genetic signatures.
 #'
 #' @inheritParams compareBoxplots
 #' @param df.input a \code{data.frame} of gene expression count data. Required.
@@ -148,8 +140,10 @@ Bootstrap_LOOCV_LR_AUC <- function(df, targetVec, nboot){
 #'                        sig2 = c("gene4", "gene5", "gene6"))
 #' signature.name.vec <- c("sig1", "sig2")
 #' num.boot <- 20
-#' res <- SignatureQuantitative(inputTest, targetVec, signature.list,
-#'                              signature.name.vec, num.boot)
+#' res <- SignatureQuantitative(inputTest, targetVec.num = targetVec,
+#'                              signature.list = signature.list,
+#'                              signature.name.vec = signature.name.vec,
+#'                              num.boot = num.boot)
 SignatureQuantitative <- function(df.input, targetVec.num, signature.list = NULL,
                                   signature.name.vec = NULL, num.boot = 100,
                                   pb.show = TRUE,
@@ -169,27 +163,27 @@ SignatureQuantitative <- function(df.input, targetVec.num, signature.list = NULL
     signature.list <- TBsignatures
     signature.name.vec <- names(signature.list)
   }
-  
+
   if (length(signature.list) != length(signature.name.vec)){
     stop("The inputs signature.list and signature.name.vec are not the same
          length.")
   }
-  
+
   df.list <- list()
   # progress bar
   counter <- 0
   total <- length(signature.list)
   if (pb.show) pb <- utils::txtProgressBar(min = 0, max = total, style = 3)
-  
+
   for (i in 1:length(signature.list)) {
     df.list[[i]] <- df.input[signature.list[[i]], ]
   }
-  
+
   auc.result <- list()
   auc.result.ci <- list()
   sensitivity.ci <- list()
   specificity.ci <- list()
-  
+
   for (i in 1:length(df.list)) {
     boot.output.list <- suppressWarnings(Bootstrap_LOOCV_LR_AUC(df.list[[i]],
                                                                 targetVec.num,
@@ -209,8 +203,10 @@ SignatureQuantitative <- function(df.input, targetVec.num, signature.list = NULL
     names(auc.result.ci)[i] <- signature.name.vec[i]
     # sensitivity
     est2 <- result$byClass["Sensitivity"]
-    ci.lower2 <- quantile(boot.output.list[[2]]$Sensitivity, probs = 0.05)
-    ci.upper2 <- quantile(boot.output.list[[2]]$Sensitivity, probs = 0.95)
+    ci.lower2 <- stats::quantile(boot.output.list[[2]]$Sensitivity,
+                                 probs = 0.05)
+    ci.upper2 <- stats::quantile(boot.output.list[[2]]$Sensitivity,
+                          probs = 0.95)
     st.error2 <- (1 / (num.boot - 1)) *
       sum(boot.output.list[[2]]$Sensitivity -
             mean(boot.output.list[[2]]$Sensitivity))
@@ -218,8 +214,10 @@ SignatureQuantitative <- function(df.input, targetVec.num, signature.list = NULL
                              "CI upper" = ci.upper2, "Std. Error" = st.error2)
     names(sensitivity.ci)[i] <- signature.name.vec[i]
     est3 <- result$byClass["Specificity"]
-    ci.lower3 <- quantile(boot.output.list[[2]]$Specificity, probs = 0.05)
-    ci.upper3 <- quantile(boot.output.list[[2]]$Specificity, probs = 0.95)
+    ci.lower3 <- stats::quantile(boot.output.list[[2]]$Specificity,
+                                 probs = 0.05)
+    ci.upper3 <- stats::quantile(boot.output.list[[2]]$Specificity,
+                          probs = 0.95)
     st.error3 <- (1 / (num.boot - 1)) *
       sum(boot.output.list[[2]]$Specificity -
             mean(boot.output.list[[2]]$Specificity))
@@ -228,19 +226,19 @@ SignatureQuantitative <- function(df.input, targetVec.num, signature.list = NULL
     specificity.ci[[i]] <- suppressWarnings(
       gmodels::ci(boot.output.list[[2]]$Specificity))
     names(specificity.ci)[i] <- signature.name.vec[i]
-    
+
     counter <- counter + 1
     if (pb.show) utils::setTxtProgressBar(pb, counter)
   }
-  
+
   # Boxplot
-  auc.result <- data.frame(matrix(unlist(auc.result), 
+  auc.result <- data.frame(matrix(unlist(auc.result),
                                   ncol = length(signature.list),
                                   dimnames = list(c(),names(signature.list))))
   aucs <- apply(auc.result, 2, stats::median)
-  
-  
-  melted_data <- reshape2::melt(auc.result, 
+
+
+  melted_data <- reshape2::melt(auc.result,
                                 measure.vars = names(signature.list),
                                 variable.name = "Signatures",
                                 value.name = "BS_AUC")
