@@ -2,80 +2,104 @@
 % Please edit documentation in R/plot.R
 \name{signatureGeneHeatmap}
 \alias{signatureGeneHeatmap}
-\title{Plot a Heatmap of a single signature scores and gene expression}
+\title{Plot a Heatmap of a Single Signature Score and Pathway Predictions.}
 \usage{
 signatureGeneHeatmap(inputData, useAssay, sigGenes, name = "Signature",
   signatureColNames = NULL, annotationColNames = NULL, scale = TRUE,
   showColumnNames = TRUE, showRowNames = TRUE, colList = list(),
   colorSets = c("Set1", "Set2", "Set3", "Pastel1", "Pastel2", "Accent",
-  "Dark2", "Paired"), ...)
+  "Dark2", "Paired"), choose_color = c("blue", "gray95", "red"), ...)
 }
 \arguments{
-\item{inputData}{A SummarizedExperiment object that contains the
-signature data and annotation as colData columns. Required.}
-
-\item{useAssay}{The assay to use for the gene expression data. Required.}
-
-\item{sigGenes}{The genes in the signature to use in the heatmap. For inbuilt
-signatures, you can use TBsignatures, (ex: TBsignatures[["ACS_COR"]]).
+\item{inputData}{a \code{SummarizedExperiment} object containing the profiled
+signature data and annotation data as columns in the \code{colData}.
 Required.}
 
-\item{name}{The name of the heatmap. The default is "Signature".}
+\item{useAssay}{a character string specifying the assay to use for the gene
+expression data. Required.}
 
-\item{signatureColNames}{The column names in colData that contain the
-signature data.}
+\item{sigGenes}{a vector identifying the genes in the signature to use in
+the heatmap. For inbuilt signatures, you can use \code{TBsignatures}
+(e.g., \code{TBsignatures[["ACS_COR"]]}). Required.}
 
-\item{annotationColNames}{The column names in colData that contain the
-annotation data.}
+\item{name}{a character string with the plot title of the heatmap. The
+default is \code{"Signatures"}.}
 
-\item{scale}{Scale the gene expression data. The default is TRUE.}
+\item{signatureColNames}{a vector of the column names in the \code{colData}
+that contain the signature data. Required.}
 
-\item{showColumnNames}{Show columns names (sample names) in the heatmap. The
-default is TRUE.}
+\item{annotationColNames}{a vector of the column names in the \code{colData}
+that contain the annotation data.}
 
-\item{showRowNames}{Show row names(signature names) in the heatmap. The
-default is TRUE.}
+\item{scale}{logical. Setting \code{scale = TRUE} scales the signature data.
+The default is \code{TRUE}.}
 
-\item{colList}{Custom color information for annotation data as a named list
-to pass to ComplexHeatmap. By default, ColorBrewer color sets will be used.
-See colorSets for additional options.}
+\item{showColumnNames}{logical. Setting \code{showColumnNames = TRUE} will
+show the column names (i.e. sample names) on the heatmap. The default is
+\code{TRUE}.}
 
-\item{colorSets}{By default, this function will use the color sets in the
-order listed below for annotation information. Replace this with the sets
-in order that you want to use them, or provide custom color sets with
-colList.}
+\item{showRowNames}{logical. Setting \code{showColumnNames = TRUE} will
+show the row names (i.e. signature names) on the heatmap. The default is
+\code{TRUE}.}
 
-\item{...}{Additional parameters to pass to ComplexHeatmap::Heatmap().}
+\item{colList}{a named \code{list} of named vectors specifying custom color
+information to pass to \code{ComplexHeatmap::Heatmap()}.
+The list should have as many elements as there are annotation columns
+and gene signatures (i.e. \code{sigGenes}), and each element name should
+correspond exactly with the name of each annotation column/signature.
+The colors in the vector elements should be named according to the
+levels of the factor in that column's annotation data if the annotation
+is discrete, or it should be produced with \code{circlize::colorRamp2}
+if the annotation/gene is continuous.
+By default, \code{ColorBrewer} color sets will be used.
+See the the parameter \code{colorSets} for additional details.}
+
+\item{colorSets}{a vector of names listing the color sets in the order
+that they should be used in creating the heatmap. By default, this function
+will use the color sets in the order listed in \code{Usage} for annotation
+information. You may replace the default with the same collection of sets
+in order that you want to use them, or provide custom color sets with the
+\code{colList} parameter.}
+
+\item{choose_color}{a vector of color names to be interpolated for the
+heatmap gradient, or a \code{colorRamp} function produced by
+\code{circlize::colorRamp2}. The default is \code{c("blue", "gray95", "red")}.}
+
+\item{...}{Additional parameters to pass to \code{ComplexHeatmap::Heatmap()}.}
 }
 \value{
-A ComplexHeatmap plot
+A \code{ComplexHeatmap} plot.
 }
 \description{
-Plot a Heatmap of a single signature scores and gene expression
+This function takes the profiled gene expression data for a single signature
+and creates a heatmap based on the expression scores.
 }
 \examples{
 library(SummarizedExperiment)
-#generate some artificial data that shows a difference in ACS_COR_16
+# Generate some artificial data that shows a difference in Zak_RISK_16
 mat_testdata <- rbind(matrix(c(rnorm(80), rnorm(80) + 5), 16, 10,
-                             dimnames = list(TBsignatures$ACS_COR_16,
+                             dimnames = list(TBsignatures$Zak_RISK_16,
                                              paste0("sample", 1:10))),
                       matrix(rnorm(1000), 100, 10,
                              dimnames = list(paste0("gene", 1:100),
                                              paste0("sample", 1:10))))
-#Create a SummarizedExperiment object that contains the data
-testdataSE <- SummarizedExperiment(assays=SimpleList(data = mat_testdata),
-                                   colData=DataFrame(sample = c(rep("down", 5),
-                                                                rep("up", 5))))
-#Run profiler using GSVA and ssGSEA on ACS_COR_16
+
+# Create a SummarizedExperiment object that contains the data
+testdataSE <- SummarizedExperiment(assays = SimpleList(data = mat_testdata),
+                                   colData = DataFrame(sample =
+                                                       c(rep("down", 5),
+                                                         rep("up", 5))))
+# Run profiler using GSVA and ssGSEA on Zak_RISK_16
 res <- runTBsigProfiler(testdataSE, useAssay = "data",
-                        signatures = TBsignatures["ACS_COR_16"],
+                        signatures = TBsignatures["Zak_RISK_16"],
                         algorithm = c("GSVA", "ssGSEA"), parallel.sz = 1,
                         combineSigAndAlgorithm = TRUE)
-#Plot a heatmap of signature genes and pathway predictions
+
+# Plot a heatmap of signature genes and pathway predictions
 signatureGeneHeatmap(res, useAssay = "data",
-                     sigGenes = TBsignatures[["ACS_COR_16"]],
-                     signatureColNames = c("GSVA_ACS_COR_16",
-                                           "ssGSEA_ACS_COR_16"),
+                     sigGenes = TBsignatures[["Zak_RISK_16"]],
+                     signatureColNames = c("GSVA_Zak_RISK_16",
+                                           "ssGSEA_Zak_RISK_16"),
                      annotationColNames = c("sample"), showColumnNames = FALSE,
-                     name = "ACS_COR_16")
+                     name = "Zak_RISK_16")
 }

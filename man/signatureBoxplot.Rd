@@ -2,70 +2,86 @@
 % Please edit documentation in R/plot.R
 \name{signatureBoxplot}
 \alias{signatureBoxplot}
-\title{Plot a Boxplot of Signature Genes}
+\title{Plot a Boxplot of Signature Genes.}
 \usage{
 signatureBoxplot(inputData, annotationData, signatureColNames,
   annotationColName, name = "Signatures", scale = FALSE,
   includePoints = TRUE, notch = FALSE, rotateLabels = FALSE,
-  nrow = NULL, ncol = NULL)
+  nrow = NULL, ncol = NULL, fill_colors = c("#E41A1C", "#377EB8"))
 }
 \arguments{
-\item{inputData}{Either a SummarizedExperiment object that contains the
-signature data and annotation as colData columns, or a data.frame or matrix
-of signature data. Required.}
+\item{inputData}{an input data object. It should either be of the class
+\code{SummarizedExperiment} and contain the profiled signature data and
+annotation data as columns in the \code{colData}, or alternatively be of the
+classes \code{data.frame} or \code{matrix} and contain only the gene
+expression data. Required.}
 
-\item{annotationData}{If inputData is a data.frame or matrix of signature
-data, a data.frame or matrix of annotation data.}
+\item{annotationData}{a \code{data.frame} or \code{matrix} of annotation data,
+with one column. Only required if \code{inputData} is a \code{data.frame} or
+\code{matrix} of signature data.}
 
-\item{signatureColNames}{If inputData is a SummarizedExperiment, the column
-names in colData that contain the signature data.}
+\item{signatureColNames}{a \code{vector} of the column names in \code{colData}
+that contain the signature data. Only required if \code{inputData} is a
+\code{SummarizedExperiment} object.}
 
-\item{annotationColName}{If inputData is a SummarizedExperiment, the column
-name in colData to use to make the boxplot.}
+\item{annotationColName}{a character string naming the column name in the
+\code{colData} that contains the annotation data to be used in making the
+boxplot. Only required if inputData is a \code{SummarizedExperiment} object.}
 
-\item{name}{The name of the boxplot. The default is "Signatures".}
+\item{name}{a character string giving the title of the boxplot. The default
+is \code{"Signatures"}.}
 
-\item{scale}{Scale the signature data. The default is FALSE.}
+\item{scale}{logical. Setting \code{scale = TRUE} scales the signature data.
+The default is \code{FALSE}.}
 
-\item{includePoints}{Include points over the boxplots. The default is TRUE.}
+\item{includePoints}{logical. If \code{TRUE}, points will be included over
+the boxplots. The default is \code{TRUE}.}
 
-\item{notch}{Make a notched box plot. Notches are used to compare groups;
-if the notches of two boxes do not overlap, this suggests that the medians
-are significantly different. The default is FALSE.}
+\item{notch}{logical. Notches are used to compare groups; if the notches of
+two boxes do not overlap, this suggests that the medians are significantly
+different. If \code{TRUE}, the boxplot will be notched. The default is
+\code{FALSE}.}
 
-\item{rotateLabels}{Rotate x-axis labels. The default is false}
+\item{rotateLabels}{logical. If \code{TRUE}, the x-axis labels will be
+rotated. The default is \code{FALSE}.}
 
-\item{nrow}{Number of rows in result}
+\item{nrow}{integer giving the number of rows in the resulting array.}
 
-\item{ncol}{Number of columns in result}
+\item{ncol}{integer giving the number of columns in the resulting array.}
+
+\item{fill_colors}{a vector of color names to be used as the fill colors for
+the boxplot. The default is \code{fill_colors = c("#E41A1C", "#377EB8").}}
 }
 \value{
-A ggplot2 boxplot of the signature data using the annotation
-provided.
+A \code{ggplot2} boxplot of the signature data using the provided
+annotation information.
 }
 \description{
-Plot a Boxplot of Signature Genes
+Plot a Boxplot of Signature Genes.
 }
 \examples{
 library(SummarizedExperiment)
-#generate some artificial data that shows a difference in ACS_COR_16
+
+# Generate some artificial data that shows a difference in Zak_RISK_16
 mat_testdata <- rbind(matrix(c(rnorm(80), rnorm(80) + 5), 16, 10,
-                             dimnames = list(TBsignatures$ACS_COR_16,
+                             dimnames = list(TBsignatures$Zak_RISK_16,
                                              paste0("sample", 1:10))),
                       matrix(rnorm(1000), 100, 10,
                              dimnames = list(paste0("gene", 1:100),
                                              paste0("sample", 1:10))))
-#Create a SummarizedExperiment object that contains the data
-testdataSE <- SummarizedExperiment(assays=SimpleList(data = mat_testdata),
-                                   colData=DataFrame(sample = c(rep("down", 5),
-                                                                rep("up", 5))))
-#Run profiler using GSVA and ssGSEA on ACS_COR_16
+
+# Create a SummarizedExperiment object that contains the data
+testdataSE <- SummarizedExperiment(assays = SimpleList(data = mat_testdata),
+                                   colData = DataFrame(sample =
+                                                         c(rep("down", 5),
+                                                           rep("up", 5))))
+
+# Run profiler using GSVA and ssGSEA on Zak_RISK_16 signature
 res <- runTBsigProfiler(testdataSE, useAssay = "data",
-                        signatures = TBsignatures["ACS_COR_16"],
+                        signatures = TBsignatures["Zak_RISK_16"],
                         algorithm = c("GSVA", "ssGSEA"), parallel.sz = 1,
                         combineSigAndAlgorithm = TRUE)
-#Plot boxplot of the results
-signatureBoxplot(res, signatureColNames = c("GSVA_ACS_COR_16",
-                                            "ssGSEA_ACS_COR_16"),
-                 annotationColName = "sample", name = "ACS_COR_16 Signatures")
+signatureBoxplot(res, signatureColNames = c("GSVA_Zak_RISK_16",
+                                            "ssGSEA_Zak_RISK_16"),
+                 annotationColName = "sample", name = "Zak_RISK_16 Signature")
 }
