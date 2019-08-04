@@ -36,6 +36,8 @@ The default is \code{"white"}.}
 
 \item{outline.col}{the color to be used for the boxplot outlines.
 The default is \code{"black"}.}
+
+\item{rotateLabels}{If TRUE, rotate labels. Default is FALSE.}
 }
 \value{
 A plot with side-by-side boxplots of bootstrapped AUC values for
@@ -51,7 +53,8 @@ signatures via boxplots.
                        !(names(TBsignatures) \%in\% c("Lee_4", "Roe_OD_4")))
  prof_indian <- runTBsigProfiler(TB_indian, useAssay = "logcounts",
                                  algorithm = "ssGSEA",
-                                 signatures = choose_sigs)
+                                 signatures = choose_sigs,
+                                 parallel.sz = 1)
  # Create boxplots
  compareBoxplots(prof_indian, annotationColName = "label",
                  signatureColNames = names(choose_sigs), rotateLabels = TRUE)

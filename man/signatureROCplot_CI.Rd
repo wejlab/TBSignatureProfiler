@@ -59,7 +59,8 @@ Create an array of ROC plots with Confidence Interval Bands to Compare Signature
                        !(names(TBsignatures) \%in\% c("Lee_4", "Roe_OD_4")))
  prof_indian <- runTBsigProfiler(TB_indian, useAssay = "logcounts",
                                  algorithm = "ssGSEA",
-                                 signatures = choose_sigs)
+                                 signatures = choose_sigs,
+                                 parallel.sz = 1)
 
 # Create ROC plots with cocnfidence intervals
 signatureROCplot_CI(prof_indian, signatureColNames = names(choose_sigs),

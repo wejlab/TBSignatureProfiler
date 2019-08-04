@@ -103,7 +103,7 @@ ssgsea_result <- runTBsigProfiler(input = hivtb_data,
                                signatures = TBsignatures,
                                algorithm = "ssGSEA",
                                combineSigAndAlgorithm = TRUE,
-                               parallel.sz = 4)
+                               parallel.sz = 1)
 ```
 
 When a `SummarizedExperiment` is the format of the input data for `runTBsigprofiler`,  the returned object is also of the `SummarizedExperiment`. The scores will be returned as a part of the colData. 
@@ -210,7 +210,8 @@ compareAlgs(hivtb_data, annotationColNames = "Disease",
                           "singscore", "PLAGE", "Zscore"),
             useAssay = "log_counts",
             signatures = TBsignatures[1],
-            choose_color = col.me, show.pb = FALSE)
+            choose_color = col.me, show.pb = FALSE,
+            parallel.sz = 1)
 ```
 
 ## Comparing scores via bootstrapped AUCs {.tabset}

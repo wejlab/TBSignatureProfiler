@@ -2,13 +2,13 @@ context("test-profile")
 
 set.seed(1234)
 mat_testdata <- rbind(matrix(c(rnorm(80), rnorm(80) + 5), 16, 10,
-                             dimnames = list(TBsignatures$ACS_COR_16,
+                             dimnames = list(TBsignatures$Zak_RISK_16,
                                              paste0("sample", 1:10))),
                       matrix(rnorm(1000), 100, 10,
                              dimnames = list(paste0("gene", 1:100),
                                              paste0("sample", 1:10))))
 df_testdata <- data.frame(mat_testdata)
-SE_testdata <- SummarizedExperiment::SummarizedExperiment(
+SEtestdata <- SummarizedExperiment::SummarizedExperiment(
   assays = S4Vectors::SimpleList(data = mat_testdata))
 
 test_that("incorrect input", {
@@ -24,8 +24,8 @@ test_that("incorrect input", {
     runTBsigProfiler(mat_testdata,
                      signatures = list(sig1 = paste0("gene", 1:10)),
                      algorithm = "nothing", parallel.sz = 1),
-    paste0("Invalid algorithm. Supported algorithms are GSVA, ",
-           "ssGSEA, and ASSIGN")
+    paste0("Invalid algorithm. Supported algorithms are
+    GSVA, ssGSEA, PLAGE, Zscore, singscore, and ASSIGN")
   )
   expect_error(
     runTBsigProfiler(mat_testdata,
@@ -176,30 +176,30 @@ test_that("data.frame input", {
 #Test SummarizedExperiment input
 test_that("SummarizedExperiment input", {
   expect_error(
-    runTBsigProfiler(SE_testdata,
-                     signatures = list(sig1 = paste0("gene", 1:10)),
+    runTBsigProfiler(SEtestdata, signatures = list(sig1 = paste0("gene", 1:10)),
                      algorithm = "GSVA", parallel.sz = 1),
     "useAssay required for SummarizedExperiment Input"
   )
   expect_s4_class(
-    runTBsigProfiler(SE_testdata, useAssay = "data",
+    runTBsigProfiler(SEtestdata, useAssay = "data",
+                     signatures = TBsignatures['Zak_RISK_16'],
                      algorithm = "GSVA", parallel.sz = 1),
     "SummarizedExperiment"
   )
   expect_s4_class(
-    runTBsigProfiler(SE_testdata, useAssay = "data",
+    runTBsigProfiler(SEtestdata, useAssay = "data",
                      signatures = list(sig1 = paste0("gene", 1:10)),
                      algorithm = "ssGSEA", parallel.sz = 1),
     "SummarizedExperiment"
   )
   expect_s4_class(
-    runTBsigProfiler(SE_testdata, useAssay = "data",
+    runTBsigProfiler(SEtestdata, useAssay = "data",
                      signatures = list(sig1 = paste0("gene", 1:10)),
                      algorithm = "ASSIGN", ASSIGNiter = 100, ASSIGNburnin = 50),
     "SummarizedExperiment"
   )
   expect_s4_class(
-    runTBsigProfiler(SE_testdata, useAssay = "data",
+    runTBsigProfiler(SEtestdata, useAssay = "data",
                      signatures = list(sig1 = paste0("gene", 1:10)),
                      algorithm = c("GSVA", "ASSIGN"), parallel.sz = 1,
                      combineSigAndAlgorithm = TRUE,
@@ -207,7 +207,7 @@ test_that("SummarizedExperiment input", {
     "SummarizedExperiment"
   )
   expect_error(
-    runTBsigProfiler(SE_testdata, useAssay = "data",
+    runTBsigProfiler(SEtestdata, useAssay = "data",
                      signatures = list(sig1 = paste0("gene", 1:10)),
                      algorithm = c("GSVA", "ASSIGN"), parallel.sz = 1,
                      combineSigAndAlgorithm = FALSE,
@@ -215,7 +215,7 @@ test_that("SummarizedExperiment input", {
     "SummarizedExperiment not supported with combineSigAndAlgorithm FALSE."
   )
   expect_error(
-    runTBsigProfiler(SE_testdata, useAssay = "data",
+    runTBsigProfiler(SEtestdata, useAssay = "data",
                      outputFormat = "SummarizedExperiment",
                      signatures = list(sig1 = paste0("gene", 1:10)),
                      algorithm = c("GSVA", "ASSIGN"), parallel.sz = 1,

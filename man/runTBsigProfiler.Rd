@@ -107,7 +107,7 @@ GSVA_res <- runTBsigProfiler(input = TB_indian,
                              signatures = TBsignatures,
                              algorithm = c("GSVA"),
                              combineSigAndAlgorithm = FALSE,
-                             parallel.sz = 4)
+                             parallel.sz = 1)
 GSVA_res$Zak_RISK_16
 
 }
