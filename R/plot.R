@@ -446,12 +446,14 @@ signatureGeneHeatmap <- function(inputData, useAssay, sigGenes,
                                               condLevels)
         }
       }
-      colList <- c(colList, pathwaycols)
+    } else {
+      if (any(annotationColNames != names(colList))) {
+        stop("The colList is out of sync with the annotation columns")
+      }
     }
-
-  } else {
-    colList <- NULL
   }
+
+  colList <- c(colList, pathwaycols)
 
   if (!is.null(pathwaydata) | !is.null(annotationColNames)) {
     if (!is.null(annotationColNames) & !is.null(pathwaydata)) {

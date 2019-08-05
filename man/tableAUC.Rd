@@ -38,7 +38,8 @@ R interface.
                        !(names(TBsignatures) \%in\% c("Lee_4", "Roe_OD_4")))
  prof_indian <- runTBsigProfiler(TB_indian, useAssay = "logcounts",
                                  algorithm = "ssGSEA",
-                                 signatures = choose_sigs)
+                                 signatures = choose_sigs,
+                                 parallel.sz = 1)
  # Create table
  tableAUC(SE_scored = prof_indian, annotationColName = "label",
           signatureColNames = names(choose_sigs))

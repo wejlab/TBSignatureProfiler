@@ -9,7 +9,7 @@
 #'
 #' @examples
 #' ## Example using the counts assay from a SummarizedExperiment
-#' data_in <- assay(TB_indian, "counts")
+#' data_in <- SummarizedExperiment::assay(TB_indian, "counts")
 #' res <- deseq2_norm_rle(data_in)
 deseq2_norm_rle <- function(inputData){
     scalingFac <- DESeq2::estimateSizeFactorsForMatrix(inputData)
@@ -290,7 +290,7 @@ SignatureQuantitative <- function(df.input, targetVec.num, signature.list = NULL
 
 plotQuantitative <- function(df.input, targetVec.num, signature.list = NULL,
                              signature.name.vec = NULL, num.boot = 100,
-                             pb.show = TRUE, name = 
+                             pb.show = TRUE, name =
                                "Signature Evaluation: Bootstrapped AUCs",
                              fill.col = "white", outline.col = "black",
                              abline.col = "red", rotateLabels = FALSE) {
@@ -306,22 +306,22 @@ plotQuantitative <- function(df.input, targetVec.num, signature.list = NULL,
     signature.list <- TBsignatures
     signature.name.vec <- names(signature.list)
   }
-  
+
   if (length(signature.list) != length(signature.name.vec)){
     stop("The inputs signature.list and signature.name.vec are not the same
          length.")
   }
-  
+
   df.list <- list()
   # progress bar
   counter <- 0
   total <- length(signature.list)
   if (pb.show) pb <- utils::txtProgressBar(min = 0, max = total, style = 3)
-  
+
   for (i in 1:length(signature.list)) {
     df.list[[i]] <- df.input[signature.list[[i]], ]
   }
-  
+
   auc.result <- list()
 
   for (i in 1:length(df.list)) {
@@ -333,14 +333,13 @@ plotQuantitative <- function(df.input, targetVec.num, signature.list = NULL,
     counter <- counter + 1
     if (pb.show) utils::setTxtProgressBar(pb, counter)
   }
-  
+
   # Boxplot
   auc.result <- data.frame(matrix(unlist(auc.result),
                                   ncol = length(signature.list),
                                   dimnames = list(c(), names(signature.list))))
   aucs <- apply(auc.result, 2, stats::median)
-  
-  
+
   melted_data <- reshape2::melt(auc.result,
                                 measure.vars = names(signature.list),
                                 variable.name = "Signatures",
@@ -361,13 +360,13 @@ plotQuantitative <- function(df.input, targetVec.num, signature.list = NULL,
     ggplot2::theme(axis.title.x = ggplot2::element_blank(),
                    axis.title.y = ggplot2::element_text(
                      margin = ggplot2::margin(r = 10)))
-  
+
   if (rotateLabels) {
     the_plot <- the_plot + ggplot2::theme(axis.text.x = ggplot2::
                                           element_text(angle = 90, hjust = 1))
   }
-  
+
   if (pb.show) close(pb)
-  
+
   return(the_plot)
 }

@@ -27,7 +27,8 @@
 #'  prof_indian <- runTBsigProfiler(TB_indian, useAssay = "logcounts",
 #'                                  algorithm = "ssGSEA",
 #'                                  combineSigAndAlgorithm = TRUE,
-#'                                  signatures = choose_sigs)
+#'                                  signatures = choose_sigs,
+#'                                  parallel.sz = 1)
 #'  # Bootstrapping
 #'  booted <- bootstrapAUC(SE_scored = prof_indian, annotationColName = "label",
 #'                         signatureColNames = names(choose_sigs))
@@ -94,7 +95,8 @@ bootstrapAUC <- function(SE_scored, annotationColName, signatureColNames,
 #'                        !(names(TBsignatures) %in% c("Lee_4", "Roe_OD_4")))
 #'  prof_indian <- runTBsigProfiler(TB_indian, useAssay = "logcounts",
 #'                                  algorithm = "ssGSEA",
-#'                                  signatures = choose_sigs)
+#'                                  signatures = choose_sigs,
+#'                                  parallel.sz = 1)
 #'  # Create table
 #'  tableAUC(SE_scored = prof_indian, annotationColName = "label",
 #'           signatureColNames = names(choose_sigs))
@@ -141,6 +143,7 @@ tableAUC <- function(SE_scored, annotationColName, signatureColNames,
 #' The default is \code{"white"}.
 #' @param outline.col the color to be used for the boxplot outlines.
 #' The default is \code{"black"}.
+#' @param rotateLabels If TRUE, rotate labels. Default is FALSE.
 #'
 #' @export
 #'
@@ -153,11 +156,11 @@ tableAUC <- function(SE_scored, annotationColName, signatureColNames,
 #'                        !(names(TBsignatures) %in% c("Lee_4", "Roe_OD_4")))
 #'  prof_indian <- runTBsigProfiler(TB_indian, useAssay = "logcounts",
 #'                                  algorithm = "ssGSEA",
-#'                                  signatures = choose_sigs)
+#'                                  signatures = choose_sigs,
+#'                                  parallel.sz = 1)
 #'  # Create boxplots
 #'  compareBoxplots(prof_indian, annotationColName = "label",
 #'                  signatureColNames = names(choose_sigs), rotateLabels = TRUE)
-
 compareBoxplots <- function(SE_scored, annotationColName, signatureColNames,
                             num.boot = 100,
                             name = "Boxplot Comparison of Signature AUCs",
@@ -215,7 +218,8 @@ compareBoxplots <- function(SE_scored, annotationColName, signatureColNames,
 #'                        !(names(TBsignatures) %in% c("Lee_4", "Roe_OD_4")))
 #'  prof_indian <- runTBsigProfiler(TB_indian, useAssay = "logcounts",
 #'                                  algorithm = "ssGSEA",
-#'                                  signatures = choose_sigs)
+#'                                  signatures = choose_sigs,
+#'                                  parallel.sz = 1)
 #'
 #' # Create ROC plots
 #' signatureROCplot(prof_indian, signatureColNames = names(choose_sigs),
@@ -332,7 +336,8 @@ signatureROCplot <- function(inputData, annotationData, signatureColNames,
 #'                        !(names(TBsignatures) %in% c("Lee_4", "Roe_OD_4")))
 #'  prof_indian <- runTBsigProfiler(TB_indian, useAssay = "logcounts",
 #'                                  algorithm = "ssGSEA",
-#'                                  signatures = choose_sigs)
+#'                                  signatures = choose_sigs,
+#'                                  parallel.sz = 1)
 #'
 #' # Create ROC plots with cocnfidence intervals
 #' signatureROCplot_CI(prof_indian, signatureColNames = names(choose_sigs),

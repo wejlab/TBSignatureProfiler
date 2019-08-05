@@ -116,7 +116,7 @@
 #'                              signatures = TBsignatures,
 #'                              algorithm = c("GSVA"),
 #'                              combineSigAndAlgorithm = FALSE,
-#'                              parallel.sz = 4)
+#'                              parallel.sz = 1)
 #' GSVA_res$Zak_RISK_16
 #'
 runTBsigProfiler <- function(input, useAssay = NULL,
@@ -139,7 +139,13 @@ runTBsigProfiler <- function(input, useAssay = NULL,
   }
   runindata <- input
   if (methods::is(runindata, "SummarizedExperiment")) {
-    if (is.null(useAssay)) useAssay <- "counts"
+    if (is.null(useAssay)){
+      if ("counts" %in% names(SummarizedExperiment::assays(input))){
+        useAssay <- "counts"
+      } else {
+        stop("useAssay required for SummarizedExperiment Input")
+      }
+    }
     runindata <- SummarizedExperiment::assay(input, useAssay)
     if (!combineSigAndAlgorithm & length(algorithm) > 1) {
       stop("SummarizedExperiment not supported with ",
@@ -474,12 +480,13 @@ runTBsigProfiler <- function(input, useAssay = NULL,
 #'
 #' # Example using the TB_hiv data set, two signatures, and 3 algorithms
 #' data("TB_hiv")
-#' compareAlgs(TB_hiv, signatures = TBsignatures[c(1,2)],
-#'             annotationColNames = "Disease",
-#'             algorithm = c("GSVA", "ssGSEA", "PLAGE"),
-#'             scale = TRUE)
+#' suppressWarnings({
+#'   compareAlgs(TB_hiv, signatures = TBsignatures[c(1,2)],
+#'               annotationColNames = "Disease",
+#'               algorithm = c("GSVA", "ssGSEA", "PLAGE"),
+#'               scale = TRUE, parallel.sz = 1)
+#' })
 #'
-
 compareAlgs <- function (input, signatures = NULL, annotationColNames,
                          annotationData,
                          algorithm = c("GSVA", "ssGSEA", "ASSIGN", "PLAGE",
@@ -492,7 +499,7 @@ compareAlgs <- function (input, signatures = NULL, annotationColNames,
                                        "Paired"),
                          choose_color = c("blue", "gray95", "white"),
                          colList = list(),
-                         show.pb = FALSE) {
+                         show.pb = FALSE, parallel.sz = 0) {
 
   if (is.null(signatures)) {
     # Override with global environment
@@ -512,12 +519,14 @@ compareAlgs <- function (input, signatures = NULL, annotationColNames,
                                  useAssay = useAssay,
                                  combineSigAndAlgorithm = TRUE,
                                  signatures = signatures[sig],
-                                 algorithm = algorithm))
+                                 algorithm = algorithm,
+                                 parallel.sz = parallel.sz))
     } else if (show.pb) {
       scored <- runTBsigProfiler(input, useAssay = useAssay,
                                  combineSigAndAlgorithm = TRUE,
                                  signatures = signatures[sig],
-                                 algorithm = algorithm)
+                                 algorithm = algorithm,
+                                 parallel.sz = parallel.sz)
     }
 
     if (class(input) == "SummarizedExperiment") {

@@ -10,7 +10,7 @@ compareAlgs(input, signatures = NULL, annotationColNames, annotationData,
   scale = FALSE, useAssay = "counts", colorSets = c("Set1", "Set2",
   "Set3", "Pastel1", "Pastel2", "Accent", "Dark2", "Paired"),
   choose_color = c("blue", "gray95", "white"), colList = list(),
-  show.pb = FALSE)
+  show.pb = FALSE, parallel.sz = 0)
 }
 \arguments{
 \item{input}{an input data object of the class \code{SummarizedExperiment},
@@ -76,6 +76,10 @@ See the the parameter \code{colorSets} for additional details.}
 \item{show.pb}{logical, whether warnings and other output
 from the profiling should be suppressed (including progress bar output).
 Default is \code{FALSE}.}
+
+\item{parallel.sz}{an integer identifying the number of processors to use
+when running the calculations in parallel for the GSVA and ssGSEA algorithms.
+If \code{parallel.sz = 0}, all cores are used. The default is \code{0}.}
 }
 \value{
 A heatmap for each signature specified comparing the enumerated
@@ -92,9 +96,11 @@ signature.
 
 # Example using the TB_hiv data set, two signatures, and 3 algorithms
 data("TB_hiv")
-compareAlgs(TB_hiv, signatures = TBsignatures[c(1,2)],
-            annotationColNames = "Disease",
-            algorithm = c("GSVA", "ssGSEA", "PLAGE"),
-            scale = TRUE)
+suppressWarnings({
+  compareAlgs(TB_hiv, signatures = TBsignatures[c(1,2)],
+              annotationColNames = "Disease",
+              algorithm = c("GSVA", "ssGSEA", "PLAGE"),
+              scale = TRUE, parallel.sz = 1)
+})
 
 }

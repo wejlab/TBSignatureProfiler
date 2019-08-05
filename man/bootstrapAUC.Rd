@@ -40,7 +40,8 @@ for all signatures tested on a given dataset.
  prof_indian <- runTBsigProfiler(TB_indian, useAssay = "logcounts",
                                  algorithm = "ssGSEA",
                                  combineSigAndAlgorithm = TRUE,
-                                 signatures = choose_sigs)
+                                 signatures = choose_sigs,
+                                 parallel.sz = 1)
  # Bootstrapping
  booted <- bootstrapAUC(SE_scored = prof_indian, annotationColName = "label",
                         signatureColNames = names(choose_sigs))
