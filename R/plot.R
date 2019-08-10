@@ -48,6 +48,14 @@
 #' @param choose_color a vector of color names to be interpolated for the
 #' heatmap gradient, or a \code{colorRamp} function produced by
 #' \code{circlize::colorRamp2}. The default is \code{c("blue", "gray95", "red")}.
+#' @param split_heatmap a character string either giving the column title of
+#' \code{annotationSignature} containing annotation data for which to split
+#' the heatmap rows (i.e., signatures), or \code{"none"} if no split is desired.
+#' The default is \code{"disease"}.
+#' @param annotationSignature a \code{data.frame} with information to be used
+#' in splitting the heatmap. The first column should signature names. The
+#' column of annotation information should be specified in \code{split_heatmap.}
+#' Other columns will be ignored. The default is \code{sigAnnotData}.
 #' @param ... Additional arguments to be passed to
 #' \code{ComplexHeatmap::Heatmap()}.
 #'
@@ -76,7 +84,7 @@
 #' signatureHeatmap(res, signatureColNames = c("GSVA_Zak_RISK_16",
 #'                                             "ssGSEA_Zak_RISK_16"),
 #'                  annotationColNames = "sample", scale = TRUE,
-#'                  showColumnNames = FALSE)
+#'                  showColumnNames = FALSE, split_heatmap = "none")
 #'
 #' # Example using custom colors for the annotation information
 #' color2 <- stats::setNames(c("purple", "black"), c("down", "up"))
@@ -86,16 +94,19 @@
 #'                                             "ssGSEA_Zak_RISK_16"),
 #'                  annotationColNames = "sample", scale = TRUE,
 #'                  showColumnNames = FALSE,
-#'                  colList = color.list)
+#'                  colList = color.list, split_heatmap = "none")
 #'
 signatureHeatmap <- function(inputData, annotationData, name = "Signatures",
                              signatureColNames, annotationColNames,
                              colList = list(), scale = FALSE,
                              showColumnNames = TRUE,
                              showRowNames = TRUE, colorSets = c("Set1", "Set2",
-                             "Set3", "Pastel1", "Pastel2", "Accent", "Dark2",
-                             "Paired"),
-                             choose_color = c("blue", "gray95", "red"), ...) {
+                                                                "Set3", "Pastel1", "Pastel2", "Accent", "Dark2",
+                                                                "Paired"),
+                             choose_color = c("blue", "gray95", "red"), 
+                             split_heatmap = "disease",
+                             annotationSignature = sigAnnotData,
+                             ...) {
   if (methods::is(inputData, "SummarizedExperiment")){
     if (any(duplicated(signatureColNames))){
       stop("Duplicate signature column name is not supported.")
@@ -123,7 +134,7 @@ signatureHeatmap <- function(inputData, annotationData, name = "Signatures",
   } else {
     stop("Annotation data and signature data does not match.")
   }
-
+  
   if (length(colList) == 0){
     colorSetNum <- 1
     for (annot in annotationColNames){
@@ -149,7 +160,17 @@ signatureHeatmap <- function(inputData, annotationData, name = "Signatures",
       }
     }
   }
-
+  
+  # To split heatmap by signatures
+  ann_data <- annotationSignature[annotationSignature[, 1] %in%
+                                    signatureColNames, ]
+  ann_data <- ann_data[order(signatureColNames), ]
+  if (split_heatmap == "none") {
+    row_split_pass <- c()
+  } else {
+    row_split_pass <- ann_data[, split_heatmap]
+  }
+  
   topha2 <- ComplexHeatmap::HeatmapAnnotation(
     df = data.frame(annotationData),
     col = colList, height = grid::unit(0.4 * length(annotationColNames), "cm"),
@@ -160,13 +181,14 @@ signatureHeatmap <- function(inputData, annotationData, name = "Signatures",
     sigresults <- t(scale(t(sigresults)))
     keyname <- "Scaled Score"
   }
-
+  
   return(ComplexHeatmap::draw(
     ComplexHeatmap::Heatmap(sigresults, column_title = name,
                             show_column_names = showColumnNames,
                             col = choose_color,
                             show_row_names = showRowNames,
-                            top_annotation = topha2, name = keyname, ...),
+                            top_annotation = topha2, name = keyname, 
+                            row_split = row_split_pass, ...),
     annotation_legend_side = "bottom"
   ))
 }

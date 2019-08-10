@@ -8,7 +8,8 @@ signatureHeatmap(inputData, annotationData, name = "Signatures",
   signatureColNames, annotationColNames, colList = list(),
   scale = FALSE, showColumnNames = TRUE, showRowNames = TRUE,
   colorSets = c("Set1", "Set2", "Set3", "Pastel1", "Pastel2", "Accent",
-  "Dark2", "Paired"), choose_color = c("blue", "gray95", "red"), ...)
+  "Dark2", "Paired"), choose_color = c("blue", "gray95", "red"),
+  split_heatmap = "disease", annotationSignature = sigAnnotData, ...)
 }
 \arguments{
 \item{inputData}{an input data object. It should either be of the class
@@ -66,6 +67,16 @@ in order that you want to use them, or provide custom color sets with the
 heatmap gradient, or a \code{colorRamp} function produced by
 \code{circlize::colorRamp2}. The default is \code{c("blue", "gray95", "red")}.}
 
+\item{split_heatmap}{a character string either giving the column title of
+\code{annotationSignature} containing annotation data for which to split
+the heatmap rows (i.e., signatures), or \code{"none"} if no split is desired.
+The default is \code{"disease"}.}
+
+\item{annotationSignature}{a \code{data.frame} with information to be used
+in splitting the heatmap. The first column should signature names. The
+column of annotation information should be specified in \code{split_heatmap.}
+Other columns will be ignored. The default is \code{sigAnnotData}.}
+
 \item{...}{Additional arguments to be passed to
 \code{ComplexHeatmap::Heatmap()}.}
 }
@@ -98,7 +109,7 @@ res <- runTBsigProfiler(testdataSE, useAssay = "data",
 signatureHeatmap(res, signatureColNames = c("GSVA_Zak_RISK_16",
                                             "ssGSEA_Zak_RISK_16"),
                  annotationColNames = "sample", scale = TRUE,
-                 showColumnNames = FALSE)
+                 showColumnNames = FALSE, split_heatmap = "none")
 
 # Example using custom colors for the annotation information
 color2 <- stats::setNames(c("purple", "black"), c("down", "up"))
@@ -108,6 +119,6 @@ signatureHeatmap(res, signatureColNames = c("GSVA_Zak_RISK_16",
                                             "ssGSEA_Zak_RISK_16"),
                  annotationColNames = "sample", scale = TRUE,
                  showColumnNames = FALSE,
-                 colList = color.list)
+                 colList = color.list, split_heatmap = "none")
 
 }
