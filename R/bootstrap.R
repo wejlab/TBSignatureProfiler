@@ -116,7 +116,7 @@ tableAUC <- function(SE_scored, annotationColName, signatureColNames,
   pvals <- BS.Results[["P-values"]]
   aucs_boot <- BS.Results[["Boot AUC Values"]]
   aucs <- BS.Results[["Non-Boot AUC Values"]]
-  return.table <- data.frame(cbind("Signature" = signatureColNames,
+  return_table <- data.frame(cbind("Signature" = signatureColNames,
                                    "P.value" = round(pvals, 4),
                                    "-10xLog(P.value)" =
                                      round(-10 * log(pvals), 4),
@@ -127,7 +127,7 @@ tableAUC <- function(SE_scored, annotationColName, signatureColNames,
                                    "UpperAUC" = round(apply(aucs_boot, 2,
                                                             stats::quantile,
                                                             probs = .95), 4)))
-  rownames(return.table) <- c(seq(1, nrow(return.table)))
+  rownames(return_table) <- c(seq(1, nrow(return_table)))
 
   # Create interactive table
   if (output == "DataTable") {
