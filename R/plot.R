@@ -103,7 +103,7 @@ signatureHeatmap <- function(inputData, annotationData, name = "Signatures",
                              showRowNames = TRUE, colorSets = c("Set1", "Set2",
                                                                 "Set3", "Pastel1", "Pastel2", "Accent", "Dark2",
                                                                 "Paired"),
-                             choose_color = c("blue", "gray95", "red"), 
+                             choose_color = c("blue", "gray95", "red"),
                              split_heatmap = "disease",
                              annotationSignature = sigAnnotData,
                              ...) {
@@ -134,7 +134,7 @@ signatureHeatmap <- function(inputData, annotationData, name = "Signatures",
   } else {
     stop("Annotation data and signature data does not match.")
   }
-  
+
   if (length(colList) == 0){
     colorSetNum <- 1
     for (annot in annotationColNames){
@@ -160,7 +160,7 @@ signatureHeatmap <- function(inputData, annotationData, name = "Signatures",
       }
     }
   }
-  
+
   # To split heatmap by signatures
   ann_data <- annotationSignature[annotationSignature[, 1] %in%
                                     signatureColNames, ]
@@ -170,7 +170,7 @@ signatureHeatmap <- function(inputData, annotationData, name = "Signatures",
   } else {
     row_split_pass <- ann_data[, split_heatmap]
   }
-  
+
   topha2 <- ComplexHeatmap::HeatmapAnnotation(
     df = data.frame(annotationData),
     col = colList, height = grid::unit(0.4 * length(annotationColNames), "cm"),
@@ -181,13 +181,13 @@ signatureHeatmap <- function(inputData, annotationData, name = "Signatures",
     sigresults <- t(scale(t(sigresults)))
     keyname <- "Scaled Score"
   }
-  
+
   return(ComplexHeatmap::draw(
     ComplexHeatmap::Heatmap(sigresults, column_title = name,
                             show_column_names = showColumnNames,
                             col = choose_color,
                             show_row_names = showRowNames,
-                            top_annotation = topha2, name = keyname, 
+                            top_annotation = topha2, name = keyname,
                             row_split = row_split_pass, ...),
     annotation_legend_side = "bottom"
   ))

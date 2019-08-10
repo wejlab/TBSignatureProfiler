@@ -47,7 +47,7 @@ R interface, or as a \code{data.frame}.
  # Create table
  tableAUC(SE_scored = prof_indian, annotationColName = "label",
           signatureColNames = names(choose_sigs))
- 
+
  # Create data.frame object
  tableAUC(SE_scored = prof_indian, annotationColName = "label",
           signatureColNames = names(choose_sigs), output = "data.frame")

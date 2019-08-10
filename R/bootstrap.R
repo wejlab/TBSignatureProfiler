@@ -103,7 +103,7 @@ bootstrapAUC <- function(SE_scored, annotationColName, signatureColNames,
 #'  # Create table
 #'  tableAUC(SE_scored = prof_indian, annotationColName = "label",
 #'           signatureColNames = names(choose_sigs))
-#'  
+#'
 #'  # Create data.frame object
 #'  tableAUC(SE_scored = prof_indian, annotationColName = "label",
 #'           signatureColNames = names(choose_sigs), output = "data.frame")
@@ -118,7 +118,7 @@ tableAUC <- function(SE_scored, annotationColName, signatureColNames,
   aucs <- BS.Results[["Non-Boot AUC Values"]]
   return.table <- data.frame(cbind("Signature" = signatureColNames,
                                    "P.value" = round(pvals, 4),
-                                   "-10xLog(P.value)" = 
+                                   "-10xLog(P.value)" =
                                      round(-10 * log(pvals), 4),
                                    "LowerAUC" = round(apply(aucs_boot, 2,
                                                             stats::quantile,
@@ -127,8 +127,7 @@ tableAUC <- function(SE_scored, annotationColName, signatureColNames,
                                    "UpperAUC" = round(apply(aucs_boot, 2,
                                                             stats::quantile,
                                                             probs = .95), 4)))
-  rownames(out.ssgsea) <- c(seq(1, nrow(out.ssgsea)))
-  colnames(out.ssgsea)[3] <- "-10xlog(Pvalues)"
+  rownames(return.table) <- c(seq(1, nrow(return.table)))
 
   # Create interactive table
   if (output == "DataTable") {
@@ -138,7 +137,7 @@ tableAUC <- function(SE_scored, annotationColName, signatureColNames,
   } else if (output == "data.frame") {
     return(return_table)
   }
-  
+
 }
 
 #' Create a Comparison Plot of Boxplots for Bootstrapped AUC Values.
@@ -193,7 +192,7 @@ compareBoxplots <- function(SE_scored, annotationColName, signatureColNames,
   melted_data <- reshape2::melt(aucs_boot, measure.vars = signatureColNames,
                                 variable.name = "Signatures",
                                 value.name = "BS_AUC")
-  melted_data$Signatures <- DescTools::reorder.factor(
+  melted_data$Signatures <- gdata::reorder.factor(
     x = melted_data$Signatures,
     new.order = names(sort(aucs)))
   melted_data <- melted_data[order(melted_data$Signatures), ]
