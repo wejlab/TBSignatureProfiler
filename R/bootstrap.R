@@ -81,9 +81,12 @@ bootstrapAUC <- function(SE_scored, annotationColName, signatureColNames,
 #'
 #' This function collects the results of bootstrapping and t-tests for a scored
 #' gene expression dataset and presents them using a JavaScript table with an
-#' R interface.
+#' R interface, or as a \code{data.frame}.
 #'
 #' @inheritParams bootstrapAUC
+#' @param output a character string indicating the table output format. Possible
+#' values are \code{"DataTable"} and \code{data.frame}. The default is
+#' \code{DataTable}.
 #'
 #' @export
 #'
@@ -100,30 +103,42 @@ bootstrapAUC <- function(SE_scored, annotationColName, signatureColNames,
 #'  # Create table
 #'  tableAUC(SE_scored = prof_indian, annotationColName = "label",
 #'           signatureColNames = names(choose_sigs))
+#'  
+#'  # Create data.frame object
+#'  tableAUC(SE_scored = prof_indian, annotationColName = "label",
+#'           signatureColNames = names(choose_sigs), output = "data.frame")
 #'
 tableAUC <- function(SE_scored, annotationColName, signatureColNames,
-                     num.boot = 100, pb.show = TRUE){
+                     num.boot = 100, pb.show = TRUE, output = "DataTable"){
   # Run the bootstrapping function
   BS.Results <- bootstrapAUC(SE_scored, annotationColName, signatureColNames,
                              num.boot, pb.show)
   pvals <- BS.Results[["P-values"]]
   aucs_boot <- BS.Results[["Boot AUC Values"]]
   aucs <- BS.Results[["Non-Boot AUC Values"]]
+  return.table <- data.frame(cbind("Signature" = signatureColNames,
+                                   "P.value" = round(pvals, 4),
+                                   "-10xLog(P.value)" = 
+                                     round(-10 * log(pvals), 4),
+                                   "LowerAUC" = round(apply(aucs_boot, 2,
+                                                            stats::quantile,
+                                                            probs = .05), 4),
+                                   "AUC" = round(aucs, 4),
+                                   "UpperAUC" = round(apply(aucs_boot, 2,
+                                                            stats::quantile,
+                                                            probs = .95), 4)))
+  rownames(out.ssgsea) <- c(seq(1, nrow(out.ssgsea)))
+  colnames(out.ssgsea)[3] <- "-10xlog(Pvalues)"
 
   # Create interactive table
-  return(DT::datatable(cbind("Signatures" = signatureColNames,
-                             "P-values" = round(pvals, 4),
-                             "-10*Log(p-values)" = round(-10 * log(pvals), 4),
-                             "LowerAUC" = round(apply(aucs_boot, 2,
-                                                      stats::quantile,
-                                                      probs = .05), 4),
-                             "AUCs" = round(aucs, 4),
-                             "UpperAUC" = round(apply(aucs_boot, 2,
-                                                      stats::quantile,
-                                                     probs = .95), 4)
-                             )[order(aucs, decreasing = TRUE), ],
-                       options = list(scrollX = TRUE, pageLength = 10),
-                       rownames = FALSE))
+  if (output == "DataTable") {
+    return(DT::datatable(return_table[order(aucs, decreasing = TRUE), ],
+    options = list(scrollX = TRUE, pageLength = 10),
+    rownames = FALSE))
+  } else if (output == "data.frame") {
+    return(return_table)
+  }
+  
 }
 
 #' Create a Comparison Plot of Boxplots for Bootstrapped AUC Values.

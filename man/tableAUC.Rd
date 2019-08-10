@@ -5,7 +5,7 @@
 \title{Create a Table of Results for T-tests and Bootstrapped AUC for a Collection of Scored Signatures.}
 \usage{
 tableAUC(SE_scored, annotationColName, signatureColNames, num.boot = 100,
-  pb.show = TRUE)
+  pb.show = TRUE, output = "DataTable")
 }
 \arguments{
 \item{SE_scored}{a \code{SummarizedExperiment} object with genes as the
@@ -23,6 +23,10 @@ default is \code{100}.}
 
 \item{pb.show}{logical for whether to show a progress bar while running code.
 The default is \code{TRUE}.}
+
+\item{output}{a character string indicating the table output format. Possible
+values are \code{"DataTable"} and \code{data.frame}. The default is
+\code{DataTable}.}
 }
 \value{
 A JavaScript table with an R interface using the \code{DT} package.
@@ -30,7 +34,7 @@ A JavaScript table with an R interface using the \code{DT} package.
 \description{
 This function collects the results of bootstrapping and t-tests for a scored
 gene expression dataset and presents them using a JavaScript table with an
-R interface.
+R interface, or as a \code{data.frame}.
 }
 \examples{
 # Run signature profiling
@@ -43,5 +47,9 @@ R interface.
  # Create table
  tableAUC(SE_scored = prof_indian, annotationColName = "label",
           signatureColNames = names(choose_sigs))
+ 
+ # Create data.frame object
+ tableAUC(SE_scored = prof_indian, annotationColName = "label",
+          signatureColNames = names(choose_sigs), output = "data.frame")
 
 }
