@@ -344,7 +344,7 @@ plotQuantitative <- function(df.input, targetVec.num, signature.list = NULL,
                                 measure.vars = names(signature.list),
                                 variable.name = "Signatures",
                                 value.name = "BS_AUC")
-  melted_data$Signatures <- DescTools::reorder.factor(
+  melted_data$Signatures <- gdata::reorder.factor(
     x = melted_data$Signatures,
     new.order = names(sort(aucs)))
   melted_data <- melted_data[order(melted_data$Signatures), ]
