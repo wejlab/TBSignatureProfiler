@@ -2,7 +2,7 @@
 % Please edit documentation in R/bootstrap.R
 \name{signatureROCplot}
 \alias{signatureROCplot}
-\title{Create an Array of ROC Plots to Compare Signatures.}
+\title{Create an array of ROC plots to compare signatures.}
 \usage{
 signatureROCplot(inputData, annotationData, signatureColNames,
   annotationColName, scale = FALSE, choose_colors = c("cornflowerblue",
@@ -44,7 +44,7 @@ is \code{"Signatures"}.}
 An array of ROC plots.
 }
 \description{
-Create an Array of ROC Plots to Compare Signatures.
+Create an array of ROC plots to compare signatures.
 }
 \examples{
 # Run signature profiling

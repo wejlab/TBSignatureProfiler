@@ -2,7 +2,7 @@
 % Please edit documentation in R/plot.R
 \name{signatureBoxplot}
 \alias{signatureBoxplot}
-\title{Plot a Boxplot of Signature Genes.}
+\title{Plot a boxplot of signature genes.}
 \usage{
 signatureBoxplot(inputData, annotationData, signatureColNames,
   annotationColName, name = "Signatures", scale = FALSE,
@@ -57,7 +57,7 @@ A \code{ggplot2} boxplot of the signature data using the provided
 annotation information.
 }
 \description{
-Plot a Boxplot of Signature Genes.
+Plot a boxplot of signature genes.
 }
 \examples{
 library(SummarizedExperiment)

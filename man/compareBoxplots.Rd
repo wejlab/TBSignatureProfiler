@@ -2,7 +2,7 @@
 % Please edit documentation in R/bootstrap.R
 \name{compareBoxplots}
 \alias{compareBoxplots}
-\title{Create a Comparison Plot of Boxplots for Bootstrapped AUC Values.}
+\title{Create a comparison plot of boxplots for bootstrapped AUC values.}
 \usage{
 compareBoxplots(SE_scored, annotationColName, signatureColNames,
   num.boot = 100, name = "Boxplot Comparison of Signature AUCs",
@@ -26,7 +26,8 @@ data.}
 \item{name}{a character string giving the overall title for the plot.
 The default is \code{"Boxplot Comparison of Signature AUCs"}.}
 
-\item{pb.show}{logical for whether to show a progress bar while running code.}
+\item{pb.show}{logical for whether to show a progress bar while running code.
+Default is \code{TRUE}.}
 
 \item{abline.col}{the color to be used for the dotted line at AUC = 0.5
 (the chance line). The default is \code{"red"}.}

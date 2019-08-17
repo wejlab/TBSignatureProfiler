@@ -2,7 +2,7 @@
 % Please edit documentation in R/bootstrap.R
 \name{bootstrapAUC}
 \alias{bootstrapAUC}
-\title{Bootstrap the AUC and Conduct T-Tests for a Collection of Signatures}
+\title{Bootstrap the AUC and conduct T-Tests for a collection of signatures.}
 \usage{
 bootstrapAUC(SE_scored, annotationColName, signatureColNames,
   num.boot = 100, pb.show = TRUE)

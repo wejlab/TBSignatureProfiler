@@ -2,7 +2,7 @@
 % Please edit documentation in R/bootstrap.R
 \name{tableAUC}
 \alias{tableAUC}
-\title{Create a Table of Results for T-tests and Bootstrapped AUC for a Collection of Scored Signatures.}
+\title{Create a table of results for t-tests and bootstrapped AUCs for multiple scored signatures.}
 \usage{
 tableAUC(SE_scored, annotationColName, signatureColNames, num.boot = 100,
   pb.show = TRUE, output = "DataTable")
@@ -49,7 +49,7 @@ R interface, or as a \code{data.frame}.
           signatureColNames = names(choose_sigs))
 
  # Create data.frame object
- tableAUC(SE_scored = prof_indian, annotationColName = "label",
+h <-  tableAUC(SE_scored = prof_indian, annotationColName = "label",
           signatureColNames = names(choose_sigs), output = "data.frame")
 
 }

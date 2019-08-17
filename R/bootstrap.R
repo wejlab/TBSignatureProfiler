@@ -1,4 +1,4 @@
-#' Bootstrap the AUC and Conduct T-Tests for a Collection of Signatures
+#' Bootstrap the AUC and conduct T-Tests for a collection of signatures.
 #'
 #' Run bootstrapping of the AUC and derive the p-value for a 2-sample t-test
 #' for all signatures tested on a given dataset.
@@ -77,7 +77,7 @@ bootstrapAUC <- function(SE_scored, annotationColName, signatureColNames,
          "Non-Boot AUC Values" = aucs))
 }
 
-#' Create a Table of Results for T-tests and Bootstrapped AUC for a Collection of Scored Signatures.
+#' Create a table of results for t-tests and bootstrapped AUCs for multiple scored signatures.
 #'
 #' This function collects the results of bootstrapping and t-tests for a scored
 #' gene expression dataset and presents them using a JavaScript table with an
@@ -105,7 +105,7 @@ bootstrapAUC <- function(SE_scored, annotationColName, signatureColNames,
 #'           signatureColNames = names(choose_sigs))
 #'
 #'  # Create data.frame object
-#'  tableAUC(SE_scored = prof_indian, annotationColName = "label",
+#' h <-  tableAUC(SE_scored = prof_indian, annotationColName = "label",
 #'           signatureColNames = names(choose_sigs), output = "data.frame")
 #'
 tableAUC <- function(SE_scored, annotationColName, signatureColNames,
@@ -116,9 +116,9 @@ tableAUC <- function(SE_scored, annotationColName, signatureColNames,
   pvals <- BS.Results[["P-values"]]
   aucs_boot <- BS.Results[["Boot AUC Values"]]
   aucs <- BS.Results[["Non-Boot AUC Values"]]
-  return_table <- data.frame(cbind("Signature" = signatureColNames,
+  return_table <- data.frame("Signature" = signatureColNames,
                                    "P.value" = round(pvals, 4),
-                                   "-10xLog(P.value)" =
+                                   "neg10xLog(P.value)" =
                                      round(-10 * log(pvals), 4),
                                    "LowerAUC" = round(apply(aucs_boot, 2,
                                                             stats::quantile,
@@ -126,7 +126,8 @@ tableAUC <- function(SE_scored, annotationColName, signatureColNames,
                                    "AUC" = round(aucs, 4),
                                    "UpperAUC" = round(apply(aucs_boot, 2,
                                                             stats::quantile,
-                                                            probs = .95), 4)))
+                                                            probs = .95), 4))
+  return_table$Signature <- paste(return_table$Signature)
   rownames(return_table) <- c(seq(1, nrow(return_table)))
 
   # Create interactive table
@@ -140,7 +141,7 @@ tableAUC <- function(SE_scored, annotationColName, signatureColNames,
 
 }
 
-#' Create a Comparison Plot of Boxplots for Bootstrapped AUC Values.
+#' Create a comparison plot of boxplots for bootstrapped AUC values.
 #'
 #' Present the results of AUC bootstrapping for a collection of scored
 #' signatures via boxplots.
@@ -151,6 +152,7 @@ tableAUC <- function(SE_scored, annotationColName, signatureColNames,
 #' @param name a character string giving the overall title for the plot.
 #' The default is \code{"Boxplot Comparison of Signature AUCs"}.
 #' @param pb.show logical for whether to show a progress bar while running code.
+#' Default is \code{TRUE}.
 #' @param abline.col the color to be used for the dotted line at AUC = 0.5
 #' (the chance line). The default is \code{"red"}.
 #' @param fill.col the color to be used to fill the boxplots.
@@ -216,7 +218,7 @@ compareBoxplots <- function(SE_scored, annotationColName, signatureColNames,
   return(the_plot)
 }
 
-#' Create an Array of ROC Plots to Compare Signatures.
+#' Create an array of ROC plots to compare signatures.
 #'
 #' @inheritParams signatureBoxplot
 #' @param choose_colors a vector of length 2 defining the colors to be used
@@ -327,7 +329,7 @@ signatureROCplot <- function(inputData, annotationData, signatureColNames,
   return(theplot)
 }
 
-#' Create an array of ROC plots with Confidence Interval Bands to Compare Signatures.
+#' Create an array of ROC plots with confidence interval bands to compare signatures.
 #'
 #' @inheritParams signatureROCplot
 #' @param choose_colors a vector of length 3 defining the colors to be used
@@ -339,6 +341,8 @@ signatureROCplot <- function(inputData, annotationData, signatureColNames,
 #' The default is \code{NULL}.
 #' @param ci.lev a number between 0 and 1 giving the desired level of
 #' confidence for computing ROC curve estimations.
+#' @param pb.show logical for whether to show a progress bar while running code.
+#' The default is \code{TRUE}.
 #'
 #' @return An array of ROC plots.
 #'
@@ -353,7 +357,7 @@ signatureROCplot <- function(inputData, annotationData, signatureColNames,
 #'                                  signatures = choose_sigs,
 #'                                  parallel.sz = 1)
 #'
-#' # Create ROC plots with cocnfidence intervals
+#' # Create ROC plots with confidence intervals
 #' signatureROCplot_CI(prof_indian, signatureColNames = names(choose_sigs),
 #'                     annotationColName = "label")
 #'
@@ -362,9 +366,8 @@ signatureROCplot_CI <- function(inputData, annotationData, signatureColNames,
                                 choose_colors = c("cornflowerblue",
                                                   "gray50", "gray79"),
                                 name = NULL, nrow = NULL, ncol = NULL,
-                                ci.lev = 0.95) {
+                                ci.lev = 0.95, pb.show = TRUE) {
 
-  # Error catches and variable creation
   if (methods::is(inputData, "SummarizedExperiment")) {
     if (any(duplicated(signatureColNames))) {
       signatureColNames <- unique(signatureColNames)
@@ -421,6 +424,12 @@ signatureROCplot_CI <- function(inputData, annotationData, signatureColNames,
   # an array of AUC plots as output.
 
   plot_dat <- NULL
+
+  # Create progress bar
+  total <- length(signatureColNames)
+  counter <- 0
+  if (pb.show)  pb <- utils::txtProgressBar(min = 0, max = total, style = 3)
+
   for (k in signatureColNames) {
     pred <- ROCit::rocit(inputdf[, k], inputdf$Group)
     this.conf <- suppressWarnings(ROCit::ciROC(pred, level = ci.lev))
@@ -434,6 +443,10 @@ signatureROCplot_CI <- function(inputData, annotationData, signatureColNames,
                                   "UpperTPR" = round(this.conf$UpperTPR, 4),
                                   "Signature" = k))
     plot_dat <- rbind(plot_dat, plot_n)
+
+    # Update the progress bar
+    counter <- counter + 1
+    if (pb.show) utils::setTxtProgressBar(pb, counter)
   }
 
   plot_dat <- as.data.frame(apply(plot_dat, 2, paste))
@@ -442,6 +455,7 @@ signatureROCplot_CI <- function(inputData, annotationData, signatureColNames,
   if (is.null(name)) name <- paste("ROC Plots for Gene Signatures, ",
                                    ci.lev * 100,
                                   "% Confidence", sep = "")
+  if (pb.show) close(pb)
 
   theplot <- ggplot2::ggplot(data = plot_dat, ggplot2::aes(x = FPR, y = TPR)) +
     ggplot2::geom_ribbon(ggplot2::aes(ymin = LowerTPR, ymax = UpperTPR,
@@ -468,7 +482,7 @@ signatureROCplot_CI <- function(inputData, annotationData, signatureColNames,
   return(theplot)
 }
 
-#' Add SummarizedExperiment Assays to the Data Structure.
+#' Add SummarizedExperiment assays to the data structure.
 #'
 #' Given an input of a Summarized Experiment with a counts or CPM assay, This
 #' function creates additional assays for a gene expression count dataset
