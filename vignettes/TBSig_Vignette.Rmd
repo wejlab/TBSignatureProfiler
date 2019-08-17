@@ -85,13 +85,16 @@ assays(hivtb_data)
 
 ## Profile the data {.tabset}
 
-The TBSignatureProfiler enables comparison of multiple Tuberculosis gene signatures. The package currently contains information on 34 signatures for comparison. With the `runTBSigProfiler` function, we are able to score these signatures with a selection of algorithms, including [gene set variation analysis](https://bmcbioinformatics.biomedcentral.com/articles/10.1186/1471-2105-14-7) (GSVA) (Hänzelmann et al, 2013), [single-sample GSEA](https://bmcbioinformatics.biomedcentral.com/articles/10.1186/1471-2105-14-7) (ssGSEA) (Barbie et al, 2009), and the [ASSIGN](https://bmcbioinformatics.biomedcentral.com/articles/10.1186/1471-2105-14-7) pathway profiling toolkit (Shen et al, 2015). For a complete list of included scoring methods, run `?runTBsigProfiler` in the terminal.
+The TBSignatureProfiler enables comparison of multiple Tuberculosis gene signatures. The package currently contains information on 34 signatures for comparison. The default signature list object for most functions here is `TBsignatures`, although a list with publication-given signature names is also available as `TBcommon`. Data frames of annotation information for these signatures, including information on associated disease and tissue type, can be accessed as `sigAnnotData` and `common_sigAnnotData` respectively.
+
+With the `runTBSigProfiler` function, we are able to score these signatures with a selection of algorithms, including [gene set variation analysis](https://bmcbioinformatics.biomedcentral.com/articles/10.1186/1471-2105-14-7) (GSVA) (Hänzelmann et al, 2013), [single-sample GSEA](https://bmcbioinformatics.biomedcentral.com/articles/10.1186/1471-2105-14-7) (ssGSEA) (Barbie et al, 2009), and the [ASSIGN](https://bmcbioinformatics.biomedcentral.com/articles/10.1186/1471-2105-14-7) pathway profiling toolkit (Shen et al, 2015). For a complete list of included scoring methods, run `?runTBsigProfiler` in the terminal.
 
 Here, we evaluate all signatures included in the package with ssGSEA. Paraphrasing from the [ssGSEA documentation](http://software.broadinstitute.org/cancer/software/genepattern/modules/docs/ssGSEAProjection/4), for each pairing of one of the 31 samples and its gene set, ssGSEA calculates a separate enrichment score independent of the phenotypic labeling (in this case, whether a sample has HIV/TB, or HIV only). The single sample's gene expression profile is then transformed to a gene set enrichment profile. A score from the set profile represents the activity level of the biological process in which the gene set's members are coordinately up- or down-regulated.  
 
 ```{r run profiler, message = FALSE, results = 'hide'}
 
 ## List all 34 signatures in the profiler
+data("TBsignatures")
 names(TBsignatures)
 
 ## We can use all of these signatures for further analysis
@@ -201,10 +204,13 @@ for (i in names(TBsignatures)){
 
 ### Compare scoring methods for a single signature
 
-The `compareAlgs` function allows multiple scoring methods to be compared via a heatmap with samples on the columns and methods on the rows. Here, we compare scoring methods for the "Anderson_42" signature. It seems that singscore may be the best method here, as its sample scores most closely align with the information provided by the annotation data.
+The `compareAlgs` function allows multiple scoring methods to be compared via a heatmap or boxplot with samples on the columns and methods on the rows. Here, we compare scoring methods for the "Anderson_42" signature. It seems that singscore may be the best method here, as its sample scores most closely align with the information provided by the annotation data.
 
-```{r compareAlgs ex}
-compareAlgs(hivtb_data, annotationColNames = "Disease",
+An examination of the boxplot and heatmap together determine that PLAGE and the comparing Zscore methods are least helpful in correctly identifying TB from LTBI subjects - AUC scores are little more than 0.5 and subjects in different groups are falsely assigned similar scores. According to the boxplot, we see that ssGSEA has the highest predictive AUC.
+
+```{r compareAlgs ex, warning = FALSE}
+# Heatmap
+compareAlgs(hivtb_data, annotationColName = "Disease",
             scale = TRUE,
             algorithm = c("GSVA", "ssGSEA",
                           "singscore", "PLAGE", "Zscore"),
@@ -212,6 +218,16 @@ compareAlgs(hivtb_data, annotationColNames = "Disease",
             signatures = TBsignatures[1],
             choose_color = col.me, show.pb = FALSE,
             parallel.sz = 1)
+
+# Boxplot
+compareAlgs(hivtb_data, annotationColName = "Disease",
+            scale = TRUE,
+            algorithm = c("GSVA", "ssGSEA",
+                          "singscore", "PLAGE", "Zscore"),
+            useAssay = "log_counts",
+            signatures = TBsignatures[1],
+            choose_color = col.me, show.pb = FALSE,
+            parallel.sz = 1, output = "boxplot")
 ```
 
 ## Comparing scores via bootstrapped AUCs {.tabset}
@@ -234,7 +250,7 @@ We can visualize the bootstrapped AUCs for the scored signatures by creating a c
 ```{r BS Boxplots, message = FALSE}
 compareBoxplots(ssgsea_result, annotationColName = "Disease",
                 signatureColNames = names(TBsignatures),
-                pb.show = FALSE)
+                pb.show = FALSE, rotateLabels = TRUE)
 ```
 
 
@@ -247,7 +263,7 @@ Note that, in some cases, signatures will be positive identifiers of TB whereas 
 ```{r ROC all, message = FALSE, fig.height = 9, fig.width = 12}
 signatureROCplot_CI(inputData = ssgsea_result,
                    signatureColNames = names(TBsignatures),
-                   annotationColName = "Disease")
+                   annotationColName = "Disease", pb.show = FALSE)
 
 ```
 
@@ -261,7 +277,7 @@ for (i in names(TBsignatures)){
   print(signatureROCplot_CI(inputData = ssgsea_result, 
                    signatureColNames = i,
                    annotationColName = "Disease",
-                   name = paste("ROC plot,", i, sep = " ")))
+                   name = paste("ROC plot,", i, sep = " "), pb.show = FALSE))
   
   cat("\n\n")
 }
@@ -271,7 +287,7 @@ for (i in names(TBsignatures)){
 
 Another method of signature evaluation featured in the TBSignatureProfiler package is available with the `SignatureQuantitative` function. 
 
-During the training process, we bootstrap the samples, cross-validate the logistic regression prediction of the TB?HIV status of each sample, and calculate the validation set AUCs from each cross-validation iteration. In theory, if a signature is a useful predictor of status, it should have a higher average AUC from these logistic regression bootstraps. We then create a boxplot of AUC for each signature, which provides a clear comparison between the signatures. 
+During the training process, we bootstrap the samples, cross-validate the logistic regression prediction of the TB?HIV status of each sample, and calculate the validation set AUCs from each cross-validation iteration. In theory, if a signature is a useful predictor of status, it should have a higher average AUC from these logistic regression bootstraps.
 
 ```{r sigeval, message = FALSE}
 ### Make an additional binary indicator for signature evaluation
@@ -284,8 +300,17 @@ quantitative.result <- SignatureQuantitative(hivtb_norm,
                        targetVec.num = colData(hivtb_data)$BinaryTB,
                        signature.list = TBsignatures,
                        signature.name.vec = names(TBsignatures),
-                       num.boot = 10,
+                       num.boot = 3,
                        pb.show = FALSE)
+```
+
+We also create a boxplot of AUC for each signature, which provides a clear comparison between the signatures. 
+
+```{r sigeval plot, message = FALSE}
+plotQuantitative(hivtb_norm, targetVec.num = colData(hivtb_data)$BinaryTB,
+                       signature.list = TBsignatures,
+                       signature.name.vec = names(TBsignatures),
+                       num.boot = 3, pb.show = FALSE, rotateLabels = TRUE)
 ```
 
 
