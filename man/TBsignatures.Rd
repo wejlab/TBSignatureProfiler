@@ -3,7 +3,7 @@
 \docType{data}
 \name{TBsignatures}
 \alias{TBsignatures}
-\title{TB Signatures}
+\title{A list of published TB signatures.}
 \format{list}
 \source{
 \itemize{
@@ -53,7 +53,7 @@ symbols and remove symbols that did not match the most recent annotation.
 Additional sets for Entrez IDs and Ensembl IDs are forthcoming.
 }
 \details{
-Signature names are composed of the last name of the primary author, 
+Signature names are composed of the last name of the primary author,
 followed by
 a possible context for the signature, and ending with either the number of
 gene transcripts or genes in the signature (with respect to however

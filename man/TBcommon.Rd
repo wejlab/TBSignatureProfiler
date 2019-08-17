@@ -3,7 +3,7 @@
 \docType{data}
 \name{TBcommon}
 \alias{TBcommon}
-\title{TB Signatures, Common Names}
+\title{A list of published TB signatures, using author-given names.}
 \format{list}
 \source{
 \itemize{

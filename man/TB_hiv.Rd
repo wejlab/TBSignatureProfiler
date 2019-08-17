@@ -3,7 +3,7 @@
 \docType{data}
 \name{TB_hiv}
 \alias{TB_hiv}
-\title{TB Example dataset with TB/HIV data}
+\title{An example TB dataset with TB/HIV data.}
 \format{SummarizedExperiment}
 \usage{
 TB_hiv
@@ -24,7 +24,8 @@ Participants were severely immunosuppressed TB-HIV patients who had
 not yet received TB treatment or anti-retroviral therapy (ART). The dataset included
 in this package has been lightly edited from the originally published dataset
 due to the removal of one participant who was HIV positive, on ART and developed
-TB during follow-up.
+TB during follow-up. Whole blood RNA-Seq analysis was performed on all
+31 participants.
 }
 \examples{
 data("TB_hiv")

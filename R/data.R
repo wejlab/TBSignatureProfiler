@@ -1,11 +1,11 @@
-#' TB Signatures
+#' A list of published TB signatures.
 #'
 #' A set of 34 Tuberculosis gene signatures from various publications. This set
 #' of signatures uses gene symbols. Attempts have been made to use updated gene
 #' symbols and remove symbols that did not match the most recent annotation.
 #' Additional sets for Entrez IDs and Ensembl IDs are forthcoming.
 #'
-#' Signature names are composed of the last name of the primary author, 
+#' Signature names are composed of the last name of the primary author,
 #' followed by
 #' a possible context for the signature, and ending with either the number of
 #' gene transcripts or genes in the signature (with respect to however
@@ -71,7 +71,7 @@
 #' data("TBsignatures")
 "TBsignatures"
 
-#' TB Signatures, Common Names
+#' A list of published TB signatures, using author-given names.
 #'
 #' A set of 34 Tuberculosis gene signatures from various publications. This set
 #' of signatures uses gene symbols. Attempts have been made to use updated gene
@@ -148,7 +148,7 @@
 "TBcommon"
 
 
-#' TB Example dataset with Indian population data
+#' An example TB dataset with Indian population data.
 #'
 #' An example dataset containing the gene expression and metadata in a
 #' SummarizedExperiment object for an Indian population. Active TB contamination
@@ -162,7 +162,8 @@
 #' published TB signatures in a South Indian population (Leong et. al 2018).
 #' RNA sequencing was performed on whole blood PAX gene samples collected
 #' from 28 TB patients and 16 latent TB infected (LTBI) subjects enrolled
-#' as part of an ongoing household contact study.
+#' as part of an ongoing household contact study. Whole blood RNA-Seq analysis
+#' was performed on all 44 participants.
 #'
 #' @name TB_indian
 #' @docType data
@@ -179,7 +180,7 @@
 "TB_indian"
 
 
-#' TB Example dataset with TB/HIV data
+#' An example TB dataset with TB/HIV data.
 #'
 #' An example dataset containing the gene expression and metadata in a
 #' SummarizedExperiment object for 31 subjects with HIV and/or Tuberculosis
@@ -195,7 +196,8 @@
 #' not yet received TB treatment or anti-retroviral therapy (ART). The dataset included
 #' in this package has been lightly edited from the originally published dataset
 #' due to the removal of one participant who was HIV positive, on ART and developed
-#' TB during follow-up.
+#' TB during follow-up. Whole blood RNA-Seq analysis was performed on all
+#' 31 participants.
 #'
 #' @name TB_hiv
 #' @docType data
