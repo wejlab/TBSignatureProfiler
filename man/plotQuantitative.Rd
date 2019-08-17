@@ -2,7 +2,7 @@
 % Please edit documentation in R/evaluate.R
 \name{plotQuantitative}
 \alias{plotQuantitative}
-\title{Create a Boxplot Using Logistic Regression and Bootstrap LOOCV to Evaluate Signatures.}
+\title{Create a boxplot using logistic regression and bootstrap LOOCV to evaluate signatures.}
 \usage{
 plotQuantitative(df.input, targetVec.num, signature.list = NULL,
   signature.name.vec = NULL, num.boot = 100, pb.show = TRUE,

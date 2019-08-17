@@ -1,4 +1,4 @@
-#' Normalize Gene Expression Count Data.
+#' Normalize gene expression count data.
 #'
 #' @param inputData a \code{data.frame} or \code{matrix} of gene expression
 #' count data. Required.
@@ -98,7 +98,7 @@ Bootstrap_LOOCV_LR_AUC <- function(df, targetVec, nboot){
   return(output.list)
 }
 
-#' Use Logistic Regression and Bootstrap LOOCV to Evaluate Signatures.
+#' Use logistic regression and bootstrap LOOCV to evaluate signatures.
 #'
 #' This function takes as input a \code{data.frame} with genetic expression
 #' count data, and uses a bootstrapped leave-one-out cross validation procedure
@@ -254,7 +254,7 @@ SignatureQuantitative <- function(df.input, targetVec.num, signature.list = NULL
               df.specificity.ci = df.specificity.ci))
 }
 
-#' Create a Boxplot Using Logistic Regression and Bootstrap LOOCV to Evaluate Signatures.
+#' Create a boxplot using logistic regression and bootstrap LOOCV to evaluate signatures.
 #'
 #' This function takes as input a \code{data.frame} with genetic expression
 #' count data, and uses a bootstrapped leave-one-out cross validation procedure

@@ -2,7 +2,7 @@
 % Please edit documentation in R/evaluate.R
 \name{SignatureQuantitative}
 \alias{SignatureQuantitative}
-\title{Use Logistic Regression and Bootstrap LOOCV to Evaluate Signatures.}
+\title{Use logistic regression and bootstrap LOOCV to evaluate signatures.}
 \usage{
 SignatureQuantitative(df.input, targetVec.num, signature.list = NULL,
   signature.name.vec = NULL, num.boot = 100, pb.show = TRUE)
