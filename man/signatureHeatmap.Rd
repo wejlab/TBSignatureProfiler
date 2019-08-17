@@ -2,10 +2,10 @@
 % Please edit documentation in R/plot.R
 \name{signatureHeatmap}
 \alias{signatureHeatmap}
-\title{Plot a Heatmap of Signature Scores.}
+\title{Plot a heatmap of signature scores.}
 \usage{
-signatureHeatmap(inputData, annotationData, name = "Signatures",
-  signatureColNames, annotationColNames, colList = list(),
+signatureHeatmap(inputData, annotationData = NULL, name = "Signatures",
+  signatureColNames, annotationColNames = NULL, colList = list(),
   scale = FALSE, showColumnNames = TRUE, showRowNames = TRUE,
   colorSets = c("Set1", "Set2", "Set3", "Pastel1", "Pastel2", "Accent",
   "Dark2", "Paired"), choose_color = c("blue", "gray95", "red"),
@@ -20,7 +20,7 @@ Required.}
 
 \item{annotationData}{a \code{data.frame} or \code{matrix} of annotation
 data, with one column. Only required if \code{inputData} is a
-\code{data.frame} or \code{matrix} of signature data.}
+\code{data.frame} or \code{matrix} of signature data. Default is \code{NULL}.}
 
 \item{name}{a character string with the plot title of the heatmap. The
 default is \code{"Signatures"}.}
@@ -31,7 +31,7 @@ SummarizedExperiment object.}
 
 \item{annotationColNames}{a vector of the column names in \code{colData} that
 contain the annotation data. Only required if \code{inputData} is a
-\code{SummarizedExperiment}.}
+\code{SummarizedExperiment}. Default is \code{NULL}.}
 
 \item{colList}{a named \code{list} of named vectors specifying custom color
 information to
@@ -72,7 +72,8 @@ heatmap gradient, or a \code{colorRamp} function produced by
 the heatmap rows (i.e., signatures), or \code{"none"} if no split is desired.
 The default is \code{"disease"}.}
 
-\item{annotationSignature}{a \code{data.frame} with information to be used
+\item{annotationSignature}{a \code{data.frame} or \code{matrix} with information
+to be used
 in splitting the heatmap. The first column should signature names. The
 column of annotation information should be specified in \code{split_heatmap.}
 Other columns will be ignored. The default is \code{sigAnnotData}.}
@@ -87,6 +88,10 @@ A ComplexHeatmap plot.
 This function takes a dataset of scored gene expression data as an input
 and returns a ComplexHeatmap plot for for visual comparison of
 signature performance.
+}
+\details{
+If both \code{annotationData = NULL} and \code{annotationColNames = NULL},
+no annotation bar will be drawn on the heatmap.
 }
 \examples{
 library(SummarizedExperiment)
