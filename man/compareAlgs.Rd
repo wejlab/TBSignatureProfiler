@@ -2,15 +2,16 @@
 % Please edit documentation in R/profile.R
 \name{compareAlgs}
 \alias{compareAlgs}
-\title{Compare Scoring Algorithms on a Single Signature via Heatmap}
+\title{Compare scoring algorithms on a single signature via heatmap or boxplot.}
 \usage{
-compareAlgs(input, signatures = NULL, annotationColNames, annotationData,
-  algorithm = c("GSVA", "ssGSEA", "ASSIGN", "PLAGE", "Zscore",
-  "singscore"), showColumnNames = TRUE, showRowNames = TRUE,
-  scale = FALSE, useAssay = "counts", colorSets = c("Set1", "Set2",
+compareAlgs(input, signatures = NULL, annotationColName, annotationData,
+  useAssay = "counts", algorithm = c("GSVA", "ssGSEA", "ASSIGN",
+  "PLAGE", "Zscore", "singscore"), showColumnNames = TRUE,
+  showRowNames = TRUE, scale = FALSE, colorSets = c("Set1", "Set2",
   "Set3", "Pastel1", "Pastel2", "Accent", "Dark2", "Paired"),
-  choose_color = c("blue", "gray95", "white"), colList = list(),
-  show.pb = FALSE, parallel.sz = 0)
+  choose_color = c("blue", "gray95", "red"), colList = list(),
+  show.pb = FALSE, parallel.sz = 0, output = "heatmap",
+  num.boot = 100)
 }
 \arguments{
 \item{input}{an input data object of the class \code{SummarizedExperiment},
@@ -22,13 +23,17 @@ the TBSignatureProfiler package. If \code{signatures = NULL}, the default set
 of signatures \code{TBsignatures} list is used. For details, run
 \code{?TBsignatures}. The default is \code{NULL}.}
 
-\item{annotationColNames}{a vector of the column names in \code{colData} that
-contain the annotation data. Only required if \code{inputData} is a
-\code{SummarizedExperiment}.}
+\item{annotationColName}{a character string giving the column name in
+\code{colData} that contains the annotation data. Required.}
 
 \item{annotationData}{a \code{data.frame} or \code{matrix} of annotation
 data, with one column. Only required if \code{inputData} is a
-\code{data.frame} or \code{matrix} of signature data.}
+\code{data.frame} or \code{matrix} of signature data. Default is \code{NULL}.}
+
+\item{useAssay}{a character string specifying the assay to use for signature
+profiling when \code{input} is a \code{SummarizedExperiment}. Required only for
+input data of the class \code{SummarizedExperiment}. If null, the assay
+used will be \code{"counts"}. The default is \code{NULL.}}
 
 \item{algorithm}{a vector of algorithms to run, or character string if only
 one is desired. The default is \code{c("GSVA", "ssGSEA", "ASSIGN",
@@ -44,11 +49,6 @@ show the row names (i.e. signature names) on the heatmap. The default is
 
 \item{scale}{logical. Setting \code{scale = TRUE} scales the signature data.
 The default is \code{FALSE}.}
-
-\item{useAssay}{a character string specifying the assay to use for signature
-profiling when \code{input} is a \code{SummarizedExperiment}. Required only for
-input data of the class \code{SummarizedExperiment}. If null, the assay
-used will be \code{"counts"}. The default is \code{NULL.}}
 
 \item{colorSets}{a vector of names listing the color sets in the order
 that they should be used in creating the heatmap. By default, this function
@@ -80,27 +80,32 @@ Default is \code{FALSE}.}
 \item{parallel.sz}{an integer identifying the number of processors to use
 when running the calculations in parallel for the GSVA and ssGSEA algorithms.
 If \code{parallel.sz = 0}, all cores are used. The default is \code{0}.}
+
+\item{output}{a character string specifying whether the outputted plot
+should be a \code{"heatmap"} or \code{"boxplot"}. The default is
+\code{"heatmap"}.}
+
+\item{num.boot}{an integer indicating the number of times to bootstrap the
+data.}
 }
 \value{
-A heatmap for each signature specified comparing the enumerated
-algorithms.
+A heatmap or boxplot for each signature specified comparing
+the enumerated algorithms.
 }
 \description{
 It may be useful to compare the results of scoring across several different
 scoring algorithms via a method of visualization, such as a heatmap. The
 \code{compareSigs} function allows the input of a data object and conducts
-profiling on each signature desired, and outputting a heatmap for each
-signature.
+profiling on each signature desired, and outputting a heatmap or boxplot
+for each signature.
 }
 \examples{
 
 # Example using the TB_hiv data set, two signatures, and 3 algorithms
 data("TB_hiv")
-suppressWarnings({
-  compareAlgs(TB_hiv, signatures = TBsignatures[c(1,2)],
-              annotationColNames = "Disease",
-              algorithm = c("GSVA", "ssGSEA", "PLAGE"),
-              scale = TRUE, parallel.sz = 1)
-})
+compareAlgs(TB_hiv, signatures = TBsignatures[c(1,2)],
+            annotationColName = "Disease",
+            algorithm = c("GSVA", "ssGSEA", "PLAGE"),
+            scale = TRUE, parallel.sz = 1, output = "heatmap")
 
 }

@@ -2,7 +2,7 @@
 % Please edit documentation in R/profile.R
 \name{runTBsigProfiler}
 \alias{runTBsigProfiler}
-\title{Run Tuberculosis Gene Signature profiling}
+\title{Run TB gene signature profiling.}
 \source{
 Profiling for the Z-Score, PLAGE, GSVA, ssGSEA algorithms are all
 conducted with the Bioconductor \code{GSVA} package. Profiling for the
