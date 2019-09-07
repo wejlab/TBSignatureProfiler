@@ -103,7 +103,7 @@
 #'                              dimnames = list(paste0("gene", 1:100),
 #'                              paste0("sample", 1:10)))))
 #' res <- runTBsigProfiler(input = df_testdata,
-#'                         signatures = TBsignatures,
+#'                         signatures = TBsignatures["Zak_RISK_16"],
 #'                         algorithm = c("GSVA", "ssGSEA"),
 #'                         combineSigAndAlgorithm = FALSE,
 #'                         parallel.sz = 1)
@@ -113,12 +113,11 @@
 #'  # The TB_indian SummarizedExperiment data is included in the package.
 #' GSVA_res <- runTBsigProfiler(input = TB_indian,
 #'                              useAssay = "logcounts",
-#'                              signatures = TBsignatures,
+#'                              signatures = TBsignatures["Zak_RISK_16"],
 #'                              algorithm = c("GSVA"),
 #'                              combineSigAndAlgorithm = FALSE,
 #'                              parallel.sz = 1)
 #' GSVA_res$Zak_RISK_16
-#'
 runTBsigProfiler <- function(input, useAssay = NULL,
                              signatures = NULL,
                              algorithm = c("GSVA", "ssGSEA", "ASSIGN",

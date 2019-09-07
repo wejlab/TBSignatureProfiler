@@ -3,7 +3,7 @@
 #' This function takes a dataset of scored gene expression data as an input
 #' and returns a ComplexHeatmap plot for for visual comparison of
 #' signature performance.
-#' 
+#'
 #' If both \code{annotationData = NULL} and \code{annotationColNames = NULL},
 #' no annotation bar will be drawn on the heatmap.
 #'
@@ -507,7 +507,6 @@ signatureGeneHeatmap <- function(inputData, useAssay, sigGenes,
   } else {
     colList <- pathwaycols
   }
-  
 
   if (!is.null(pathwaydata) | !is.null(annotationColNames)) {
     if (!is.null(annotationColNames) & !is.null(pathwaydata)) {
@@ -562,7 +561,6 @@ signatureGeneHeatmap <- function(inputData, useAssay, sigGenes,
 #' @return A vector of distinct colors that have been converted to HEX from
 #' HSV.
 #'
-#' @export
 distinctColors <- function(n, hues = c("red", "cyan", "orange", "blue",
                                        "yellow", "purple", "green", "magenta"),
                            saturation.range = c(0.7, 1),

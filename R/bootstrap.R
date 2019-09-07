@@ -31,7 +31,7 @@
 #'                                  parallel.sz = 1)
 #'  # Bootstrapping
 #'  booted <- bootstrapAUC(SE_scored = prof_indian, annotationColName = "label",
-#'                         signatureColNames = names(choose_sigs))
+#'                         signatureColNames = names(choose_sigs), num.boot = 5)
 #'  str(booted)
 bootstrapAUC <- function(SE_scored, annotationColName, signatureColNames,
                          num.boot = 100, pb.show = TRUE){
@@ -106,7 +106,9 @@ bootstrapAUC <- function(SE_scored, annotationColName, signatureColNames,
 #'
 #'  # Create data.frame object
 #' h <-  tableAUC(SE_scored = prof_indian, annotationColName = "label",
-#'           signatureColNames = names(choose_sigs), output = "data.frame")
+#'           signatureColNames = names(choose_sigs), output = "data.frame",
+#'           num.boot = 10)
+#' head(h)
 #'
 tableAUC <- function(SE_scored, annotationColName, signatureColNames,
                      num.boot = 100, pb.show = TRUE, output = "DataTable"){
@@ -159,7 +161,7 @@ tableAUC <- function(SE_scored, annotationColName, signatureColNames,
 #' The default is \code{"white"}.
 #' @param outline.col the color to be used for the boxplot outlines.
 #' The default is \code{"black"}.
-#' @param rotateLabels If TRUE, rotate labels. Default is FALSE.
+#' @param rotateLabels If \code{TRUE}, rotate labels. Default is \code{FALSE}.
 #'
 #' @export
 #'
@@ -231,7 +233,7 @@ compareBoxplots <- function(SE_scored, annotationColName, signatureColNames,
 #' @examples
 #' # Run signature profiling
 #'  choose_sigs <- subset(TBsignatures,
-#'                        !(names(TBsignatures) %in% c("Lee_4", "Roe_OD_4")))
+#'                        !(names(TBsignatures) %in% c("Lee_4", "Roe_OD_4")))[1:6]
 #'  prof_indian <- runTBsigProfiler(TB_indian, useAssay = "logcounts",
 #'                                  algorithm = "ssGSEA",
 #'                                  signatures = choose_sigs,
@@ -351,7 +353,7 @@ signatureROCplot <- function(inputData, annotationData, signatureColNames,
 #' @examples
 #' # Run signature profiling
 #'  choose_sigs <- subset(TBsignatures,
-#'                        !(names(TBsignatures) %in% c("Lee_4", "Roe_OD_4")))
+#'                        !(names(TBsignatures) %in% c("Lee_4", "Roe_OD_4")))[1:6]
 #'  prof_indian <- runTBsigProfiler(TB_indian, useAssay = "logcounts",
 #'                                  algorithm = "ssGSEA",
 #'                                  signatures = choose_sigs,
@@ -538,7 +540,11 @@ mkAssay <- function(SE_obj, input_name = "counts", output_name = NULL,
                     log = FALSE, counts_to_CPM = TRUE,
                     prior_counts = 3) {
 
-  if (!(log | counts_to_CPM)) stop("At least counts_to_CPM or log must be TRUE.")
+  if (!(log | counts_to_CPM)) {
+    stop("At least counts_to_CPM or log must be TRUE.") 
+  } else if (!(input_name %in% names(SummarizedExperiment::assays(SE_obj)))) {
+    stop("input_name must be an SE_obj assay")
+  }
 
   # Identify the main assay to be referenced
   assay_main <- SummarizedExperiment::assay(SE_obj, input_name)

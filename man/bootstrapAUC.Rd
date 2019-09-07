@@ -44,6 +44,6 @@ for all signatures tested on a given dataset.
                                  parallel.sz = 1)
  # Bootstrapping
  booted <- bootstrapAUC(SE_scored = prof_indian, annotationColName = "label",
-                        signatureColNames = names(choose_sigs))
+                        signatureColNames = names(choose_sigs), num.boot = 5)
  str(booted)
 }

@@ -17,7 +17,7 @@ marked as \code{tb_hiv}, while samples with HIV and no TB are marked
 as \code{hiv_only}.
 }
 \details{
-This dataset was published as part of a study to assess assess if gene expression
+This dataset was published as part of a study to assess whether gene expression
 signatures and cytokine levels would distinguish active TB in advanced HIV
 in a cohort residing in Sub-Saharan Africa (Verma et. al 2018).
 Participants were severely immunosuppressed TB-HIV patients who had

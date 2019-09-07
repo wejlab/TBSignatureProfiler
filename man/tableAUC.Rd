@@ -50,6 +50,8 @@ R interface, or as a \code{data.frame}.
 
  # Create data.frame object
 h <-  tableAUC(SE_scored = prof_indian, annotationColName = "label",
-          signatureColNames = names(choose_sigs), output = "data.frame")
+          signatureColNames = names(choose_sigs), output = "data.frame",
+          num.boot = 10)
+head(h)
 
 }

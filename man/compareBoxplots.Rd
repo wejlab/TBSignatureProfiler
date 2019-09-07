@@ -38,7 +38,7 @@ The default is \code{"white"}.}
 \item{outline.col}{the color to be used for the boxplot outlines.
 The default is \code{"black"}.}
 
-\item{rotateLabels}{If TRUE, rotate labels. Default is FALSE.}
+\item{rotateLabels}{If \code{TRUE}, rotate labels. Default is \code{FALSE}.}
 }
 \value{
 A plot with side-by-side boxplots of bootstrapped AUC values for

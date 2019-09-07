@@ -56,8 +56,8 @@ Additional sets for Entrez IDs and Ensembl IDs are forthcoming.
 Signature names are composed of the last name of the primary author,
 followed by
 a possible context for the signature, and ending with either the number of
-gene transcripts or genes in the signature (with respect to however
-the author chose to describe the signature in the original publication).
+gene transcripts or genes in the signature, with respect to however
+it was described in the signature in the original publication.
 
 Possible signature contexts:
 \itemize{

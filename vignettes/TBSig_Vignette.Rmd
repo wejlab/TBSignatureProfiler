@@ -208,7 +208,7 @@ The `compareAlgs` function allows multiple scoring methods to be compared via a 
 
 An examination of the boxplot and heatmap together determine that PLAGE and the comparing Zscore methods are least helpful in correctly identifying TB from LTBI subjects - AUC scores are little more than 0.5 and subjects in different groups are falsely assigned similar scores. According to the boxplot, we see that ssGSEA has the highest predictive AUC.
 
-```{r compareAlgs ex, warning = FALSE}
+```{r compareAlgs ex, warning = FALSE, message = FALSE}
 # Heatmap
 compareAlgs(hivtb_data, annotationColName = "Disease",
             scale = TRUE,
