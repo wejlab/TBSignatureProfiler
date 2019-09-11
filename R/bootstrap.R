@@ -22,8 +22,7 @@
 #'
 #' @examples
 #'  # Run signature profiling
-#'  choose_sigs <- subset(TBsignatures,
-#'                        !(names(TBsignatures) %in% c("Lee_4", "Roe_OD_4")))
+#'  choose_sigs <- TBsignatures[1:6]
 #'  prof_indian <- runTBsigProfiler(TB_indian, useAssay = "logcounts",
 #'                                  algorithm = "ssGSEA",
 #'                                  combineSigAndAlgorithm = TRUE,
@@ -32,7 +31,8 @@
 #'  # Bootstrapping
 #'  booted <- bootstrapAUC(SE_scored = prof_indian, annotationColName = "label",
 #'                         signatureColNames = names(choose_sigs), num.boot = 5)
-#'  str(booted)
+#'  booted
+#'
 bootstrapAUC <- function(SE_scored, annotationColName, signatureColNames,
                          num.boot = 100, pb.show = TRUE){
   pvals <- aucs <- aucs_boot <- NULL
@@ -94,8 +94,7 @@ bootstrapAUC <- function(SE_scored, annotationColName, signatureColNames,
 #'
 #' @examples
 #' # Run signature profiling
-#'  choose_sigs <- subset(TBsignatures,
-#'                        !(names(TBsignatures) %in% c("Lee_4", "Roe_OD_4")))
+#'  choose_sigs <- TBsignatures[1:5]
 #'  prof_indian <- runTBsigProfiler(TB_indian, useAssay = "logcounts",
 #'                                  algorithm = "ssGSEA",
 #'                                  signatures = choose_sigs,
@@ -107,7 +106,7 @@ bootstrapAUC <- function(SE_scored, annotationColName, signatureColNames,
 #'  # Create data.frame object
 #' h <-  tableAUC(SE_scored = prof_indian, annotationColName = "label",
 #'           signatureColNames = names(choose_sigs), output = "data.frame",
-#'           num.boot = 10)
+#'           num.boot = 5)
 #' head(h)
 #'
 tableAUC <- function(SE_scored, annotationColName, signatureColNames,
@@ -170,15 +169,15 @@ tableAUC <- function(SE_scored, annotationColName, signatureColNames,
 #'
 #' @examples
 #' # Run signature profiling
-#'  choose_sigs <- subset(TBsignatures,
-#'                        !(names(TBsignatures) %in% c("Lee_4", "Roe_OD_4")))
+#'  choose_sigs <- TBsignatures[1:6]
 #'  prof_indian <- runTBsigProfiler(TB_indian, useAssay = "logcounts",
-#'                                  algorithm = "ssGSEA",
+#'                                  algorithm = "Zscores",
 #'                                  signatures = choose_sigs,
 #'                                  parallel.sz = 1)
 #'  # Create boxplots
 #'  compareBoxplots(prof_indian, annotationColName = "label",
 #'                  signatureColNames = names(choose_sigs), rotateLabels = TRUE)
+#'
 compareBoxplots <- function(SE_scored, annotationColName, signatureColNames,
                             num.boot = 100,
                             name = "Boxplot Comparison of Signature AUCs",
