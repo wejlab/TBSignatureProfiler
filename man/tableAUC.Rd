@@ -38,8 +38,7 @@ R interface, or as a \code{data.frame}.
 }
 \examples{
 # Run signature profiling
- choose_sigs <- subset(TBsignatures,
-                       !(names(TBsignatures) \%in\% c("Lee_4", "Roe_OD_4")))
+ choose_sigs <- TBsignatures[1:5]
  prof_indian <- runTBsigProfiler(TB_indian, useAssay = "logcounts",
                                  algorithm = "ssGSEA",
                                  signatures = choose_sigs,
@@ -51,7 +50,7 @@ R interface, or as a \code{data.frame}.
  # Create data.frame object
 h <-  tableAUC(SE_scored = prof_indian, annotationColName = "label",
           signatureColNames = names(choose_sigs), output = "data.frame",
-          num.boot = 10)
+          num.boot = 5)
 head(h)
 
 }

@@ -50,13 +50,13 @@ signatures via boxplots.
 }
 \examples{
 # Run signature profiling
- choose_sigs <- subset(TBsignatures,
-                       !(names(TBsignatures) \%in\% c("Lee_4", "Roe_OD_4")))
+ choose_sigs <- TBsignatures[1:6]
  prof_indian <- runTBsigProfiler(TB_indian, useAssay = "logcounts",
-                                 algorithm = "ssGSEA",
+                                 algorithm = "Zscores",
                                  signatures = choose_sigs,
                                  parallel.sz = 1)
  # Create boxplots
  compareBoxplots(prof_indian, annotationColName = "label",
                  signatureColNames = names(choose_sigs), rotateLabels = TRUE)
+
 }

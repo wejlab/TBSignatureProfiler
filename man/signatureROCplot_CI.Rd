@@ -58,10 +58,10 @@ Create an array of ROC plots with confidence interval bands to compare signature
 }
 \examples{
 # Run signature profiling
- choose_sigs <- subset(TBsignatures,
-                       !(names(TBsignatures) \%in\% c("Lee_4", "Roe_OD_4")))[1:6]
+
+ choose_sigs <- TBsignatures[1:2]
  prof_indian <- runTBsigProfiler(TB_indian, useAssay = "logcounts",
-                                 algorithm = "ssGSEA",
+                                 algorithm = "Zscore",
                                  signatures = choose_sigs,
                                  parallel.sz = 1)
 

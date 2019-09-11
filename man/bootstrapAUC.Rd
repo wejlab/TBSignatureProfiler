@@ -35,8 +35,7 @@ for all signatures tested on a given dataset.
 }
 \examples{
  # Run signature profiling
- choose_sigs <- subset(TBsignatures,
-                       !(names(TBsignatures) \%in\% c("Lee_4", "Roe_OD_4")))
+ choose_sigs <- TBsignatures[1:6]
  prof_indian <- runTBsigProfiler(TB_indian, useAssay = "logcounts",
                                  algorithm = "ssGSEA",
                                  combineSigAndAlgorithm = TRUE,
@@ -45,5 +44,6 @@ for all signatures tested on a given dataset.
  # Bootstrapping
  booted <- bootstrapAUC(SE_scored = prof_indian, annotationColName = "label",
                         signatureColNames = names(choose_sigs), num.boot = 5)
- str(booted)
+ booted
+
 }
