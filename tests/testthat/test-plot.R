@@ -33,9 +33,6 @@ test_that("Missing annotationData", {
     signatureHeatmap(inputData = SE_wres),
     "argument \"signatureColNames\" is missing, with no default")
   expect_error(
-    signatureHeatmap(inputData = SE_wres, signatureColNames = "sig1"),
-    "argument \"annotationColNames\" is missing, with no default")
-  expect_error(
     signatureHeatmap(inputData = SE_wres, signatureColNames = "sig1",
                      annotationColNames = "group"),
     "Annotation column name not found in inputData.")
@@ -195,7 +192,8 @@ test_that("SummarizedExperiment Plot Works", {
 test_that("DataFrame Plot Works", {
   expect_is(
     signatureHeatmap(inputData = dfres,
-                     annotationData = annotdata),
+                     annotationData = annotdata,
+                     signatureColNames = "sig1"),
     "HeatmapList"
   )
   expect_is(
