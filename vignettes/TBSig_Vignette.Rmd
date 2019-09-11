@@ -206,7 +206,7 @@ for (i in names(TBsignatures)){
 
 The `compareAlgs` function allows multiple scoring methods to be compared via a heatmap or boxplot with samples on the columns and methods on the rows. Here, we compare scoring methods for the "Anderson_42" signature. It seems that singscore may be the best method here, as its sample scores most closely align with the information provided by the annotation data.
 
-An examination of the boxplot and heatmap together determine that PLAGE and the comparing Zscore methods are least helpful in correctly identifying TB from LTBI subjects - AUC scores are little more than 0.5 and subjects in different groups are falsely assigned similar scores. According to the boxplot, we see that ssGSEA has the highest predictive AUC.
+An examination of the boxplot and heatmap together determine that PLAGE and the comparing Z-score methods are least helpful in correctly identifying TB from LTBI subjects - AUC scores are little more than 0.5 and subjects in different groups are falsely assigned similar scores. According to the boxplot, we see that ssGSEA has the highest predictive AUC.
 
 ```{r compareAlgs ex, warning = FALSE, message = FALSE}
 # Heatmap
