@@ -560,6 +560,10 @@ signatureGeneHeatmap <- function(inputData, useAssay, sigGenes,
 #'
 #' @return A vector of distinct colors that have been converted to HEX from
 #' HSV.
+#' 
+#' #' @examples
+#' library(SummarizedExperiment)
+#' distinctColors(10)
 #'
 distinctColors <- function(n, hues = c("red", "cyan", "orange", "blue",
                                        "yellow", "purple", "green", "magenta"),

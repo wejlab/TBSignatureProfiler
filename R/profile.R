@@ -224,7 +224,6 @@ runTBsigProfiler <- function(input, useAssay = NULL,
                 so analysis will not run.")
       } else {
         if (!file.exists(i)) {
-          set.seed(1234)
           ASSIGN::assign.wrapper(testData = runindata, trainingLabel = NULL,
                                  geneList = currlist, adaptive_S = TRUE,
                                  iter = ASSIGNiter, burn_in = ASSIGNburnin,

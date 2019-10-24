@@ -221,9 +221,6 @@ SignatureQuantitative <- function(df.input, targetVec.num, signature.list = NULL
             mean(boot.output.list[[2]]$Specificity))
     specificity.ci[[i]] <- c("Estimate" = est3, "CI lower" = ci.lower3,
                              "CI upper" = ci.upper3, "Std. Error" = st.error3)
-    specificity.ci[[i]] <- suppressWarnings(
-      gmodels::ci(boot.output.list[[2]]$Specificity))
-    names(specificity.ci)[i] <- signature.name.vec[i]
 
     counter <- counter + 1
     if (pb.show) utils::setTxtProgressBar(pb, counter)
