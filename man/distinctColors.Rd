@@ -26,6 +26,10 @@ giving the range of values. The default is \code{c(0.5, 1)}.}
 \value{
 A vector of distinct colors that have been converted to HEX from
 HSV.
+
+#' @examples
+library(SummarizedExperiment)
+distinctColors(10)
 }
 \description{
 Create a distinct palette for coloring different heatmap clusters. The
