@@ -2,12 +2,12 @@
 % Please edit documentation in R/bootstrap.R
 \name{signatureROCplot_CI}
 \alias{signatureROCplot_CI}
-\title{Create an array of ROC plots with Confidence Interval Bands to Compare Signatures.}
+\title{Create an array of ROC plots with confidence interval bands to compare signatures.}
 \usage{
 signatureROCplot_CI(inputData, annotationData, signatureColNames,
   annotationColName, scale = FALSE, choose_colors = c("cornflowerblue",
   "gray50", "gray79"), name = NULL, nrow = NULL, ncol = NULL,
-  ci.lev = 0.95)
+  ci.lev = 0.95, pb.show = TRUE)
 }
 \arguments{
 \item{inputData}{an input data object. It should either be of the class
@@ -46,23 +46,26 @@ The default is \code{NULL}.}
 
 \item{ci.lev}{a number between 0 and 1 giving the desired level of
 confidence for computing ROC curve estimations.}
+
+\item{pb.show}{logical for whether to show a progress bar while running code.
+The default is \code{TRUE}.}
 }
 \value{
 An array of ROC plots.
 }
 \description{
-Create an array of ROC plots with Confidence Interval Bands to Compare Signatures.
+Create an array of ROC plots with confidence interval bands to compare signatures.
 }
 \examples{
 # Run signature profiling
- choose_sigs <- subset(TBsignatures,
-                       !(names(TBsignatures) \%in\% c("Lee_4", "Roe_OD_4")))
+
+ choose_sigs <- TBsignatures[1:2]
  prof_indian <- runTBsigProfiler(TB_indian, useAssay = "logcounts",
-                                 algorithm = "ssGSEA",
+                                 algorithm = "Zscore",
                                  signatures = choose_sigs,
                                  parallel.sz = 1)
 
-# Create ROC plots with cocnfidence intervals
+# Create ROC plots with confidence intervals
 signatureROCplot_CI(prof_indian, signatureColNames = names(choose_sigs),
                     annotationColName = "label")
 

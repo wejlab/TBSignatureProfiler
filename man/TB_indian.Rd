@@ -3,7 +3,7 @@
 \docType{data}
 \name{TB_indian}
 \alias{TB_indian}
-\title{TB Example dataset with Indian population data}
+\title{An example TB dataset with Indian population data.}
 \format{SummarizedExperiment}
 \usage{
 TB_indian
@@ -22,7 +22,8 @@ This dataset was published as part of a study to assess performance of
 published TB signatures in a South Indian population (Leong et. al 2018).
 RNA sequencing was performed on whole blood PAX gene samples collected
 from 28 TB patients and 16 latent TB infected (LTBI) subjects enrolled
-as part of an ongoing household contact study.
+as part of an ongoing household contact study. Whole blood RNA-Seq analysis
+was performed on all 44 participants.
 }
 \examples{
 data("TB_indian")

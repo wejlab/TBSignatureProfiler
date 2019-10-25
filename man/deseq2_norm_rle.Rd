@@ -2,7 +2,7 @@
 % Please edit documentation in R/evaluate.R
 \name{deseq2_norm_rle}
 \alias{deseq2_norm_rle}
-\title{Normalize Gene Expression Count Data.}
+\title{Normalize gene expression count data.}
 \usage{
 deseq2_norm_rle(inputData)
 }
@@ -14,7 +14,7 @@ count data. Required.}
 A \code{data.frame} or \code{matrix} of normalized count data.
 }
 \description{
-Normalize Gene Expression Count Data.
+Normalize gene expression count data.
 }
 \examples{
 ## Example using the counts assay from a SummarizedExperiment

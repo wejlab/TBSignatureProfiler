@@ -2,7 +2,7 @@
 % Please edit documentation in R/profile.R
 \name{runTBsigProfiler}
 \alias{runTBsigProfiler}
-\title{Run Tuberculosis Gene Signature profiling}
+\title{Run TB gene signature profiling.}
 \source{
 Profiling for the Z-Score, PLAGE, GSVA, ssGSEA algorithms are all
 conducted with the Bioconductor \code{GSVA} package. Profiling for the
@@ -94,7 +94,7 @@ df_testdata <- as.data.frame(rbind(matrix(c(rnorm(80), rnorm(80) + 5), 16, 10,
                              dimnames = list(paste0("gene", 1:100),
                              paste0("sample", 1:10)))))
 res <- runTBsigProfiler(input = df_testdata,
-                        signatures = TBsignatures,
+                        signatures = TBsignatures["Zak_RISK_16"],
                         algorithm = c("GSVA", "ssGSEA"),
                         combineSigAndAlgorithm = FALSE,
                         parallel.sz = 1)
@@ -104,12 +104,11 @@ subset(res, res$pathway == "Zak_RISK_16")
  # The TB_indian SummarizedExperiment data is included in the package.
 GSVA_res <- runTBsigProfiler(input = TB_indian,
                              useAssay = "logcounts",
-                             signatures = TBsignatures,
+                             signatures = TBsignatures["Zak_RISK_16"],
                              algorithm = c("GSVA"),
                              combineSigAndAlgorithm = FALSE,
                              parallel.sz = 1)
 GSVA_res$Zak_RISK_16
-
 }
 \references{
 Barbie,  D.A., Tamayo, P., Boehm, J.S., Kim, S.Y., Moody,	 S.E., Dunn, I.F., Schinzel, A.C.,

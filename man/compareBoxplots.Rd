@@ -2,7 +2,7 @@
 % Please edit documentation in R/bootstrap.R
 \name{compareBoxplots}
 \alias{compareBoxplots}
-\title{Create a Comparison Plot of Boxplots for Bootstrapped AUC Values.}
+\title{Create a comparison plot of boxplots for bootstrapped AUC values.}
 \usage{
 compareBoxplots(SE_scored, annotationColName, signatureColNames,
   num.boot = 100, name = "Boxplot Comparison of Signature AUCs",
@@ -26,7 +26,8 @@ data.}
 \item{name}{a character string giving the overall title for the plot.
 The default is \code{"Boxplot Comparison of Signature AUCs"}.}
 
-\item{pb.show}{logical for whether to show a progress bar while running code.}
+\item{pb.show}{logical for whether to show a progress bar while running code.
+Default is \code{TRUE}.}
 
 \item{abline.col}{the color to be used for the dotted line at AUC = 0.5
 (the chance line). The default is \code{"red"}.}
@@ -37,7 +38,7 @@ The default is \code{"white"}.}
 \item{outline.col}{the color to be used for the boxplot outlines.
 The default is \code{"black"}.}
 
-\item{rotateLabels}{If TRUE, rotate labels. Default is FALSE.}
+\item{rotateLabels}{If \code{TRUE}, rotate labels. Default is \code{FALSE}.}
 }
 \value{
 A plot with side-by-side boxplots of bootstrapped AUC values for
@@ -49,13 +50,13 @@ signatures via boxplots.
 }
 \examples{
 # Run signature profiling
- choose_sigs <- subset(TBsignatures,
-                       !(names(TBsignatures) \%in\% c("Lee_4", "Roe_OD_4")))
+ choose_sigs <- TBsignatures[1:6]
  prof_indian <- runTBsigProfiler(TB_indian, useAssay = "logcounts",
-                                 algorithm = "ssGSEA",
+                                 algorithm = "Zscores",
                                  signatures = choose_sigs,
                                  parallel.sz = 1)
  # Create boxplots
  compareBoxplots(prof_indian, annotationColName = "label",
                  signatureColNames = names(choose_sigs), rotateLabels = TRUE)
+
 }

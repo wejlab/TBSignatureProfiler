@@ -2,7 +2,7 @@
 % Please edit documentation in R/plot.R
 \name{distinctColors}
 \alias{distinctColors}
-\title{Generate a Distinct Palette for Coloring Different Clusters.}
+\title{Generate a distinct palette for coloring different clusters.}
 \usage{
 distinctColors(n, hues = c("red", "cyan", "orange", "blue", "yellow",
   "purple", "green", "magenta"), saturation.range = c(0.7, 1),
@@ -26,6 +26,10 @@ giving the range of values. The default is \code{c(0.5, 1)}.}
 \value{
 A vector of distinct colors that have been converted to HEX from
 HSV.
+
+#' @examples
+library(SummarizedExperiment)
+distinctColors(10)
 }
 \description{
 Create a distinct palette for coloring different heatmap clusters. The

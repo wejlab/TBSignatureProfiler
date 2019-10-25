@@ -2,7 +2,7 @@
 % Please edit documentation in R/bootstrap.R
 \name{mkAssay}
 \alias{mkAssay}
-\title{Add SummarizedExperiment Assays to the Data Structure.}
+\title{Add SummarizedExperiment assays to the data structure.}
 \usage{
 mkAssay(SE_obj, input_name = "counts", output_name = NULL,
   log = FALSE, counts_to_CPM = TRUE, prior_counts = 3)

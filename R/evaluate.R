@@ -1,4 +1,4 @@
-#' Normalize Gene Expression Count Data.
+#' Normalize gene expression count data.
 #'
 #' @param inputData a \code{data.frame} or \code{matrix} of gene expression
 #' count data. Required.
@@ -98,7 +98,7 @@ Bootstrap_LOOCV_LR_AUC <- function(df, targetVec, nboot){
   return(output.list)
 }
 
-#' Use Logistic Regression and Bootstrap LOOCV to Evaluate Signatures.
+#' Use logistic regression and bootstrap LOOCV to evaluate signatures.
 #'
 #' This function takes as input a \code{data.frame} with genetic expression
 #' count data, and uses a bootstrapped leave-one-out cross validation procedure
@@ -139,11 +139,12 @@ Bootstrap_LOOCV_LR_AUC <- function(df, targetVec, nboot){
 #' signature.list <- list(sig1 = c("gene1", "gene2", "gene3"),
 #'                        sig2 = c("gene4", "gene5", "gene6"))
 #' signature.name.vec <- c("sig1", "sig2")
-#' num.boot <- 20
+#' num.boot <- 5
 #' SignatureQuantitative(inputTest, targetVec.num = targetVec,
 #'                       signature.list = signature.list,
 #'                       signature.name.vec = signature.name.vec,
 #'                       num.boot = num.boot)
+#'
 SignatureQuantitative <- function(df.input, targetVec.num, signature.list = NULL,
                                   signature.name.vec = NULL, num.boot = 100,
                                   pb.show = TRUE) {
@@ -220,9 +221,6 @@ SignatureQuantitative <- function(df.input, targetVec.num, signature.list = NULL
             mean(boot.output.list[[2]]$Specificity))
     specificity.ci[[i]] <- c("Estimate" = est3, "CI lower" = ci.lower3,
                              "CI upper" = ci.upper3, "Std. Error" = st.error3)
-    specificity.ci[[i]] <- suppressWarnings(
-      gmodels::ci(boot.output.list[[2]]$Specificity))
-    names(specificity.ci)[i] <- signature.name.vec[i]
 
     counter <- counter + 1
     if (pb.show) utils::setTxtProgressBar(pb, counter)
@@ -254,7 +252,7 @@ SignatureQuantitative <- function(df.input, targetVec.num, signature.list = NULL
               df.specificity.ci = df.specificity.ci))
 }
 
-#' Create a Boxplot Using Logistic Regression and Bootstrap LOOCV to Evaluate Signatures.
+#' Create a boxplot using logistic regression and bootstrap LOOCV to evaluate signatures.
 #'
 #' This function takes as input a \code{data.frame} with genetic expression
 #' count data, and uses a bootstrapped leave-one-out cross validation procedure
@@ -282,11 +280,12 @@ SignatureQuantitative <- function(df.input, targetVec.num, signature.list = NULL
 #' signature.list <- list(sig1 = c("gene1", "gene2", "gene3"),
 #'                        sig2 = c("gene4", "gene5", "gene6"))
 #' signature.name.vec <- c("sig1", "sig2")
-#' num.boot <- 20
+#' num.boot <- 5
 #' plotQuantitative(inputTest, targetVec.num = targetVec,
 #'                  signature.list = signature.list,
 #'                  signature.name.vec = signature.name.vec,
 #'                  num.boot = num.boot, rotateLabels = FALSE)
+#'
 
 plotQuantitative <- function(df.input, targetVec.num, signature.list = NULL,
                              signature.name.vec = NULL, num.boot = 100,
@@ -344,7 +343,7 @@ plotQuantitative <- function(df.input, targetVec.num, signature.list = NULL,
                                 measure.vars = names(signature.list),
                                 variable.name = "Signatures",
                                 value.name = "BS_AUC")
-  melted_data$Signatures <- DescTools::reorder.factor(
+  melted_data$Signatures <- gdata::reorder.factor(
     x = melted_data$Signatures,
     new.order = names(sort(aucs)))
   melted_data <- melted_data[order(melted_data$Signatures), ]

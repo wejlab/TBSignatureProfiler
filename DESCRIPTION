@@ -1,13 +1,11 @@
 Package: TBSignatureProfiler
 Title: Profile RNA-Seq Data Using TB Pathway Signatures
 Version: 0.0.0.9005
-Author: David Jenkins
 Authors@R:
     c(person(given = "David", family = "Jenkins", role = c("aut", "cre"), email = "dfj@bu.edu"),
       person(given = "Yue", family = "Zhao", role = c("aut"), email = "yuezh@bu.edu"),
       person(given = c("W. Evan"), family = "Johnson", role = c("aut"), email = "wej@bu.edu"),
       person(given = c("Aubrey"), family = "Odom", role = c("aut"), email = "aubreyodom@byu.edu"))
-Maintainer: David Jenkins <dfj@bu.edu>
 Description: Signatures of TB progression, TB disease, and other TB disease
     states have been created. This package makes it easy to profile RNA-Seq data
     using these signatures and common signature profiling tools including
@@ -34,15 +32,13 @@ Imports:
     bioDist,
     readr,
     boot,
-    gmodels,
     DESeq2,
     caret,
     ggfortify,
     e1071,
     DT,
     edgeR,
-    singscore,
-    DescTools
+    singscore
 Suggests:
     testthat,
     spelling,
@@ -55,5 +51,5 @@ URL: https://github.com/compbiomed/TBSignatureProfiler
 BugReports: https://github.com/compbiomed/TBSignatureProfiler/issues
 Language: en-US
 Depends:
-    R (>= 3.5.0)
+    R (>= 3.6)
 VignetteBuilder: knitr

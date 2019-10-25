@@ -1,8 +1,11 @@
-#' Plot a Heatmap of Signature Scores.
+#' Plot a heatmap of signature scores.
 #'
 #' This function takes a dataset of scored gene expression data as an input
 #' and returns a ComplexHeatmap plot for for visual comparison of
 #' signature performance.
+#'
+#' If both \code{annotationData = NULL} and \code{annotationColNames = NULL},
+#' no annotation bar will be drawn on the heatmap.
 #'
 #' @param inputData an input data object. It should either be of the class
 #' \code{SummarizedExperiment} and contain the profiled signature data and
@@ -11,7 +14,7 @@
 #' Required.
 #' @param annotationData a \code{data.frame} or \code{matrix} of annotation
 #' data, with one column. Only required if \code{inputData} is a
-#' \code{data.frame} or \code{matrix} of signature data.
+#' \code{data.frame} or \code{matrix} of signature data. Default is \code{NULL}.
 #' @param name a character string with the plot title of the heatmap. The
 #' default is \code{"Signatures"}.
 #' @param signatureColNames a vector of the column names in \code{colData} that
@@ -19,7 +22,7 @@
 #' SummarizedExperiment object.
 #' @param annotationColNames a vector of the column names in \code{colData} that
 #' contain the annotation data. Only required if \code{inputData} is a
-#' \code{SummarizedExperiment}.
+#' \code{SummarizedExperiment}. Default is \code{NULL}.
 #' @param colList a named \code{list} of named vectors specifying custom color
 #' information to
 #' pass to \code{ComplexHeatmap::Heatmap()}. The list should have as many
@@ -48,6 +51,15 @@
 #' @param choose_color a vector of color names to be interpolated for the
 #' heatmap gradient, or a \code{colorRamp} function produced by
 #' \code{circlize::colorRamp2}. The default is \code{c("blue", "gray95", "red")}.
+#' @param split_heatmap a character string either giving the column title of
+#' \code{annotationSignature} containing annotation data for which to split
+#' the heatmap rows (i.e., signatures), or \code{"none"} if no split is desired.
+#' The default is \code{"disease"}.
+#' @param annotationSignature a \code{data.frame} or \code{matrix} with information
+#' to be used
+#' in splitting the heatmap. The first column should signature names. The
+#' column of annotation information should be specified in \code{split_heatmap.}
+#' Other columns will be ignored. The default is \code{sigAnnotData}.
 #' @param ... Additional arguments to be passed to
 #' \code{ComplexHeatmap::Heatmap()}.
 #'
@@ -76,7 +88,7 @@
 #' signatureHeatmap(res, signatureColNames = c("GSVA_Zak_RISK_16",
 #'                                             "ssGSEA_Zak_RISK_16"),
 #'                  annotationColNames = "sample", scale = TRUE,
-#'                  showColumnNames = FALSE)
+#'                  showColumnNames = FALSE, split_heatmap = "none")
 #'
 #' # Example using custom colors for the annotation information
 #' color2 <- stats::setNames(c("purple", "black"), c("down", "up"))
@@ -86,16 +98,19 @@
 #'                                             "ssGSEA_Zak_RISK_16"),
 #'                  annotationColNames = "sample", scale = TRUE,
 #'                  showColumnNames = FALSE,
-#'                  colList = color.list)
+#'                  colList = color.list, split_heatmap = "none")
 #'
-signatureHeatmap <- function(inputData, annotationData, name = "Signatures",
-                             signatureColNames, annotationColNames,
+signatureHeatmap <- function(inputData, annotationData = NULL, name = "Signatures",
+                             signatureColNames, annotationColNames = NULL,
                              colList = list(), scale = FALSE,
                              showColumnNames = TRUE,
                              showRowNames = TRUE, colorSets = c("Set1", "Set2",
-                             "Set3", "Pastel1", "Pastel2", "Accent", "Dark2",
-                             "Paired"),
-                             choose_color = c("blue", "gray95", "red"), ...) {
+                                                                "Set3", "Pastel1", "Pastel2", "Accent", "Dark2",
+                                                                "Paired"),
+                             choose_color = c("blue", "gray95", "red"),
+                             split_heatmap = "disease",
+                             annotationSignature = sigAnnotData,
+                             ...) {
   if (methods::is(inputData, "SummarizedExperiment")){
     if (any(duplicated(signatureColNames))){
       stop("Duplicate signature column name is not supported.")
@@ -103,75 +118,103 @@ signatureHeatmap <- function(inputData, annotationData, name = "Signatures",
     if (!all(signatureColNames %in% colnames(SummarizedExperiment::colData(inputData)))){
       stop("Signature column name not found in inputData.")
     }
-    if (!all(annotationColNames %in% colnames(SummarizedExperiment::colData(inputData)))){
-      stop("Annotation column name not found in inputData.")
-    }
-    annotationData <- SummarizedExperiment::colData(inputData)[, annotationColNames, drop = FALSE]
-    inputData <-  SummarizedExperiment::colData(inputData)[, signatureColNames, drop = FALSE]
-  } else {
-    annotationColNames <- colnames(annotationData)
-  }
-  if (nrow(annotationData) == nrow(inputData)){
-    if (!all(rownames(annotationData) == rownames(inputData))){
-      stop("Annotation data and signature data does not match.")
-    }
-  } else if (nrow(annotationData) == ncol(inputData)){
-    if (!all(rownames(annotationData) == colnames(inputData))){
-      stop("Annotation data and signature data does not match.")
-    }
-    inputData <- t(inputData)
-  } else {
-    stop("Annotation data and signature data does not match.")
-  }
-
-  if (length(colList) == 0){
-    colorSetNum <- 1
-    for (annot in annotationColNames){
-      if (is.numeric(annotationData[, annot])){
-        t1min <- min(annotationData[, annot], na.rm = TRUE)
-        t1max <- max(annotationData[, annot], na.rm = TRUE)
-        colList[[annot]] <- circlize::colorRamp2(c(t1min, t1max),
-                                                 c("white", "blue"))
-      } else {
-        if (is.factor(annotationData[, annot][!is.na(annotationData[, annot])])){
-          condLevels <- levels(annotationData[, annot][!is.na(annotationData[, annot])])
-        } else {
-          condLevels <- unique(annotationData[, annot][!is.na(annotationData[, annot])])
-        }
-        if (length(condLevels) > 8){
-          colors <- distinctColors(length(condLevels))
-        } else {
-          colors <- RColorBrewer::brewer.pal(8, colorSets[colorSetNum])
-          colorSetNum <- colorSetNum + 1
-        }
-        colList[[annot]] <- stats::setNames(colors[seq_along(condLevels)],
-                                            condLevels)
+    if (!is.null(annotationColNames)) {
+      if (!all(annotationColNames %in% colnames(SummarizedExperiment::colData(inputData)))){
+        stop("Annotation column name not found in inputData.")
       }
+      annotationData <- SummarizedExperiment::colData(inputData)[, annotationColNames, drop = FALSE]
+      inputData <- SummarizedExperiment::colData(inputData)[, signatureColNames, drop = FALSE]
+    }
+  } else {
+    if (!is.null(annotationData)) {
+      annotationColNames <- colnames(annotationData)
     }
   }
-
-  topha2 <- ComplexHeatmap::HeatmapAnnotation(
-    df = data.frame(annotationData),
-    col = colList, height = grid::unit(0.4 * length(annotationColNames), "cm"),
-    show_legend = TRUE, show_annotation_name = TRUE)
+  if (!is.null(annotationData)) {
+    if (nrow(annotationData) == nrow(inputData)){
+      if (!all(rownames(annotationData) == rownames(inputData))){
+        stop("Annotation data and signature data does not match.")
+      }
+    } else if (nrow(annotationData) == ncol(inputData)){
+      if (!all(rownames(annotationData) == colnames(inputData))){
+        stop("Annotation data and signature data does not match.")
+      }
+      inputData <- t(inputData)
+    } else {
+      stop("Annotation data and signature data does not match.")
+    }
+  }
   sigresults <- t(as.matrix(inputData))
   keyname <- "Score"
   if (scale){
     sigresults <- t(scale(t(sigresults)))
     keyname <- "Scaled Score"
   }
-
-  return(ComplexHeatmap::draw(
-    ComplexHeatmap::Heatmap(sigresults, column_title = name,
-                            show_column_names = showColumnNames,
-                            col = choose_color,
-                            show_row_names = showRowNames,
-                            top_annotation = topha2, name = keyname, ...),
-    annotation_legend_side = "bottom"
-  ))
+  # To split heatmap by signatures
+  if (split_heatmap != "none") {
+    if (!(split_heatmap %in% colnames(annotationSignature))) {
+      stop("The column specified in 'split_heatmap' must be in the matrix or data.frame
+           provided by 'annotationSignature'")
+    }
+  }
+  ann_data <- annotationSignature[annotationSignature[, 1] %in%
+                                    signatureColNames, ]
+  ann_data <- ann_data[order(signatureColNames), ]
+  if (split_heatmap == "none") {
+    row_split_pass <- c()
+  } else {
+    row_split_pass <- ann_data[, split_heatmap]
+  }
+  # If there is no annotationData to draw on the heatmap
+  if (is.null(annotationData)) {
+    return(ComplexHeatmap::Heatmap(sigresults, column_title = name,
+                                   show_column_names = showColumnNames,
+                                   col = choose_color,
+                                   show_row_names = showRowNames,
+                                   name = keyname,
+                                   row_split = row_split_pass, ...))
+  } else {
+    if (length(colList) == 0){
+      colorSetNum <- 1
+      for (annot in annotationColNames){
+        if (is.numeric(annotationData[, annot])){
+          t1min <- min(annotationData[, annot], na.rm = TRUE)
+          t1max <- max(annotationData[, annot], na.rm = TRUE)
+          colList[[annot]] <- circlize::colorRamp2(c(t1min, t1max),
+                                                   c("white", "blue"))
+        } else {
+          if (is.factor(annotationData[, annot][!is.na(annotationData[, annot])])){
+            condLevels <- levels(annotationData[, annot][!is.na(annotationData[, annot])])
+          } else {
+            condLevels <- unique(annotationData[, annot][!is.na(annotationData[, annot])])
+          }
+          if (length(condLevels) > 8){
+            colors <- distinctColors(length(condLevels))
+          } else {
+            colors <- RColorBrewer::brewer.pal(8, colorSets[colorSetNum])
+            colorSetNum <- colorSetNum + 1
+          }
+          colList[[annot]] <- stats::setNames(colors[seq_along(condLevels)],
+                                              condLevels)
+        }
+      }
+    }
+    topha2 <- ComplexHeatmap::HeatmapAnnotation(
+      df = data.frame(annotationData),
+      col = colList, height = grid::unit(0.4 * length(annotationColNames), "cm"),
+      show_legend = TRUE, show_annotation_name = TRUE)
+    return(ComplexHeatmap::draw(
+      ComplexHeatmap::Heatmap(sigresults, column_title = name,
+                              show_column_names = showColumnNames,
+                              col = choose_color,
+                              show_row_names = showRowNames,
+                              top_annotation = topha2, name = keyname,
+                              row_split = row_split_pass, ...),
+      annotation_legend_side = "bottom"))
+  }
 }
 
-#' Plot a Boxplot of Signature Genes.
+#' Plot a boxplot of signature genes.
 #'
 #' @param inputData an input data object. It should either be of the class
 #' \code{SummarizedExperiment} and contain the profiled signature data and
@@ -313,7 +356,7 @@ signatureBoxplot <- function(inputData, annotationData, signatureColNames,
     ggplot2::ggtitle(name))
 }
 
-#' Plot a Heatmap of a Single Signature Score and Pathway Predictions.
+#' Plot a heatmap of a single signature score with individual gene expression levels.
 #'
 #' This function takes the profiled gene expression data for a single signature
 #' and creates a heatmap based on the expression scores.
@@ -332,7 +375,9 @@ signatureBoxplot <- function(inputData, annotationData, signatureColNames,
 #' @param signatureColNames a vector of the column names in the \code{colData}
 #' that contain the signature data. Required.
 #' @param annotationColNames a vector of the column names in the \code{colData}
-#' that contain the annotation data.
+#' that contain the annotation data. If \code{NULL}, no annotation bar besides
+#' those of the scoring algorithms will be drawn on the heatmap. The default
+#' is \code{NULL}.
 #' @param scale logical. Setting \code{scale = TRUE} scales the signature data.
 #' The default is \code{TRUE}.
 #' @param showColumnNames logical. Setting \code{showColumnNames = TRUE} will
@@ -414,12 +459,19 @@ signatureGeneHeatmap <- function(inputData, useAssay, sigGenes,
     pathwaycols <- NULL
     pathwaydata <- NULL
   }
-
-  annotationData <- data.frame(SummarizedExperiment::
-                                 colData(inputData)[, annotationColNames,
-                                                    drop = FALSE])
+  heatdata <- SummarizedExperiment::assay(
+    inputData, useAssay)[sigGenes[sigGenes %in% rownames(inputData)], ]
+  heatname <- useAssay
+  if (scale) {
+    heatdata <- heatdata[rowSums(heatdata) != 0, ]
+    heatdata <- t(scale(t(heatdata)))
+    heatname <- paste("Scaled", heatname, sep = "\n")
+  }
 
   if (!is.null(annotationColNames)) {
+    annotationData <- data.frame(SummarizedExperiment::
+                                   colData(inputData)[, annotationColNames,
+                                                      drop = FALSE])
     if (length(colList) == 0){
       colorSetNum <- 1
       for (annot in annotationColNames){
@@ -451,9 +503,10 @@ signatureGeneHeatmap <- function(inputData, useAssay, sigGenes,
         stop("The colList is out of sync with the annotation columns")
       }
     }
+    colList <- c(colList, pathwaycols)
+  } else {
+    colList <- pathwaycols
   }
-
-  colList <- c(colList, pathwaycols)
 
   if (!is.null(pathwaydata) | !is.null(annotationColNames)) {
     if (!is.null(annotationColNames) & !is.null(pathwaydata)) {
@@ -478,14 +531,6 @@ signatureGeneHeatmap <- function(inputData, useAssay, sigGenes,
   } else {
     topha <- NULL
   }
-  heatdata <- SummarizedExperiment::assay(
-    inputData, useAssay)[sigGenes[sigGenes %in% rownames(inputData)], ]
-  heatname <- useAssay
-  if (scale) {
-    heatdata <- heatdata[rowSums(heatdata) != 0, ]
-    heatdata <- t(scale(t(heatdata)))
-    heatname <- paste("Scaled", heatname, sep = "\n")
-  }
   return(ComplexHeatmap::draw(
     ComplexHeatmap::Heatmap(
       heatdata, show_column_names = showColumnNames,
@@ -496,7 +541,7 @@ signatureGeneHeatmap <- function(inputData, useAssay, sigGenes,
   )
 }
 
-#' Generate a Distinct Palette for Coloring Different Clusters.
+#' Generate a distinct palette for coloring different clusters.
 #'
 #' Create a distinct palette for coloring different heatmap clusters. The
 #' function returns colors for input into \code{ComplexHeatmap:Heatmap()},
@@ -515,8 +560,11 @@ signatureGeneHeatmap <- function(inputData, useAssay, sigGenes,
 #'
 #' @return A vector of distinct colors that have been converted to HEX from
 #' HSV.
+#' 
+#' #' @examples
+#' library(SummarizedExperiment)
+#' distinctColors(10)
 #'
-#' @export
 distinctColors <- function(n, hues = c("red", "cyan", "orange", "blue",
                                        "yellow", "purple", "green", "magenta"),
                            saturation.range = c(0.7, 1),

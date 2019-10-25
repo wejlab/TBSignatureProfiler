@@ -2,7 +2,7 @@
 % Please edit documentation in R/plot.R
 \name{signatureGeneHeatmap}
 \alias{signatureGeneHeatmap}
-\title{Plot a Heatmap of a Single Signature Score and Pathway Predictions.}
+\title{Plot a heatmap of a single signature score with individual gene expression levels.}
 \usage{
 signatureGeneHeatmap(inputData, useAssay, sigGenes, name = "Signature",
   signatureColNames = NULL, annotationColNames = NULL, scale = TRUE,
@@ -29,7 +29,9 @@ default is \code{"Signatures"}.}
 that contain the signature data. Required.}
 
 \item{annotationColNames}{a vector of the column names in the \code{colData}
-that contain the annotation data.}
+that contain the annotation data. If \code{NULL}, no annotation bar besides
+those of the scoring algorithms will be drawn on the heatmap. The default
+is \code{NULL}.}
 
 \item{scale}{logical. Setting \code{scale = TRUE} scales the signature data.
 The default is \code{TRUE}.}

@@ -1,6 +1,6 @@
 .myenv <- new.env(parent = emptyenv())
 
-#' Run Tuberculosis Gene Signature profiling
+#' Run TB gene signature profiling.
 #'
 #' Using some subset of the signatures listed in \code{TBsignatures} and
 #' specified scoring algorithms, this function runs gene signature profiling
@@ -103,7 +103,7 @@
 #'                              dimnames = list(paste0("gene", 1:100),
 #'                              paste0("sample", 1:10)))))
 #' res <- runTBsigProfiler(input = df_testdata,
-#'                         signatures = TBsignatures,
+#'                         signatures = TBsignatures["Zak_RISK_16"],
 #'                         algorithm = c("GSVA", "ssGSEA"),
 #'                         combineSigAndAlgorithm = FALSE,
 #'                         parallel.sz = 1)
@@ -113,12 +113,11 @@
 #'  # The TB_indian SummarizedExperiment data is included in the package.
 #' GSVA_res <- runTBsigProfiler(input = TB_indian,
 #'                              useAssay = "logcounts",
-#'                              signatures = TBsignatures,
+#'                              signatures = TBsignatures["Zak_RISK_16"],
 #'                              algorithm = c("GSVA"),
 #'                              combineSigAndAlgorithm = FALSE,
 #'                              parallel.sz = 1)
 #' GSVA_res$Zak_RISK_16
-#'
 runTBsigProfiler <- function(input, useAssay = NULL,
                              signatures = NULL,
                              algorithm = c("GSVA", "ssGSEA", "ASSIGN",
@@ -225,7 +224,6 @@ runTBsigProfiler <- function(input, useAssay = NULL,
                 so analysis will not run.")
       } else {
         if (!file.exists(i)) {
-          set.seed(1234)
           ASSIGN::assign.wrapper(testData = runindata, trainingLabel = NULL,
                                  geneList = currlist, adaptive_S = TRUE,
                                  iter = ASSIGNiter, burn_in = ASSIGNburnin,
@@ -457,22 +455,26 @@ runTBsigProfiler <- function(input, useAssay = NULL,
   }
 }
 
-#' Compare Scoring Algorithms on a Single Signature via Heatmap
+#' Compare scoring algorithms on a single signature via heatmap or boxplot.
 #'
 #' It may be useful to compare the results of scoring across several different
 #' scoring algorithms via a method of visualization, such as a heatmap. The
 #' \code{compareSigs} function allows the input of a data object and conducts
-#' profiling on each signature desired, and outputting a heatmap for each
-#' signature.
+#' profiling on each signature desired, and outputting a heatmap or boxplot
+#' for each signature.
 #'
 #' @inheritParams runTBsigProfiler
 #' @inheritParams signatureHeatmap
+#' @inheritParams compareBoxplots
 #' @param show.pb logical, whether warnings and other output
 #' from the profiling should be suppressed (including progress bar output).
 #' Default is \code{FALSE}.
+#' @param output a character string specifying whether the outputted plot
+#' should be a \code{"heatmap"} or \code{"boxplot"}. The default is
+#' \code{"heatmap"}.
 #'
-#' @return A heatmap for each signature specified comparing the enumerated
-#' algorithms.
+#' @return A heatmap or boxplot for each signature specified comparing
+#' the enumerated algorithms.
 #'
 #' @export
 #'
@@ -480,26 +482,27 @@ runTBsigProfiler <- function(input, useAssay = NULL,
 #'
 #' # Example using the TB_hiv data set, two signatures, and 3 algorithms
 #' data("TB_hiv")
-#' suppressWarnings({
-#'   compareAlgs(TB_hiv, signatures = TBsignatures[c(1,2)],
-#'               annotationColNames = "Disease",
-#'               algorithm = c("GSVA", "ssGSEA", "PLAGE"),
-#'               scale = TRUE, parallel.sz = 1)
-#' })
+#' compareAlgs(TB_hiv, signatures = TBsignatures[c(1,2)],
+#'             annotationColName = "Disease",
+#'             algorithm = c("GSVA", "ssGSEA", "PLAGE"),
+#'             scale = TRUE, parallel.sz = 1, output = "heatmap")
 #'
-compareAlgs <- function (input, signatures = NULL, annotationColNames,
-                         annotationData,
+compareAlgs <- function (input, signatures = NULL, annotationColName,
+                         annotationData, useAssay = "counts",
                          algorithm = c("GSVA", "ssGSEA", "ASSIGN", "PLAGE",
                                        "Zscore", "singscore"),
                          showColumnNames = TRUE,
                          showRowNames = TRUE, scale = FALSE,
-                         useAssay = "counts",
                          colorSets = c("Set1", "Set2", "Set3", "Pastel1",
                                        "Pastel2", "Accent", "Dark2",
                                        "Paired"),
-                         choose_color = c("blue", "gray95", "white"),
+                         choose_color = c("blue", "gray95", "red"),
                          colList = list(),
-                         show.pb = FALSE, parallel.sz = 0) {
+                         show.pb = FALSE, parallel.sz = 0, output = "heatmap",
+                         num.boot = 100) {
+  if (output != "heatmap" & output != "boxplot") {
+    stop("Output parameter must specify either 'heatmap' or 'boxplot'")
+  }
 
   if (is.null(signatures)) {
     # Override with global environment
@@ -536,16 +539,24 @@ compareAlgs <- function (input, signatures = NULL, annotationColNames,
                             %in% already.there))
     } else col.names <- colnames(scored)
 
-    return(signatureHeatmap(scored,
-                            name = new.name,
-                            annotationData = annotationData,
-                            signatureColNames = col.names,
-                            annotationColNames = annotationColNames,
-                            scale = scale,
-                            showColumnNames = showColumnNames,
-                            showRowNames = showRowNames,
-                            colorSets = colorSets, choose_color = choose_color,
-                            colList = colList))
+    if (output == "heatmap") {
+      return(signatureHeatmap(scored,
+                              name = new.name,
+                              annotationData = annotationData,
+                              signatureColNames = col.names,
+                              annotationColNames = annotationColName,
+                              scale = scale,
+                              showColumnNames = showColumnNames,
+                              showRowNames = showRowNames,
+                              colorSets = colorSets, choose_color = choose_color,
+                              colList = colList, split_heatmap = "none"))
+    } else if (output == "boxplot") {
+      return(compareBoxplots(scored,
+                             annotationColName = annotationColName,
+                             signatureColNames = col.names,
+                             num.boot = num.boot, name = new.name,
+                             pb.show = show.pb, rotateLabels = TRUE))
+    }
   }
 }
 
