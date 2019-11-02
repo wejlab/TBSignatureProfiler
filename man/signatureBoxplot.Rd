@@ -7,7 +7,7 @@
 signatureBoxplot(inputData, annotationData, signatureColNames,
   annotationColName, name = "Signatures", scale = FALSE,
   includePoints = TRUE, notch = FALSE, rotateLabels = FALSE,
-  nrow = NULL, ncol = NULL, fill_colors = c("#E41A1C", "#377EB8"))
+  nrow = NULL, ncol = NULL, fill_colors = NULL)
 }
 \arguments{
 \item{inputData}{an input data object. It should either be of the class
@@ -50,7 +50,8 @@ rotated. The default is \code{FALSE}.}
 \item{ncol}{integer giving the number of columns in the resulting array.}
 
 \item{fill_colors}{a vector of color names to be used as the fill colors for
-the boxplot. The default is \code{fill_colors = c("#E41A1C", "#377EB8").}}
+the boxplot. If \code{NULL}, colors will be supplied via RColorBrewer. 
+The default is \code{fill_colors = NULL}.}
 }
 \value{
 A \code{ggplot2} boxplot of the signature data using the provided

@@ -245,7 +245,8 @@ signatureHeatmap <- function(inputData, annotationData = NULL, name = "Signature
 #' @param nrow integer giving the number of rows in the resulting array.
 #' @param ncol integer giving the number of columns in the resulting array.
 #' @param fill_colors a vector of color names to be used as the fill colors for
-#' the boxplot. The default is \code{fill_colors = c("#E41A1C", "#377EB8").}
+#' the boxplot. If \code{NULL}, colors will be supplied via RColorBrewer. 
+#' The default is \code{fill_colors = NULL}.
 #'
 #' @return A \code{ggplot2} boxplot of the signature data using the provided
 #' annotation information.
@@ -281,7 +282,7 @@ signatureBoxplot <- function(inputData, annotationData, signatureColNames,
                              annotationColName, name = "Signatures",
                              scale = FALSE, includePoints = TRUE,
                              notch = FALSE, rotateLabels = FALSE, nrow = NULL,
-                             ncol = NULL, fill_colors = c("#E41A1C", "#377EB8")) {
+                             ncol = NULL, fill_colors = NULL) {
   if (methods::is(inputData, "SummarizedExperiment")){
     if (any(duplicated(signatureColNames))){
       stop("Duplicate signature column name is not supported.")
@@ -310,7 +311,8 @@ signatureBoxplot <- function(inputData, annotationData, signatureColNames,
   if (!is.factor(annotationData[, 1])) {
     annotationData[, 1] <- as.factor(annotationData[, 1])
   }
-  if (length(levels(annotationData[, 1])) > 9){
+  n <- length(levels(annotationData[, 1]))
+  if (n > 9){
     stop("Too many levels in the annotation data. The boxplot can contain a maximum of 9 levels")
   }
   # if number of rows equal number of row names
@@ -350,6 +352,9 @@ signatureBoxplot <- function(inputData, annotationData, signatureColNames,
   if (rotateLabels) {
     theplot <- theplot + ggplot2::theme(axis.text.x = ggplot2::
                                           element_text(angle = 90, hjust = 1))
+  }
+  if (is.null(fill_colors)) {
+    fill_colors <- RColorBrewer::brewer.pal(n, "Set1")
   }
   return(theplot +
     ggplot2::scale_fill_manual(values = fill_colors) +
