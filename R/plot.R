@@ -463,7 +463,7 @@ signatureGeneHeatmap <- function(inputData, useAssay, sigGenes,
     inputData, useAssay)[sigGenes[sigGenes %in% rownames(inputData)], ]
   heatname <- useAssay
   if (scale) {
-    heatdata <- heatdata[rowSums(heatdata) != 0, ]
+    heatdata <- heatdata[rowSums(heatdata, na.rm = TRUE) != 0, ]
     heatdata <- t(scale(t(heatdata)))
     heatname <- paste("Scaled", heatname, sep = "\n")
   }
