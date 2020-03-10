@@ -11,6 +11,6 @@
 #'   tbsignatureprofilerapp()
 #'
 tbsignatureprofilerapp= function() {
-  appDir <- system.file("shiny", package = "tbspapp")
+  appDir <- system.file("shiny", package = "TBSignatureProfiler")
   shiny::runApp(appDir, display.mode = "normal")
 }
