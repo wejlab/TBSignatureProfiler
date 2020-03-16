@@ -35,4 +35,11 @@ observeEvent(input$runprofiler,{
   vals$profilerdat=isolate(runTBsigProfiler(vals$tbdat, useAssay = input$profassay, signatures = TBsignatures, algorithm = input$profalg, combineSigAndAlgorithm = T, parallel.sz = 4))
     })
 
-
+observeEvent(input$runprofiler,{
+  output$allheat=NULL
+  output$indheat=NULL
+  output$boxplotind=NULL
+  output$heatcomp=NULL
+  output$bootbox=NULL
+  output$rocsep=NULL
+})
