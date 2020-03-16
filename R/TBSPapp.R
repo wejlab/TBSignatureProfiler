@@ -8,9 +8,9 @@
 #' @examples
 #' #Upload data through the app
 #' if(interactive()){
-#'   tbsignatureprofilerapp()
+#'   TBSPapp()
 #'
-tbsignatureprofilerapp= function() {
+TBSPapp= function() {
   appDir <- system.file("shiny", package = "TBSignatureProfiler")
   shiny::runApp(appDir, display.mode = "normal")
 }
