@@ -4,10 +4,19 @@
 \alias{signatureROCplot_CI}
 \title{Create an array of ROC plots with confidence interval bands to compare signatures.}
 \usage{
-signatureROCplot_CI(inputData, annotationData, signatureColNames,
-  annotationColName, scale = FALSE, choose_colors = c("cornflowerblue",
-  "gray50", "gray79"), name = NULL, nrow = NULL, ncol = NULL,
-  ci.lev = 0.95, pb.show = TRUE)
+signatureROCplot_CI(
+  inputData,
+  annotationData,
+  signatureColNames,
+  annotationColName,
+  scale = FALSE,
+  choose_colors = c("cornflowerblue", "gray50", "gray79"),
+  name = NULL,
+  nrow = NULL,
+  ncol = NULL,
+  ci.lev = 0.95,
+  pb.show = TRUE
+)
 }
 \arguments{
 \item{inputData}{an input data object. It should either be of the class

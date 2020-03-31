@@ -4,8 +4,13 @@
 \alias{bootstrapAUC}
 \title{Bootstrap the AUC and conduct T-Tests for a collection of signatures.}
 \usage{
-bootstrapAUC(SE_scored, annotationColName, signatureColNames,
-  num.boot = 100, pb.show = TRUE)
+bootstrapAUC(
+  SE_scored,
+  annotationColName,
+  signatureColNames,
+  num.boot = 100,
+  pb.show = TRUE
+)
 }
 \arguments{
 \item{SE_scored}{a \code{SummarizedExperiment} object with genes as the

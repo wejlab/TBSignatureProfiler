@@ -4,10 +4,18 @@
 \alias{compareBoxplots}
 \title{Create a comparison plot of boxplots for bootstrapped AUC values.}
 \usage{
-compareBoxplots(SE_scored, annotationColName, signatureColNames,
-  num.boot = 100, name = "Boxplot Comparison of Signature AUCs",
-  pb.show = TRUE, abline.col = "red", fill.col = "gray79",
-  outline.col = "black", rotateLabels = FALSE)
+compareBoxplots(
+  SE_scored,
+  annotationColName,
+  signatureColNames,
+  num.boot = 100,
+  name = "Boxplot Comparison of Signature AUCs",
+  pb.show = TRUE,
+  abline.col = "red",
+  fill.col = "gray79",
+  outline.col = "black",
+  rotateLabels = FALSE
+)
 }
 \arguments{
 \item{SE_scored}{a \code{SummarizedExperiment} object with genes as the

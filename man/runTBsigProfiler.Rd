@@ -10,11 +10,18 @@ singscore algorithm is conducted with the Bioconductor \code{singscore}
 package.
 }
 \usage{
-runTBsigProfiler(input, useAssay = NULL, signatures = NULL,
-  algorithm = c("GSVA", "ssGSEA", "ASSIGN", "PLAGE", "Zscore",
-  "singscore"), combineSigAndAlgorithm = FALSE, assignDir = NULL,
-  outputFormat = NULL, parallel.sz = 0, ASSIGNiter = 1e+05,
-  ASSIGNburnin = 50000)
+runTBsigProfiler(
+  input,
+  useAssay = NULL,
+  signatures = NULL,
+  algorithm = c("GSVA", "ssGSEA", "ASSIGN", "PLAGE", "Zscore", "singscore"),
+  combineSigAndAlgorithm = FALSE,
+  assignDir = NULL,
+  outputFormat = NULL,
+  parallel.sz = 0,
+  ASSIGNiter = 1e+05,
+  ASSIGNburnin = 50000
+)
 }
 \arguments{
 \item{input}{an input data object of the class \code{SummarizedExperiment},

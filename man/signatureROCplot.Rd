@@ -4,9 +4,17 @@
 \alias{signatureROCplot}
 \title{Create an array of ROC plots to compare signatures.}
 \usage{
-signatureROCplot(inputData, annotationData, signatureColNames,
-  annotationColName, scale = FALSE, choose_colors = c("cornflowerblue",
-  "gray24"), name = "Signatures", nrow = NULL, ncol = NULL)
+signatureROCplot(
+  inputData,
+  annotationData,
+  signatureColNames,
+  annotationColName,
+  scale = FALSE,
+  choose_colors = c("cornflowerblue", "gray24"),
+  name = "Signatures",
+  nrow = NULL,
+  ncol = NULL
+)
 }
 \arguments{
 \item{inputData}{an input data object. It should either be of the class

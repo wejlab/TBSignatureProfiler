@@ -4,10 +4,20 @@
 \alias{signatureBoxplot}
 \title{Plot a boxplot of signature genes.}
 \usage{
-signatureBoxplot(inputData, annotationData, signatureColNames,
-  annotationColName, name = "Signatures", scale = FALSE,
-  includePoints = TRUE, notch = FALSE, rotateLabels = FALSE,
-  nrow = NULL, ncol = NULL, fill_colors = NULL)
+signatureBoxplot(
+  inputData,
+  annotationData,
+  signatureColNames,
+  annotationColName,
+  name = "Signatures",
+  scale = FALSE,
+  includePoints = TRUE,
+  notch = FALSE,
+  rotateLabels = FALSE,
+  nrow = NULL,
+  ncol = NULL,
+  fill_colors = NULL
+)
 }
 \arguments{
 \item{inputData}{an input data object. It should either be of the class

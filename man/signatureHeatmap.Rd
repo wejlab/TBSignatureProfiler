@@ -4,12 +4,23 @@
 \alias{signatureHeatmap}
 \title{Plot a heatmap of signature scores.}
 \usage{
-signatureHeatmap(inputData, annotationData = NULL, name = "Signatures",
-  signatureColNames, annotationColNames = NULL, colList = list(),
-  scale = FALSE, showColumnNames = TRUE, showRowNames = TRUE,
-  colorSets = c("Set1", "Set2", "Set3", "Pastel1", "Pastel2", "Accent",
-  "Dark2", "Paired"), choose_color = c("blue", "gray95", "red"),
-  split_heatmap = "disease", annotationSignature = sigAnnotData, ...)
+signatureHeatmap(
+  inputData,
+  annotationData = NULL,
+  name = "Signatures",
+  signatureColNames,
+  annotationColNames = NULL,
+  colList = list(),
+  scale = FALSE,
+  showColumnNames = TRUE,
+  showRowNames = TRUE,
+  colorSets = c("Set1", "Set2", "Set3", "Pastel1", "Pastel2", "Accent", "Dark2",
+    "Paired"),
+  choose_color = c("blue", "gray95", "red"),
+  split_heatmap = "disease",
+  annotationSignature = sigAnnotData,
+  ...
+)
 }
 \arguments{
 \item{inputData}{an input data object. It should either be of the class

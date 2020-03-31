@@ -4,8 +4,14 @@
 \alias{tableAUC}
 \title{Create a table of results for t-tests and bootstrapped AUCs for multiple scored signatures.}
 \usage{
-tableAUC(SE_scored, annotationColName, signatureColNames, num.boot = 100,
-  pb.show = TRUE, output = "DataTable")
+tableAUC(
+  SE_scored,
+  annotationColName,
+  signatureColNames,
+  num.boot = 100,
+  pb.show = TRUE,
+  output = "DataTable"
+)
 }
 \arguments{
 \item{SE_scored}{a \code{SummarizedExperiment} object with genes as the

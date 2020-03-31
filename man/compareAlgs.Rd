@@ -4,14 +4,25 @@
 \alias{compareAlgs}
 \title{Compare scoring algorithms on a single signature via heatmap or boxplot.}
 \usage{
-compareAlgs(input, signatures = NULL, annotationColName, annotationData,
-  useAssay = "counts", algorithm = c("GSVA", "ssGSEA", "ASSIGN",
-  "PLAGE", "Zscore", "singscore"), showColumnNames = TRUE,
-  showRowNames = TRUE, scale = FALSE, colorSets = c("Set1", "Set2",
-  "Set3", "Pastel1", "Pastel2", "Accent", "Dark2", "Paired"),
-  choose_color = c("blue", "gray95", "red"), colList = list(),
-  show.pb = FALSE, parallel.sz = 0, output = "heatmap",
-  num.boot = 100)
+compareAlgs(
+  input,
+  signatures = NULL,
+  annotationColName,
+  annotationData,
+  useAssay = "counts",
+  algorithm = c("GSVA", "ssGSEA", "ASSIGN", "PLAGE", "Zscore", "singscore"),
+  showColumnNames = TRUE,
+  showRowNames = TRUE,
+  scale = FALSE,
+  colorSets = c("Set1", "Set2", "Set3", "Pastel1", "Pastel2", "Accent", "Dark2",
+    "Paired"),
+  choose_color = c("blue", "gray95", "red"),
+  colList = list(),
+  show.pb = FALSE,
+  parallel.sz = 0,
+  output = "heatmap",
+  num.boot = 100
+)
 }
 \arguments{
 \item{input}{an input data object of the class \code{SummarizedExperiment},

@@ -4,10 +4,19 @@
 \alias{plotQuantitative}
 \title{Create a boxplot using logistic regression and bootstrap LOOCV to evaluate signatures.}
 \usage{
-plotQuantitative(df.input, targetVec.num, signature.list = NULL,
-  signature.name.vec = NULL, num.boot = 100, pb.show = TRUE,
-  name = "Signature Evaluation: Bootstrapped AUCs", fill.col = "white",
-  outline.col = "black", abline.col = "red", rotateLabels = FALSE)
+plotQuantitative(
+  df.input,
+  targetVec.num,
+  signature.list = NULL,
+  signature.name.vec = NULL,
+  num.boot = 100,
+  pb.show = TRUE,
+  name = "Signature Evaluation: Bootstrapped AUCs",
+  fill.col = "white",
+  outline.col = "black",
+  abline.col = "red",
+  rotateLabels = FALSE
+)
 }
 \arguments{
 \item{df.input}{a \code{data.frame} of gene expression count data. Required.}

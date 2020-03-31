@@ -4,8 +4,14 @@
 \alias{SignatureQuantitative}
 \title{Use logistic regression and bootstrap LOOCV to evaluate signatures.}
 \usage{
-SignatureQuantitative(df.input, targetVec.num, signature.list = NULL,
-  signature.name.vec = NULL, num.boot = 100, pb.show = TRUE)
+SignatureQuantitative(
+  df.input,
+  targetVec.num,
+  signature.list = NULL,
+  signature.name.vec = NULL,
+  num.boot = 100,
+  pb.show = TRUE
+)
 }
 \arguments{
 \item{df.input}{a \code{data.frame} of gene expression count data. Required.}
