@@ -19,14 +19,14 @@ library(TBSignatureProfiler)
 library(shinycssloaders)
 
 
-siglist=names(TBsignatures)
+siglist = names(TBsignatures)
 
-ui <- fluidPage(theme=shinytheme('cosmo'),
+ui <- fluidPage(theme = shinytheme('cosmo'),
                 navbarPage("TB Signature Profiler",
-                           source(file.path('ui', 'ui_upload.R'), local=T)$value,
-                           source(file.path('ui', 'ui_profiler.R'), local=T)$value,
-                           source(file.path('ui', 'ui_visualization.R'), local=T)$value,
-                           source(file.path('ui', 'ui_auc.R'), local=T)$value
+                           source(file.path('ui', 'ui_upload.R'), local = TRUE)$value,
+                           source(file.path('ui', 'ui_profiler.R'), local = TRUE)$value,
+                           source(file.path('ui', 'ui_visualization.R'), local = TRUE)$value,
+                           source(file.path('ui', 'ui_auc.R'), local = TRUE)$value
                 )
 
 
@@ -34,18 +34,18 @@ ui <- fluidPage(theme=shinytheme('cosmo'),
 
 server <- function(input, output, session) {
 
-  vals=reactiveValues(
-    tbdat=NULL,
-    coldat=NULL,
-    covars=NULL,
-    datassays=NULL,
-    profilerdat=NULL
+  vals = reactiveValues(
+    tbdat = NULL,
+    coldat = NULL,
+    covars = NULL,
+    datassays = NULL,
+    profilerdat = NULL
   )
 
-  source(file.path('server', 'server_upload.R'), local=T)$value
-  source(file.path('server', 'server_profiler.R'), local=T)$value
-  source(file.path('server', 'server_visualization.R'), local=T)$value
-  source(file.path('server', 'server_auc.R'), local=T)$value
+  source(file.path('server', 'server_upload.R'), local = TRUE)$value
+  source(file.path('server', 'server_profiler.R'), local = TRUE)$value
+  source(file.path('server', 'server_visualization.R'), local = TRUE)$value
+  source(file.path('server', 'server_auc.R'), local = TRUE)$value
 
 }
 

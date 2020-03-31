@@ -568,7 +568,7 @@ signatureGeneHeatmap <- function(inputData, useAssay, sigGenes,
 #' 
 #' @export
 #' 
-#' #' @examples
+#' @examples
 #' library(SummarizedExperiment)
 #' distinctColors(10)
 #'

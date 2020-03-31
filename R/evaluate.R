@@ -105,7 +105,6 @@ Bootstrap_LOOCV_LR_AUC <- function(df, targetVec, nboot){
 #' with logistic regression to allow for numeric and graphical comparison
 #' across any number of genetic signatures.
 #'
-#' @inheritParams compareBoxplots
 #' @param df.input a \code{data.frame} of gene expression count data. Required.
 #' @param targetVec.num a numeric binary vector of the response variable.
 #' The vector should be the same number of rows as \code{df}. Required.
