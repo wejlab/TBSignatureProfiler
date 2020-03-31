@@ -94,7 +94,7 @@ bootstrapAUC <- function(SE_scored, annotationColName, signatureColNames,
 #'
 #' @examples
 #' # Run signature profiling
-#'  choose_sigs <- TBsignatures[1:5]
+#'  choose_sigs <- TBsignatures[1:2]
 #'  prof_indian <- runTBsigProfiler(TB_indian, useAssay = "logcounts",
 #'                                  algorithm = "ssGSEA",
 #'                                  signatures = choose_sigs,

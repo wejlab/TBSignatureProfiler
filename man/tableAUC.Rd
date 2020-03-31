@@ -44,7 +44,7 @@ R interface, or as a \code{data.frame}.
 }
 \examples{
 # Run signature profiling
- choose_sigs <- TBsignatures[1:5]
+ choose_sigs <- TBsignatures[1:2]
  prof_indian <- runTBsigProfiler(TB_indian, useAssay = "logcounts",
                                  algorithm = "ssGSEA",
                                  signatures = choose_sigs,
