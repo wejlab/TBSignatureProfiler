@@ -1,5 +1,5 @@
 language: R
-sudo: required
+sudo: none
 cache: packages
 warnings_are_errors: true
 r_build_args: "--no-build-vignettes"
