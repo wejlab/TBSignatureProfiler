@@ -170,8 +170,9 @@ tableAUC <- function(SE_scored, annotationColName, signatureColNames,
 #' @examples
 #' # Run signature profiling
 #'  choose_sigs <- TBsignatures[c(1, 2)]
-#'  prof_indian <- runTBsigProfiler(TB_indian, useAssay = "logcounts",
-#'                                  algorithm = "Zscores",
+#'  prof_indian <- runTBsigProfiler(TB_indian[seq_len(25), ],
+#'                                  useAssay = "logcounts",
+#'                                  algorithm = "ssGSEA",
 #'                                  signatures = choose_sigs,
 #'                                  parallel.sz = 1)
 #'  # Create boxplots
