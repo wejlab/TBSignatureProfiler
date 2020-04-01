@@ -4,7 +4,9 @@
 \name{TB_hiv}
 \alias{TB_hiv}
 \title{An example TB dataset with TB/HIV data.}
-\format{SummarizedExperiment}
+\format{
+SummarizedExperiment
+}
 \usage{
 TB_hiv
 }

@@ -40,7 +40,7 @@ for all signatures tested on a given dataset.
 }
 \examples{
  # Run signature profiling
- choose_sigs <- TBsignatures[1:6]
+ choose_sigs <- TBsignatures[c(1, 2)]
  prof_indian <- runTBsigProfiler(TB_indian, useAssay = "logcounts",
                                  algorithm = "ssGSEA",
                                  combineSigAndAlgorithm = TRUE,

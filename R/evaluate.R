@@ -14,7 +14,7 @@
 deseq2_norm_rle <- function(inputData){
     scalingFac <- DESeq2::estimateSizeFactorsForMatrix(inputData)
     inputDataScaled <- inputData
-    for (i in 1:ncol(inputData)) {
+    for (i in seq_len(ncol(inputData))) {
         inputDataScaled[, i] <- inputData[, i] / scalingFac[i]
     }
     return(inputDataScaled)
@@ -38,7 +38,7 @@ LOOAUC_simple_multiple_noplot_one_df <- function(df, targetVec){
   nSample <- ncol(df)
   testPredictionClassVec <- c()
   testPredictionProbVec <- c()
-  for (j in 1:nSample){
+  for (j in seq_len(nSample)){
     train <- t(as.matrix(df[, -j]))
     test <- t(as.matrix(df[, j]))
     fit <- suppressWarnings(glmnet::glmnet(train, targetVec[-j],
@@ -82,8 +82,8 @@ LOOAUC_simple_multiple_noplot_one_df <- function(df, targetVec){
 Bootstrap_LOOCV_LR_AUC <- function(df, targetVec, nboot){
   output.auc.vec <- c()
   output.byClass.df <- NULL
-  for (i in 1:nboot){
-    index.boot <- sample(1:ncol(df), ncol(df), replace = TRUE)
+  for (i in seq_len(nboot)){
+    index.boot <- sample(seq_len(ncol(df)), ncol(df), replace = TRUE)
     df.tmp <- df[, index.boot]
     loo.output.list <- suppressWarnings(
       LOOAUC_simple_multiple_noplot_one_df(df.tmp, targetVec[index.boot]))
@@ -131,8 +131,8 @@ Bootstrap_LOOCV_LR_AUC <- function(df, targetVec, nboot){
 #'
 #' @examples
 #' inputTest <- matrix(rnorm(1000), 100, 20,
-#'                     dimnames = list(paste0("gene", 1:100),
-#'                                     paste0("sample", 1:20)))
+#'                     dimnames = list(paste0("gene", seq.int(1, 100)),
+#'                                     paste0("sample", seq.int(1, 20))))
 #' inputTest <- as.data.frame(inputTest)
 #' targetVec <- sample(c(0,1), replace = TRUE, size = 20)
 #' signature.list <- list(sig1 = c("gene1", "gene2", "gene3"),
@@ -172,7 +172,7 @@ SignatureQuantitative <- function(df.input, targetVec.num, signature.list = NULL
   total <- length(signature.list)
   if (pb.show) pb <- utils::txtProgressBar(min = 0, max = total, style = 3)
 
-  for (i in 1:length(signature.list)) {
+  for (i in seq_along(signature.list)) {
     df.list[[i]] <- df.input[signature.list[[i]], ]
   }
 
@@ -181,7 +181,7 @@ SignatureQuantitative <- function(df.input, targetVec.num, signature.list = NULL
   sensitivity.ci <- list()
   specificity.ci <- list()
 
-  for (i in 1:length(df.list)) {
+  for (i in seq_along(df.list)) {
     boot.output.list <- suppressWarnings(Bootstrap_LOOCV_LR_AUC(df.list[[i]],
                                                                 targetVec.num,
                                                                 nboot = num.boot))
@@ -272,8 +272,8 @@ SignatureQuantitative <- function(df.input, targetVec.num, signature.list = NULL
 #'
 #' @examples
 #' inputTest <- matrix(rnorm(1000), 100, 20,
-#'                     dimnames = list(paste0("gene", 1:100),
-#'                                     paste0("sample", 1:20)))
+#'                     dimnames = list(paste0("gene", seq.int(1, 100)),
+#'                                     paste0("sample", seq.int(1, 100))))
 #' inputTest <- as.data.frame(inputTest)
 #' targetVec <- sample(c(0,1), replace = TRUE, size = 20)
 #' signature.list <- list(sig1 = c("gene1", "gene2", "gene3"),
@@ -316,13 +316,13 @@ plotQuantitative <- function(df.input, targetVec.num, signature.list = NULL,
   total <- length(signature.list)
   if (pb.show) pb <- utils::txtProgressBar(min = 0, max = total, style = 3)
 
-  for (i in 1:length(signature.list)) {
+  for (i in seq_along(signature.list)) {
     df.list[[i]] <- df.input[signature.list[[i]], ]
   }
 
   auc.result <- list()
 
-  for (i in 1:length(df.list)) {
+  for (i in seq_along(df.list)) {
     boot.output.list <- suppressWarnings(Bootstrap_LOOCV_LR_AUC(df.list[[i]],
                                                                 targetVec.num,
                                                                 nboot = num.boot))

@@ -96,10 +96,10 @@ provided in the TBSignatureProfiler package.
  # expression & five samples with high expression of the signatures genes.
 df_testdata <- as.data.frame(rbind(matrix(c(rnorm(80), rnorm(80) + 5), 16, 10,
                              dimnames = list(TBsignatures$Zak_RISK_16,
-                             paste0("sample", 1:10))),
+                             paste0("sample", seq_len(10)))),
                       matrix(rnorm(1000), 100, 10,
-                             dimnames = list(paste0("gene", 1:100),
-                             paste0("sample", 1:10)))))
+                             dimnames = list(paste0("gene", seq_len(100)),
+                             paste0("sample", seq_len(10))))))
 res <- runTBsigProfiler(input = df_testdata,
                         signatures = TBsignatures["Zak_RISK_16"],
                         algorithm = c("GSVA", "ssGSEA"),

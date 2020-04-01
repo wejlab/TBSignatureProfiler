@@ -69,8 +69,8 @@ AUC values.
 }
 \examples{
 inputTest <- matrix(rnorm(1000), 100, 20,
-                    dimnames = list(paste0("gene", 1:100),
-                                    paste0("sample", 1:20)))
+                    dimnames = list(paste0("gene", seq.int(1, 100)),
+                                    paste0("sample", seq.int(1, 100))))
 inputTest <- as.data.frame(inputTest)
 targetVec <- sample(c(0,1), replace = TRUE, size = 20)
 signature.list <- list(sig1 = c("gene1", "gene2", "gene3"),

@@ -72,10 +72,10 @@
 #' # Generate some artificial data that shows a difference in Zak_RISK_16
 #' mat_testdata <- rbind(matrix(c(rnorm(80), rnorm(80) + 5), 16, 10,
 #'                              dimnames = list(TBsignatures$Zak_RISK_16,
-#'                                              paste0("sample", 1:10))),
+#'                                              paste0("sample", seq_len(10)))),
 #'                       matrix(rnorm(1000), 100, 10,
-#'                              dimnames = list(paste0("gene", 1:100),
-#'                                              paste0("sample", 1:10))))
+#'                              dimnames = list(paste0("gene", seq_len(100)),
+#'                                              paste0("sample", seq_len(10)))))
 #' # Create a SummarizedExperiment object that contains the data
 #' testdataSE <- SummarizedExperiment(assays = SimpleList(data = mat_testdata),
 #'                                      colData = DataFrame(sample =
@@ -259,10 +259,10 @@ signatureHeatmap <- function(inputData, annotationData = NULL, name = "Signature
 #' # Generate some artificial data that shows a difference in Zak_RISK_16
 #' mat_testdata <- rbind(matrix(c(rnorm(80), rnorm(80) + 5), 16, 10,
 #'                              dimnames = list(TBsignatures$Zak_RISK_16,
-#'                                              paste0("sample", 1:10))),
+#'                                              paste0("sample", seq_len(10)))),
 #'                       matrix(rnorm(1000), 100, 10,
-#'                              dimnames = list(paste0("gene", 1:100),
-#'                                              paste0("sample", 1:10))))
+#'                              dimnames = list(paste0("gene", seq_len(100)),
+#'                                              paste0("sample", seq_len(10)))))
 #'
 #' # Create a SummarizedExperiment object that contains the data
 #' testdataSE <- SummarizedExperiment(assays = SimpleList(data = mat_testdata),
@@ -413,10 +413,10 @@ signatureBoxplot <- function(inputData, annotationData, signatureColNames,
 #' # Generate some artificial data that shows a difference in Zak_RISK_16
 #' mat_testdata <- rbind(matrix(c(rnorm(80), rnorm(80) + 5), 16, 10,
 #'                              dimnames = list(TBsignatures$Zak_RISK_16,
-#'                                              paste0("sample", 1:10))),
+#'                                              paste0("sample", seq_len(10)))),
 #'                       matrix(rnorm(1000), 100, 10,
-#'                              dimnames = list(paste0("gene", 1:100),
-#'                                              paste0("sample", 1:10))))
+#'                              dimnames = list(paste0("gene", seq_len(100)),
+#'                                              paste0("sample", seq_len(10)))))
 #'
 #' # Create a SummarizedExperiment object that contains the data
 #' testdataSE <- SummarizedExperiment(assays = SimpleList(data = mat_testdata),
@@ -597,7 +597,7 @@ distinctColors <- function(n, hues = c("red", "cyan", "orange", "blue",
 
   ## Create all combinations of hues with saturation/value pairs
   new.hsv <- c()
-  for (i in 1:num.vs) {
+  for (i in seq_len(num.vs)) {
     temp <- rbind(hues.hsv[1, ], s[i], v[i])
     new.hsv <- cbind(new.hsv, temp)
   }
@@ -605,6 +605,6 @@ distinctColors <- function(n, hues = c("red", "cyan", "orange", "blue",
   ## Convert to HEX
   col <- grDevices::hsv(new.hsv[1, ], new.hsv[2, ], new.hsv[3, ])
 
-  return(col[1:n])
+  return(col[seq_len(n)])
 }
 

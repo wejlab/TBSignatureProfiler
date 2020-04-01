@@ -4,7 +4,9 @@
 \name{common_sigAnnotData}
 \alias{common_sigAnnotData}
 \title{Annotation information for published TB signatures}
-\format{data.frame}
+\format{
+data.frame
+}
 \source{
 \itemize{
  \item{\strong{Anderson_42}}{: Anderson, Suzanne T., Myrsini Kaforou, Andrew J. Brent, Victoria J. Wright, Claire M. Banwell, George Chagaluka, Amelia C. Crampin, et al. 2014. "Diagnosis of Childhood Tuberculosis and Host RNA Expression in Africa." The New England Journal of Medicine 370 (18): 1712-23. \href{http://dx.doi.org/10.1056/NEJMoa1303657}{10.1056/NEJMoa1303657}}
