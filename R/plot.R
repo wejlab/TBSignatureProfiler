@@ -245,7 +245,7 @@ signatureHeatmap <- function(inputData, annotationData = NULL, name = "Signature
 #' @param nrow integer giving the number of rows in the resulting array.
 #' @param ncol integer giving the number of columns in the resulting array.
 #' @param fill_colors a vector of color names to be used as the fill colors for
-#' the boxplot. If \code{NULL}, colors will be supplied via RColorBrewer. 
+#' the boxplot. If \code{NULL}, colors will be supplied via RColorBrewer.
 #' The default is \code{fill_colors = NULL}.
 #'
 #' @return A \code{ggplot2} boxplot of the signature data using the provided
@@ -565,9 +565,9 @@ signatureGeneHeatmap <- function(inputData, useAssay, sigGenes,
 #'
 #' @return A vector of distinct colors that have been converted to HEX from
 #' HSV.
-#' 
+#'
 #' @export
-#' 
+#'
 #' @examples
 #' library(SummarizedExperiment)
 #' distinctColors(10)

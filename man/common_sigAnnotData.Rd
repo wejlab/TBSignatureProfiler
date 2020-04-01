@@ -60,7 +60,7 @@ Currently, this table includes two variables, \code{disease} and
 The \code{disease} variable indicates whether the signature was developed
 to distinguish TB from LTBI ("Disease"), TB from some combination of other
 diseases and possibly LTBI ("OD"), TB from Human Immunodeficiency Virus ("HIV"),
-TB from pneumonia ("PNA"), or identify risk of progression to TB ("RISK"), 
+TB from pneumonia ("PNA"), or identify risk of progression to TB ("RISK"),
 risk of TB treatment failure ("FAIL"), or classify treatment responses
 (i.e., failures from cures, "RES").
 

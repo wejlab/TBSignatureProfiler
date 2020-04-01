@@ -31,7 +31,7 @@ navbarMenu("Signature Visualization",
            tabPanel("Boxplots of Individual Signatures",
                     sidebarPanel(
                       pickerInput('singbox', 'Signature(s)', choices = siglist,
-                                  options = list('actions-box' = T),
+                                  options = list('actions-box' = TRUE),
                                   multiple = TRUE, selected = NULL),
                       hr(),
                       selectInput('singboxcovar', 'Covariate', choices = NULL),

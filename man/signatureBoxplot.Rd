@@ -60,7 +60,7 @@ rotated. The default is \code{FALSE}.}
 \item{ncol}{integer giving the number of columns in the resulting array.}
 
 \item{fill_colors}{a vector of color names to be used as the fill colors for
-the boxplot. If \code{NULL}, colors will be supplied via RColorBrewer. 
+the boxplot. If \code{NULL}, colors will be supplied via RColorBrewer.
 The default is \code{fill_colors = NULL}.}
 }
 \value{

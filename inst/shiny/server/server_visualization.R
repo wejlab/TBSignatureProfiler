@@ -17,7 +17,7 @@ observe({
 })
 
 observeEvent(input$allheatplot,
-             {output$allheat = renderPlot({
+             {output$allheat <- renderPlot({
                colors <- RColorBrewer::brewer.pal(6, "Spectral")
                col.me <- circlize::colorRamp2(seq(from = -2, to = 2,
                                                   length.out = 6), colors)
@@ -42,7 +42,7 @@ observe({
   if (is.null(vals$profilerdat)){
     updatePickerInput(session, 'singheat', choices = NULL)
   }
-  else{updatePickerInput(session, 'singheat', 
+  else{updatePickerInput(session, 'singheat',
                          choices = subset(siglist, siglist %in% colnames(
                            colData(vals$profilerdat))))
   }
@@ -54,7 +54,7 @@ observe({
 })
 
 observeEvent(input$singheatplot,
-             {output$indheat=renderPlot({
+             {output$indheat <- renderPlot({
                isolate({
                  print(signatureGeneHeatmap(inputData = vals$profilerdat,
                                             useAssay = input$profassay,
@@ -81,14 +81,14 @@ observe({
 })
 
 observeEvent(input$singboxplot,
-             {output$boxplotind=renderPlot({
+             {output$boxplotind <- renderPlot({
                isolate({print(signatureBoxplot(vals$profilerdat, signatureColNames = input$singbox,
                                       annotationColName = input$singboxcovar))})
                })
              })
 
 observe({
-  if(is.null(vals$profilerdat)){
+  if (is.null(vals$profilerdat)){
     updateSelectInput(session, 'singcomp', choices = NULL)
   }
   else{updateSelectInput(session, 'singcomp',
@@ -107,7 +107,7 @@ observe({
 })
 
 observeEvent(input$compplot,
-             {output$heatcomp = renderPlot({
+             {output$heatcomp <- renderPlot({
                isolate({suppressWarnings(compareAlgs(vals$profilerdat,
                                                      annotationColName = input$compcovar,
                                                      scale = TRUE,

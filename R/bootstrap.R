@@ -540,7 +540,7 @@ mkAssay <- function(SE_obj, input_name = "counts", output_name = NULL,
                     prior_counts = 3) {
 
   if (!(log | counts_to_CPM)) {
-    stop("At least counts_to_CPM or log must be TRUE.") 
+    stop("At least counts_to_CPM or log must be TRUE.")
   } else if (!(input_name %in% names(SummarizedExperiment::assays(SE_obj)))) {
     stop("input_name must be an SE_obj assay")
   }

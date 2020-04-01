@@ -1,12 +1,12 @@
-if("shiny" %in% rownames(installed.packages()) == FALSE) {install.packages("shiny")}
-if("shinyWidgets" %in% rownames(installed.packages()) == FALSE) {install.packages("shinyWidgets")}
-if("shinythemes" %in% rownames(installed.packages()) == FALSE) {install.packages("shinythemes")}
-if("markdown" %in% rownames(installed.packages()) == FALSE) {install.packages("markdown")}
-if("DT" %in% rownames(installed.packages()) == FALSE) {install.packages("DT")}
-if("BiocManager" %in% rownames(installed.packages()) == FALSE) {install.packages("BiocManager")}
-if("SummarizedExperiment" %in% rownames(installed.packages()) == FALSE) {install.packages("SummarizedExperiment")}
-if("TBSignatureProfiler" %in% rownames(installed.packages()) == FALSE) {devtools::install_github("compbiomed/TBSignatureProfiler")}
-if("shinycssloaders" %in% rownames(installed.packages()) == FALSE) {install.packages("shinycssloaders")}
+if ("shiny" %in% rownames(installed.packages()) == FALSE) {install.packages("shiny")}
+if ("shinyWidgets" %in% rownames(installed.packages()) == FALSE) {install.packages("shinyWidgets")}
+if ("shinythemes" %in% rownames(installed.packages()) == FALSE) {install.packages("shinythemes")}
+if ("markdown" %in% rownames(installed.packages()) == FALSE) {install.packages("markdown")}
+if ("DT" %in% rownames(installed.packages()) == FALSE) {install.packages("DT")}
+if ("BiocManager" %in% rownames(installed.packages()) == FALSE) {install.packages("BiocManager")}
+if ("SummarizedExperiment" %in% rownames(installed.packages()) == FALSE) {install.packages("SummarizedExperiment")}
+if ("TBSignatureProfiler" %in% rownames(installed.packages()) == FALSE) {devtools::install_github("compbiomed/TBSignatureProfiler")}
+if ("shinycssloaders" %in% rownames(installed.packages()) == FALSE) {install.packages("shinycssloaders")}
 
 library(shiny)
 library(shinyWidgets)
@@ -19,7 +19,7 @@ library(TBSignatureProfiler)
 library(shinycssloaders)
 
 
-siglist = names(TBsignatures)
+siglist <- names(TBsignatures)
 
 ui <- fluidPage(theme = shinytheme('cosmo'),
                 navbarPage("TB Signature Profiler",
@@ -34,7 +34,7 @@ ui <- fluidPage(theme = shinytheme('cosmo'),
 
 server <- function(input, output, session) {
 
-  vals = reactiveValues(
+  vals <- reactiveValues(
     tbdat = NULL,
     coldat = NULL,
     covars = NULL,

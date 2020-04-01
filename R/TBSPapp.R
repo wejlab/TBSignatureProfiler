@@ -6,9 +6,9 @@
 #'
 #'
 #' @return The Shiny application will open.
-#' 
+#'
 #' @export
-#' 
+#'
 #' @examples
 #' # Upload data through the app
 #' if (interactive()){

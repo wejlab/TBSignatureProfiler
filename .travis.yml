@@ -1,6 +1,8 @@
-language: R
-sudo: none
+language: r
+sudo: TRUE
 cache: packages
+dist: xenial
+os: linux
 warnings_are_errors: true
 r_build_args: "--no-build-vignettes"
 r_check_args: "--no-vignettes --no-build-vignettes --as-cran"

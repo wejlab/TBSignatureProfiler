@@ -20,7 +20,7 @@ tabPanel("Upload Data",
            conditionalPanel(condition = "input.dat == 'updat'",
                             radioButtons("updattype", "Choose File Type",
                                          choices = c('Tab Separated Text Files' = 'rawdat',
-                                                     'Summarized Experiment'='sumexp'),
+                                                     'Summarized Experiment' = 'sumexp'),
                                          selected = NULL)
            ),
            hr(),
