@@ -4,8 +4,14 @@
 \alias{mkAssay}
 \title{Add SummarizedExperiment assays to the data structure.}
 \usage{
-mkAssay(SE_obj, input_name = "counts", output_name = NULL,
-  log = FALSE, counts_to_CPM = TRUE, prior_counts = 3)
+mkAssay(
+  SE_obj,
+  input_name = "counts",
+  output_name = NULL,
+  log = FALSE,
+  counts_to_CPM = TRUE,
+  prior_counts = 3
+)
 }
 \arguments{
 \item{SE_obj}{a \code{SummarizedExperiment} object containing gene expression

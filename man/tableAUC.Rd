@@ -4,8 +4,14 @@
 \alias{tableAUC}
 \title{Create a table of results for t-tests and bootstrapped AUCs for multiple scored signatures.}
 \usage{
-tableAUC(SE_scored, annotationColName, signatureColNames, num.boot = 100,
-  pb.show = TRUE, output = "DataTable")
+tableAUC(
+  SE_scored,
+  annotationColName,
+  signatureColNames,
+  num.boot = 100,
+  pb.show = TRUE,
+  output = "DataTable"
+)
 }
 \arguments{
 \item{SE_scored}{a \code{SummarizedExperiment} object with genes as the
@@ -38,7 +44,7 @@ R interface, or as a \code{data.frame}.
 }
 \examples{
 # Run signature profiling
- choose_sigs <- TBsignatures[1:5]
+ choose_sigs <- TBsignatures[c(1, 2)]
  prof_indian <- runTBsigProfiler(TB_indian, useAssay = "logcounts",
                                  algorithm = "ssGSEA",
                                  signatures = choose_sigs,

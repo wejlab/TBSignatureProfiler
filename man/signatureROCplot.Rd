@@ -4,9 +4,17 @@
 \alias{signatureROCplot}
 \title{Create an array of ROC plots to compare signatures.}
 \usage{
-signatureROCplot(inputData, annotationData, signatureColNames,
-  annotationColName, scale = FALSE, choose_colors = c("cornflowerblue",
-  "gray24"), name = "Signatures", nrow = NULL, ncol = NULL)
+signatureROCplot(
+  inputData,
+  annotationData,
+  signatureColNames,
+  annotationColName,
+  scale = FALSE,
+  choose_colors = c("cornflowerblue", "gray24"),
+  name = "Signatures",
+  nrow = NULL,
+  ncol = NULL
+)
 }
 \arguments{
 \item{inputData}{an input data object. It should either be of the class
@@ -49,7 +57,7 @@ Create an array of ROC plots to compare signatures.
 \examples{
 # Run signature profiling
  choose_sigs <- subset(TBsignatures,
-                       !(names(TBsignatures) \%in\% c("Lee_4", "Roe_OD_4")))[1:6]
+                       !(names(TBsignatures) \%in\% c("Lee_4", "Roe_OD_4")))[c(1,2)]
  prof_indian <- runTBsigProfiler(TB_indian, useAssay = "logcounts",
                                  algorithm = "ssGSEA",
                                  signatures = choose_sigs,

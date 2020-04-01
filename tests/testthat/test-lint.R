@@ -7,6 +7,8 @@ if (requireNamespace("lintr", quietly = TRUE)) {
                                         lintr::closed_curly_linter,
                                         lintr::assignment_linter,
                                         lintr::commas_linter,
-                                        lintr::spaces_left_parentheses_linter))
+                                        lintr::spaces_left_parentheses_linter,
+                                        lintr::T_and_F_symbol_linter,
+                                        lintr::semicolon_terminator_linter))
   })
 }

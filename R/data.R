@@ -218,14 +218,14 @@
 #' A data.frame of annotation information for published tuberculosis signatures.
 #' Currently, this table includes two variables, \code{disease} and
 #' \code{tissue type}.
-#' 
+#'
 #' The \code{disease} variable indicates whether the signature was developed
 #' to distinguish TB from LTBI ("Disease"), TB from some combination of other
 #' diseases and possibly LTBI ("OD"), TB from Human Immunodeficiency Virus ("HIV"),
-#' TB from pneumonia ("PNA"), or identify risk of progression to TB ("RISK"), 
+#' TB from pneumonia ("PNA"), or identify risk of progression to TB ("RISK"),
 #' risk of TB treatment failure ("FAIL"), or classify treatment responses
 #' (i.e., failures from cures, "RES").
-#' 
+#'
 #' The \code{tissue type} variable denotes whether the signature was developed
 #' using samples of either whole blood/paxgene or peripheral blood mononuclear
 #' cells (PBMCs). Due to the manipulation of cells inherently required to obtain
@@ -285,14 +285,14 @@
 #' via a consistent naming system otherwise.
 #' Currently, this table includes two variables, \code{disease} and
 #' \code{tissue type}.
-#' 
+#'
 #' The \code{disease} variable indicates whether the signature was developed
 #' to distinguish TB from LTBI ("Disease"), TB from some combination of other
 #' diseases and possibly LTBI ("OD"), TB from Human Immunodeficiency Virus ("HIV"),
-#' TB from pneumonia ("PNA"), or identify risk of progression to TB ("RISK"), 
+#' TB from pneumonia ("PNA"), or identify risk of progression to TB ("RISK"),
 #' risk of TB treatment failure ("FAIL"), or classify treatment responses
 #' (i.e., failures from cures, "RES").
-#' 
+#'
 #' The \code{tissue type} variable denotes whether the signature was developed
 #' using samples of either whole blood/paxgene or peripheral blood mononuclear
 #' cells (PBMCs). Due to the manipulation of cells inherently required to obtain

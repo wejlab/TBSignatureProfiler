@@ -4,8 +4,14 @@
 \alias{SignatureQuantitative}
 \title{Use logistic regression and bootstrap LOOCV to evaluate signatures.}
 \usage{
-SignatureQuantitative(df.input, targetVec.num, signature.list = NULL,
-  signature.name.vec = NULL, num.boot = 100, pb.show = TRUE)
+SignatureQuantitative(
+  df.input,
+  targetVec.num,
+  signature.list = NULL,
+  signature.name.vec = NULL,
+  num.boot = 100,
+  pb.show = TRUE
+)
 }
 \arguments{
 \item{df.input}{a \code{data.frame} of gene expression count data. Required.}
@@ -45,8 +51,8 @@ across any number of genetic signatures.
 }
 \examples{
 inputTest <- matrix(rnorm(1000), 100, 20,
-                    dimnames = list(paste0("gene", 1:100),
-                                    paste0("sample", 1:20)))
+                    dimnames = list(paste0("gene", seq.int(1, 100)),
+                                    paste0("sample", seq.int(1, 20))))
 inputTest <- as.data.frame(inputTest)
 targetVec <- sample(c(0,1), replace = TRUE, size = 20)
 signature.list <- list(sig1 = c("gene1", "gene2", "gene3"),

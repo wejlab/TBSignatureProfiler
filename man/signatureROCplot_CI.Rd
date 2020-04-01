@@ -4,10 +4,19 @@
 \alias{signatureROCplot_CI}
 \title{Create an array of ROC plots with confidence interval bands to compare signatures.}
 \usage{
-signatureROCplot_CI(inputData, annotationData, signatureColNames,
-  annotationColName, scale = FALSE, choose_colors = c("cornflowerblue",
-  "gray50", "gray79"), name = NULL, nrow = NULL, ncol = NULL,
-  ci.lev = 0.95, pb.show = TRUE)
+signatureROCplot_CI(
+  inputData,
+  annotationData,
+  signatureColNames,
+  annotationColName,
+  scale = FALSE,
+  choose_colors = c("cornflowerblue", "gray50", "gray79"),
+  name = NULL,
+  nrow = NULL,
+  ncol = NULL,
+  ci.lev = 0.95,
+  pb.show = TRUE
+)
 }
 \arguments{
 \item{inputData}{an input data object. It should either be of the class
@@ -59,7 +68,7 @@ Create an array of ROC plots with confidence interval bands to compare signature
 \examples{
 # Run signature profiling
 
- choose_sigs <- TBsignatures[1:2]
+ choose_sigs <- TBsignatures[c(1, 2)]
  prof_indian <- runTBsigProfiler(TB_indian, useAssay = "logcounts",
                                  algorithm = "Zscore",
                                  signatures = choose_sigs,

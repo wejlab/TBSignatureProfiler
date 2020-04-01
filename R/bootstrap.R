@@ -22,7 +22,7 @@
 #'
 #' @examples
 #'  # Run signature profiling
-#'  choose_sigs <- TBsignatures[1:6]
+#'  choose_sigs <- TBsignatures[c(1, 2)]
 #'  prof_indian <- runTBsigProfiler(TB_indian, useAssay = "logcounts",
 #'                                  algorithm = "ssGSEA",
 #'                                  combineSigAndAlgorithm = TRUE,
@@ -57,8 +57,8 @@ bootstrapAUC <- function(SE_scored, annotationColName, signatureColNames,
 
     # Proceed with bootstrapping
     tmp_aucs <- NULL
-    for (j in 1:num.boot) {
-      index <- sample(1:length(score), replace = TRUE)
+    for (j in seq(1, num.boot)) {
+      index <- sample(seq_along(score), replace = TRUE)
       tmp_score <- score[index]
       tmp_annotationData <- annotationData[index]
       pred <- ROCit::rocit(tmp_score, tmp_annotationData)
@@ -94,7 +94,7 @@ bootstrapAUC <- function(SE_scored, annotationColName, signatureColNames,
 #'
 #' @examples
 #' # Run signature profiling
-#'  choose_sigs <- TBsignatures[1:5]
+#'  choose_sigs <- TBsignatures[c(1, 2)]
 #'  prof_indian <- runTBsigProfiler(TB_indian, useAssay = "logcounts",
 #'                                  algorithm = "ssGSEA",
 #'                                  signatures = choose_sigs,
@@ -169,9 +169,10 @@ tableAUC <- function(SE_scored, annotationColName, signatureColNames,
 #'
 #' @examples
 #' # Run signature profiling
-#'  choose_sigs <- TBsignatures[1:6]
-#'  prof_indian <- runTBsigProfiler(TB_indian, useAssay = "logcounts",
-#'                                  algorithm = "Zscores",
+#'  choose_sigs <- TBsignatures[c(1, 2)]
+#'  prof_indian <- runTBsigProfiler(TB_indian[seq_len(25), ],
+#'                                  useAssay = "logcounts",
+#'                                  algorithm = "ssGSEA",
 #'                                  signatures = choose_sigs,
 #'                                  parallel.sz = 1)
 #'  # Create boxplots
@@ -232,7 +233,7 @@ compareBoxplots <- function(SE_scored, annotationColName, signatureColNames,
 #' @examples
 #' # Run signature profiling
 #'  choose_sigs <- subset(TBsignatures,
-#'                        !(names(TBsignatures) %in% c("Lee_4", "Roe_OD_4")))[1:6]
+#'                        !(names(TBsignatures) %in% c("Lee_4", "Roe_OD_4")))[c(1,2)]
 #'  prof_indian <- runTBsigProfiler(TB_indian, useAssay = "logcounts",
 #'                                  algorithm = "ssGSEA",
 #'                                  signatures = choose_sigs,
@@ -352,7 +353,7 @@ signatureROCplot <- function(inputData, annotationData, signatureColNames,
 #' @examples
 #' # Run signature profiling
 #'
-#'  choose_sigs <- TBsignatures[1:2]
+#'  choose_sigs <- TBsignatures[c(1, 2)]
 #'  prof_indian <- runTBsigProfiler(TB_indian, useAssay = "logcounts",
 #'                                  algorithm = "Zscore",
 #'                                  signatures = choose_sigs,
@@ -451,7 +452,7 @@ signatureROCplot_CI <- function(inputData, annotationData, signatureColNames,
   }
 
   plot_dat <- as.data.frame(apply(plot_dat, 2, paste))
-  plot_dat[, 1:4] <- as.data.frame(apply(plot_dat[, 1:4], 2, as.numeric))
+  plot_dat[, seq(1, 4)] <- as.data.frame(apply(plot_dat[, seq(1, 4)], 2, as.numeric))
 
   if (is.null(name)) name <- paste("ROC Plots for Gene Signatures, ",
                                    ci.lev * 100,
@@ -540,7 +541,7 @@ mkAssay <- function(SE_obj, input_name = "counts", output_name = NULL,
                     prior_counts = 3) {
 
   if (!(log | counts_to_CPM)) {
-    stop("At least counts_to_CPM or log must be TRUE.") 
+    stop("At least counts_to_CPM or log must be TRUE.")
   } else if (!(input_name %in% names(SummarizedExperiment::assays(SE_obj)))) {
     stop("input_name must be an SE_obj assay")
   }

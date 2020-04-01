@@ -1,0 +1,17 @@
+language: r
+sudo: TRUE
+cache: packages
+dist: xenial
+os: linux
+warnings_are_errors: true
+r_build_args: "--no-build-vignettes"
+r_check_args: "--no-vignettes --no-build-vignettes --as-cran"
+bioc_required: true
+r_github_packages:
+- r-lib/covr
+- jimhester/lintr
+after_success:
+- Rscript -e 'covr::codecov()'
+env:
+  global:
+    secure: XNtbCYuBB32KK2T3mT55dh/0dHQPnqseQKwX3TNLe3MBGvkBMoMQLHhk4znwEifGBCe2twbPwfbwWZgNZ+u5+Fj1wXz7+I7pSsc94TqE1RG4D9BA5VlQnK297XzhohzM8oHxGEeAkeKzM3iMyFvRchzd7Iw8gh73SOC+7AlNswkhKf07wbXnngOP7RvEQVtho2rTOu5oGiMOCiWUTmNVgen/bNZp1LyrhIxGzXEWCG3lUxrqh9Vo3g+Se2pBtrfMP1jSJpkLXA5l3Pu6LJ/o9XeXn9VaVYCBI6PG402LQKmZOqCjbFQMShDQ5vOe7mcETW5zXe+s/FtoqKfjFA1gGjS7+eQc7/0POr0/bQmuBis4cd1jwb4j2Q6ihZSslGeDIaxK0xj2121tmdNiTWcpygxsJb9663xO31+v7QSidfEyic0yiDLO5+A5Wx9X2XQ/3ytqshRKFMNZkRLuXFe1gXckPNyMfVe/ihXL8kSenHT5iaiXloUoERp52zd1+RbDnglh/UVSg+HeQifWtTQ7z8PEtkgdP1KjGj7glNOfrsFC0vPnHZxh+XmFHlpbJpp58wZppxa6riuFo+mQT1AAtBCuuokHQLMbDSPYEBa4mr/MfqMIvFq4ba+NL6lh6C2yfJhe7xJ1dxd6Vq8t8RggRJNRnaXS7DHUybjGI1CcIUg=

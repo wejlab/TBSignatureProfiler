@@ -50,11 +50,20 @@ BiocManager::install("SummarizedExperiment")
 
 # A Tutorial for the TBSignature Profiler
 
+## Load packages
+
 ```{r setup}
 suppressPackageStartupMessages({
   library(SummarizedExperiment)
   library(TBSignatureProfiler)
 })
+```
+
+## Run Shiny App
+This command is to start the TBSignatureProfiler shiny app. The basic functions of the shiny app are also included in the command line version of the TBSignatureProfiler, which is the focus of the remainder of this vignette.
+
+```{R}
+TBSPapp()
 ```
 
 ## Load dataset from a SummarizedExperiment object

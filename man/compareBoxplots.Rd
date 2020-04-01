@@ -4,10 +4,18 @@
 \alias{compareBoxplots}
 \title{Create a comparison plot of boxplots for bootstrapped AUC values.}
 \usage{
-compareBoxplots(SE_scored, annotationColName, signatureColNames,
-  num.boot = 100, name = "Boxplot Comparison of Signature AUCs",
-  pb.show = TRUE, abline.col = "red", fill.col = "gray79",
-  outline.col = "black", rotateLabels = FALSE)
+compareBoxplots(
+  SE_scored,
+  annotationColName,
+  signatureColNames,
+  num.boot = 100,
+  name = "Boxplot Comparison of Signature AUCs",
+  pb.show = TRUE,
+  abline.col = "red",
+  fill.col = "gray79",
+  outline.col = "black",
+  rotateLabels = FALSE
+)
 }
 \arguments{
 \item{SE_scored}{a \code{SummarizedExperiment} object with genes as the
@@ -50,9 +58,10 @@ signatures via boxplots.
 }
 \examples{
 # Run signature profiling
- choose_sigs <- TBsignatures[1:6]
- prof_indian <- runTBsigProfiler(TB_indian, useAssay = "logcounts",
-                                 algorithm = "Zscores",
+ choose_sigs <- TBsignatures[c(1, 2)]
+ prof_indian <- runTBsigProfiler(TB_indian[seq_len(25), ],
+                                 useAssay = "logcounts",
+                                 algorithm = "ssGSEA",
                                  signatures = choose_sigs,
                                  parallel.sz = 1)
  # Create boxplots

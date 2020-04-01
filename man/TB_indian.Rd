@@ -4,7 +4,9 @@
 \name{TB_indian}
 \alias{TB_indian}
 \title{An example TB dataset with Indian population data.}
-\format{SummarizedExperiment}
+\format{
+SummarizedExperiment
+}
 \usage{
 TB_indian
 }

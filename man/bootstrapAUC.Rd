@@ -4,8 +4,13 @@
 \alias{bootstrapAUC}
 \title{Bootstrap the AUC and conduct T-Tests for a collection of signatures.}
 \usage{
-bootstrapAUC(SE_scored, annotationColName, signatureColNames,
-  num.boot = 100, pb.show = TRUE)
+bootstrapAUC(
+  SE_scored,
+  annotationColName,
+  signatureColNames,
+  num.boot = 100,
+  pb.show = TRUE
+)
 }
 \arguments{
 \item{SE_scored}{a \code{SummarizedExperiment} object with genes as the
@@ -35,7 +40,7 @@ for all signatures tested on a given dataset.
 }
 \examples{
  # Run signature profiling
- choose_sigs <- TBsignatures[1:6]
+ choose_sigs <- TBsignatures[c(1, 2)]
  prof_indian <- runTBsigProfiler(TB_indian, useAssay = "logcounts",
                                  algorithm = "ssGSEA",
                                  combineSigAndAlgorithm = TRUE,
