@@ -74,6 +74,12 @@ test_that("matrix input", {
     "matrix"
   )
   expect_is(
+    runTBsigProfiler(mat_testdata,
+                     signatures = TBsignatures['Zak_RISK_16'],
+                     algorithm = "singscore"),
+    "matrix"
+  )
+  expect_is(
     runTBsigProfiler(mat_testdata, outputFormat = "data.frame",
                      signatures = list(sig1 = paste0("gene", 1:10)),
                      algorithm = "GSVA", parallel.sz = 1),
@@ -142,6 +148,12 @@ test_that("data.frame input", {
     runTBsigProfiler(df_testdata,
                      signatures = list(sig1 = paste0("gene", 1:10)),
                      algorithm = "Zscore", ASSIGNiter = 100, ASSIGNburnin = 50),
+    "data.frame"
+  )
+  expect_is(
+    runTBsigProfiler(df_testdata,
+                     signatures = TBsignatures['Zak_RISK_16'],
+                     algorithm = "singscore", ASSIGNiter = 100, ASSIGNburnin = 50),
     "data.frame"
   )
   expect_is(
@@ -375,5 +387,35 @@ test_that("CompareAlgs function", {
                 output = "boxplot",
                 show.pb = TRUE),
     "Input must be a SummarizedExperiment object."
+  )
+})
+
+SummarizedExperiment::assays(SEtestdata)$`counts` <- rbind(
+  matrix(c(rpois(80, lambda = 50),
+           rpois(80, lambda = 50) + 5), 16, 10,
+         dimnames = list(TBsignatures$Zak_RISK_16,
+                         paste0("sample", 1:10))),
+  matrix(rpois(1000, lambda = 50), 100, 10,
+         dimnames = list(paste0("gene", 1:100),
+                         paste0("sample", 1:10))))
+SEtestdata <- mkAssay(SEtestdata, log = TRUE, input_name = "counts")
+test_that("other issues run smoothly", {
+  expect_is(
+    runTBsigProfiler(SEtestdata,
+                     signatures = list(sig1 = paste0("gene", 1:10)),
+                     combineSigAndAlgorithm = TRUE,
+                     useAssay = NULL,
+                     algorithm = c("ssGSEA"), ASSIGNiter = 100,
+                     ASSIGNburnin = 50, parallel.sz = 1),
+    "SummarizedExperiment"
+  )
+  expect_is(
+    runTBsigProfiler(SEtestdata,
+                     signatures = TBsignatures['Zak_RISK_16'],
+                     combineSigAndAlgorithm = TRUE,
+                     useAssay = "log_cpm",
+                     algorithm = c("singscore"), ASSIGNiter = 100,
+                     ASSIGNburnin = 50, parallel.sz = 1),
+    "SummarizedExperiment"
   )
 })

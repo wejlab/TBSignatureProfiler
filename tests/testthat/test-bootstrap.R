@@ -164,7 +164,7 @@ test_that("Run signatureROCplot_CI", {
   )
 })
 
-Mat_testdata <- rbind(matrix(c(rpois(80, lambda = 50), 
+Mat_testdata <- rbind(matrix(c(rpois(80, lambda = 50),
                                rpois(80, lambda = 50) + 5), 16, 10,
                              dimnames = list(TBsignatures$Zak_RISK_16,
                                              paste0("sample", 1:10))),
@@ -189,5 +189,5 @@ test_that("Run mk_Assay", {
     mkAssay(SEtestdata2, input_name = "not_here"),
     "input_name must be an SE_obj assay"
   )
-  
+
 })

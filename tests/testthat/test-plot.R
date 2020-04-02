@@ -63,7 +63,7 @@ test_that("Missing annotationData", {
     "The column specified in 'split_heatmap' must be in the matrix or data.frame
            provided by 'annotationSignature'")
   expect_error(
-    signatureHeatmap(inputData = dfres, 
+    signatureHeatmap(inputData = dfres,
                      annotationData = NULL,
                      scale = TRUE,
                      split_heatmap = "none"),

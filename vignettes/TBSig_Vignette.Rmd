@@ -62,7 +62,7 @@ suppressPackageStartupMessages({
 ## Run Shiny App
 This command is to start the TBSignatureProfiler shiny app. The basic functions of the shiny app are also included in the command line version of the TBSignatureProfiler, which is the focus of the remainder of this vignette.
 
-```{R}
+```{R Run shiny app, eval = FALSE}
 TBSPapp()
 ```
 

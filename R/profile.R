@@ -191,6 +191,7 @@ runTBsigProfiler <- function(input, useAssay = NULL,
   }
   singscore_res <- NULL
   if ("singscore" %in% algorithm) {
+    message("Running singscore")
     singscore_res <- matrix(ncol = ncol(runindata),
                             nrow = length(signatures),
                             dimnames = list(names(signatures),
@@ -433,7 +434,7 @@ runTBsigProfiler <- function(input, useAssay = NULL,
       dfres <- data.frame(sig_result)
       colnames(dfres) <- colnames(sig_result)
       return(dfres)
-    } 
+    }
   } else if (outputFormat == "matrix") {
     return(sig_result)
   } else if (outputFormat == "data.frame") {

@@ -5,23 +5,11 @@ inputTestmat <- matrix(rnorm(1000), 100, 20,
                     dimnames = list(paste0("gene", seq.int(1, 100)),
                                     paste0("sample", seq.int(1, 20))))
 inputTest <- as.data.frame(inputTestmat)
-target_Vec <- sample(c(0,1), replace = TRUE, size = 20)
+target_Vec <- sample(c(0, 1), replace = TRUE, size = 20)
 signaturelist <- list(sig1 = c("gene1", "gene2", "gene3"),
                        sig2 = c("gene4", "gene5", "gene6"))
 signaturenamevec <- c("sig1", "sig2")
 numboot <- 5
-
-
-test_that("deseq_norm_rle works", {
-  expect_is(
-    deseq2_norm_rle(inputTest),
-    "data.frame"
-  )
-  expect_is(
-    deseq2_norm_rle(inputTestmat),
-    "matrix"
-  )
-})
 
 test_that("LOOAUC works", {
   expect_is(
@@ -80,7 +68,7 @@ test_that("plotQuantitative works", {
                      signature.list = list(sig1 = c("gene1", "gene2", "gene3"),
                                            sig2 = c("gene4", "gene5", "gene6")),
                      signature.name.vec = c("sig1", "sig2"),
-                     num.boot = 3,
+                     num.boot = 20,
                      pb.show = TRUE,
                      rotateLabels = TRUE),
     "gg"
