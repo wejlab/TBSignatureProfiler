@@ -58,8 +58,8 @@
 #' object will have signatures on the rows and samples on the columns.
 #'
 #' @references
-#' Barbie,  D.A., Tamayo, P., Boehm, J.S., Kim, S.Y., Moody,	 S.E., Dunn, I.F., Schinzel, A.C.,
-#' Sandy, P., Meylan, E., Scholl, C., et al. (2009).  Systematic RNA interference reveals
+#' Barbie, D.A., Tamayo, P., Boehm, J.S., Kim, S.Y., Moody, S.E., Dunn, I.F., Schinzel, A.C.,
+#' Sandy, P., Meylan, E., Scholl, C., et al. (2009). Systematic RNA interference reveals
 #' that oncogenic	KRAS-driven cancers require TBK1. \emph{Nature} \strong{462}, 108-112.
 #' doi: \href{https://doi.org/10.1038/nature08460}{10.1038/nature08460}.
 #'
