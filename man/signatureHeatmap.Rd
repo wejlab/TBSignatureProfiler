@@ -31,7 +31,7 @@ Required.}
 
 \item{annotationData}{a \code{data.frame} or \code{matrix} of annotation
 data, with one column. Only required if \code{inputData} is a
-\code{data.frame} or \code{matrix} of signature data. 
+\code{data.frame} or \code{matrix} of signature data.
 The row names must equal those of the \code{inputData} column names.
 Default is \code{NULL}.}
 
