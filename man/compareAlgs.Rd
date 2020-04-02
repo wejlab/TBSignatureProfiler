@@ -8,7 +8,6 @@ compareAlgs(
   input,
   signatures = NULL,
   annotationColName,
-  annotationData,
   useAssay = "counts",
   algorithm = c("GSVA", "ssGSEA", "ASSIGN", "PLAGE", "Zscore", "singscore"),
   showColumnNames = TRUE,
@@ -25,8 +24,8 @@ compareAlgs(
 )
 }
 \arguments{
-\item{input}{an input data object of the class \code{SummarizedExperiment},
-\code{data.frame}, or \code{matrix} containing gene expression data. Required.}
+\item{input}{an input data object of the class \code{"SummarizedExperiment"}.
+Required.}
 
 \item{signatures}{a \code{list} of signatures to run with their associated genes.
 This list should be in the same format as \code{TBsignatures}, included in
@@ -36,10 +35,6 @@ of signatures \code{TBsignatures} list is used. For details, run
 
 \item{annotationColName}{a character string giving the column name in
 \code{colData} that contains the annotation data. Required.}
-
-\item{annotationData}{a \code{data.frame} or \code{matrix} of annotation
-data, with one column. Only required if \code{inputData} is a
-\code{data.frame} or \code{matrix} of signature data. Default is \code{NULL}.}
 
 \item{useAssay}{a character string specifying the assay to use for signature
 profiling when \code{input} is a \code{SummarizedExperiment}. Required only for
@@ -106,7 +101,8 @@ the enumerated algorithms.
 \description{
 It may be useful to compare the results of scoring across several different
 scoring algorithms via a method of visualization, such as a heatmap. The
-\code{compareSigs} function allows the input of a data object and conducts
+\code{compareSigs} function allows the input of a SummarizedExperiment
+data object and conducts
 profiling on each signature desired, and outputting a heatmap or boxplot
 for each signature.
 }

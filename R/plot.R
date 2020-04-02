@@ -14,7 +14,9 @@
 #' Required.
 #' @param annotationData a \code{data.frame} or \code{matrix} of annotation
 #' data, with one column. Only required if \code{inputData} is a
-#' \code{data.frame} or \code{matrix} of signature data. Default is \code{NULL}.
+#' \code{data.frame} or \code{matrix} of signature data.
+#' The row names must equal those of the \code{inputData} column names.
+#' Default is \code{NULL}.
 #' @param name a character string with the plot title of the heatmap. The
 #' default is \code{"Signatures"}.
 #' @param signatureColNames a vector of the column names in \code{colData} that
@@ -101,7 +103,8 @@
 #'                  colList = color.list, split_heatmap = "none")
 #'
 signatureHeatmap <- function(inputData, annotationData = NULL, name = "Signatures",
-                             signatureColNames, annotationColNames = NULL,
+                             signatureColNames,
+                             annotationColNames = NULL,
                              colList = list(), scale = FALSE,
                              showColumnNames = TRUE,
                              showRowNames = TRUE, colorSets = c("Set1", "Set2",
@@ -126,7 +129,9 @@ signatureHeatmap <- function(inputData, annotationData = NULL, name = "Signature
       inputData <- SummarizedExperiment::colData(inputData)[, signatureColNames, drop = FALSE]
     }
   } else {
-    if (!is.null(annotationData)) {
+    if (is.null(annotationData)) {
+      stop("annotationData must be provided for a data.frame input object.")
+    } else if (!is.null(annotationData)) {
       annotationColNames <- colnames(annotationData)
     }
   }
@@ -165,15 +170,7 @@ signatureHeatmap <- function(inputData, annotationData = NULL, name = "Signature
   } else {
     row_split_pass <- ann_data[, split_heatmap]
   }
-  # If there is no annotationData to draw on the heatmap
-  if (is.null(annotationData)) {
-    return(ComplexHeatmap::Heatmap(sigresults, column_title = name,
-                                   show_column_names = showColumnNames,
-                                   col = choose_color,
-                                   show_row_names = showRowNames,
-                                   name = keyname,
-                                   row_split = row_split_pass, ...))
-  } else {
+  if (!is.null(annotationData)) {
     if (length(colList) == 0){
       colorSetNum <- 1
       for (annot in annotationColNames){
@@ -354,6 +351,7 @@ signatureBoxplot <- function(inputData, annotationData, signatureColNames,
                                           element_text(angle = 90, hjust = 1))
   }
   if (is.null(fill_colors)) {
+    if (n < 3) n <- 3
     fill_colors <- RColorBrewer::brewer.pal(n, "Set1")
   }
   return(theplot +

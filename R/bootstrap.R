@@ -85,7 +85,7 @@ bootstrapAUC <- function(SE_scored, annotationColName, signatureColNames,
 #'
 #' @inheritParams bootstrapAUC
 #' @param output a character string indicating the table output format. Possible
-#' values are \code{"DataTable"} and \code{data.frame}. The default is
+#' values are \code{DataTable} and \code{data.frame}. The default is
 #' \code{DataTable}.
 #'
 #' @export
@@ -243,7 +243,8 @@ compareBoxplots <- function(SE_scored, annotationColName, signatureColNames,
 #' signatureROCplot(prof_indian, signatureColNames = names(choose_sigs),
 #'                  annotationColName = "label")
 #'
-signatureROCplot <- function(inputData, annotationData, signatureColNames,
+signatureROCplot <- function(inputData, annotationData,
+                             signatureColNames,
                              annotationColName, scale = FALSE,
                              choose_colors = c("cornflowerblue", "gray24"),
                              name = "Signatures", nrow = NULL, ncol = NULL) {

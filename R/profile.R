@@ -58,8 +58,8 @@
 #' object will have signatures on the rows and samples on the columns.
 #'
 #' @references
-#' Barbie,  D.A., Tamayo, P., Boehm, J.S., Kim, S.Y., Moody,	 S.E., Dunn, I.F., Schinzel, A.C.,
-#' Sandy, P., Meylan, E., Scholl, C., et al. (2009).  Systematic RNA interference reveals
+#' Barbie, D.A., Tamayo, P., Boehm, J.S., Kim, S.Y., Moody, S.E., Dunn, I.F., Schinzel, A.C.,
+#' Sandy, P., Meylan, E., Scholl, C., et al. (2009). Systematic RNA interference reveals
 #' that oncogenic	KRAS-driven cancers require TBK1. \emph{Nature} \strong{462}, 108-112.
 #' doi: \href{https://doi.org/10.1038/nature08460}{10.1038/nature08460}.
 #'
@@ -147,8 +147,7 @@ runTBsigProfiler <- function(input, useAssay = NULL,
     }
     runindata <- SummarizedExperiment::assay(input, useAssay)
     if (!combineSigAndAlgorithm & length(algorithm) > 1) {
-      stop("SummarizedExperiment not supported with ",
-           "combineSigAndAlgorithm FALSE.")
+      stop("SummarizedExperiment not supported with combineSigAndAlgorithm FALSE.")
     }
   } else if (!is.null(useAssay)) {
     stop("useAssay only supported for SummarizedExperiment objects")
@@ -192,6 +191,7 @@ runTBsigProfiler <- function(input, useAssay = NULL,
   }
   singscore_res <- NULL
   if ("singscore" %in% algorithm) {
+    message("Running singscore")
     singscore_res <- matrix(ncol = ncol(runindata),
                             nrow = length(signatures),
                             dimnames = list(names(signatures),
@@ -321,12 +321,10 @@ runTBsigProfiler <- function(input, useAssay = NULL,
     } else {
       if (!is.null(outputFormat)) {
         if (outputFormat == "SummarizedExperiment") {
-          stop("SummarizedExperiment not supported with",
-               " combineSigAndAlgorithm FALSE.")
+          stop("SummarizedExperiment not supported with combineSigAndAlgorithm FALSE.")
         }
       } else if (methods::is(input, "SummarizedExperiment")) {
-        stop("SummarizedExperiment not supported with ",
-             "combineSigAndAlgorithm FALSE.")
+        stop("SummarizedExperiment not supported with combineSigAndAlgorithm FALSE.")
       }
       if (!is.null(gsvaRes)) {
         alg_col <- gsvaRes[, 1, drop = FALSE]
@@ -436,8 +434,6 @@ runTBsigProfiler <- function(input, useAssay = NULL,
       dfres <- data.frame(sig_result)
       colnames(dfres) <- colnames(sig_result)
       return(dfres)
-    } else {
-      stop("Output format error.")
     }
   } else if (outputFormat == "matrix") {
     return(sig_result)
@@ -459,13 +455,16 @@ runTBsigProfiler <- function(input, useAssay = NULL,
 #'
 #' It may be useful to compare the results of scoring across several different
 #' scoring algorithms via a method of visualization, such as a heatmap. The
-#' \code{compareSigs} function allows the input of a data object and conducts
+#' \code{compareSigs} function allows the input of a SummarizedExperiment
+#' data object and conducts
 #' profiling on each signature desired, and outputting a heatmap or boxplot
 #' for each signature.
 #'
 #' @inheritParams runTBsigProfiler
 #' @inheritParams signatureHeatmap
 #' @inheritParams compareBoxplots
+#' @param input an input data object of the class \code{"SummarizedExperiment"}.
+#' Required.
 #' @param show.pb logical, whether warnings and other output
 #' from the profiling should be suppressed (including progress bar output).
 #' Default is \code{FALSE}.
@@ -488,7 +487,7 @@ runTBsigProfiler <- function(input, useAssay = NULL,
 #'             scale = TRUE, parallel.sz = 1, output = "heatmap")
 #'
 compareAlgs <- function (input, signatures = NULL, annotationColName,
-                         annotationData, useAssay = "counts",
+                         useAssay = "counts",
                          algorithm = c("GSVA", "ssGSEA", "ASSIGN", "PLAGE",
                                        "Zscore", "singscore"),
                          showColumnNames = TRUE,
@@ -537,12 +536,11 @@ compareAlgs <- function (input, signatures = NULL, annotationColName,
       col.names <- subset(names(SummarizedExperiment::colData(scored)),
                           !(names(SummarizedExperiment::colData(scored))
                             %in% already.there))
-    } else col.names <- colnames(scored)
+    } else stop("Input must be a SummarizedExperiment object.")
 
     if (output == "heatmap") {
       return(signatureHeatmap(scored,
                               name = new.name,
-                              annotationData = annotationData,
                               signatureColNames = col.names,
                               annotationColNames = annotationColName,
                               scale = scale,
