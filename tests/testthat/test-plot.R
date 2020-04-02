@@ -26,6 +26,8 @@ dfres <- runTBsigProfiler(SE_testdata, useAssay = "data",
 df_errornames <- dfres
 colnames(df_errornames)[1] <- "errorname"
 terrorname <- t(df_errornames)
+SummarizedExperiment::colData(SE_wres)$`Notfac` <- c(rep("yes", 5),
+                                                     rep("no", 5))
 
 test_that("Missing annotationData", {
   #signatureHeatmap
@@ -54,6 +56,18 @@ test_that("Missing annotationData", {
     signatureHeatmap(inputData = df_errornames[, 1:5],
                      annotationData = annotdata),
     "Annotation data and signature data does not match.")
+  expect_error(
+    signatureHeatmap(inputData = SE_wres, signatureColNames = "sig1",
+                     annotationColNames = "sample", scale = TRUE,
+                     split_heatmap = "wrong"),
+    "The column specified in 'split_heatmap' must be in the matrix or data.frame
+           provided by 'annotationSignature'")
+  expect_error(
+    signatureHeatmap(inputData = dfres, 
+                     annotationData = NULL,
+                     scale = TRUE,
+                     split_heatmap = "none"),
+    "annotationData must be provided for a data.frame input object.")
 
   #signatureBoxplot
   expect_error(
@@ -132,6 +146,16 @@ test_that("Missing annotationData", {
                          annotationColNames = c("sample"),
                          colList = list("wrong" = c("yes" = "blue"))),
     "The colList is out of sync with the annotation columns")
+  expect_is(
+    signatureGeneHeatmap(inputData = SE_wres, useAssay = "data",
+                         sigGenes = TBsignatures$Zak_RISK_16,
+                         annotationColNames = c("sample")),
+    "HeatmapList")
+  expect_is(
+    signatureGeneHeatmap(inputData = SE_wres, useAssay = "data",
+                         sigGenes = TBsignatures$Zak_RISK_16,
+                         annotationColNames = c("Notfac")),
+    "HeatmapList")
 })
 
 test_that("SummarizedExperiment Plot Works", {
@@ -142,7 +166,14 @@ test_that("SummarizedExperiment Plot Works", {
   )
   expect_is(
     signatureHeatmap(inputData = SE_wres, signatureColNames = "sig1",
-                     annotationColNames = "sample", scale = TRUE),
+                     annotationColNames = "sample", scale = TRUE,
+                     split_heatmap = "none"),
+    "HeatmapList"
+  )
+  expect_is(
+    signatureHeatmap(inputData = SE_wres, signatureColNames = "sig1",
+                     annotationColNames = "sample", scale = TRUE,
+                     split_heatmap = "none"),
     "HeatmapList"
   )
 
@@ -198,7 +229,8 @@ test_that("DataFrame Plot Works", {
   )
   expect_is(
     signatureBoxplot(inputData = dfres,
-                     annotationData = annotdata[, 1, drop = FALSE]),
+                     annotationData = annotdata[, 1, drop = FALSE],
+                     rotateLabels = TRUE),
     "ggplot"
   )
 })

@@ -7,7 +7,7 @@
 signatureROCplot(
   inputData,
   annotationData,
-  signatureColNames = NULL,
+  signatureColNames,
   annotationColName,
   scale = FALSE,
   choose_colors = c("cornflowerblue", "gray24"),

@@ -101,7 +101,8 @@
 #'                  colList = color.list, split_heatmap = "none")
 #'
 signatureHeatmap <- function(inputData, annotationData = NULL, name = "Signatures",
-                             signatureColNames, annotationColNames = NULL,
+                             signatureColNames,
+                             annotationColNames = NULL,
                              colList = list(), scale = FALSE,
                              showColumnNames = TRUE,
                              showRowNames = TRUE, colorSets = c("Set1", "Set2",
@@ -126,7 +127,9 @@ signatureHeatmap <- function(inputData, annotationData = NULL, name = "Signature
       inputData <- SummarizedExperiment::colData(inputData)[, signatureColNames, drop = FALSE]
     }
   } else {
-    if (!is.null(annotationData)) {
+    if (is.null(annotationData)) {
+      stop("annotationData must be provided for a data.frame input object.")
+    } else if (!is.null(annotationData)) {
       annotationColNames <- colnames(annotationData)
     }
   }
@@ -165,15 +168,7 @@ signatureHeatmap <- function(inputData, annotationData = NULL, name = "Signature
   } else {
     row_split_pass <- ann_data[, split_heatmap]
   }
-  # If there is no annotationData to draw on the heatmap
-  if (is.null(annotationData)) {
-    return(ComplexHeatmap::Heatmap(sigresults, column_title = name,
-                                   show_column_names = showColumnNames,
-                                   col = choose_color,
-                                   show_row_names = showRowNames,
-                                   name = keyname,
-                                   row_split = row_split_pass, ...))
-  } else {
+  if (!is.null(annotationData)) {
     if (length(colList) == 0){
       colorSetNum <- 1
       for (annot in annotationColNames){
