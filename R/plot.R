@@ -354,6 +354,7 @@ signatureBoxplot <- function(inputData, annotationData, signatureColNames,
                                           element_text(angle = 90, hjust = 1))
   }
   if (is.null(fill_colors)) {
+    if (n < 3) n <- 3
     fill_colors <- RColorBrewer::brewer.pal(n, "Set1")
   }
   return(theplot +

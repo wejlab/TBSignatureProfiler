@@ -1,5 +1,5 @@
 language: r
-sudo: TRUE
+sudo: true
 cache: packages
 dist: xenial
 os: linux

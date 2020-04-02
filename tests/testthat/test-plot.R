@@ -193,7 +193,7 @@ test_that("DataFrame Plot Works", {
   expect_is(
     signatureHeatmap(inputData = dfres,
                      annotationData = annotdata,
-                     signatureColNames = "sig1"),
+                     signatureColNames = c("sig1")),
     "HeatmapList"
   )
   expect_is(

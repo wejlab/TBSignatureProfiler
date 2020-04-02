@@ -31,7 +31,7 @@ default is \code{100}.}
 The default is \code{TRUE}.}
 
 \item{output}{a character string indicating the table output format. Possible
-values are \code{"DataTable"} and \code{data.frame}. The default is
+values are \code{DataTable} and \code{data.frame}. The default is
 \code{DataTable}.}
 }
 \value{
