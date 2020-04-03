@@ -18,6 +18,9 @@
 #' @return A list of length 3 returning a vector of p-values for a 2-sample
 #' t-test, bootstrapped AUC values, and an AUC value for using all scored values
 #' for all signatures specified in \code{signatureColNames}.
+#' 
+#' @import BiocParallel bioDist readr boot ggfortify e1071
+#' 
 #' @export
 #'
 #' @examples
