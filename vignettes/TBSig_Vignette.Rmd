@@ -326,24 +326,24 @@ plotQuantitative(hivtb_norm, targetVec.num = colData(hivtb_data)$BinaryTB,
 ### Table of AUC Results
 ```{r AUC sigeval}
 DT::datatable(round(quantitative.result$df.auc.ci, 4),
-              options = list(scrollX = T, pageLength = 10), 
-              rownames = F)
+              options = list(scrollX = TRUE, pageLength = 10), 
+              rownames = FALSE)
 ```
 
 
 ### Table of Sensitivity Results
 ```{r sens sigeval}
 DT::datatable(round(quantitative.result$df.sensitivity.ci, 4),
-              options = list(scrollX = T, pageLength = 10), 
-              rownames = F)
+              options = list(scrollX = TRUE, pageLength = 10), 
+              rownames = FALSE)
 ```
 
 
 ### Table of Specificity Results
 ```{r spec sigeval}
 DT::datatable(round(quantitative.result$df.specificity.ci, 4),
-              options = list(scrollX = T, pageLength = 10), 
-              rownames = F)
+              options = list(scrollX = TRUE, pageLength = 10), 
+              rownames = FALSE)
 ```
 
 ```{r session info}
