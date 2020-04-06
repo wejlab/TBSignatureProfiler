@@ -16,6 +16,8 @@ Encoding: UTF-8
 biocViews: GeneExpression, DifferentialExpression
 LazyData: true
 RoxygenNote: 7.1.0
+Depends:
+    R 
 Imports:
     ASSIGN,
     GSVA,
@@ -51,6 +53,4 @@ Suggests:
 URL: https://github.com/compbiomed/TBSignatureProfiler
 BugReports: https://github.com/compbiomed/TBSignatureProfiler/issues
 Language: en-US
-Depends:
-    R (>= 3.6)
 VignetteBuilder: knitr

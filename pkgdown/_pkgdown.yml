@@ -1,7 +1,6 @@
 template:
   params:
     bootswatch: yeti
-  url: https://aubreyodom.github.io/TBSignatureProfiler/.
 
   right:
     - icon: fa-github

@@ -19,8 +19,6 @@
 #' t-test, bootstrapped AUC values, and an AUC value for using all scored values
 #' for all signatures specified in \code{signatureColNames}.
 #'
-#' @import BiocParallel bioDist readr boot ggfortify e1071
-#'
 #' @export
 #'
 #' @examples

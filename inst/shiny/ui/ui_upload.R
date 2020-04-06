@@ -1,41 +1,41 @@
-tabPanel("Upload Data",
+shiny::tabPanel("Upload Data",
          tags$div(
            class = "jumbotron", style = "background-color:#ededed",
            tags$div(
              class = "container",
-             h1("TB Signature Profiler"),
-             p("Score, compare and visualize gene signatures"),
+             shiny::h1("TB Signature Profiler"),
+             shiny::p("Score, compare and visualize gene signatures"),
            )
          ),
-         sidebarPanel(
-           radioButtons("dat", "Select Data",
+         shiny::sidebarPanel(
+           shiny::radioButtons("dat", "Select Data",
                         choices = c("Sample Data" = "samp",
                                     "Upload Data" = "updat")),
-           conditionalPanel(condition = "input.dat == 'samp'",
-                            radioButtons("sampdat", "Sample Datasets",
+           shiny::conditionalPanel(condition = "input.dat == 'samp'",
+                                   shiny::radioButtons("sampdat", "Sample Datasets",
                                          choices = c('TB HIV' = 'tbhiv',
                                                      'TB Indian' = 'tbind'),
                                          selected = NULL)
            ),
-           conditionalPanel(condition = "input.dat == 'updat'",
-                            radioButtons("updattype", "Choose File Type",
+           shiny::conditionalPanel(condition = "input.dat == 'updat'",
+                                   shiny::radioButtons("updattype", "Choose File Type",
                                          choices = c('Tab Separated Text Files' = 'rawdat',
                                                      'Summarized Experiment' = 'sumexp'),
                                          selected = NULL)
            ),
-           hr(),
-           actionButton('upload', 'Upload')
+           shiny::hr(),
+           shiny::actionButton('upload', 'Upload')
          ),
-         mainPanel(
-           conditionalPanel(condition = "input.dat == 'updat'",
-                            conditionalPanel(condition = "input.updattype == 'rawdat'",
-                                             column(width = 4,
-                                                    wellPanel(
-                                                      h4("Upload Count File"),
-                                                      fileInput(
-                                                        "countsfile",
-                                                        HTML(
-                                                          paste("Input assay (eg. counts, required):",
+         shiny::mainPanel(
+           shiny::conditionalPanel(condition = "input.dat == 'updat'",
+                                   shiny::conditionalPanel(condition = "input.updattype == 'rawdat'",
+                                                           shiny::column(width = 4,
+                                                                         shiny::wellPanel(
+                                                                           shiny::h4("Upload Count File"),
+                                                                           shiny::fileInput(
+                                                                             "countsfile",
+                                                                             shiny::HTML(
+                                                          base::paste("Input assay (eg. counts, required):",
                                                                 tags$span(style = "color:red", "*", sep = ""))
                                                         ),
                                                         accept = c(
@@ -47,13 +47,13 @@ tabPanel("Upload Data",
                                                       )
                                                     )
                                              ),
-                                             column(width = 4,
-                                                    wellPanel(
-                                                      h4("Upload Meta Data File"),
-                                                      fileInput(
+                                             shiny::column(width = 4,
+                                                           shiny::wellPanel(
+                                                             shiny::h4("Upload Meta Data File"),
+                                                             shiny::fileInput(
                                                         "metdatfile",
-                                                        HTML(
-                                                          paste("Meta Data (eg. disease, required):",
+                                                        shiny::HTML(
+                                                          base::paste("Meta Data (eg. disease, required):",
                                                                 tags$span(style = "color:red", "*", sep = ""))
                                                         ),
                                                         accept = c(
@@ -65,15 +65,15 @@ tabPanel("Upload Data",
                                                       )
                                                     )
                                              ),
-                                             selectInput("datassay", label = "Input Assay Type:",
+                                             shiny::selectInput("datassay", label = "Input Assay Type:",
                                                          choices = c("Counts" = "counts",
                                                                      "Log Counts" = 'log',
                                                                      "CPM" = 'cpm',
                                                                      "Log CPM" = 'logcpm'))
                             ),
-                            conditionalPanel(condition = "input.updattype == 'sumexp'",
-                                             h3("Choose an RDS Summarized Experiment file that contains a TBSignature Object:"),
-                                             fileInput(
+                            shiny::conditionalPanel(condition = "input.updattype == 'sumexp'",
+                                                    shiny::h3("Choose an RDS Summarized Experiment file that contains a TBSignature Object:"),
+                                                    shiny::fileInput(
                                                "rdsFile", "TBSignature RDS file:", accept = c(".rds", ".RDS")
                                                )
                                              )
