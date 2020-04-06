@@ -1,0 +1,7 @@
+template:
+  params:
+    bootswatch: yeti
+
+  right:
+    - icon: fa-github
+      href: https://github.com/compbiomed/TBSignatureProfiler

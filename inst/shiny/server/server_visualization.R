@@ -1,28 +1,28 @@
-observe({
+shiny::observe({
   if (is.null(vals$profilerdat)) {
-    updatePickerInput(session, 'selectsigs', choices = NULL)
+    shinyWidgets::updatePickerInput(session, 'selectsigs', choices = NULL)
   }
-  else{isolate(updatePickerInput(session, 'selectsigs',
+  else{shiny::isolate(shinyWidgets::updatePickerInput(session, 'selectsigs',
                                  choices = subset(siglist,
                                                   siglist %in% colnames(
-                                                    colData(vals$profilerdat))),
+                                                    SummarizedExperiment::colData(vals$profilerdat))),
                                  selected = subset(siglist,
                                                    siglist %in% colnames(
-                                                     colData(vals$profilerdat)))))
+                                                     SummarizedExperiment::colData(vals$profilerdat)))))
     }
   })
 
-observe({
-  updateSelectInput(session, 'allheatcovar', choices = vals$covars)
+shiny::observe({
+  shiny::updateSelectInput(session, 'allheatcovar', choices = vals$covars)
 })
 
-observeEvent(input$allheatplot,
-             {output$allheat <- renderPlot({
+shiny::observeEvent(input$allheatplot,
+             {output$allheat <- shiny::renderPlot({
                colors <- RColorBrewer::brewer.pal(6, "Spectral")
-               col.me <- circlize::colorRamp2(seq(from = -2, to = 2,
+               col.me <- circlize::colorRamp2(base::seq(from = -2, to = 2,
                                                   length.out = 6), colors)
 
-               isolate({signatureHeatmap(vals$profilerdat,
+               shiny::isolate({signatureHeatmap(vals$profilerdat,
                                          name = "Heatmap of Signatures",
                                 signatureColNames = names(
                                   TBsignatures[input$selectsigs]),
@@ -34,28 +34,28 @@ observeEvent(input$allheatplot,
                })
              })
 
-observe({
-  updateSelectInput(session, 'singheatcovar', choices = vals$covars)
+shiny::observe({
+  shiny::updateSelectInput(session, 'singheatcovar', choices = vals$covars)
 })
 
-observe({
+shiny::observe({
   if (is.null(vals$profilerdat)){
-    updatePickerInput(session, 'singheat', choices = NULL)
+    shinyWidgets::updatePickerInput(session, 'singheat', choices = NULL)
   }
-  else{updatePickerInput(session, 'singheat',
+  else{shinyWidgets::updatePickerInput(session, 'singheat',
                          choices = subset(siglist, siglist %in% colnames(
-                           colData(vals$profilerdat))))
+                           SummarizedExperiment::colData(vals$profilerdat))))
   }
 })
 
-observe({
-  updatePickerInput(session, 'genes', choices = TBsignatures[input$singheat],
+shiny::observe({
+  shinyWidgets::updatePickerInput(session, 'genes', choices = TBsignatures[input$singheat],
                     selected = TBsignatures[[input$singheat]])
 })
 
-observeEvent(input$singheatplot,
-             {output$indheat <- renderPlot({
-               isolate({
+shiny::observeEvent(input$singheatplot,
+             {output$indheat <- shiny::renderPlot({
+               shiny::isolate({
                  print(signatureGeneHeatmap(inputData = vals$profilerdat,
                                             useAssay = input$profassay,
                                             input$genes,
@@ -66,49 +66,50 @@ observeEvent(input$singheatplot,
                })
              })
 
-observe({
+shiny::observe({
   if (is.null(vals$profilerdat)){
-    updatePickerInput(session, 'singbox', choices = NULL)
+    shinyWidgets::updatePickerInput(session, 'singbox', choices = NULL)
   }
   else {
-    updatePickerInput(session, 'singbox',
+    shinyWidgets::updatePickerInput(session, 'singbox',
                       choices = subset(siglist, siglist %in% colnames(colData(vals$profilerdat))))
   }
 })
 
-observe({
-  updateSelectInput(session, "singboxcovar", choices = vals$covars)
+shiny::observe({
+  shinyWidgets::updateSelectInput(session, "singboxcovar", choices = vals$covars)
 })
 
-observeEvent(input$singboxplot,
-             {output$boxplotind <- renderPlot({
-               isolate({print(signatureBoxplot(vals$profilerdat, signatureColNames = input$singbox,
+shiny::observeEvent(input$singboxplot,
+             {output$boxplotind <- shiny::renderPlot({
+               shiny::isolate({print(signatureBoxplot(vals$profilerdat,
+                                                      signatureColNames = input$singbox,
                                       annotationColName = input$singboxcovar))})
                })
              })
 
-observe({
+shiny::observe({
   if (is.null(vals$profilerdat)){
-    updateSelectInput(session, 'singcomp', choices = NULL)
+    shiny::updateSelectInput(session, 'singcomp', choices = NULL)
   }
-  else{updateSelectInput(session, 'singcomp',
+  else{shiny::updateSelectInput(session, 'singcomp',
                          choices = subset(siglist,
                                           siglist %in% colnames(
-                                            colData(vals$profilerdat))))
+                                            SummarizedExperiment::colData(vals$profilerdat))))
   }
 })
 
-observe({
-  updateSelectInput(session, "compassay", choices = vals$datassays)
+shiny::observe({
+  shiny::updateSelectInput(session, "compassay", choices = vals$datassays)
 })
 
-observe({
-  updateSelectInput(session, "compcovar", choices = vals$covars)
+shiny::observe({
+  shiny::updateSelectInput(session, "compcovar", choices = vals$covars)
 })
 
-observeEvent(input$compplot,
-             {output$heatcomp <- renderPlot({
-               isolate({suppressWarnings(compareAlgs(vals$profilerdat,
+shiny::observeEvent(input$compplot,
+             {output$heatcomp <- shiny::renderPlot({
+               shiny::isolate({suppressWarnings(compareAlgs(vals$profilerdat,
                                                      annotationColName = input$compcovar,
                                                      scale = TRUE,
                                                      algorithm = input$compalg,

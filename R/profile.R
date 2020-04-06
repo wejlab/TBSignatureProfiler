@@ -152,10 +152,10 @@ runTBsigProfiler <- function(input, useAssay = NULL,
   } else if (!is.null(useAssay)) {
     stop("useAssay only supported for SummarizedExperiment objects")
   }
-  if (class(runindata) == "data.frame") {
+  if (methods::is(runindata, "data.frame")) {
     runindata <- as.matrix(runindata)
   }
-  if (class(runindata) != "matrix") {
+  if (!methods::is(runindata, "matrix")) {
     stop("Invalid input data type. Accepted input formats are matrix, ",
          "data.frame, or SummarizedExperiment. Your input: ",
          as.character(class(input)))
@@ -428,9 +428,9 @@ runTBsigProfiler <- function(input, useAssay = NULL,
         S4Vectors::cbind(SummarizedExperiment::colData(input),
                          S4Vectors::DataFrame(t(sig_result)))
       return(input)
-    } else if (class(input) == "matrix") {
+    } else if (methods::is(input, "matrix")) {
       return(sig_result)
-    } else if (class(input) == "data.frame") {
+    } else if (methods::is(input, "data.frame")) {
       dfres <- data.frame(sig_result)
       colnames(dfres) <- colnames(sig_result)
       return(dfres)
@@ -518,11 +518,11 @@ compareAlgs <- function (input, signatures = NULL, annotationColName,
     new.name <- paste("Scoring Methods for", sig)
     if (!show.pb) {
       utils::capture.output(scored <- runTBsigProfiler(input,
-                                 useAssay = useAssay,
-                                 combineSigAndAlgorithm = TRUE,
-                                 signatures = signatures[sig],
-                                 algorithm = algorithm,
-                                 parallel.sz = parallel.sz))
+                                                       useAssay = useAssay,
+                                                       combineSigAndAlgorithm = TRUE,
+                                                       signatures = signatures[sig],
+                                                       algorithm = algorithm,
+                                                       parallel.sz = parallel.sz))
     } else if (show.pb) {
       scored <- runTBsigProfiler(input, useAssay = useAssay,
                                  combineSigAndAlgorithm = TRUE,
@@ -531,7 +531,7 @@ compareAlgs <- function (input, signatures = NULL, annotationColName,
                                  parallel.sz = parallel.sz)
     }
 
-    if (class(input) == "SummarizedExperiment") {
+    if (methods::is(input, "SummarizedExperiment")) {
       already.there <- names(SummarizedExperiment::colData(input))
       col.names <- subset(names(SummarizedExperiment::colData(scored)),
                           !(names(SummarizedExperiment::colData(scored))
@@ -557,4 +557,3 @@ compareAlgs <- function (input, signatures = NULL, annotationColName,
     }
   }
 }
-

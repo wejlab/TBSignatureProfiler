@@ -1,63 +1,63 @@
-navbarMenu("Signature Visualization",
-           tabPanel("Heatmap with Selected Signatures",
-                    sidebarPanel(
-                      pickerInput('selectsigs',
+shiny::navbarMenu("Signature Visualization",
+                  shiny::tabPanel("Heatmap with Selected Signatures",
+                                  shiny::sidebarPanel(
+                                    shinyWidgets::pickerInput('selectsigs',
                                   label = 'Select Signatures for Profiler',
                                   choices = siglist,
                                   options = list('actions-box' = TRUE),
                                   multiple = TRUE, selected = siglist),
-                      selectInput('allheatcovar', "Select Covariate", choices = NULL),
-                      actionButton('allheatplot', "Plot Heatmap")
+                      shiny::selectInput('allheatcovar', "Select Covariate", choices = NULL),
+                      shiny::actionButton('allheatplot', "Plot Heatmap")
                     ),
-                    mainPanel(
+                    shiny::mainPanel(
                       plotOutput("allheat", height = 800)
                     )
            ),
-           tabPanel("Heatmaps of Individual Signatures",
-                    sidebarPanel(
-                      pickerInput('singheat', 'Signature', choices = siglist,
+           shiny::tabPanel("Heatmaps of Individual Signatures",
+                           shiny::sidebarPanel(
+                             shinyWidgets::pickerInput('singheat', 'Signature', choices = siglist,
                                   multiple = FALSE, selected = NULL),
-                      pickerInput('genes', label = 'Genes', choices = NULL,
+                             shinyWidgets::pickerInput('genes', label = 'Genes', choices = NULL,
                                   options = list('actions-box' = TRUE),
                                   multiple = TRUE),
-                      hr(),
-                      selectInput('singheatcovar', 'Covariate', choices = NULL),
-                      actionButton('singheatplot', "Plot Heatmap(s)")
+                      shiny::hr(),
+                      shiny::selectInput('singheatcovar', 'Covariate', choices = NULL),
+                      shiny::actionButton('singheatplot', "Plot Heatmap(s)")
                       ),
-                    mainPanel(
-                      plotOutput("indheat", height = 800)
+                      shiny::mainPanel(
+                        shiny::plotOutput("indheat", height = 800)
                       )
                     ),
-           tabPanel("Boxplots of Individual Signatures",
-                    sidebarPanel(
-                      pickerInput('singbox', 'Signature(s)', choices = siglist,
+           shiny::tabPanel("Boxplots of Individual Signatures",
+                           shiny::sidebarPanel(
+                             shinyWidgets::pickerInput('singbox', 'Signature(s)', choices = siglist,
                                   options = list('actions-box' = TRUE),
                                   multiple = TRUE, selected = NULL),
-                      hr(),
-                      selectInput('singboxcovar', 'Covariate', choices = NULL),
-                      actionButton('singboxplot', "Plot Boxplot(s)")
+                      shiny::hr(),
+                      shiny::selectInput('singboxcovar', 'Covariate', choices = NULL),
+                      shiny::actionButton('singboxplot', "Plot Boxplot(s)")
                     ),
 
-                    mainPanel(
-                      plotOutput("boxplotind", height = 500)
+                    shiny::mainPanel(
+                      shiny::plotOutput("boxplotind", height = 500)
                     )
            ),
-           tabPanel("Compare Scoring Methods for a Single Signature",
-                    sidebarPanel(
-                      selectInput('singcomp', 'Select Signature',
+           shiny::tabPanel("Compare Scoring Methods for a Single Signature",
+                           shiny::sidebarPanel(
+                             shiny::selectInput('singcomp', 'Select Signature',
                                   choices = siglist),
-                      selectInput('compassay', 'Select Assay', choices = NULL),
-                      selectInput('compcovar', "Select Covariate",
+                             shiny::selectInput('compassay', 'Select Assay', choices = NULL),
+                             shiny::selectInput('compcovar', "Select Covariate",
                                   choices = NULL),
-                      pickerInput('compalg', 'Select Algorithms',
+                             shinyWidgets::pickerInput('compalg', 'Select Algorithms',
                                   choices = c("GSVA", "ssGSEA", "singscore",
                                               "PLAGE", "Zscore", "ASSIGN"),
                                   options = list('actions-box' = TRUE),
                                   multiple = TRUE, selected = NULL),
-                      actionButton('compplot', "Plot Heatmap")
+                             shiny::actionButton('compplot', "Plot Heatmap")
                       ),
-                    mainPanel(
-                      plotOutput("heatcomp", height = 400)
+                      shiny::mainPanel(
+                        shiny::plotOutput("heatcomp", height = 400)
                       )
                     )
            )

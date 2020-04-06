@@ -1,24 +1,24 @@
-tabPanel("Run TB Signature Profiler",
-         sidebarPanel(
-             pickerInput("newassay", label = "Make Assay",
+shiny::tabPanel("Run TB Signature Profiler",
+                shiny::sidebarPanel(
+                  shinyWidgets::pickerInput("newassay", label = "Make Assay",
                          choices = c("Log Counts" = 'log', "CPM" = 'cpm',
                                      "Log CPM" = 'logcpm')),
-             actionButton("mkassay", "Make Assay"),
-             hr(),
-             selectInput("profassay", "Select Assay for Profiler",
+                  shiny::actionButton("mkassay", "Make Assay"),
+                  shiny::hr(),
+                  shiny::selectInput("profassay", "Select Assay for Profiler",
                          choices = NULL),
-             selectInput('profalg', "Select Algorithm for Profiler",
+                  shiny::selectInput('profalg', "Select Algorithm for Profiler",
                          choices = c("GSVA", "ssGSEA", "ASSIGN", "PLAGE",
                                      "Zscore", "singscore")),
-             actionButton('runprofiler', "Run Profiler")
+                  shiny::actionButton('runprofiler', "Run Profiler")
            ),
-         mainPanel(
-             h4("Covariates"),
-             tableOutput("covars"),
-             h4("Assays"),
-             tableOutput("assays"),
-             h4("TBSignatureProfiler Data"),
-             hr(),
-             dataTableOutput("visdat", width = 700)
+           shiny::mainPanel(
+             shiny::h4("Covariates"),
+             shiny::tableOutput("covars"),
+             shiny::h4("Assays"),
+             shiny::tableOutput("assays"),
+             shiny::h4("TBSignatureProfiler Data"),
+             shiny::hr(),
+             shiny::dataTableOutput("visdat", width = 700)
            )
          )

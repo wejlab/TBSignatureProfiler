@@ -1,3 +1,6 @@
+globalVariables(c("BS_AUC", "FPR", "LowerTPR", "Signatures",
+                  "TBsignatures", "TPR", "UpperTPR", "sigAnnotData"))
+
 #' Plot a heatmap of signature scores.
 #'
 #' This function takes a dataset of scored gene expression data as an input

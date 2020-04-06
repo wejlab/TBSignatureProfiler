@@ -1,38 +1,38 @@
-output$covars <- renderTable({
+output$covars <- shiny::renderTable({
   vals$covars},
   colnames = FALSE)
 
-output$assays <- renderTable({
+output$assays <- shiny::renderTable({
   vals$datassays},
   colnames = FALSE)
 
-observeEvent(input$runprofiler, {
+shiny::observeEvent(input$runprofiler, {
   output$visdat <- DT::renderDataTable(
-    head(as.data.frame(colData(vals$profilerdat))),
+    head(as.data.frame(SummarizedExperiment::colData(vals$profilerdat))),
     options = list(scrollX = TRUE)
   )
   })
 
-observeEvent(input$mkassay, {
+shiny::observeEvent(input$mkassay, {
   if (input$newassay == 'log'){
     vals$tbdat <- mkAssay(vals$tbdat, input_name = 'counts',
                          log = TRUE, counts_to_CPM = FALSE)
-    vals$datassays <- names(assays(vals$tbdat))
+    vals$datassays <- names(SummarizedExperiment::assays(vals$tbdat))
   } else if (input$newassay == 'cpm'){
     vals$tbdat <- mkAssay(vals$tbdat, input_name = 'counts')
-    vals$datassays <- names(assays(vals$tbdat))
+    vals$datassays <- names(SummarizedExperiment::assays(vals$tbdat))
   } else if (input$newassay == 'logcpm'){
     vals$tbdat <- mkAssay(vals$tbdat, input_name = 'counts', log = TRUE)
-    vals$datassays <- names(assays(vals$tbdat))
+    vals$datassays <- names(SummarizedExperiment::assays(vals$tbdat))
   }
 })
 
-observe({
+shiny::observe({
   updateSelectInput(session, 'profassay', choices = vals$datassays)
 })
 
-observeEvent(input$runprofiler, {
-  vals$profilerdat <- isolate(runTBsigProfiler(vals$tbdat,
+shiny::observeEvent(input$runprofiler, {
+  vals$profilerdat <- shiny::isolate(runTBsigProfiler(vals$tbdat,
                                               useAssay = input$profassay,
                                               signatures = TBsignatures,
                                               algorithm = input$profalg,
@@ -40,7 +40,7 @@ observeEvent(input$runprofiler, {
                                               parallel.sz = 4))
     })
 
-observeEvent(input$runprofiler, {
+shiny::observeEvent(input$runprofiler, {
   output$allheat <- NULL
   output$indheat <- NULL
   output$boxplotind <- NULL
