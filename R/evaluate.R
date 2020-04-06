@@ -1,3 +1,6 @@
+globalVariables(c("BS_AUC", "FPR", "LowerTPR", "Signatures",
+                  "TBsignatures", "TPR", "UpperTPR", "sigAnnotData"))
+
 #' Normalize gene expression count data.
 #'
 #' @param inputData a \code{data.frame} or \code{matrix} of gene expression
