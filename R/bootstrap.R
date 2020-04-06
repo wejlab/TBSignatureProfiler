@@ -1,3 +1,6 @@
+globalVariables(c("BS_AUC", "FPR", "LowerTPR", "Signatures",
+                  "TBsignatures", "TPR", "UpperTPR", "sigAnnotData"))
+
 #' Bootstrap the AUC and conduct T-Tests for a collection of signatures.
 #'
 #' Run bootstrapping of the AUC and derive the p-value for a 2-sample t-test

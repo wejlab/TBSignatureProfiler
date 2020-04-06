@@ -1,3 +1,6 @@
+globalVariables(c("BS_AUC", "FPR", "LowerTPR", "Signatures",
+                  "TBsignatures", "TPR", "UpperTPR", "sigAnnotData"))
+
 #' A list of published TB signatures.
 #'
 #' A set of 34 Tuberculosis gene signatures from various publications. This set

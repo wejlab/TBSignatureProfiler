@@ -1,5 +1,3 @@
-.myenv <- new.env(parent = emptyenv())
-
 #' Run the TBSignatureProfiler Shiny application
 #'
 #' Use this function to run the TBSignatureProfiler application.

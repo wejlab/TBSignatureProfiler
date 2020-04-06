@@ -1,3 +1,5 @@
+globalVariables(c("BS_AUC", "FPR", "LowerTPR", "Signatures",
+                  "TBsignatures", "TPR", "UpperTPR", "sigAnnotData"))
 .myenv <- new.env(parent = emptyenv())
 
 #' Run TB gene signature profiling.
