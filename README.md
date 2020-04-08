@@ -1,4 +1,4 @@
-# TBSignatureProfiler
+# TBSignatureProfiler <img src="https://github.com/compbiomed/TBSignatureProfiler-docs/blob/master/lungs1.png?raw=true" align="right" width="170" />
 
 [![Travis build status](https://travis-ci.org/compbiomed/TBSignatureProfiler.svg?branch=master)](https://travis-ci.org/compbiomed/TBSignatureProfiler)
 [![codecov](https://codecov.io/gh/compbiomed/TBSignatureProfiler/branch/master/graph/badge.svg)](https://codecov.io/gh/compbiomed/TBSignatureProfiler)
