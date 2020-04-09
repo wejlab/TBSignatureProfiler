@@ -31,7 +31,7 @@ be created. Default is \code{FALSE}.}
 
 \item{counts_to_CPM}{logical. This argument only applies if the
 \code{input_type} is a counts assay. If \code{TRUE}, then the output assays
-will include a normalized CPM assay. If \code{counts_to_CPM = TRUE} as well,
+will include a normalized CPM assay. If \code{log = TRUE} as well,
 then a log CPM assay will also be created. Default is \code{TRUE}.}
 
 \item{prior_counts}{an integer specifying the average count to be added to

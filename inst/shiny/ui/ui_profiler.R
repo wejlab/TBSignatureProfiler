@@ -19,6 +19,6 @@ shiny::tabPanel("Run TB Signature Profiler",
              shiny::tableOutput("assays"),
              shiny::h4("TBSignatureProfiler Data"),
              shiny::hr(),
-             shiny::dataTableOutput("visdat", width = 700)
+             DT::dataTableOutput("visdat", width = 700)
            )
          )
