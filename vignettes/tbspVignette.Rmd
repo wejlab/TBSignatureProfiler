@@ -175,23 +175,6 @@ signatureBoxplot(inputData = ssgsea_result,
 ```
 
 
-### Boxplots of Scores, Individual Signatures {.tabset}
- 
-If only one boxplot of a signature is desired, then that signature alone should be specified in `signatureColNames`. Otherwise, an array of plots for all signatures will be produced.
-
-```{r Boxplots indiv, results = "asis", message = FALSE}
-for (i in names(TBsignatures)){
-
-  cat("####", i, "\n")
-
-  print(signatureBoxplot(ssgsea_result, name = i, signatureColNames = i,
-                 annotationColName = c("Disease")))
-  
-  cat("\n\n")
-}
-
-```
-
 ### Compare scoring methods for a single signature
 
 The `compareAlgs` function allows multiple scoring methods to be compared via a heatmap or boxplot with samples on the columns and methods on the rows. Here, we compare scoring methods for the "Anderson_42" signature. It seems that singscore may be the best method here, as its sample scores most closely align with the information provided by the annotation data.
@@ -219,21 +202,6 @@ compareAlgs(hivtb_data, annotationColName = "Disease",
             choose_color = col.me, show.pb = FALSE,
             parallel.sz = 1, output = "boxplot")
 ```
-
-## Comparing scores via bootstrapped AUCs {.tabset}
-
-### Table with T-tests & AUC 
-The `TableAUC` function creates a table of useful information regarding the scored  signatures. First, a 2-sample t-test is conducted on the scores with the TB/HIV status as the response variable. This is intended to give one metric of whether the signature is a valuable identifier of the disease phenotype. The log-scaled p-values are provided for easier means of comparison. 
-
-The table also gives the AUC values for the signature scores, along with confidence intervals derived from bootstrapping. Most AUC estimates are fairly high.
-```{r AUC table, message = FALSE}
-tableAUC(ssgsea_result, 
-         annotationColName = "Disease", 
-         signatureColNames = names(TBsignatures),
-         num.boot = 50, 
-         pb.show = FALSE)
-```
-
 
 # Additional Documentation and Tutorials
 
