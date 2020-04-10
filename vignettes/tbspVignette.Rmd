@@ -103,15 +103,16 @@ With the `runTBSigProfiler` function, we are able to score these signatures with
 
 Here, we evaluate all signatures included in the package with ssGSEA. Paraphrasing from the [ssGSEA documentation](http://software.broadinstitute.org/cancer/software/genepattern/modules/docs/ssGSEAProjection/4), for each pairing of one of the 31 samples and its gene set, ssGSEA calculates a separate enrichment score independent of the phenotypic labeling (in this case, whether a sample has HIV/TB, or HIV only). The single sample's gene expression profile is then transformed to a gene set enrichment profile. A score from the set profile represents the activity level of the biological process in which the gene set's members are coordinately up- or down-regulated.  
 
-```{r run profiler, message = FALSE, results = 'hide'}
-
-## List all 34 signatures in the profiler
+```{r run data}
+## List all signatures in the profiler
 data("TBsignatures")
 names(TBsignatures)
 
 ## We can use all of these signatures for further analysis
 siglist_hivtb <- names(TBsignatures)
+```
 
+```{r run profiler, results = 'hide', echo = FALSE, message = FALSE}
 ## Run the TBSignatureProfiler to score the signatures in the data
 ssgsea_result <- runTBsigProfiler(input = hivtb_data, 
                                useAssay = "log_cpm",
@@ -121,6 +122,17 @@ ssgsea_result <- runTBsigProfiler(input = hivtb_data,
                                parallel.sz = 1)
 ```
 
+```{r run profiler show, eval = FALSE}
+## Run the TBSignatureProfiler to score the signatures in the data
+ssgsea_result <- runTBsigProfiler(input = hivtb_data, 
+                               useAssay = "log_cpm",
+                               signatures = TBsignatures,
+                               algorithm = "ssGSEA",
+                               combineSigAndAlgorithm = TRUE,
+                               parallel.sz = 1)
+```
+
+
 When a `SummarizedExperiment` is the format of the input data for `runTBsigprofiler`,  the returned object is also of the `SummarizedExperiment`. The scores will be returned as a part of the colData. 
 
 Below, we subset the data to compare the enrichment scores for the Anderson_42, Anderson_OD_51, and Berry_393 signatures. 
@@ -128,8 +140,9 @@ Below, we subset the data to compare the enrichment scores for the Anderson_42, 
 Signature Scores
 ```{r show scores, message = FALSE}
 ## New colData entries from the Profiler
-ssgsea_print_results <- as.data.frame(colData(ssgsea_result))[,2:5]
-ssgsea_print_results[,2:4] <- round(ssgsea_print_results[,2:4], 4)
+sigs <- c("Anderson_42", "Anderson_OD_51", "Berry_393")
+ssgsea_print_results <- as.data.frame(colData(ssgsea_result))[, c("Disease", sigs)]
+ssgsea_print_results[,2:4] <- round(ssgsea_print_results[, 2:4], 4)
 
 DT::datatable(ssgsea_print_results)
 ```

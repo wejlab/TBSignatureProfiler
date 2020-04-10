@@ -92,15 +92,16 @@ With the `runTBSigProfiler` function, we are able to score these signatures with
 
 Here, we evaluate all signatures included in the package with ssGSEA. Paraphrasing from the [ssGSEA documentation](http://software.broadinstitute.org/cancer/software/genepattern/modules/docs/ssGSEAProjection/4), for each pairing of one of the 31 samples and its gene set, ssGSEA calculates a separate enrichment score independent of the phenotypic labeling (in this case, whether a sample has HIV/TB, or HIV only). The single sample's gene expression profile is then transformed to a gene set enrichment profile. A score from the set profile represents the activity level of the biological process in which the gene set's members are coordinately up- or down-regulated.  
 
-```{r run profiler, message = FALSE, results = 'hide'}
-
-## List all 34 signatures in the profiler
+```{r run data}
+## List all signatures in the profiler
 data("TBsignatures")
 names(TBsignatures)
 
 ## We can use all of these signatures for further analysis
 siglist_hivtb <- names(TBsignatures)
+```
 
+```{r run profiler, results = 'hide', echo = FALSE, message = FALSE}
 ## Run the TBSignatureProfiler to score the signatures in the data
 ssgsea_result <- runTBsigProfiler(input = hivtb_data, 
                                useAssay = "log_cpm",
@@ -110,6 +111,17 @@ ssgsea_result <- runTBsigProfiler(input = hivtb_data,
                                parallel.sz = 1)
 ```
 
+```{r run profiler show, eval = FALSE}
+## Run the TBSignatureProfiler to score the signatures in the data
+ssgsea_result <- runTBsigProfiler(input = hivtb_data, 
+                               useAssay = "log_cpm",
+                               signatures = TBsignatures,
+                               algorithm = "ssGSEA",
+                               combineSigAndAlgorithm = TRUE,
+                               parallel.sz = 1)
+```
+
+
 When a `SummarizedExperiment` is the format of the input data for `runTBsigprofiler`,  the returned object is also of the `SummarizedExperiment`. The scores will be returned as a part of the colData. 
 
 Below, we subset the data to compare the enrichment scores for the Anderson_42, Anderson_OD_51, and Berry_393 signatures. 
@@ -117,8 +129,9 @@ Below, we subset the data to compare the enrichment scores for the Anderson_42, 
 Signature Scores
 ```{r show scores, message = FALSE}
 ## New colData entries from the Profiler
-ssgsea_print_results <- as.data.frame(colData(ssgsea_result))[,2:5]
-ssgsea_print_results[,2:4] <- round(ssgsea_print_results[,2:4], 4)
+sigs <- c("Anderson_42", "Anderson_OD_51", "Berry_393")
+ssgsea_print_results <- as.data.frame(colData(ssgsea_result))[, c("Disease", sigs)]
+ssgsea_print_results[,2:4] <- round(ssgsea_print_results[, 2:4], 4)
 
 DT::datatable(ssgsea_print_results)
 ```
@@ -166,10 +179,10 @@ signatureBoxplot(inputData = ssgsea_result,
 
 ### Boxplots of Scores, Individual Signatures {.tabset}
  
-If only one boxplot of a signature is desired, then that signature alone should be specified in `signatureColNames`. Otherwise, an array of plots for all signatures will be produced.
+If only one boxplot of a signature is desired, then that signature alone should be specified in `signatureColNames`. Otherwise, an array of plots for all signatures will be produced. Here we use the signatures Anderson_42, Anderson_OD_51, and Berry_393.
 
 ```{r Boxplots indiv, results = "asis", message = FALSE}
-for (i in names(TBsignatures)){
+for (i in sigs){
 
   cat("####", i, "\n")
 
@@ -184,15 +197,14 @@ for (i in names(TBsignatures)){
 ### Heatmaps for Individual Signatures {.tabset}
 
 
-The `signatureGeneHeatmap` function produces heatmaps that highlight a single selected signature. The resulting plots feature samples on the columns, and the genes in the signature on the rows. The annotation rows at the top are related to both the disease phenotype and to the signature score itself.  The gradient of the heatmap is created using the gene expression values in the assay specified by the `useAssay` parameter. Here, we observe how the log(CPM) values for specific genes relate to the signature score for each sample.
-
+The `signatureGeneHeatmap` function produces heatmaps that highlight a single selected signature. The resulting plots feature samples on the columns, and the genes in the signature on the rows. The annotation rows at the top are related to both the disease phenotype and to the signature score itself.  The gradient of the heatmap is created using the gene expression values in the assay specified by the `useAssay` parameter. Here, we observe how the log(CPM) values for specific genes relate to the signature score for each sample using the signatures Anderson_42, Anderson_OD_51, and Berry_393.
 ```{r Heatmaps indiv, results = "asis", message = FALSE, fig.height = 11}
-for (i in names(TBsignatures)){
+for (i in sigs){
 
   cat("####", i, "\n")
 
   signatureGeneHeatmap(inputData = ssgsea_result, useAssay = "log_cpm",
-                       TBsignatures[[i]],
+                       TBsignatures[sigs][[i]],
                        name = i, signatureColNames = i, 
                        annotationColNames = c("Disease"),
                        showColumnNames = TRUE,
@@ -216,7 +228,7 @@ compareAlgs(hivtb_data, annotationColName = "Disease",
             algorithm = c("GSVA", "ssGSEA",
                           "singscore", "PLAGE", "Zscore"),
             useAssay = "log_counts",
-            signatures = TBsignatures[1],
+            signatures = TBsignatures["Anderson_42"],
             choose_color = col.me, show.pb = FALSE,
             parallel.sz = 1)
 
@@ -226,7 +238,7 @@ compareAlgs(hivtb_data, annotationColName = "Disease",
             algorithm = c("GSVA", "ssGSEA",
                           "singscore", "PLAGE", "Zscore"),
             useAssay = "log_counts",
-            signatures = TBsignatures[1],
+            signatures = TBsignatures["Anderson_42"],
             choose_color = col.me, show.pb = FALSE,
             parallel.sz = 1, output = "boxplot")
 ```
@@ -271,7 +283,7 @@ signatureROCplot_CI(inputData = ssgsea_result,
 ### Separate ROC plots, 95% CI bands {.tabset}
  
 ```{r ROC indiv, results = 'asis', message = FALSE}
-for (i in names(TBsignatures)){
+for (i in sigs){
   
   cat("####", i, "\n")
   
@@ -288,7 +300,7 @@ for (i in names(TBsignatures)){
 
 Another method of signature evaluation featured in the TBSignatureProfiler package is available with the `SignatureQuantitative` function. 
 
-During the training process, we bootstrap the samples, cross-validate the logistic regression prediction of the TB?HIV status of each sample, and calculate the validation set AUCs from each cross-validation iteration. In theory, if a signature is a useful predictor of status, it should have a higher average AUC from these logistic regression bootstraps.
+During the training process, we bootstrap the samples, cross-validate the logistic regression prediction of the TB HIV status of each sample, and calculate the validation set AUCs from each cross-validation iteration. In theory, if a signature is a useful predictor of status, it should have a higher average AUC from these logistic regression bootstraps.
 
 ```{r sigeval, message = FALSE}
 ### Make an additional binary indicator for signature evaluation
