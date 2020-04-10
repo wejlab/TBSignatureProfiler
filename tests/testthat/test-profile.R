@@ -46,12 +46,6 @@ test_that("matrix input", {
   expect_is(
     runTBsigProfiler(mat_testdata,
                      signatures = list(sig1 = paste0("gene", 1:10)),
-                     algorithm = "ssGSEA", parallel.sz = 1),
-    "matrix"
-  )
-  expect_is(
-    runTBsigProfiler(mat_testdata,
-                     signatures = list(sig1 = paste0("gene", 1:10)),
                      algorithm = "ASSIGN", ASSIGNiter = 100, ASSIGNburnin = 50),
     "matrix"
   )
@@ -161,13 +155,6 @@ test_that("data.frame input", {
                      signatures = list(sig1 = paste0("gene", 1:10)),
                      algorithm = "GSVA", parallel.sz = 1),
     "SummarizedExperiment"
-  )
-  expect_is(
-    runTBsigProfiler(df_testdata, outputFormat = "matrix",
-                     signatures = list(sig1 = paste0("gene", 1:10)),
-                     combineSigAndAlgorithm = TRUE,
-                     algorithm = c("GSVA", "ssGSEA"), parallel.sz = 1),
-    "matrix"
   )
   expect_is(
     runTBsigProfiler(df_testdata,
