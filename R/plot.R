@@ -70,7 +70,7 @@ globalVariables(c("BS_AUC", "FPR", "LowerTPR", "Signatures",
 #'
 #' @return A ComplexHeatmap plot.
 #'
-#' @import BiocParallel bioDist readr boot ggfortify e1071 gdata
+#' @import BiocParallel bioDist readr boot ggfortify e1071
 #'
 #' @export
 #'
