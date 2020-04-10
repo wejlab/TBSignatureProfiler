@@ -17,7 +17,7 @@ biocViews: GeneExpression, DifferentialExpression
 LazyData: true
 RoxygenNote: 7.1.0
 Depends:
-    R (>= 4.0.0)
+    R (>= 3.6.0)
 Imports:
     ASSIGN,
     GSVA,
@@ -41,7 +41,9 @@ Imports:
     e1071,
     DT,
     edgeR,
-    singscore
+    singscore,
+    gdata,
+    shiny
 Suggests:
     testthat,
     spelling,

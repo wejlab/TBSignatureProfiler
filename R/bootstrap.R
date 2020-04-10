@@ -26,7 +26,7 @@ globalVariables(c("BS_AUC", "FPR", "LowerTPR", "Signatures",
 #'
 #' @examples
 #'  # Run signature profiling
-#'  choose_sigs <- TBsignatures[c(1, 2)]
+#'  choose_sigs <- TBsignatures[1]
 #'  prof_indian <- runTBsigProfiler(TB_indian, useAssay = "logcounts",
 #'                                  algorithm = "ssGSEA",
 #'                                  combineSigAndAlgorithm = TRUE,

@@ -4,7 +4,7 @@ author:
 - name: Aubrey Odom
   affiliation: 
   - Program in Bioinformatics, Boston University, Boston, MA
-  email: aubreyodom@byu.edu
+  email: aodom@bu.edu
 - name: W. Evan Johnson
   affiliation:
   - The Section of Computational Biomedicine, Boston University School of Medicine, Boston, MA
