@@ -424,7 +424,7 @@ runTBsigProfiler <- function(input, useAssay = NULL,
   }
   if (is.null(outputFormat)) {
     #output same as input
-    if (class(input) %in% c("SummarizedExperiment", "SingleCellExperiment",
+    if (class(input)[1] %in% c("SummarizedExperiment", "SingleCellExperiment",
                             "SCtkExperiment")) {
       SummarizedExperiment::colData(input) <-
         S4Vectors::cbind(SummarizedExperiment::colData(input),
@@ -444,6 +444,7 @@ runTBsigProfiler <- function(input, useAssay = NULL,
     colnames(dfres) <- colnames(sig_result)
     return(dfres)
   } else if (outputFormat == "SummarizedExperiment") {
+    attr(rownames(runindata), ".match.hash") <- NULL
     outdata <- SummarizedExperiment::SummarizedExperiment(
       assays = S4Vectors::SimpleList(data = runindata),
       colData = S4Vectors::DataFrame(t(sig_result)))
