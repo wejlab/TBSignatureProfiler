@@ -59,13 +59,6 @@ suppressPackageStartupMessages({
 })
 ```
 
-## Run Shiny App
-This command is to start the TBSignatureProfiler shiny app. The basic functions of the shiny app are also included in the command line version of the TBSignatureProfiler, which is the focus of the remainder of this vignette.
-
-```{R Run shiny app, eval = FALSE}
-TBSPapp()
-```
-
 ## Load dataset from a SummarizedExperiment object
 In this tutorial, we will work with HIV and Tuberculosis (TB) gene expression data in a `SummarizedExperiment` format. This dataset is included in the TBSignatureProfiler package and can be loaded into the global environment with `data("TB_hiv")`. The 31 samples in the dataset are marked as either having both TB and HIV infection, or HIV infection only.
 

@@ -2,7 +2,7 @@
 % Please edit documentation in R/TBSPapp.R
 \name{TBSPapp}
 \alias{TBSPapp}
-\title{Run the TBSignatureProfiler Shiny application}
+\title{Run the TBSignatureProfiler Shiny application.}
 \usage{
 TBSPapp()
 }

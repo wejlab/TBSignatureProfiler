@@ -1,4 +1,4 @@
-#' Run the TBSignatureProfiler Shiny application
+#' Run the TBSignatureProfiler Shiny application.
 #'
 #' Use this function to run the TBSignatureProfiler application.
 #'

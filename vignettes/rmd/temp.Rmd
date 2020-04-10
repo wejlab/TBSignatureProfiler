@@ -3,4 +3,4 @@ title: "Tutorial for a Shiny Analysis with the TBSignatureProfiler"
 output: html_document
 ---
 
-This section is currently under development.
+The tutorial for the TBSP shiny app is currently under development and will be available shortly.

@@ -2,6 +2,7 @@
 ^docs$
 ^pkgdown$
 vignettes/rmd
+^index.md$
 ^\.git$
 ^Meta$
 ^.*\.Rproj$

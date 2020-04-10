@@ -3,7 +3,7 @@
 \docType{data}
 \name{common_sigAnnotData}
 \alias{common_sigAnnotData}
-\title{Annotation information for published TB signatures}
+\title{Annotation information for published TB signatures.}
 \format{
 data.frame
 }

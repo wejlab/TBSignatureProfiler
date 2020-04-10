@@ -216,7 +216,7 @@ globalVariables(c("BS_AUC", "FPR", "LowerTPR", "Signatures",
 #' data("TB_hiv")
 "TB_hiv"
 
-#' Annotation information for published TB signatures
+#' Annotation information for published TB signatures.
 #'
 #' A data.frame of annotation information for published tuberculosis signatures.
 #' Currently, this table includes two variables, \code{disease} and
@@ -280,7 +280,7 @@ globalVariables(c("BS_AUC", "FPR", "LowerTPR", "Signatures",
 #' data("sigAnnotData")
 "sigAnnotData"
 
-#' Annotation information for published TB signatures
+#' Annotation information for published TB signatures.
 #'
 #' A \code{data.frame} of annotation information for published tuberculosis
 #' signatures. This table differs from that of \code{sigAnnotData} as it

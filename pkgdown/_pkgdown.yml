@@ -1,6 +1,6 @@
 template:
   params:
-    bootswatch: solar
+    bootswatch: cosmo
     
 reference:
 - title: "Signature Profiling"

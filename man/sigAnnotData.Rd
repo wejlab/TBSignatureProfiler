@@ -3,7 +3,7 @@
 \docType{data}
 \name{sigAnnotData}
 \alias{sigAnnotData}
-\title{Annotation information for published TB signatures}
+\title{Annotation information for published TB signatures.}
 \format{
 data.frame
 }
