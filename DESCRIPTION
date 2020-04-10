@@ -1,6 +1,6 @@
 Package: TBSignatureProfiler
 Title: Profile RNA-Seq Data Using TB Pathway Signatures
-Version: 0.99.16
+Version: 0.99.18
 Authors@R:
     c(person(given = "David", family = "Jenkins", role = c("aut", "cre"), email = "dfj@bu.edu"),
       person(given = "Yue", family = "Zhao", role = c("aut"), email = "yuezh@bu.edu"),
@@ -17,7 +17,7 @@ biocViews: GeneExpression, DifferentialExpression
 LazyData: true
 RoxygenNote: 7.1.0
 Depends:
-    R (>= 4.0.0)
+    R (>= 3.6.0)
 Imports:
     ASSIGN,
     GSVA,
