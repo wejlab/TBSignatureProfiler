@@ -123,7 +123,7 @@ ssgsea_result <- runTBsigProfiler(input = hivtb_data,
 
 When a `SummarizedExperiment` is the format of the input data for `runTBsigprofiler`,  the returned object is also of the `SummarizedExperiment`. The scores will be returned as a part of the colData. 
 
-Below, we subset the data to compare the enrichment scores for the Zak_Risk_16, Anderson_42, and Anderson_OD_51 signatures. 
+Below, we subset the data to compare the enrichment scores for the Anderson_42, Anderson_OD_51, and Berry_393 signatures. 
 
 Signature Scores
 ```{r show scores, message = FALSE}
