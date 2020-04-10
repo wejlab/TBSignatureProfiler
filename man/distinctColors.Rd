@@ -36,7 +36,7 @@ function returns colors for input into \code{ComplexHeatmap:Heatmap()},
 \code{signatureGeneHeatmap()} and \code{signatureHeatmap()}.
 }
 \examples{
-library(SummarizedExperiment)
+
 distinctColors(10)
 
 }
