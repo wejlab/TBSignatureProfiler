@@ -1,7 +1,57 @@
 template:
   params:
-    bootswatch: yeti
-
+    bootswatch: solar
+    
+reference:
+- title: "Signature Profiling"
+  desc: Functions and data used for profiling RNA-seq data or organizing profiled data.
+  contents:
+  - runTBsigProfiler
+  - TBSPapp
+  - compareAlgs
+  - mkAssay
+  - TBsignatures
+  - sigAnnotData
+  - TBcommon
+  - common_sigAnnotData
+- title: "Plotting Profiled Signatures"
+  desc: Functions to plot profiled RNA-seq data and compare signatures.
+  contents:
+  - signatureHeatmap
+  - signatureGeneHeatmap
+  - signatureBoxplot
+  - distinctColors
+- title: "Signature Evaluation"
+  desc: Functions to evaluate signatures' predictive accuracy via AUC and ROC curve calculations.
+  contents:
+  - bootstrapAUC
+  - tableAUC
+  - compareBoxplots
+  - signatureROCplot
+  - signatureROCplot_CI
+- title: "Logistic Regression Signature Evaluation"
+  desc: Functions that aid in the evaluation of signatures' predictive accuracy via logistic regression and bootstrapping procedures.
+  contents:
+  - SignatureQuantitative
+  - plotQuantitative
+  - deseq2_norm_rle
+  - Bootstrap_LOOCV_LR_AUC
+  - LOOAUC_simple_multiple_noplot_one_df
+- title: "Example Datasets"
+  desc: Datasets able to be used to test functions and run examples.
+  contents: 
+  - TB_hiv
+  - TB_indian
+  
+navbar:
+  title: "TBSignatureProfiler"
+  left: 
+    - text: "Home"
+      href: index.html
+    - text: "Command Line Analysis"
+      href: articles/rmd/TBSig_Vignette.html
+    - text: "Interactive Shiny Analysis"
+      href: articles/rmd/temp.html
   right:
     - icon: fa-github
       href: https://github.com/compbiomed/TBSignatureProfiler
