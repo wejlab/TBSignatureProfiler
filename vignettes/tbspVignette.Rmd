@@ -32,7 +32,7 @@ We aim to provide the scientific community with a resource to access these aggre
 In order to install the TBSignatureProfiler, run the following code:
 
 ```{r load profiler, eval = FALSE}
-devtools::install_github("aubreyodom/TBSignatureProfiler")
+devtools::install_github("compbiomed/TBSignatureProfiler")
 ```
                                                                       
 # Compatibility with SummarizedExperiment objects
@@ -47,6 +47,7 @@ While the TBSignatureProfiler often allows for the form of a `data.frame` or `ma
 ```{r setup}
 suppressPackageStartupMessages({
   library(TBSignatureProfiler)
+  library(SummarizedExperiment)
 })
 ```
 
@@ -105,7 +106,7 @@ siglist_hivtb <- names(TBsignatures)
 
 ```{r run profiler}
 ## Run the TBSignatureProfiler to score the signatures in the data
-ssgsea_result <- capture.output(runTBsigProfiler(input = hivtb_data,
+out <- capture.output(ssgsea_result <- runTBsigProfiler(input = hivtb_data,
                                                  useAssay = "log_cpm",
                                                  signatures = TBsignatures,
                                                  algorithm = "ssGSEA",
