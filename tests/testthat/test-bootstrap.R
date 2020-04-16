@@ -18,13 +18,17 @@ names(SummarizedExperiment::colData(SEtestdata)) <- c("Disease", "Notfac")
 scored_testdata <- runTBsigProfiler(SEtestdata, useAssay = "data",
                                     signatures = list(sig1 = paste0("gene", 1:10)),
                                     algorithm = "ssGSEA", parallel.sz = 1)
+# For data.frame inputs
 annot_data <- data.frame(factor(c(rep("yes", 5), rep("no", 5))))
-colnames(annot_data) <- "Disease"
-rownames(annot_data) <- paste0("sample", 1:10)
+annot_data_nf <- data.frame(c(rep(1, 5), rep(0, 5)))
+colnames(annot_data) <- colnames(annot_data_nf) <- "Disease"
+rownames(annot_data) <- rownames(annot_data_nf) <- paste0("sample", 1:10)
 scored_df <- runTBsigProfiler(df_testdata, output = "data.frame",
                               signatures = list(sig1 = paste0("gene", 1:10)),
                               algorithm = "ssGSEA", parallel.sz = 1)
-
+# Create incorrect annotation data
+annot_data_wrong <- annot_data
+rownames(annot_data_wrong) <- seq_len(nrow(annot_data_wrong))
 
 test_that("Run bootstrapAUC", {
   expect_output(
@@ -119,7 +123,31 @@ test_that("Run signatureROCplot", {
                      signatureColNames = "sig1",
                      annotationColName = c("Disease", "Notfac")),
     "You must specify a single annotation column name with which
-    to color boxplots."
+    to create plots."
+  )
+  expect_is(signatureROCplot(scored_df, annotationData = annot_data,
+                             signatureColNames = "sig1",
+                             scale = TRUE),
+            "gg"
+  )
+  expect_error(
+    signatureROCplot(inputData = scored_df,
+                     annotationData = cbind(annot_data, annot_data),
+                     signatureColNames = "sig1",
+                     scale = TRUE),
+    "annotationData must have only one column."
+  )
+  expect_is(signatureROCplot(inputData = scored_df,
+                             annotationData = annot_data_nf,
+                             signatureColNames = "sig1",
+                             scale = TRUE),
+            "gg"
+  )
+  expect_error(signatureROCplot(inputData = scored_df,
+                                annotationData = annot_data_wrong,
+                                signatureColNames = "sig1",
+                                scale = TRUE),
+               "Annotation data and signature data does not match."
   )
 })
 
@@ -160,7 +188,38 @@ test_that("Run signatureROCplot_CI", {
                      signatureColNames = "sig1",
                      annotationColName = c("Disease", "Notfac")),
     "You must specify a single annotation column name with which
-    to color boxplots."
+    to create plots."
+  )
+  expect_is(signatureROCplot_CI(inputData = scored_df,
+                                annotationData = annot_data,
+                                signatureColNames = "sig1",
+                                scale = TRUE),
+            "gg"
+  )
+  expect_error(
+    signatureROCplot_CI(inputData = scored_df,
+                        annotationData = cbind(annot_data, annot_data),
+                        signatureColNames = "sig1",
+                        scale = TRUE),
+    "annotationData must have only one column."
+  )
+  expect_is(signatureROCplot_CI(inputData = scored_df,
+                                annotationData = annot_data_nf,
+                                signatureColNames = "sig1",
+                                scale = TRUE),
+            "gg"
+  )
+  expect_is(signatureROCplot_CI(inputData = scored_df,
+                                annotationData = annot_data_nf,
+                                signatureColNames = "sig1",
+                                scale = TRUE),
+            "gg"
+  )
+  expect_error(signatureROCplot_CI(inputData = scored_df,
+                                   annotationData = annot_data_wrong,
+                                   signatureColNames = "sig1",
+                                   scale = TRUE),
+            "Annotation data and signature data does not match."
   )
 })
 
