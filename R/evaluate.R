@@ -38,7 +38,7 @@ deseq2_norm_rle <- function(inputData){
 #'
 LOOAUC_simple_multiple_noplot_one_df <- function(df, targetVec){
   nSample <- ncol(df)
-  testPredictionClassVec <- testPredictionProbVec <- numeric(seq_len(nSample))
+  testPredictionClassVec <- testPredictionProbVec <- numeric(nSample)
   for (j in seq_len(nSample)){
     train <- t(as.matrix(df[, -j]))
     test <- t(as.matrix(df[, j]))
@@ -89,6 +89,7 @@ Bootstrap_LOOCV_LR_AUC <- function(df, targetVec, nboot){
     output.auc.vec[i] <- loo.output.list[[1]]
     output.byClass.df[i, ] <- loo.output.list[[2]]
   }
+  colnames(output.byClass.df) <- names(loo.output.list[[2]])
   output.list <- list()
   output.list[[1]] <- output.auc.vec
   output.list[[2]] <- output.byClass.df

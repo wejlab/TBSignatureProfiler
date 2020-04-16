@@ -40,29 +40,28 @@ globalVariables(c("BS_AUC", "FPR", "LowerTPR", "Signatures",
 bootstrapAUC <- function(SE_scored, annotationColName, signatureColNames,
                          num.boot = 100, pb.show = TRUE){
   pvals <- aucs <- aucs_boot <- NULL
-  
   annotationData <- SummarizedExperiment::colData(SE_scored)[annotationColName][, 1]
   if (!is.factor(annotationData)) annotationData <- as.factor(annotationData)
-  
+
   # Create progress bar
   total <- length(signatureColNames)
   counter <- 0
   if (pb.show)  pb <- utils::txtProgressBar(min = 0, max = total, style = 3)
-  
+
   # Initialize vectors
   pvals <- aucs <- tmp_aucs <- numeric(total)
-  
+
   for (i in signatureColNames) {
     score <- SummarizedExperiment::colData(SE_scored)[i][, 1]
     # Conduct a 2-sample t-test on the scores and their
     # corresponding Tuberculosis group status
     pvals[i] <- stats::t.test(score ~ annotationData)$p.value
-    
+
     # Obtain AUC based on entire dataset
     pred <- ROCit::rocit(score, annotationData)
     auc <- pred$AUC
     aucs[i] <- max(auc, 1 - auc)
-    
+
     # Proceed with bootstrapping
     tmp_aucs <- NULL
     for (j in seq(1, num.boot)) {
@@ -73,12 +72,12 @@ bootstrapAUC <- function(SE_scored, annotationColName, signatureColNames,
       tmp_aucs[i] <- max(pred$AUC, 1 - pred$AUC)
     }
     aucs_boot <- cbind(aucs_boot, tmp_aucs)
-    
+
     # Update the progress bar
     counter <- counter + 1
     if (pb.show) utils::setTxtProgressBar(pb, counter)
   }
-  
+
   if (pb.show) close(pb)
   return(list("P-values" = pvals, "Boot AUC Values" = aucs_boot,
               "Non-Boot AUC Values" = aucs))
