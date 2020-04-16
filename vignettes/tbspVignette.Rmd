@@ -37,16 +37,8 @@ devtools::install_github("aubreyodom/TBSignatureProfiler")
                                                                       
 # Compatibility with SummarizedExperiment objects
 
-While the TBSignatureProfiler often allows for the form of a `data.frame` or `matrix` as input data, the most ideal form of input for this package is that of the `SummarizedExperiment` object. This is an amazing data structure that is being developed by the \emph{Bioconductor team} as part of the `r Biocpkg("SummarizedExperiment")` package. It is able to store data matrices along with annotation information, metadata, and reduced dimensionality data
-(PCA, t-SNE, etc.). To learn more about proper usage and context of the `SummarizedExperiment` object, you may want to take a look at the [package vignette](https://bioconductor.org/packages/release/bioc/vignettes/SummarizedExperiment/inst/doc/SummarizedExperiment.html). A basic understanding of the `assay` and `colData` properties of a `SummarizedExperiment` will be useful for the purposes of this vignette.
-
-To install the `SummarizedExperiment` package, run the following code:
-```{r SE install, eval = FALSE}
-if (!requireNamespace("BiocManager", quietly = TRUE))
-    install.packages("BiocManager")
-BiocManager::install("SummarizedExperiment")
-```
-
+While the TBSignatureProfiler often allows for the form of a `data.frame` or `matrix` as input data, the most ideal form of input for this package is that of the `SummarizedExperiment` object. This is an amazing data structure that is being developed by the \emph{Bioconductor team} as part of the `r Biocpkg("SummarizedExperiment")` package, and is imported as part of the TBSignatureProfiler package. It is able to store data matrices along with annotation information, metadata, and reduced dimensionality data
+(PCA, t-SNE, etc.). To learn more about proper usage and context of the `SummarizedExperiment` object, you may want to take a look at the [package vignette](https://bioconductor.org/packages/release/bioc/vignettes/SummarizedExperiment/inst/doc/SummarizedExperiment.html). A basic understanding of the `assay` and `colData` properties of a `SummarizedExperiment` will be useful for the purposes of this vignette. 
 
 # A Quick Tutorial for the TBSignature Profiler
 
@@ -54,14 +46,13 @@ BiocManager::install("SummarizedExperiment")
 
 ```{r setup}
 suppressPackageStartupMessages({
-  library(SummarizedExperiment)
   library(TBSignatureProfiler)
 })
 ```
 
 ## Run Shiny App
 This command is to start the TBSignatureProfiler shiny app. For shiny app tutorials, please go to [our website](https://compbiomed.github.io/TBSignatureProfiler-docs/index.html),
-and select the tab labeled "Interactive Shiny Analysis".
+and select the tab labeled "Interactive Shiny Analysis."
 
 ```{R Run shiny app, eval = FALSE}
 TBSPapp()
@@ -112,24 +103,14 @@ names(TBsignatures)
 siglist_hivtb <- names(TBsignatures)
 ```
 
-```{r run profiler, results = 'hide', echo = FALSE, message = FALSE}
+```{r run profiler}
 ## Run the TBSignatureProfiler to score the signatures in the data
-ssgsea_result <- runTBsigProfiler(input = hivtb_data, 
-                               useAssay = "log_cpm",
-                               signatures = TBsignatures,
-                               algorithm = "ssGSEA",
-                               combineSigAndAlgorithm = TRUE,
-                               parallel.sz = 1)
-```
-
-```{r run profiler show, eval = FALSE}
-## Run the TBSignatureProfiler to score the signatures in the data
-ssgsea_result <- runTBsigProfiler(input = hivtb_data, 
-                               useAssay = "log_cpm",
-                               signatures = TBsignatures,
-                               algorithm = "ssGSEA",
-                               combineSigAndAlgorithm = TRUE,
-                               parallel.sz = 1)
+ssgsea_result <- capture.output(runTBsigProfiler(input = hivtb_data,
+                                                 useAssay = "log_cpm",
+                                                 signatures = TBsignatures,
+                                                 algorithm = "ssGSEA",
+                                                 combineSigAndAlgorithm = TRUE,
+                                                 parallel.sz = 1))
 ```
 
 

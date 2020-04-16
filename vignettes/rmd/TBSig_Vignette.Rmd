@@ -101,24 +101,14 @@ names(TBsignatures)
 siglist_hivtb <- names(TBsignatures)
 ```
 
-```{r run profiler, results = 'hide', echo = FALSE, message = FALSE}
+```{r run profiler}
 ## Run the TBSignatureProfiler to score the signatures in the data
-ssgsea_result <- runTBsigProfiler(input = hivtb_data, 
-                               useAssay = "log_cpm",
-                               signatures = TBsignatures,
-                               algorithm = "ssGSEA",
-                               combineSigAndAlgorithm = TRUE,
-                               parallel.sz = 1)
-```
-
-```{r run profiler show, eval = FALSE}
-## Run the TBSignatureProfiler to score the signatures in the data
-ssgsea_result <- runTBsigProfiler(input = hivtb_data, 
-                               useAssay = "log_cpm",
-                               signatures = TBsignatures,
-                               algorithm = "ssGSEA",
-                               combineSigAndAlgorithm = TRUE,
-                               parallel.sz = 1)
+ssgsea_result <- capture.output(runTBsigProfiler(input = hivtb_data,
+                                                 useAssay = "log_cpm",
+                                                 signatures = TBsignatures,
+                                                 algorithm = "ssGSEA",
+                                                 combineSigAndAlgorithm = TRUE,
+                                                 parallel.sz = 1))
 ```
 
 
