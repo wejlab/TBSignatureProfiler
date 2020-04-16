@@ -37,10 +37,8 @@ deseq2_norm_rle <- function(inputData){
 #' \item{prob}{A vector of the test prediction probabilities.}
 #'
 LOOAUC_simple_multiple_noplot_one_df <- function(df, targetVec){
-  auc.vec <- c()
   nSample <- ncol(df)
-  testPredictionClassVec <- c()
-  testPredictionProbVec <- c()
+  testPredictionClassVec <- testPredictionProbVec <- numeric(seq_len(nSample))
   for (j in seq_len(nSample)){
     train <- t(as.matrix(df[, -j]))
     test <- t(as.matrix(df[, j]))
@@ -52,15 +50,12 @@ LOOAUC_simple_multiple_noplot_one_df <- function(df, targetVec){
       stats::predict(fit, type = "response", newx = test, s = 0))
   }
   loo.pred <- ROCit::rocit(testPredictionProbVec, targetVec)
-  auc <- loo.pred$AUC
-  aucRound <- round(auc, 4)
-  auc.vec <- c(auc.vec, aucRound)
   testPredictionClassVec <- as.numeric(testPredictionClassVec)
   conf.mat <- suppressWarnings(
     caret::confusionMatrix(as.factor(testPredictionClassVec),
                                          as.factor(targetVec)))
   output.list <- list()
-  output.list[[1]] <- auc.vec
+  output.list[[1]] <- round(loo.pred$AUC, 4)
   output.list[[2]] <- conf.mat$byClass
   output.list[[3]] <- testPredictionProbVec
   names(output.list) <- c("auc", "byClass", "prob")
@@ -83,20 +78,20 @@ LOOAUC_simple_multiple_noplot_one_df <- function(df, targetVec){
 #' bootstrap iteration.}
 #'
 Bootstrap_LOOCV_LR_AUC <- function(df, targetVec, nboot){
-  output.auc.vec <- c()
-  output.byClass.df <- NULL
+  output.auc.vec <- numeric(nboot)
+  output.byClass.df <- as.data.frame(matrix(0, ncol = 11, nrow = nboot))
   for (i in seq_len(nboot)){
     index.boot <- sample(seq_len(ncol(df)), ncol(df), replace = TRUE)
     df.tmp <- df[, index.boot]
     loo.output.list <- suppressWarnings(
-      LOOAUC_simple_multiple_noplot_one_df(df.tmp, targetVec[index.boot]))
+      LOOAUC_simple_multiple_noplot_one_df(df.tmp, targetVec[index.boot])
+    )
     output.auc.vec[i] <- loo.output.list[[1]]
-    output.byClass.df <- rbind(output.byClass.df, loo.output.list[[2]])
+    output.byClass.df[i, ] <- loo.output.list[[2]]
   }
-
   output.list <- list()
   output.list[[1]] <- output.auc.vec
-  output.list[[2]] <- as.data.frame(output.byClass.df)
+  output.list[[2]] <- output.byClass.df
   names(output.list) <- c("auc", "byClass")
   return(output.list)
 }

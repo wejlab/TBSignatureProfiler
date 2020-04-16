@@ -50,7 +50,7 @@ bootstrapAUC <- function(SE_scored, annotationColName, signatureColNames,
   if (pb.show)  pb <- utils::txtProgressBar(min = 0, max = total, style = 3)
   
   # Initialize vectors
-  pvals <- aucs <- tmp_aucs <- numeric(seq_len(signatureColNames))
+  pvals <- aucs <- tmp_aucs <- numeric(total)
   
   for (i in signatureColNames) {
     score <- SummarizedExperiment::colData(SE_scored)[i][, 1]
