@@ -29,9 +29,10 @@ expression data. Required.}
 with one column. Only required if \code{inputData} is a \code{data.frame} or
 \code{matrix} of signature data.}
 
-\item{signatureColNames}{a \code{vector} of the column names in \code{colData}
-that contain the signature data. Only required if \code{inputData} is a
-\code{SummarizedExperiment} object.}
+\item{signatureColNames}{a \code{vector} of the column names of \code{inputData}
+that contain the signature data. If \code{inputData} is a
+\code{SummarizedExperiment} object, these are the column names of the
+object \code{colData}.}
 
 \item{annotationColName}{a character string naming the column name in the
 \code{colData} that contains the annotation data to be used in making the

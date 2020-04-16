@@ -229,8 +229,12 @@ compareBoxplots <- function(SE_scored, annotationColName, signatureColNames,
 #' Create an array of ROC plots to compare signatures.
 #'
 #' @inheritParams signatureBoxplot
-#' @param choose_colors a vector of length 2 defining the colors to be used
+#' @param choose_colors a \code{vector} of length 2 defining the colors to be used
 #' in the ROC plots. The default is \code{c("cornflowerblue", "gray24")}.
+#' @param signatureColNames a \code{vector} of the column names of \code{inputData}
+#' that contain the signature data. If \code{inputData} is a
+#' \code{SummarizedExperiment} object, these are the column names of the
+#' object \code{colData}.
 #'
 #' @return An array of ROC plots.
 #'
@@ -278,7 +282,7 @@ signatureROCplot <- function(inputData, annotationData,
   }
   if (length(annotationColName) != 1) {
     stop("You must specify a single annotation column name with which
-    to color boxplots.")
+    to create plots.")
   }
   if (!is.factor(annotationData[, 1])) {
     annotationData[, 1] <- as.factor(annotationData[, 1])
@@ -344,6 +348,10 @@ signatureROCplot <- function(inputData, annotationData,
 #' @param choose_colors a vector of length 3 defining the colors to be used
 #' in the ROC plots. The default is \code{c("cornflowerblue",
 #' "gray50", "gray79")}.
+#' @param signatureColNames a \code{vector} of the column names of \code{inputData}
+#' that contain the signature data. If \code{inputData} is a
+#' \code{SummarizedExperiment} object, these are the column names of the
+#' object \code{colData}.
 #' @param name a character string giving the title of the boxplot. If
 #' \code{NULL}, the plot title will be
 #' \code{"ROC Plots for Gene Signatures, <ci.lev>\% Confidence"}.
@@ -401,7 +409,7 @@ signatureROCplot_CI <- function(inputData, annotationData, signatureColNames,
   }
   if (length(annotationColName) != 1) {
     stop("You must specify a single annotation column name with which
-    to color boxplots.")
+    to create plots.")
   }
   if (!is.factor(annotationData[, 1])) {
     annotationData[, 1] <- as.factor(annotationData[, 1])
