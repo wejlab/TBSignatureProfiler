@@ -40,25 +40,29 @@ globalVariables(c("BS_AUC", "FPR", "LowerTPR", "Signatures",
 bootstrapAUC <- function(SE_scored, annotationColName, signatureColNames,
                          num.boot = 100, pb.show = TRUE){
   pvals <- aucs <- aucs_boot <- NULL
-
+  
   annotationData <- SummarizedExperiment::colData(SE_scored)[annotationColName][, 1]
   if (!is.factor(annotationData)) annotationData <- as.factor(annotationData)
-
+  
   # Create progress bar
   total <- length(signatureColNames)
   counter <- 0
   if (pb.show)  pb <- utils::txtProgressBar(min = 0, max = total, style = 3)
+  
+  # Initialize vectors
+  pvals <- aucs <- tmp_aucs <- numeric(seq_len(signatureColNames))
+  
   for (i in signatureColNames) {
     score <- SummarizedExperiment::colData(SE_scored)[i][, 1]
     # Conduct a 2-sample t-test on the scores and their
     # corresponding Tuberculosis group status
-    pvals <- c(pvals, stats::t.test(score ~ annotationData)$p.value)
-
+    pvals[i] <- stats::t.test(score ~ annotationData)$p.value
+    
     # Obtain AUC based on entire dataset
     pred <- ROCit::rocit(score, annotationData)
     auc <- pred$AUC
-    aucs <- c(aucs, max(auc, 1 - auc))
-
+    aucs[i] <- max(auc, 1 - auc)
+    
     # Proceed with bootstrapping
     tmp_aucs <- NULL
     for (j in seq(1, num.boot)) {
@@ -66,19 +70,18 @@ bootstrapAUC <- function(SE_scored, annotationColName, signatureColNames,
       tmp_score <- score[index]
       tmp_annotationData <- annotationData[index]
       pred <- ROCit::rocit(tmp_score, tmp_annotationData)
-      tmp_auc <- max(pred$AUC, 1 - pred$AUC)
-      tmp_aucs <- c(tmp_aucs, tmp_auc)
+      tmp_aucs[i] <- max(pred$AUC, 1 - pred$AUC)
     }
     aucs_boot <- cbind(aucs_boot, tmp_aucs)
-
+    
     # Update the progress bar
     counter <- counter + 1
     if (pb.show) utils::setTxtProgressBar(pb, counter)
   }
-
+  
   if (pb.show) close(pb)
   return(list("P-values" = pvals, "Boot AUC Values" = aucs_boot,
-         "Non-Boot AUC Values" = aucs))
+              "Non-Boot AUC Values" = aucs))
 }
 
 #' Create a table of results for t-tests and bootstrapped AUCs for multiple scored signatures.
