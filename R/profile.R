@@ -209,6 +209,7 @@ runTBsigProfiler <- function(input, useAssay = NULL,
   assign_res <- NULL
   if ("ASSIGN" %in% algorithm) {
     predir <- getwd()
+    on.exit(setwd(predir))
     delete_intermediate <- FALSE
     if (is.null(assignDir)) {
       assignDir <- tempfile("assign")
