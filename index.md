@@ -2,7 +2,7 @@
 
 [![Travis build status](https://travis-ci.org/compbiomed/TBSignatureProfiler.svg?branch=master)](https://travis-ci.org/compbiomed/TBSignatureProfiler)
 [![codecov](https://codecov.io/gh/compbiomed/TBSignatureProfiler/branch/master/graph/badge.svg)](https://codecov.io/gh/compbiomed/TBSignatureProfiler)
-[![lifecycle](https://img.shields.io/badge/lifecycle-experimental-orange.svg)](https://www.tidyverse.org/lifecycle/#experimental)
+[![lifecycle](https://img.shields.io/badge/lifecycle-maturing-blue)](https://www.tidyverse.org/lifecycle/#maturing)
 
 ## What is the TBSignatureProfiler?
 The TBSignatureProfiler is an R package that allows researchers to easily profile RNA-seq data using signatures for TB progression, TB disease, and other TB disease states, using common signature profiling tools including ASSIGN, GSVA, and ssGSEA.
@@ -13,14 +13,24 @@ The goal of the TBSignatureProfiler is to aggregate these signatures and create 
 
 ## Installation
 
-TBSignatureProfiler is under development. You can install the devel version via
-GitHub:
+The TBSignatureProfiler requires R 4.0 and Bioconductor 3.10.
+
+* Install the development version of the package from Github 
 
 ``` r
-# install.packages("devtools")
+if (!requireNamespace("devtools", quietly=TRUE))
+  install.packages("devtools")
 devtools::install_github("compbiomed/TBSignatureProfiler")
 ```
 
+* Install the release version of the package from Bioconductor
+
+``` r
+if (!requireNamespace("BiocManager", quietly=TRUE))
+  install.packages("BiocManager")
+BiocManager::install("compbiomed/TBSignatureProfiler")
+
+```
 ## Run TBSignatureProfiler shiny app
 
 ``` r

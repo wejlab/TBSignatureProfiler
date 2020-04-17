@@ -29,10 +29,13 @@ We aim to provide the scientific community with a resource to access these aggre
  
 # Installation
 
-In order to install the TBSignatureProfiler, run the following code:
+In order to install the TBSignatureProfiler from Bioconductor, run the following code:
 
 ```{r load profiler, eval = FALSE}
-devtools::install_github("compbiomed/TBSignatureProfiler")
+if (!requireNamespace("BiocManager", quietly=TRUE))
+  install.packages("BiocManager")
+BiocManager::install("compbiomed/TBSignatureProfiler")
+
 ```
                                                                       
 # Compatibility with SummarizedExperiment objects
