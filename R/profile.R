@@ -208,15 +208,14 @@ runTBsigProfiler <- function(input, useAssay = NULL,
   }
   assign_res <- NULL
   if ("ASSIGN" %in% algorithm) {
-    predir <- getwd()
-    on.exit(setwd(predir))
     delete_intermediate <- FALSE
     if (is.null(assignDir)) {
       assignDir <- tempfile("assign")
       dir.create(assignDir)
       delete_intermediate <- TRUE
+    } else if (!dir.exists(assignDir)) {
+      dir.create(assignDir)
     }
-    setwd(assignDir)
     message("Running ASSIGN")
     for (i in names(signatures)) {
       message(i)
@@ -230,13 +229,12 @@ runTBsigProfiler <- function(input, useAssay = NULL,
           ASSIGN::assign.wrapper(testData = runindata, trainingLabel = NULL,
                                  geneList = currlist, adaptive_S = TRUE,
                                  iter = ASSIGNiter, burn_in = ASSIGNburnin,
-                                 outputDir = i)
+                                 outputDir = file.path(assignDir, i))
         } else {
           message("Result already exists. Delete to re-run.")
         }
       }
     }
-    setwd(predir)
     assign_res <- as.matrix(t(ASSIGN::gather_assign_results(assignDir)))
     if (nrow(assign_res) == 0){
       assign_res <- NULL

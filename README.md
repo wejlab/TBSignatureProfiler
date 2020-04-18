@@ -1,6 +1,5 @@
 ## TBSignatureProfiler <img src="https://github.com/compbiomed/TBSignatureProfiler-docs/blob/master/lungs1.png?raw=true" align="right" width="170" />
 
-TBSignatureProfiler
 [![](https://img.shields.io/github/last-commit/compbiomed/TBSignatureProfiler.svg)](https://github.com/compbiomed/TBSignatureProfiler/commits/master)
 [![](https://img.shields.io/badge/lifecycle-maturing-blue.svg)](https://www.tidyverse.org/lifecycle/#maturing)
 [![codecov](https://codecov.io/gh/compbiomed/TBSignatureProfiler/branch/master/graph/badge.svg)](https://codecov.io/gh/compbiomed/TBSignatureProfiler)
