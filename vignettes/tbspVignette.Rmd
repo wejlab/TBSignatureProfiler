@@ -34,8 +34,7 @@ In order to install the TBSignatureProfiler from Bioconductor, run the following
 ```{r load profiler, eval = FALSE}
 if (!requireNamespace("BiocManager", quietly=TRUE))
   install.packages("BiocManager")
-BiocManager::install("compbiomed/TBSignatureProfiler")
-
+BiocManager::install("TBSignatureProfiler")
 ```
                                                                       
 # Compatibility with SummarizedExperiment objects

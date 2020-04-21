@@ -28,6 +28,6 @@ devtools::install_github("compbiomed/TBSignatureProfiler")
 ``` r
 if (!requireNamespace("BiocManager", quietly=TRUE))
   install.packages("BiocManager")
-BiocManager::install("compbiomed/TBSignatureProfiler")
+BiocManager::install("TBSignatureProfiler")
 
 ```
