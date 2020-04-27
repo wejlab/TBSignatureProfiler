@@ -1,6 +1,6 @@
 <img src="https://github.com/compbiomed/TBSignatureProfiler-docs/blob/master/lungs1.png?raw=true" align="right" width="170" />
 
-[![Travis build status](https://travis-ci.org/compbiomed/TBSignatureProfiler.svg?branch=master)](https://travis-ci.org/compbiomed/TBSignatureProfiler)
+[![](https://img.shields.io/badge/bioconductor-3.11-3a6378.svg)](https://doi.org/doi:10.18129/B9.bioc.TBSignatureProfiler)
 [![codecov](https://codecov.io/gh/compbiomed/TBSignatureProfiler/branch/master/graph/badge.svg)](https://codecov.io/gh/compbiomed/TBSignatureProfiler)
 [![lifecycle](https://img.shields.io/badge/lifecycle-maturing-blue)](https://www.tidyverse.org/lifecycle/#maturing)
 
