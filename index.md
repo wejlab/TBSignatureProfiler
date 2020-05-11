@@ -1,8 +1,10 @@
 <img src="https://github.com/compbiomed/TBSignatureProfiler-docs/blob/master/lungs1.png?raw=true" align="right" width="170" />
 
-[![](https://img.shields.io/badge/bioconductor-3.11-3a6378.svg)](https://doi.org/doi:10.18129/B9.bioc.TBSignatureProfiler)
+[![](https://img.shields.io/badge/bioconductor-3.11-3a6378.svg)](http://www.bioconductor.org/packages/release/bioc/html/TBSignatureProfiler.html)
 [![codecov](https://codecov.io/gh/compbiomed/TBSignatureProfiler/branch/master/graph/badge.svg)](https://codecov.io/gh/compbiomed/TBSignatureProfiler)
 [![lifecycle](https://img.shields.io/badge/lifecycle-maturing-blue)](https://www.tidyverse.org/lifecycle/#maturing)
+[![build](http://www.bioconductor.org/shields/build/release/bioc/TBSignatureProfiler.svg)](http://bioconductor.org/checkResults/release/bioc-LATEST/TBSignatureProfiler/)
+
 
 ## What is the TBSignatureProfiler?
 The TBSignatureProfiler is an R package that allows researchers to easily profile RNA-seq data using signatures for TB progression, TB disease, and other TB disease states, using common signature profiling tools including ASSIGN, GSVA, and ssGSEA.

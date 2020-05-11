@@ -105,7 +105,7 @@ siglist_hivtb <- names(TBsignatures)
 
 ```{r run profiler}
 ## Run the TBSignatureProfiler to score the signatures in the data
-ssgsea_result <- capture.output(runTBsigProfiler(input = hivtb_data,
+out <- capture.output(ssgsea_result <- runTBsigProfiler(input = hivtb_data,
                                                  useAssay = "log_cpm",
                                                  signatures = TBsignatures,
                                                  algorithm = "ssGSEA",
@@ -303,8 +303,8 @@ hivtb_norm <- deseq2_norm_rle(assay(hivtb_data, "counts"))
 
 quantitative.result <- SignatureQuantitative(hivtb_norm,
                        targetVec.num = colData(hivtb_data)$BinaryTB,
-                       signature.list = TBsignatures,
-                       signature.name.vec = names(TBsignatures),
+                       signature.list = TBsignatures[sigs],
+                       signature.name.vec = sigs,
                        num.boot = 3,
                        pb.show = FALSE)
 ```
@@ -313,8 +313,8 @@ We also create a boxplot of AUC for each signature, which provides a clear compa
 
 ```{r sigeval plot, message = FALSE}
 plotQuantitative(hivtb_norm, targetVec.num = colData(hivtb_data)$BinaryTB,
-                       signature.list = TBsignatures,
-                       signature.name.vec = names(TBsignatures),
+                       signature.list = TBsignatures[sigs],
+                       signature.name.vec = sigs,
                        num.boot = 3, pb.show = FALSE, rotateLabels = TRUE)
 ```
 
