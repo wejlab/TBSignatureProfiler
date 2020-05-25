@@ -1,6 +1,6 @@
 Package: TBSignatureProfiler
 Title: Profile RA-Seq Data Using TB Pathway Signatures
-Version: 1.1.0
+Version: 1.1.01
 Authors@R:
     c(person(given = "David", family = "Jenkins", role = c("aut", "cre"), email = "dfj@bu.edu"),
       person(given = "Yue", family = "Zhao", role = c("aut"), email = "yuezh@bu.edu"),
@@ -21,29 +21,21 @@ Depends:
 Imports:
     ASSIGN (>= 1.23.1),
     GSVA,
-    SummarizedExperiment,
-    S4Vectors,
+    singscore,
     methods,
     BiocParallel,
     ComplexHeatmap,
     RColorBrewer,
     ggplot2,
+    S4Vectors,
     reshape2,
-    circlize,
-    glmnet,
     ROCit,
-    bioDist,
-    readr,
-    boot,
     DESeq2,
-    caret,
-    ggfortify,
-    e1071,
     DT,
     edgeR,
-    singscore,
     gdata,
-    shiny
+    magick,
+    SummarizedExperiment
 Suggests:
     testthat,
     spelling,
@@ -51,7 +43,12 @@ Suggests:
     covr,
     knitr,
     rmarkdown,
-    BiocStyle
+    BiocStyle,
+    shiny,
+    circlize,
+    glmnet,
+    caret,
+    e1071
 URL: https://github.com/compbiomed/TBSignatureProfiler
 BugReports: https://github.com/compbiomed/TBSignatureProfiler/issues
 Language: en-US
