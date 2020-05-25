@@ -20,7 +20,8 @@ compareAlgs(
   show.pb = FALSE,
   parallel.sz = 0,
   output = "heatmap",
-  num.boot = 100
+  num.boot = 100,
+  column_order = NULL
 )
 }
 \arguments{
@@ -93,6 +94,10 @@ should be a \code{"heatmap"} or \code{"boxplot"}. The default is
 
 \item{num.boot}{an integer indicating the number of times to bootstrap the
 data.}
+
+\item{column_order}{a vector of character strings indicating the order in
+which to manually arrange the heatmap columns. Default is \code{NULL},
+such that column order is automatically determined via clustering.}
 }
 \value{
 A heatmap or boxplot for each signature specified comparing
