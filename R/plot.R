@@ -70,8 +70,6 @@ globalVariables(c("BS_AUC", "FPR", "LowerTPR", "Signatures",
 #'
 #' @return A ComplexHeatmap plot.
 #'
-#' @import BiocParallel bioDist readr boot ggfortify e1071
-#'
 #' @export
 #'
 #' @examples
@@ -236,6 +234,8 @@ signatureHeatmap <- function(inputData, annotationData = NULL, name = "Signature
 #' is \code{"Signatures"}.
 #' @param scale logical. Setting \code{scale = TRUE} scales the signature data.
 #' The default is \code{FALSE}.
+#' @param violinPlot logical. Setting \code{violinPlot = TRUE} creates violin
+#' plots in place of boxplots. The default is \code{FALSE}.
 #' @param includePoints logical. If \code{TRUE}, points will be included over
 #' the boxplots. The default is \code{TRUE}.
 #' @param notch logical. Notches are used to compare groups; if the notches of
@@ -280,9 +280,11 @@ signatureHeatmap <- function(inputData, annotationData = NULL, name = "Signature
 #' signatureBoxplot(res, signatureColNames = c("GSVA_Zak_RISK_16",
 #'                                             "ssGSEA_Zak_RISK_16"),
 #'                  annotationColName = "sample", name = "Zak_RISK_16 Signature")
+#'
 signatureBoxplot <- function(inputData, annotationData, signatureColNames,
                              annotationColName, name = "Signatures",
-                             scale = FALSE, includePoints = TRUE,
+                             scale = FALSE, violinPlot = FALSE,
+                             includePoints = TRUE,
                              notch = FALSE, rotateLabels = FALSE, nrow = NULL,
                              ncol = NULL, fill_colors = NULL) {
   if (methods::is(inputData, "SummarizedExperiment")){
@@ -342,11 +344,18 @@ signatureBoxplot <- function(inputData, annotationData, signatureColNames,
   theplot <- ggplot2::ggplot(boxplotdfm,
                              ggplot2::aes_string("Group", "Score")) +
     ggplot2::facet_wrap(~Signature, scales = 'free',
-                         nrow = nrow, ncol = ncol) +
-    ggplot2::geom_boxplot(outlier.shape = NA,
-                          ggplot2::aes_string(fill = "Group"),
-                          notch = notch) +
-    ggplot2::theme_classic()
+                         nrow = nrow, ncol = ncol)
+  if (violinPlot) {
+    theplot <- theplot + ggplot2::geom_violin(ggplot2::aes_string(
+                                                fill = "Group")) +
+      ggplot2::theme_classic()
+  } else {
+    theplot <- theplot + ggplot2::geom_boxplot(outlier.shape = NA,
+                                               ggplot2::aes_string(
+                                                 fill = "Group"),
+                                               notch = notch) +
+      ggplot2::theme_classic()
+  }
   if (includePoints) {
     theplot <- theplot + ggplot2::geom_point(position = ggplot2::
                                                position_jitter(width = 0.1))

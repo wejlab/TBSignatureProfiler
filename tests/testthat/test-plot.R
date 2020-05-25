@@ -193,7 +193,12 @@ test_that("SummarizedExperiment Plot Works", {
                      signatureColNames = "sig1"),
     "ggplot"
   )
-
+  expect_is(
+    signatureBoxplot(inputData = SE_wres, annotationColName = "samplenum",
+                     signatureColNames = "sig1",
+                     violinPlot = TRUE, scale = TRUE),
+    "ggplot"
+  )
   expect_is(
     signatureGeneHeatmap(inputData = SE_wres, useAssay = "data",
                          sigGenes = TBsignatures$Zak_RISK_16),

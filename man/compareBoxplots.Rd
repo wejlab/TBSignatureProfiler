@@ -14,7 +14,8 @@ compareBoxplots(
   abline.col = "red",
   fill.col = "gray79",
   outline.col = "black",
-  rotateLabels = FALSE
+  rotateLabels = FALSE,
+  violinPlot = FALSE
 )
 }
 \arguments{
@@ -47,6 +48,11 @@ The default is \code{"white"}.}
 The default is \code{"black"}.}
 
 \item{rotateLabels}{If \code{TRUE}, rotate labels. Default is \code{FALSE}.}
+
+\item{violinPlot}{logical. Setting \code{violinPlot = TRUE} creates violin
+plots in place of boxplots. The mean and +/- 1 standard deviation are added
+to the violin plot interior for each signature.
+The default is \code{FALSE}.}
 }
 \value{
 A plot with side-by-side boxplots of bootstrapped AUC values for

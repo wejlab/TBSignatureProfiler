@@ -11,6 +11,7 @@ signatureBoxplot(
   annotationColName,
   name = "Signatures",
   scale = FALSE,
+  violinPlot = FALSE,
   includePoints = TRUE,
   notch = FALSE,
   rotateLabels = FALSE,
@@ -43,6 +44,9 @@ is \code{"Signatures"}.}
 
 \item{scale}{logical. Setting \code{scale = TRUE} scales the signature data.
 The default is \code{FALSE}.}
+
+\item{violinPlot}{logical. Setting \code{violinPlot = TRUE} creates violin
+plots in place of boxplots. The default is \code{FALSE}.}
 
 \item{includePoints}{logical. If \code{TRUE}, points will be included over
 the boxplots. The default is \code{TRUE}.}
@@ -95,4 +99,5 @@ res <- runTBsigProfiler(testdataSE, useAssay = "data",
 signatureBoxplot(res, signatureColNames = c("GSVA_Zak_RISK_16",
                                             "ssGSEA_Zak_RISK_16"),
                  annotationColName = "sample", name = "Zak_RISK_16 Signature")
+
 }

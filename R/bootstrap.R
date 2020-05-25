@@ -39,7 +39,6 @@ globalVariables(c("BS_AUC", "FPR", "LowerTPR", "Signatures",
 #'
 bootstrapAUC <- function(SE_scored, annotationColName, signatureColNames,
                          num.boot = 100, pb.show = TRUE){
-  pvals <- aucs <- aucs_boot <- NULL
   annotationData <- SummarizedExperiment::colData(SE_scored)[annotationColName][, 1]
   if (!is.factor(annotationData)) annotationData <- as.factor(annotationData)
 
@@ -48,30 +47,33 @@ bootstrapAUC <- function(SE_scored, annotationColName, signatureColNames,
   counter <- 0
   if (pb.show)  pb <- utils::txtProgressBar(min = 0, max = total, style = 3)
 
-  # Initialize vectors
-  pvals <- aucs <- tmp_aucs <- numeric(total)
+  # Initialize containers
+  pvals <- aucs <- numeric(total)
+  aucs_boot <- matrix(nrow = num.boot,
+                      ncol = total,
+                      dimnames = list(seq(num.boot),
+                                      signatureColNames))
 
   for (i in signatureColNames) {
+    which.sig <- which(signatureColNames == i)
     score <- SummarizedExperiment::colData(SE_scored)[i][, 1]
     # Conduct a 2-sample t-test on the scores and their
     # corresponding Tuberculosis group status
-    pvals[i] <- stats::t.test(score ~ annotationData)$p.value
+    pvals[which.sig] <- stats::t.test(score ~ annotationData)$p.value
 
     # Obtain AUC based on entire dataset
-    pred <- ROCit::rocit(score, annotationData)
-    auc <- pred$AUC
-    aucs[i] <- max(auc, 1 - auc)
+    auc <- ROCit::rocit(score, annotationData)$AUC
+    aucs[which.sig] <- max(auc, 1 - auc)
 
     # Proceed with bootstrapping
-    tmp_aucs <- NULL
-    for (j in seq(1, num.boot)) {
-      index <- sample(seq_along(score), replace = TRUE)
+    for (j in 1:num.boot) {
+      index <- sample(1:length(score), replace = TRUE)
       tmp_score <- score[index]
       tmp_annotationData <- annotationData[index]
       pred <- ROCit::rocit(tmp_score, tmp_annotationData)
-      tmp_aucs[i] <- max(pred$AUC, 1 - pred$AUC)
+      tmp_auc <- max(pred$AUC, 1 - pred$AUC)
+      aucs_boot[j, which.sig] <- tmp_auc
     }
-    aucs_boot <- cbind(aucs_boot, tmp_aucs)
 
     # Update the progress bar
     counter <- counter + 1
@@ -167,6 +169,10 @@ tableAUC <- function(SE_scored, annotationColName, signatureColNames,
 #' @param outline.col the color to be used for the boxplot outlines.
 #' The default is \code{"black"}.
 #' @param rotateLabels If \code{TRUE}, rotate labels. Default is \code{FALSE}.
+#' @param violinPlot logical. Setting \code{violinPlot = TRUE} creates violin
+#' plots in place of boxplots. The mean and +/- 1 standard deviation are added
+#' to the violin plot interior for each signature.
+#' The default is \code{FALSE}.
 #'
 #' @export
 #'
@@ -190,7 +196,7 @@ compareBoxplots <- function(SE_scored, annotationColName, signatureColNames,
                             name = "Boxplot Comparison of Signature AUCs",
                             pb.show = TRUE, abline.col = "red",
                             fill.col = "gray79", outline.col = "black",
-                            rotateLabels = FALSE) {
+                            rotateLabels = FALSE, violinPlot = FALSE) {
   # Obtain AUCs
   BS.Results <- bootstrapAUC(SE_scored, annotationColName, signatureColNames,
                              num.boot, pb.show)
@@ -207,8 +213,22 @@ compareBoxplots <- function(SE_scored, annotationColName, signatureColNames,
     new.order = names(sort(aucs)))
   melted_data <- melted_data[order(melted_data$Signatures), ]
   the_plot <- ggplot2::ggplot(data = melted_data, ggplot2::aes(Signatures,
-                                                               BS_AUC)) +
-    ggplot2::geom_boxplot(fill = fill.col, col = outline.col) +
+                                                               BS_AUC))
+  if (violinPlot) {
+    the_plot <- the_plot +
+      ggplot2::geom_violin(fill = fill.col, col = outline.col) +
+      ggplot2::stat_summary(fun.data = function(x) {
+        m <- mean(x)
+        ymin <- m - stats::sd(x)
+        ymax <- m + stats::sd(x)
+        return(c(y = m, ymin = ymin, ymax = ymax))
+      }, geom = "pointrange", color = outline.col)
+  } else {
+    the_plot <- the_plot +
+      ggplot2::geom_boxplot(fill = fill.col, col = outline.col)
+  }
+
+  the_plot <- the_plot +
     ggplot2::geom_abline(ggplot2::aes(intercept = 0.5, slope = 0,
                                       col = abline.col), size = 1,
                          linetype = "dashed", show.legend = FALSE) +
@@ -221,7 +241,7 @@ compareBoxplots <- function(SE_scored, annotationColName, signatureColNames,
 
   if (rotateLabels) the_plot <- the_plot +
     ggplot2::theme(axis.text.x = ggplot2::element_text(angle = 90,
-                                        hjust = 1))
+                                                       hjust = 1))
 
   return(the_plot)
 }
@@ -352,7 +372,7 @@ signatureROCplot <- function(inputData, annotationData,
 #' that contain the signature data. If \code{inputData} is a
 #' \code{SummarizedExperiment} object, these are the column names of the
 #' object \code{colData}.
-#' @param name a character string giving the title of the boxplot. If
+#' @param name a character string giving the title of the ROC plot. If
 #' \code{NULL}, the plot title will be
 #' \code{"ROC Plots for Gene Signatures, <ci.lev>\% Confidence"}.
 #' The default is \code{NULL}.
