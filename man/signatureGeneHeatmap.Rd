@@ -18,6 +18,7 @@ signatureGeneHeatmap(
   colorSets = c("Set1", "Set2", "Set3", "Pastel1", "Pastel2", "Accent", "Dark2",
     "Paired"),
   choose_color = c("blue", "gray95", "red"),
+  column_order = NULL,
   ...
 )
 }
@@ -78,7 +79,12 @@ in order that you want to use them, or provide custom color sets with the
 heatmap gradient, or a \code{colorRamp} function produced by
 \code{circlize::colorRamp2}. The default is \code{c("blue", "gray95", "red")}.}
 
-\item{...}{Additional parameters to pass to \code{ComplexHeatmap::Heatmap()}.}
+\item{column_order}{a vector of character strings indicating the order in
+which to manually arrange the heatmap columns. Default is \code{NULL},
+such that column order is automatically determined via clustering.}
+
+\item{...}{Additional arguments to be passed to
+\code{ComplexHeatmap::Heatmap()}.}
 }
 \value{
 A \code{ComplexHeatmap} plot.

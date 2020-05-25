@@ -500,7 +500,7 @@ compareAlgs <- function (input, signatures = NULL, annotationColName,
                          choose_color = c("blue", "gray95", "red"),
                          colList = list(),
                          show.pb = FALSE, parallel.sz = 0, output = "heatmap",
-                         num.boot = 100) {
+                         num.boot = 100, column_order = NULL) {
   if (output != "heatmap" & output != "boxplot") {
     stop("Output parameter must specify either 'heatmap' or 'boxplot'")
   }
@@ -549,7 +549,8 @@ compareAlgs <- function (input, signatures = NULL, annotationColName,
                               showColumnNames = showColumnNames,
                               showRowNames = showRowNames,
                               colorSets = colorSets, choose_color = choose_color,
-                              colList = colList, split_heatmap = "none"))
+                              colList = colList, split_heatmap = "none",
+                              column_order = column_order))
     } else if (output == "boxplot") {
       return(compareBoxplots(scored,
                              annotationColName = annotationColName,
