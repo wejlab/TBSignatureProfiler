@@ -42,7 +42,7 @@ BiocManager::install("TBSignatureProfiler")
 While the TBSignatureProfiler often allows for the form of a `data.frame` or `matrix` as input data, the most ideal form of input for this package is that of the `SummarizedExperiment` object. This is an amazing data structure that is being developed by the \emph{Bioconductor team} as part of the `r Biocpkg("SummarizedExperiment")` package, and is imported as part of the TBSignatureProfiler package. It is able to store data matrices along with annotation information, metadata, and reduced dimensionality data
 (PCA, t-SNE, etc.). To learn more about proper usage and context of the `SummarizedExperiment` object, you may want to take a look at the [package vignette](https://bioconductor.org/packages/release/bioc/vignettes/SummarizedExperiment/inst/doc/SummarizedExperiment.html). A basic understanding of the `assay` and `colData` properties of a `SummarizedExperiment` will be useful for the purposes of this vignette. 
 
-# A Quick Tutorial for the TBSignature Profiler
+# A Quick Tutorial for the TBSignatureProfiler
 
 ## Load packages
 

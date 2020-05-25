@@ -49,7 +49,7 @@ BiocManager::install("SummarizedExperiment")
 ```
 
 
-# A Tutorial for the TBSignature Profiler
+# A Tutorial for the TBSignatureProfiler
 
 ## Load packages
 
