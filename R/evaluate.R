@@ -14,7 +14,7 @@ globalVariables(c("BS_AUC", "FPR", "LowerTPR", "Signatures",
 #' ## Example using the counts assay from a SummarizedExperiment
 #' data_in <- SummarizedExperiment::assay(TB_indian, "counts")
 #' res <- deseq2_norm_rle(data_in)
-deseq2_norm_rle <- function(inputData){
+deseq2_norm_rle <- function(inputData) {
     scalingFac <- DESeq2::estimateSizeFactorsForMatrix(inputData)
     inputDataScaled <- inputData
     for (i in seq_len(ncol(inputData))) {
@@ -36,10 +36,10 @@ deseq2_norm_rle <- function(inputData){
 #' prevalence, detection rate, detection prevalence and balanced accuracy.}
 #' \item{prob}{A vector of the test prediction probabilities.}
 #'
-LOOAUC_simple_multiple_noplot_one_df <- function(df, targetVec){
+LOOAUC_simple_multiple_noplot_one_df <- function(df, targetVec) {
   nSample <- ncol(df)
   testPredictionClassVec <- testPredictionProbVec <- numeric(nSample)
-  for (j in seq_len(nSample)){
+  for (j in seq_len(nSample)) {
     train <- t(as.matrix(df[, -j]))
     test <- t(as.matrix(df[, j]))
     fit <- suppressWarnings(glmnet::glmnet(train, targetVec[-j],
@@ -77,10 +77,10 @@ LOOAUC_simple_multiple_noplot_one_df <- function(df, targetVec){
 #' detection rate, detection prevalence and balanced accuracy for that
 #' bootstrap iteration.}
 #'
-Bootstrap_LOOCV_LR_AUC <- function(df, targetVec, nboot){
+Bootstrap_LOOCV_LR_AUC <- function(df, targetVec, nboot) {
   output.auc.vec <- numeric(nboot)
   output.byClass.df <- as.data.frame(matrix(0, ncol = 11, nrow = nboot))
-  for (i in seq_len(nboot)){
+  for (i in seq_len(nboot)) {
     index.boot <- sample(seq_len(ncol(df)), ncol(df), replace = TRUE)
     df.tmp <- df[, index.boot]
     loo.output.list <- suppressWarnings(
@@ -148,11 +148,11 @@ SignatureQuantitative <- function(df.input, targetVec.num, signature.list = NULL
                                   pb.show = TRUE) {
 
   if ((is.null(signature.name.vec) & !is.null(signature.list)
-       | (!is.null(signature.name.vec) & is.null(signature.list)))){
+       | (!is.null(signature.name.vec) & is.null(signature.list)))) {
     stop("Please specify arguments for both signature.list and
          signature.name.vec, or leave them both empty to use
          TBsignatures as the list of signatures for profiling.")
-  } else if (is.null(signature.list) & is.null(signature.name.vec)){
+  } else if (is.null(signature.list) & is.null(signature.name.vec)) {
     if ("TBsignatures" %in% ls(envir = .GlobalEnv)) {
       get("TBsignatures", envir = .GlobalEnv)
     }
@@ -160,7 +160,7 @@ SignatureQuantitative <- function(df.input, targetVec.num, signature.list = NULL
     signature.name.vec <- names(signature.list)
   }
 
-  if (length(signature.list) != length(signature.name.vec)){
+  if (length(signature.list) != length(signature.name.vec)) {
     stop("The inputs signature.list and signature.name.vec are not the same
          length.")
   }
@@ -292,11 +292,11 @@ plotQuantitative <- function(df.input, targetVec.num, signature.list = NULL,
                              fill.col = "white", outline.col = "black",
                              abline.col = "red", rotateLabels = FALSE) {
   if ((is.null(signature.name.vec) & !is.null(signature.list)
-       | (!is.null(signature.name.vec) & is.null(signature.list)))){
+       | (!is.null(signature.name.vec) & is.null(signature.list)))) {
     stop("Please specify arguments for both signature.list and
          signature.name.vec, or leave them both empty to use
          TBsignatures as the list of signatures for profiling.")
-  } else if (is.null(signature.list) & is.null(signature.name.vec)){
+  } else if (is.null(signature.list) & is.null(signature.name.vec)) {
     if ("TBsignatures" %in% ls(envir = .GlobalEnv)) {
       get("TBsignatures", envir = .GlobalEnv)
     }
@@ -304,7 +304,7 @@ plotQuantitative <- function(df.input, targetVec.num, signature.list = NULL,
     signature.name.vec <- names(signature.list)
   }
 
-  if (length(signature.list) != length(signature.name.vec)){
+  if (length(signature.list) != length(signature.name.vec)) {
     stop("The inputs signature.list and signature.name.vec are not the same
          length.")
   }

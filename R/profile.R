@@ -140,8 +140,8 @@ runTBsigProfiler <- function(input, useAssay = NULL,
   }
   runindata <- input
   if (methods::is(runindata, "SummarizedExperiment")) {
-    if (is.null(useAssay)){
-      if ("counts" %in% names(SummarizedExperiment::assays(input))){
+    if (is.null(useAssay)) {
+      if ("counts" %in% names(SummarizedExperiment::assays(input))) {
         useAssay <- "counts"
       } else {
         stop("useAssay required for SummarizedExperiment Input")
@@ -236,7 +236,7 @@ runTBsigProfiler <- function(input, useAssay = NULL,
       }
     }
     assign_res <- as.matrix(t(ASSIGN::gather_assign_results(assignDir)))
-    if (nrow(assign_res) == 0){
+    if (nrow(assign_res) == 0) {
       assign_res <- NULL
     }
     if (delete_intermediate) {
@@ -270,8 +270,8 @@ runTBsigProfiler <- function(input, useAssay = NULL,
     if (is.null(combineSigAndAlgorithm)) {
       stop("You must choose whether or not to combine the ",
            "signature and algorithm name using combineSigAndAlgorithm.")
-    } else if (combineSigAndAlgorithm){
-      if (!is.null(gsvaRes)){
+    } else if (combineSigAndAlgorithm) {
+      if (!is.null(gsvaRes)) {
         rownames(gsvaRes) <- paste("GSVA", rownames(gsvaRes), sep = "_")
         combined_res <- gsvaRes
       }
@@ -345,7 +345,7 @@ runTBsigProfiler <- function(input, useAssay = NULL,
         pathcol[, 1] <- rownames(gsvaRes_ssgsea)
         colnames(pathcol) <- "pathway"
         gsvaRes_ssgsea <- cbind(pathcol, alg_col, gsvaRes_ssgsea)
-        if (nrow(combined_res) == 0){
+        if (nrow(combined_res) == 0) {
           combined_res <- gsvaRes_ssgsea
         } else {
           combined_res <- rbind(combined_res, gsvaRes_ssgsea)
@@ -488,19 +488,19 @@ runTBsigProfiler <- function(input, useAssay = NULL,
 #'             algorithm = c("GSVA", "ssGSEA", "PLAGE"),
 #'             scale = TRUE, parallel.sz = 1, output = "heatmap")
 #'
-compareAlgs <- function (input, signatures = NULL, annotationColName,
-                         useAssay = "counts",
-                         algorithm = c("GSVA", "ssGSEA", "ASSIGN", "PLAGE",
-                                       "Zscore", "singscore"),
-                         showColumnNames = TRUE,
-                         showRowNames = TRUE, scale = FALSE,
-                         colorSets = c("Set1", "Set2", "Set3", "Pastel1",
-                                       "Pastel2", "Accent", "Dark2",
-                                       "Paired"),
-                         choose_color = c("blue", "gray95", "red"),
-                         colList = list(),
-                         show.pb = FALSE, parallel.sz = 0, output = "heatmap",
-                         num.boot = 100, column_order = NULL) {
+compareAlgs <- function(input, signatures = NULL, annotationColName,
+                        useAssay = "counts",
+                        algorithm = c("GSVA", "ssGSEA", "ASSIGN", "PLAGE",
+                                      "Zscore", "singscore"),
+                        showColumnNames = TRUE,
+                        showRowNames = TRUE, scale = FALSE,
+                        colorSets = c("Set1", "Set2", "Set3", "Pastel1",
+                                      "Pastel2", "Accent", "Dark2",
+                                      "Paired"),
+                        choose_color = c("blue", "gray95", "red"),
+                        colList = list(),
+                        show.pb = FALSE, parallel.sz = 0, output = "heatmap",
+                        num.boot = 100, column_order = NULL) {
   if (output != "heatmap" & output != "boxplot") {
     stop("Output parameter must specify either 'heatmap' or 'boxplot'")
   }

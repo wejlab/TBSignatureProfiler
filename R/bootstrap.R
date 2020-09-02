@@ -38,7 +38,7 @@ globalVariables(c("BS_AUC", "FPR", "LowerTPR", "Signatures",
 #'  booted
 #'
 bootstrapAUC <- function(SE_scored, annotationColName, signatureColNames,
-                         num.boot = 100, pb.show = TRUE){
+                         num.boot = 100, pb.show = TRUE) {
   annotationData <- SummarizedExperiment::colData(SE_scored)[annotationColName][, 1]
   if (!is.factor(annotationData)) annotationData <- as.factor(annotationData)
 
@@ -67,7 +67,7 @@ bootstrapAUC <- function(SE_scored, annotationColName, signatureColNames,
 
     # Proceed with bootstrapping
     for (j in 1:num.boot) {
-      index <- sample(1:length(score), replace = TRUE)
+      index <- sample(seq_along(score), replace = TRUE)
       tmp_score <- score[index]
       tmp_annotationData <- annotationData[index]
       pred <- ROCit::rocit(tmp_score, tmp_annotationData)
@@ -118,7 +118,7 @@ bootstrapAUC <- function(SE_scored, annotationColName, signatureColNames,
 #' head(h)
 #'
 tableAUC <- function(SE_scored, annotationColName, signatureColNames,
-                     num.boot = 100, pb.show = TRUE, output = "DataTable"){
+                     num.boot = 100, pb.show = TRUE, output = "DataTable") {
   # Run the bootstrapping function
   BS.Results <- bootstrapAUC(SE_scored, annotationColName, signatureColNames,
                              num.boot, pb.show)
@@ -346,7 +346,7 @@ signatureROCplot <- function(inputData, annotationData,
   theplot <- ggplot2::ggplot(data = plot_dat, ggplot2::aes(x = FPR, y = TPR)) +
     ggplot2::geom_line(ggplot2::aes(x = FPR, y = TPR, col = paste(
       "Empirical ROC curve")), size = 1) +
-    ggplot2::facet_wrap(~Signature, scales = 'free',
+    ggplot2::facet_wrap(~Signature, scales = "free",
                         nrow = nrow, ncol = ncol) +
     ggplot2::geom_abline(ggplot2::aes(intercept = 0, slope = 1,
                                       col = choose_colors[2]), size = 1,
@@ -500,7 +500,7 @@ signatureROCplot_CI <- function(inputData, annotationData, signatureColNames,
                          show.legend = FALSE) +
     ggplot2::geom_line(ggplot2::aes(x = FPR, y = TPR, col =
                                       "Empirical ROC curve"), size = 1) +
-    ggplot2::facet_wrap(~Signature, scales = 'free',
+    ggplot2::facet_wrap(~Signature, scales = "free",
                         nrow = nrow, ncol = ncol) +
     ggplot2::geom_abline(ggplot2::aes(intercept = 0, slope = 1,
                                       col = choose_colors[2]), size = 1,
@@ -570,7 +570,6 @@ signatureROCplot_CI <- function(inputData, annotationData, signatureColNames,
 #' all_assays <- mkAssay(TB_hiv, log = TRUE)
 #' all_assays
 #'
-
 mkAssay <- function(SE_obj, input_name = "counts", output_name = NULL,
                     log = FALSE, counts_to_CPM = TRUE,
                     prior_counts = 3) {
@@ -606,4 +605,3 @@ mkAssay <- function(SE_obj, input_name = "counts", output_name = NULL,
 
   return(SE_obj)
 }
-

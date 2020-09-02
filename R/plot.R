@@ -123,15 +123,15 @@ signatureHeatmap <- function(inputData, annotationData = NULL, name = "Signature
                              annotationSignature = sigAnnotData,
                              column_order = NULL,
                              ...) {
-  if (methods::is(inputData, "SummarizedExperiment")){
-    if (any(duplicated(signatureColNames))){
+  if (methods::is(inputData, "SummarizedExperiment")) {
+    if (any(duplicated(signatureColNames))) {
       stop("Duplicate signature column name is not supported.")
     }
-    if (!all(signatureColNames %in% colnames(SummarizedExperiment::colData(inputData)))){
+    if (!all(signatureColNames %in% colnames(SummarizedExperiment::colData(inputData)))) {
       stop("Signature column name not found in inputData.")
     }
     if (!is.null(annotationColNames)) {
-      if (!all(annotationColNames %in% colnames(SummarizedExperiment::colData(inputData)))){
+      if (!all(annotationColNames %in% colnames(SummarizedExperiment::colData(inputData)))) {
         stop("Annotation column name not found in inputData.")
       }
       annotationData <- SummarizedExperiment::colData(inputData)[, annotationColNames, drop = FALSE]
@@ -145,12 +145,12 @@ signatureHeatmap <- function(inputData, annotationData = NULL, name = "Signature
     }
   }
   if (!is.null(annotationData)) {
-    if (nrow(annotationData) == nrow(inputData)){
-      if (!all(rownames(annotationData) == rownames(inputData))){
+    if (nrow(annotationData) == nrow(inputData)) {
+      if (!all(rownames(annotationData) == rownames(inputData))) {
         stop("Annotation data and signature data does not match.")
       }
-    } else if (nrow(annotationData) == ncol(inputData)){
-      if (!all(rownames(annotationData) == colnames(inputData))){
+    } else if (nrow(annotationData) == ncol(inputData)) {
+      if (!all(rownames(annotationData) == colnames(inputData))) {
         stop("Annotation data and signature data does not match.")
       }
       inputData <- t(inputData)
@@ -160,7 +160,7 @@ signatureHeatmap <- function(inputData, annotationData = NULL, name = "Signature
   }
   sigresults <- t(as.matrix(inputData))
   keyname <- "Score"
-  if (scale){
+  if (scale) {
     sigresults <- t(scale(t(sigresults)))
     keyname <- "Scaled Score"
   }
@@ -180,21 +180,21 @@ signatureHeatmap <- function(inputData, annotationData = NULL, name = "Signature
     row_split_pass <- ann_data[, split_heatmap]
   }
   if (!is.null(annotationData)) {
-    if (length(colList) == 0){
+    if (length(colList) == 0) {
       colorSetNum <- 1
-      for (annot in annotationColNames){
-        if (is.numeric(annotationData[, annot])){
+      for (annot in annotationColNames) {
+        if (is.numeric(annotationData[, annot])) {
           t1min <- min(annotationData[, annot], na.rm = TRUE)
           t1max <- max(annotationData[, annot], na.rm = TRUE)
           colList[[annot]] <- circlize::colorRamp2(c(t1min, t1max),
                                                    c("white", "blue"))
         } else {
-          if (is.factor(annotationData[, annot][!is.na(annotationData[, annot])])){
+          if (is.factor(annotationData[, annot][!is.na(annotationData[, annot])])) {
             condLevels <- levels(annotationData[, annot][!is.na(annotationData[, annot])])
           } else {
             condLevels <- unique(annotationData[, annot][!is.na(annotationData[, annot])])
           }
-          if (length(condLevels) > 8){
+          if (length(condLevels) > 8) {
             colors <- distinctColors(length(condLevels))
           } else {
             colors <- RColorBrewer::brewer.pal(8, colorSets[colorSetNum])
@@ -295,14 +295,14 @@ signatureBoxplot <- function(inputData, annotationData, signatureColNames,
                              includePoints = TRUE,
                              notch = FALSE, rotateLabels = FALSE, nrow = NULL,
                              ncol = NULL, fill_colors = NULL) {
-  if (methods::is(inputData, "SummarizedExperiment")){
-    if (any(duplicated(signatureColNames))){
+  if (methods::is(inputData, "SummarizedExperiment")) {
+    if (any(duplicated(signatureColNames))) {
       stop("Duplicate signature column name is not supported.")
     }
-    if (!all(signatureColNames %in% colnames(SummarizedExperiment::colData(inputData)))){
+    if (!all(signatureColNames %in% colnames(SummarizedExperiment::colData(inputData)))) {
       stop("Signature column name not found in inputData.")
     }
-    if (!all(annotationColName %in% colnames(SummarizedExperiment::colData(inputData)))){
+    if (!all(annotationColName %in% colnames(SummarizedExperiment::colData(inputData)))) {
       stop("Annotation column name not found in inputData.")
     }
     annotationData <- data.frame(
@@ -312,28 +312,28 @@ signatureBoxplot <- function(inputData, annotationData, signatureColNames,
       SummarizedExperiment::colData(inputData)[, signatureColNames,
                                                drop = FALSE])
   } else {
-    if (ncol(annotationData) != 1){
+    if (ncol(annotationData) != 1) {
       stop("annotationData must have only one column.")
     }
     annotationColName <- colnames(annotationData)
   }
-  if (length(annotationColName) != 1){
+  if (length(annotationColName) != 1) {
     stop("You must specify a single annotation column name to color boxplots by.")
   }
   if (!is.factor(annotationData[, 1])) {
     annotationData[, 1] <- as.factor(annotationData[, 1])
   }
   n <- length(levels(annotationData[, 1]))
-  if (n > 9){
+  if (n > 9) {
     stop("Too many levels in the annotation data. The boxplot can contain a maximum of 9 levels")
   }
   # if number of rows equal number of row names
-  if (nrow(annotationData) == nrow(inputData)){
-    if (!all(rownames(annotationData) == rownames(inputData))){
+  if (nrow(annotationData) == nrow(inputData)) {
+    if (!all(rownames(annotationData) == rownames(inputData))) {
       stop("Annotation data and signature data does not match.")
     }
-  } else if (nrow(annotationData) == ncol(inputData)){
-    if (!all(rownames(annotationData) == colnames(inputData))){
+  } else if (nrow(annotationData) == ncol(inputData)) {
+    if (!all(rownames(annotationData) == colnames(inputData))) {
       stop("Annotation data and signature data does not match.")
     }
     inputData <- t(inputData)
@@ -351,7 +351,7 @@ signatureBoxplot <- function(inputData, annotationData, signatureColNames,
                                id.vars = "Group")
   theplot <- ggplot2::ggplot(boxplotdfm,
                              ggplot2::aes_string("Group", "Score")) +
-    ggplot2::facet_wrap(~Signature, scales = 'free',
+    ggplot2::facet_wrap(~Signature, scales = "free",
                          nrow = nrow, ncol = ncol)
   if (violinPlot) {
     theplot <- theplot + ggplot2::geom_violin(ggplot2::aes_string(
@@ -497,23 +497,23 @@ signatureGeneHeatmap <- function(inputData, useAssay, sigGenes,
     annotationData <- data.frame(SummarizedExperiment::
                                    colData(inputData)[, annotationColNames,
                                                       drop = FALSE])
-    if (length(colList) == 0){
+    if (length(colList) == 0) {
       colorSetNum <- 1
-      for (annot in annotationColNames){
-        if (is.numeric(annotationData[, annot])){
+      for (annot in annotationColNames) {
+        if (is.numeric(annotationData[, annot])) {
           t1min <- min(annotationData[, annot], na.rm = TRUE)
           t1max <- max(annotationData[, annot], na.rm = TRUE)
           colList[[annot]] <- circlize::colorRamp2(c(t1min, t1max),
                                                    c("white", "blue"))
         } else {
-          if (is.factor(annotationData[, annot][!is.na(annotationData[, annot])])){
+          if (is.factor(annotationData[, annot][!is.na(annotationData[, annot])])) {
             condLevels <- levels(
               annotationData[, annot][!is.na(annotationData[, annot])])
           } else {
             condLevels <- unique(
               annotationData[, annot][!is.na(annotationData[, annot])])
           }
-          if (length(condLevels) > 8){
+          if (length(condLevels) > 8) {
             colors <- distinctColors(length(condLevels))
           } else {
             colors <- RColorBrewer::brewer.pal(8, colorSets[colorSetNum])
@@ -628,4 +628,3 @@ distinctColors <- function(n, hues = c("red", "cyan", "orange", "blue",
 
   return(col[seq_len(n)])
 }
-

@@ -75,7 +75,7 @@ test_that("matrix input", {
   )
   expect_is(
     runTBsigProfiler(mat_testdata,
-                     signatures = TBsignatures['Zak_RISK_16'],
+                     signatures = TBsignatures["Zak_RISK_16"],
                      algorithm = "singscore"),
     "matrix"
   )
@@ -152,7 +152,7 @@ test_that("data.frame input", {
   )
   expect_is(
     runTBsigProfiler(df_testdata,
-                     signatures = TBsignatures['Zak_RISK_16'],
+                     signatures = TBsignatures["Zak_RISK_16"],
                      algorithm = "singscore", ASSIGNiter = 100, ASSIGNburnin = 50),
     "data.frame"
   )
@@ -274,7 +274,7 @@ test_that("SummarizedExperiment input", {
   )
   expect_s4_class(
     runTBsigProfiler(SEtestdata, useAssay = "data",
-                     signatures = TBsignatures['Zak_RISK_16'],
+                     signatures = TBsignatures["Zak_RISK_16"],
                      algorithm = "GSVA", parallel.sz = 1),
     "SummarizedExperiment"
   )

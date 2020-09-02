@@ -9,9 +9,9 @@
 #'
 #' @examples
 #' # Upload data through the app
-#' if (interactive()){
+#' if (interactive()) {
 #'   TBSPapp()
-#'   }
+#' }
 #'
 TBSPapp <- function() {
   appDir <- system.file("shiny", package = "TBSignatureProfiler")

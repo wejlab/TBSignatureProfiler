@@ -14,8 +14,8 @@ Use this function to run the TBSignatureProfiler application.
 }
 \examples{
 # Upload data through the app
-if (interactive()){
+if (interactive()) {
   TBSPapp()
-  }
+}
 
 }
