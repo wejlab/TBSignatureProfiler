@@ -5,8 +5,8 @@ Authors@R:
     c(person(given = "David", family = "Jenkins", role = c("aut"), email = "dfj@bu.edu"),
       person(given = "Aubrey", family = "Odom", role = c("aut", "cre"), email = "aodom@bu.edu"),
       person(given = "Yue", family = "Zhao", role = c("aut"), email = "yuezh@bu.edu"),
-      person(given = c("W. Evan"), family = "Johnson", role = c("aut"), email = "wej@bu.edu"),
-      person(given = c("Christian"), family = "Love", role = c("aut"), email = "clove@bu.edu"))
+      person(given = "W. Evan", family = "Johnson", role = c("aut"), email = "wej@bu.edu"),
+      person(given = "Christian", family = "Love", role = c("aut"), email = "clove@bu.edu"))
 Description: Signatures of TB progression, TB disease, and other TB disease
     states have been created. This package makes it easy to profile RNA-Seq data
     using these signatures and common signature profiling tools including
