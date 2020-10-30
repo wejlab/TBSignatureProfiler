@@ -126,7 +126,7 @@ runTBsigProfiler <- function(input, useAssay = NULL,
                                            "PLAGE", "Zscore", "singscore"),
                              combineSigAndAlgorithm = FALSE, assignDir = NULL,
                              outputFormat = NULL, parallel.sz = 0,
-                             ASSIGNiter = 100000, ASSIGNburnin = 50000) {
+                             ASSIGNiter = 100000, ASSIGNburnin = 50000, ssgsea_norm=TRUE) {
   if (is.null(signatures)) {
     # Override with global environment
     if ("TBsignatures" %in% ls(envir = .GlobalEnv)) {
@@ -177,7 +177,7 @@ runTBsigProfiler <- function(input, useAssay = NULL,
   if ("ssGSEA" %in% algorithm) {
     message("Running ssGSEA")
     gsvaRes_ssgsea <- GSVA::gsva(runindata, signatures, method = "ssgsea",
-                                 parallel.sz = parallel.sz)
+                                 parallel.sz = parallel.sz, ssgsea.norm=ssgsea_norm)
   }
   gsvaRes_PLAGE <- NULL
   if ("PLAGE" %in% algorithm) {
