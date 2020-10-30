@@ -173,7 +173,7 @@ signatureHeatmap <- function(inputData, annotationData = NULL, name = "Signature
   }
   ann_data <- annotationSignature[annotationSignature[, 1] %in%
                                     signatureColNames, ]
-  ann_data <- ann_data[order(signatureColNames), ]
+  # ann_data <- ann_data[order(signatureColNames), ]
   if (split_heatmap == "none") {
     row_split_pass <- c()
   } else {
