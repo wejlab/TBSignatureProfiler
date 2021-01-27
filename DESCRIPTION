@@ -1,6 +1,6 @@
 Package: TBSignatureProfiler
 Title: Profile RNA-Seq Data Using TB Pathway Signatures
-Version: 1.1.4
+Version: 1.2.0
 Authors@R:
     c(person(given = "David", family = "Jenkins", role = c("aut"), email = "dfj@bu.edu"),
       person(given = "Aubrey", family = "Odom", role = c("aut", "cre"), email = "aodom@bu.edu"),
@@ -23,7 +23,6 @@ Imports:
     GSVA,
     singscore,
     methods,
-    BiocParallel,
     ComplexHeatmap,
     RColorBrewer,
     ggplot2,
@@ -34,7 +33,6 @@ Imports:
     DT,
     edgeR,
     gdata,
-    magick,
     SummarizedExperiment
 Suggests:
     testthat,
