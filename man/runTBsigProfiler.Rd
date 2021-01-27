@@ -20,7 +20,8 @@ runTBsigProfiler(
   outputFormat = NULL,
   parallel.sz = 0,
   ASSIGNiter = 1e+05,
-  ASSIGNburnin = 50000
+  ASSIGNburnin = 50000,
+  ssgsea_norm = TRUE
 )
 }
 \arguments{
@@ -70,6 +71,13 @@ the MCMC for the ASSIGN algorithm. The default is \code{100,000}.}
 to use in the MCMC for the ASSIGN algorithm. These iterations are discarded
 when computing the posterior means of the model parameters. The default is
 \code{50,000}.}
+
+\item{ssgsea_norm}{logical, passed to \code{GSVA::gsva()}. When parameter
+\code{algorithm = "ssgsea"},the profiler runs the SSGSEA method from
+Barbie et al. (2009) normalizing the scores by the absolute difference
+between the minimum and the maximum, as described in their paper.
+When \code{ssgsea.norm = FALSE}, this last normalization step is skipped.
+The default is \code{TRUE}.}
 }
 \value{
 A \code{SummarizedExperiment} object, \code{data.frame}, or

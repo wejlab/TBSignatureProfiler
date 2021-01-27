@@ -47,6 +47,12 @@ globalVariables(c("BS_AUC", "FPR", "LowerTPR", "Signatures",
 #' to use in the MCMC for the ASSIGN algorithm. These iterations are discarded
 #' when computing the posterior means of the model parameters. The default is
 #' \code{50,000}.
+#' @param ssgsea_norm logical, passed to \code{GSVA::gsva()}. When parameter
+#' \code{algorithm = "ssgsea"},the profiler runs the SSGSEA method from
+#' Barbie et al. (2009) normalizing the scores by the absolute difference
+#' between the minimum and the maximum, as described in their paper.
+#' When \code{ssgsea.norm = FALSE}, this last normalization step is skipped.
+#' The default is \code{TRUE}.
 #'
 #' @return A \code{SummarizedExperiment} object, \code{data.frame}, or
 #' \code{matrix} of signature profiling results. The returned object will be
@@ -126,7 +132,7 @@ runTBsigProfiler <- function(input, useAssay = NULL,
                                            "PLAGE", "Zscore", "singscore"),
                              combineSigAndAlgorithm = FALSE, assignDir = NULL,
                              outputFormat = NULL, parallel.sz = 0,
-                             ASSIGNiter = 100000, ASSIGNburnin = 50000, ssgsea_norm=TRUE) {
+                             ASSIGNiter = 100000, ASSIGNburnin = 50000, ssgsea_norm = TRUE) {
   if (is.null(signatures)) {
     # Override with global environment
     if ("TBsignatures" %in% ls(envir = .GlobalEnv)) {
@@ -177,7 +183,7 @@ runTBsigProfiler <- function(input, useAssay = NULL,
   if ("ssGSEA" %in% algorithm) {
     message("Running ssGSEA")
     gsvaRes_ssgsea <- GSVA::gsva(runindata, signatures, method = "ssgsea",
-                                 parallel.sz = parallel.sz, ssgsea.norm=ssgsea_norm)
+                                 parallel.sz = parallel.sz, ssgsea.norm = ssgsea_norm)
   }
   gsvaRes_PLAGE <- NULL
   if ("PLAGE" %in% algorithm) {
