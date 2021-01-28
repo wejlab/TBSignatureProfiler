@@ -32,7 +32,7 @@ We aim to provide the scientific community with a resource to access these aggre
 In order to install the TBSignatureProfiler from Bioconductor, run the following code:
 
 ```{r load profiler, eval = FALSE}
-if (!requireNamespace("BiocManager", quietly=TRUE))
+if (!requireNamespace("BiocManager", quietly = TRUE))
   install.packages("BiocManager")
 BiocManager::install("TBSignatureProfiler")
 ```
@@ -126,7 +126,7 @@ Signature Scores
 ## New colData entries from the Profiler
 sigs <- c("Anderson_42", "Anderson_OD_51", "Berry_393")
 ssgsea_print_results <- as.data.frame(colData(ssgsea_result))[, c("Disease", sigs)]
-ssgsea_print_results[,2:4] <- round(ssgsea_print_results[, 2:4], 4)
+ssgsea_print_results[, 2:4] <- round(ssgsea_print_results[, 2:4], 4)
 
 DT::datatable(ssgsea_print_results)
 ```
@@ -145,11 +145,11 @@ Here, the columns of the heatmap represent samples, and rows represent signature
 
 # Colors for gradient
 colors <- RColorBrewer::brewer.pal(6, "Spectral")
-col.me <- circlize::colorRamp2(seq(from = -2, to = 2, 
+col.me <- circlize::colorRamp2(seq(from = -2, to = 2,
                                    length.out = 6), colors)
 
-signatureHeatmap(ssgsea_result, name = "Heatmap of Signatures, 
-                 ssGSEA Algorithm", 
+signatureHeatmap(ssgsea_result, name = "Heatmap of Signatures,
+                 ssGSEA Algorithm",
                  signatureColNames = names(TBsignatures),
                  annotationColNames = "Disease",
                  scale = TRUE,
@@ -165,8 +165,8 @@ Another method of visualization for scores is that of boxplots. When multiple si
  
 ```{r Boxplots all, message = FALSE, results = 'hide', fig.height = 9, fig.width=15}
 
-signatureBoxplot(inputData = ssgsea_result, 
-                 name = "Boxplots of Signatures, ssGSEA", 
+signatureBoxplot(inputData = ssgsea_result,
+                 name = "Boxplots of Signatures, ssGSEA",
                  signatureColNames = names(TBsignatures),
                  annotationColName = "Disease", rotateLabels = FALSE)
 ```

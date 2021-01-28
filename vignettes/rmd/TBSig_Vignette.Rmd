@@ -31,7 +31,7 @@ We aim to provide the scientific community with a resource to access these aggre
 In order to install the TBSignatureProfiler from Bioconductor, run the following code:
 
 ```{r load profiler, eval = FALSE}
-if (!requireNamespace("BiocManager", quietly=TRUE))
+if (!requireNamespace("BiocManager", quietly = TRUE))
   install.packages("BiocManager")
 BiocManager::install("TBSignatureProfiler")
 ```
@@ -123,7 +123,7 @@ Signature Scores
 ## New colData entries from the Profiler
 sigs <- c("Anderson_42", "Anderson_OD_51", "Berry_393")
 ssgsea_print_results <- as.data.frame(colData(ssgsea_result))[, c("Disease", sigs)]
-ssgsea_print_results[,2:4] <- round(ssgsea_print_results[, 2:4], 4)
+ssgsea_print_results[, 2:4] <- round(ssgsea_print_results[, 2:4], 4)
 
 DT::datatable(ssgsea_print_results)
 ```
@@ -142,11 +142,11 @@ Here, the columns of the heatmap represent samples, and rows represent signature
 
 # Colors for gradient
 colors <- RColorBrewer::brewer.pal(6, "Spectral")
-col.me <- circlize::colorRamp2(seq(from = -2, to = 2, 
+col.me <- circlize::colorRamp2(seq(from = -2, to = 2,
                                    length.out = 6), colors)
 
-signatureHeatmap(ssgsea_result, name = "Heatmap of Signatures, 
-                 ssGSEA Algorithm", 
+signatureHeatmap(ssgsea_result, name = "Heatmap of Signatures,
+                 ssGSEA Algorithm",
                  signatureColNames = names(TBsignatures),
                  annotationColNames = "Disease",
                  scale = TRUE,
@@ -162,8 +162,8 @@ Another method of visualization for scores is that of boxplots. When multiple si
  
 ```{r Boxplots all, message = FALSE, results = 'hide', fig.height = 9, fig.width=15}
 
-signatureBoxplot(inputData = ssgsea_result, 
-                 name = "Boxplots of Signatures, ssGSEA", 
+signatureBoxplot(inputData = ssgsea_result,
+                 name = "Boxplots of Signatures, ssGSEA",
                  signatureColNames = names(TBsignatures),
                  annotationColName = "Disease", rotateLabels = FALSE)
 ```
@@ -180,7 +180,7 @@ for (i in sigs){
 
   print(signatureBoxplot(ssgsea_result, name = i, signatureColNames = i,
                  annotationColName = c("Disease")))
-  
+
   cat("\n\n")
 }
 
@@ -197,11 +197,11 @@ for (i in sigs){
 
   signatureGeneHeatmap(inputData = ssgsea_result, useAssay = "log_cpm",
                        TBsignatures[sigs][[i]],
-                       name = i, signatureColNames = i, 
+                       name = i, signatureColNames = i,
                        annotationColNames = c("Disease"),
                        showColumnNames = TRUE,
                        choose_color = col.me)
-  
+
   cat("\n\n")
 }
 
@@ -242,10 +242,10 @@ The `TableAUC` function creates a table of useful information regarding the scor
 
 The table also gives the AUC values for the signature scores, along with confidence intervals derived from bootstrapping. Most AUC estimates are fairly high.
 ```{r AUC table, message = FALSE}
-tableAUC(ssgsea_result, 
-         annotationColName = "Disease", 
+tableAUC(ssgsea_result,
+         annotationColName = "Disease",
          signatureColNames = names(TBsignatures),
-         num.boot = 100, 
+         num.boot = 100,
          pb.show = FALSE)
 ```
 
@@ -276,14 +276,13 @@ signatureROCplot_CI(inputData = ssgsea_result,
  
 ```{r ROC indiv, results = 'asis', message = FALSE}
 for (i in sigs){
-  
+
   cat("####", i, "\n")
-  
-  print(signatureROCplot_CI(inputData = ssgsea_result, 
+
+  print(signatureROCplot_CI(inputData = ssgsea_result,
                    signatureColNames = i,
                    annotationColName = "Disease",
                    name = paste("ROC plot,", i, sep = " "), pb.show = FALSE))
-  
   cat("\n\n")
 }
 ```
@@ -296,7 +295,7 @@ During the training process, we bootstrap the samples, cross-validate the logist
 
 ```{r sigeval, message = FALSE}
 ### Make an additional binary indicator for signature evaluation
-hivtb_data$BinaryTB <- as.numeric(hivtb_data$Disease)-1
+hivtb_data$BinaryTB <- as.numeric(hivtb_data$Disease) - 1
 
 ## We can normalize the data and evaluate the signatures
 hivtb_norm <- deseq2_norm_rle(assay(hivtb_data, "counts"))
@@ -322,7 +321,7 @@ plotQuantitative(hivtb_norm, targetVec.num = colData(hivtb_data)$BinaryTB,
 ### Table of AUC Results
 ```{r AUC sigeval}
 DT::datatable(round(quantitative.result$df.auc.ci, 4),
-              options = list(scrollX = TRUE, pageLength = 10), 
+              options = list(scrollX = TRUE, pageLength = 10),
               rownames = FALSE)
 ```
 
@@ -330,7 +329,7 @@ DT::datatable(round(quantitative.result$df.auc.ci, 4),
 ### Table of Sensitivity Results
 ```{r sens sigeval}
 DT::datatable(round(quantitative.result$df.sensitivity.ci, 4),
-              options = list(scrollX = TRUE, pageLength = 10), 
+              options = list(scrollX = TRUE, pageLength = 10),
               rownames = FALSE)
 ```
 
@@ -338,7 +337,7 @@ DT::datatable(round(quantitative.result$df.sensitivity.ci, 4),
 ### Table of Specificity Results
 ```{r spec sigeval}
 DT::datatable(round(quantitative.result$df.specificity.ci, 4),
-              options = list(scrollX = TRUE, pageLength = 10), 
+              options = list(scrollX = TRUE, pageLength = 10),
               rownames = FALSE)
 ```
 
