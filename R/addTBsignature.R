@@ -96,7 +96,10 @@ addTBsignature <- function(sigsymbols, authname,
 
   # Create signature name
   ngenes <- length(sigsymbols)
-  signame_TBSP <- paste(authname, sigtype, ngenes, sep = "_")
+  if (sigtype == "Disease") {
+    signame_TBSP <- paste(authname, ngenes, sep = "_")
+  } else signame_TBSP <- paste(authname, sigtype, ngenes, sep = "_")
+  
   if (nchar(signame_TBSP) > 17) {
     howmanyletters <- 17 - (2 + nchar(as.character(ngenes)) + length(sigtype))
     stop(paste("Resulting signature name is too long.",
