@@ -110,7 +110,7 @@ addTBsignature <- function(sigsymbols, authname,
   if (is.null(signame_common)) {
     message("No alternative signature name was provided")
     signame_common <- signame_TBSP
-  }
+  } else message("Note: 'signame_common' differs from 'signame_TBSP'")
 
   # Add signature to TBsignatures
   TBsignatures$`NEWSIG` <-  sigsymbols
@@ -126,10 +126,7 @@ addTBsignature <- function(sigsymbols, authname,
 
   # Add signature to TBcommon
   TBcommon$`NEWSIG` <-  sigsymbols
-  if (signame_TBSP != signame_common) {
-    message("Note: 'signame_common' differs from 'signame_TBSP'")
-    names(TBcommon)[names(TBcommon) == "NEWSIG"] <- signame_common
-  } else names(TBcommon)[names(TBcommon) == "NEWSIG"] <- signame_TBSP
+  names(TBcommon)[names(TBcommon) == "NEWSIG"] <- signame_common
   # reorder names
   new_names <- names(TBcommon)[index]
   TBcommon <- TBcommon[new_names]
