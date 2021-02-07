@@ -39,7 +39,7 @@ editor_options:
   
 ## Adding multiple signatures
 
-If you need to add more than one signature, note that you will need to repeat the steps of this vignette for each signature.
+If you need to add more than one signature, note that you will need to repeat the steps of this vignette for each signature. Be sure to use devtools::load_all() before updating the data objects for each subsequent signature.
 
 # Setup
 
@@ -89,7 +89,7 @@ At this point, you should have recorded all of the neccessary information. If yo
 ```{r LauxdaCosta table, echo = FALSE}
 info <- matrix(c("Gene Transcripts", "GBP5, CD64, GZMA",
          "Author Name", "Laux da Costa",
-         "Disease context", "Disease/Other Diseases",
+         "Disease Context", "Disease/Other Diseases",
          "Tissue Type", "whole blood",
          "Alternate Name", "N/A",
          "Reference", "Laux da Costa L, Delcroix M, Dalla Costa ER, et al. A real-time PCR signature to discriminate between tuberculosis and other pulmonary diseases. Tuberculosis (Edinb). 2015;95(4):421-425.",
