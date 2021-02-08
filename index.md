@@ -1,6 +1,6 @@
 <img src="https://github.com/compbiomed/TBSignatureProfiler-docs/blob/master/lungs1.png?raw=true" align="right" width="170" />
 
-[![](https://img.shields.io/badge/bioconductor-3.11-3a6378.svg)](http://www.bioconductor.org/packages/release/bioc/html/TBSignatureProfiler.html)
+[![](https://img.shields.io/badge/bioconductor-3.12-blue)](http://www.bioconductor.org/packages/release/bioc/html/TBSignatureProfiler.html)
 [![codecov](https://codecov.io/gh/compbiomed/TBSignatureProfiler/branch/master/graph/badge.svg)](https://codecov.io/gh/compbiomed/TBSignatureProfiler)
 [![lifecycle](https://img.shields.io/badge/lifecycle-maturing-blue)](https://www.tidyverse.org/lifecycle/#maturing)
 [![build](http://www.bioconductor.org/shields/build/release/bioc/TBSignatureProfiler.svg)](http://bioconductor.org/checkResults/release/bioc-LATEST/TBSignatureProfiler/)
@@ -20,7 +20,7 @@ The TBSignatureProfiler requires R 4.0 and Bioconductor 3.10.
 * Install the development version of the package from Github 
 
 ``` r
-if (!requireNamespace("devtools", quietly=TRUE))
+if (!requireNamespace("devtools", quietly = TRUE))
   install.packages("devtools")
 devtools::install_github("compbiomed/TBSignatureProfiler")
 ```
@@ -28,7 +28,7 @@ devtools::install_github("compbiomed/TBSignatureProfiler")
 * Install the release version of the package from Bioconductor
 
 ``` r
-if (!requireNamespace("BiocManager", quietly=TRUE))
+if (!requireNamespace("BiocManager", quietly = TRUE))
   install.packages("BiocManager")
 BiocManager::install("TBSignatureProfiler")
 

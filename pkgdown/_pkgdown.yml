@@ -51,7 +51,9 @@ navbar:
     - text: "Command Line Analysis"
       href: articles/rmd/TBSig_Vignette.html
     - text: "Interactive Shiny Analysis"
-      href: articles/rmd/temp.html
+      href: articles/rmd/shinytutorial.html
+    - text: "Adding Signatures to the Profiler"
+      href: articles/rmd/SignatureAddition.html
     - text: "Reference"
       href: reference/index.html
   right:
