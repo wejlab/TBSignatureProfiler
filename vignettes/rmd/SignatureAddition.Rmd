@@ -39,7 +39,7 @@ editor_options:
   
 ## Adding multiple signatures
 
-If you need to add more than one signature, note that you will need to repeat the steps of this vignette for each signature. Be sure to use devtools::load_all() before updating the data objects for each subsequent signature.
+If you need to add more than one signature, note that you will need to repeat the steps of this vignette for each signature. Be sure to use `devtools::load_all()` before updating the data objects for each subsequent signature.
 
 # Setup
 
