@@ -54,8 +54,7 @@ suppressPackageStartupMessages({
 ```
 
 ## Run Shiny App
-This command is to start the TBSignatureProfiler shiny app. For shiny app tutorials, please go to [our website](https://compbiomed.github.io/TBSignatureProfiler-docs/index.html),
-and select the tab labeled "Interactive Shiny Analysis."
+This command is to start the TBSignatureProfiler shiny app. Shiny app tutorials are forthcoming and will be uploaded to [the package website](https://compbiomed.github.io/TBSignatureProfiler-docs/index.html).
 
 ```{R Run shiny app, eval = FALSE}
 TBSPapp()
