@@ -139,7 +139,7 @@ addTBsignature(sigsymbols = c("GBP5", "CD64", "GZMA"),
 
 With that, the data objects themselves should be successfully updated. You can take a look at them by running `devtools::load_all()` to update your local repository and then loading the data objects as `data("TBsignatures)` or `data(common_sigAnnotObject)`. 
 
-In the case that you wrote to the RDS files by accident and need to fix them, redownload the appropriate files from the [GitHub repository](www.github.com/compbiomed/tbsignatureprofiler) and try again.
+In the case that you wrote to the RDS files by accident and need to fix them, redownload the appropriate files from the [GitHub repository](www.github.com/compbiomed/tbsignatureprofiler) and try again. Be sure to rerun the `devtools::load_all()` command.
 
 # Documentation 
 
@@ -171,7 +171,7 @@ mkTBreference(TBsigname = "LauxdaCosta_OD_3", # The name output in a message fro
 The very last step of this process will be to submit a pull request to the GitHub repository. If you have never submitted a pull request to another repo before, instructions can be found [here](https://docs.github.com/en/github/collaborating-with-issues-and-pull-requests/creating-a-pull-request). When you are submitting your request, please note which signature(s) you added by name and what publications they can be found in, so that we can check that the update was completed successfully. We will try to approve pull requests as soon as possible. After the request is approved, your signature will be part of the package. Thank you for your contribution!
 
 
-# Add session info
+# Session Information
 
 ```{r session info}
 sessionInfo()
