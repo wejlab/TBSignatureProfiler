@@ -322,6 +322,7 @@ globalVariables(c("BS_AUC", "FPR", "LowerTPR", "Signatures",
 #' data("common_sigAnnotData")
 "common_sigAnnotData"
 
+<<<<<<< HEAD
 #' A list of published/pre-print COVID-19 signatures.
 #'
 #' A set of 47 COVID-19 gene signatures from various single-cell and bulk
@@ -398,3 +399,34 @@ globalVariables(c("BS_AUC", "FPR", "LowerTPR", "Signatures",
 #' data("COVIDsignatures")
 
 "COVIDsignatures"
+=======
+#' Up/Down-regulated genes information for selected TB signatures
+#' 
+#' @name TBsignaturesSplit
+#' @docType data
+#' @format list
+#' @source
+#' See \code{?TBsignatures} for reference information.
+#' 
+#' @keywords datasets
+#' @examples
+#' data("TBsignaturesSplit")
+"TBsignaturesSplit"
+
+#' Discovery datasets for correpsonding gene signatures
+#' 
+#' @name OriginalTrainingData
+#' @docType data
+#' @format list
+#' @source
+#' See \code{?TBsignatures} for reference information.
+#' 
+#' @keywords datasets
+#' @examples
+#' data("OriginalTrainingData")
+"OriginalTrainingData"
+
+
+
+
+>>>>>>> Evaluate some signatures using their original models
