@@ -326,7 +326,7 @@ globalVariables(c("BS_AUC", "FPR", "LowerTPR", "Signatures",
 #'
 #' A set of 47 COVID-19 gene signatures from various single-cell and bulk
 #' RNA-seq publications and pre-print manuscripts from early- to mid-2020.
-#' This set of signatures uses gene symbols. 
+#' This set of signatures uses gene symbols.
 #'
 #' Signature names are composed of the last name of the primary author, followed
 #' by the type of sequencing data from which the signature was derived, the
