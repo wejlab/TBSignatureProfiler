@@ -321,3 +321,80 @@ globalVariables(c("BS_AUC", "FPR", "LowerTPR", "Signatures",
 #' @examples
 #' data("common_sigAnnotData")
 "common_sigAnnotData"
+
+#' A list of published/pre-print COVID-19 signatures.
+#'
+#' A set of 47 COVID-19 gene signatures from various single-cell and bulk
+#' RNA-seq publications and pre-print manuscripts from early- to mid-2020.
+#' This set of signatures uses gene symbols. 
+#'
+#' Signature names are composed of the last name of the primary author, followed
+#' by the type of sequencing data from which the signature was derived, the
+#' tissue from which the signature was derived, and ending with a reference to
+#' the cell type, infection status, or disease to which the signature belongs,
+#' as defined in the original publication.
+#'
+#' Note that in some cases signatures will be positive identifiers of COVID-19
+#' as positive markers of immune cell clusters are often provided for
+#' single-cell RNA-seq data; this should be taken into account when creating
+#' ROC curves and computing any AUC or disease risk estimates.
+#'
+#' @name COVIDsignatures
+#' @docType data
+#' @format list
+#' @source
+#' \itemize{
+#'  \item{\strong{Wilk_sc_PBMC_monocytes_up}}{: Wilk, A.J., Rustagi, A., Zhao, N.Q. et al. 2020. "A single-cell atlas of the peripheral immune response in patients with severe COVID-19." Nature Medicine 26 (7): 1070–1076. \href{https://doi.org/10.1038/s41591-020-0944-y}}
+#'  \item{\strong{Wilk_sc_PBMC_monocytes_down}}{: Wilk, A.J., Rustagi, A., Zhao, N.Q. et al. 2020. "A single-cell atlas of the peripheral immune response in patients with severe COVID-19." Nature Medicine 26 (7): 1070–1076. \href{https://doi.org/10.1038/s41591-020-0944-y}}
+#'  \item{\strong{Wilk_sc_PBMC_NK_cells_up}}{: Wilk, A.J., Rustagi, A., Zhao, N.Q. et al. 2020. "A single-cell atlas of the peripheral immune response in patients with severe COVID-19." Nature Medicine 26 (7): 1070–1076. \href{https://doi.org/10.1038/s41591-020-0944-y}}
+#'  \item{\strong{Wilk_sc_PBMC_NK_cells_down}}{: Wilk, A.J., Rustagi, A., Zhao, N.Q. et al. 2020. "A single-cell atlas of the peripheral immune response in patients with severe COVID-19." Nature Medicine 26 (7): 1070–1076. \href{https://doi.org/10.1038/s41591-020-0944-y}}
+#'  \item{\strong{Wilk_sc_PBMCs_ISG_signature}}{: Wilk, A.J., Rustagi, A., Zhao, N.Q. et al. 2020. "A single-cell atlas of the peripheral immune response in patients with severe COVID-19." Nature Medicine 26 (7): 1070–1076. \href{https://doi.org/10.1038/s41591-020-0944-y}}
+#'  \item{\strong{Wilk_sc_PBMC_activated_granulocytes}}{: Wilk, A.J., Rustagi, A., Zhao, N.Q. et al. 2020. "A single-cell atlas of the peripheral immune response in patients with severe COVID-19." Nature Medicine 26 (7): 1070–1076. \href{https://doi.org/10.1038/s41591-020-0944-y}}
+#'  \item{\strong{Huang_sc_PBMC_IFN_signature}}{: Wilk, A.J., Rustagi, A., Zhao, N.Q. et al. 2020. "Blood single cell immune profiling reveals the interferon-MAPK pathway mediated adaptive immune response for COVID-19." medRxiv.org:\href{https://doi.org/10.1101/2020.03.15.20033472}}
+#'  \item{\strong{Wen_sc_PBMC_monocytes}}{: Wen, W., Su, W., Tang, H. et al. 2020. "Immune cell profiling of COVID-19 patients in the recovery stage by single-cell sequencing." Cell Discovery 6 (31). \href{https://doi.org/10.1038/s41421-020-0168-9}}
+#'  \item{\strong{Wen_sc_PBMC_NK_cells}}{: Wen, W., Su, W., Tang, H. et al. 2020. "Immune cell profiling of COVID-19 patients in the recovery stage by single-cell sequencing." Cell Discovery 6 (31). \href{https://doi.org/10.1038/s41421-020-0168-9}}
+#'  \item{\strong{Wen_sc_PBMC_CD4_T_cells}}{: Wen, W., Su, W., Tang, H. et al. 2020. "Immune cell profiling of COVID-19 patients in the recovery stage by single-cell sequencing." Cell Discovery 6 (31). \href{https://doi.org/10.1038/s41421-020-0168-9}}
+#'  \item{\strong{Wen_sc_PBMC_CD8_T_cells}}{: Wen, W., Su, W., Tang, H. et al. 2020. "Immune cell profiling of COVID-19 patients in the recovery stage by single-cell sequencing." Cell Discovery 6 (31). \href{https://doi.org/10.1038/s41421-020-0168-9}}
+#'  \item{\strong{Wen_sc_PBMC_B_cells}}{: Wen, W., Su, W., Tang, H. et al. 2020. "Immune cell profiling of COVID-19 patients in the recovery stage by single-cell sequencing." Cell Discovery 6 (31). \href{https://doi.org/10.1038/s41421-020-0168-9}}
+#'  \item{\strong{Xiong_bulk_PBMC_gene_signature_up}}{: Xiong Y, Liu Y, Cao L, et al. 2020. "Transcriptomic characteristics of bronchoalveolar lavage fluid and peripheral blood mononuclear cells in COVID-19 patients." Emerging Microbes & Infections 9 (1):761-770. \href{https://doi/org/10.1080/22221751.2020.1747363}}
+#'  \item{\strong{Xiong_bulk_PBMC_gene_signature_down}}{: Xiong Y, Liu Y, Cao L, et al. 2020. "Transcriptomic characteristics of bronchoalveolar lavage fluid and peripheral blood mononuclear cells in COVID-19 patients." Emerging Microbes & Infections 9 (1):761-770. \href{https://doi/org/10.1080/22221751.2020.1747363}}
+#'  \item{\strong{Xiong_sc_PBMC_cytokines_up}}{: Xiong Y, Liu Y, Cao L, et al. 2020. "Transcriptomic characteristics of bronchoalveolar lavage fluid and peripheral blood mononuclear cells in COVID-19 patients." Emerging Microbes & Infections 9 (1):761-770. \href{https://doi/org/10.1080/22221751.2020.1747363}}
+#'  \item{\strong{Xiong_sc_PBMC_cytokines_down}}{: Xiong Y, Liu Y, Cao L, et al. 2020. "Transcriptomic characteristics of bronchoalveolar lavage fluid and peripheral blood mononuclear cells in COVID-19 patients." Emerging Microbes & Infections 9 (1):761-770. \href{https://doi/org/10.1080/22221751.2020.1747363}}
+#'  \item{\strong{Liao_sc_BALF_G1_macrophages}}{: Liao, M., Liu, Y., Yuan, J. et al. 2020. "Single-cell landscape of bronchoalveolar immune cells in patients with COVID-19." Nature Medicine 26 (6): 842–844. \href{https://doi.org/10.1038/s41591-020-0901-9}}
+#'  \item{\strong{Liao_sc_BALF_G1_2_macrophages}}{: Liao, M., Liu, Y., Yuan, J. et al. 2020. "Single-cell landscape of bronchoalveolar immune cells in patients with COVID-19." Nature Medicine 26 (6): 842–844. \href{https://doi.org/10.1038/s41591-020-0901-9}}
+#'  \item{\strong{Liao_sc_BALF_G2_macrophages}}{: Liao, M., Liu, Y., Yuan, J. et al. 2020. "Single-cell landscape of bronchoalveolar immune cells in patients with COVID-19." Nature Medicine 26 (6): 842–844. \href{https://doi.org/10.1038/s41591-020-0901-9}}
+#'  \item{\strong{Liao_sc_BALF_G3_macrophages}}{: Liao, M., Liu, Y., Yuan, J. et al. 2020. "Single-cell landscape of bronchoalveolar immune cells in patients with COVID-19." Nature Medicine 26 (6): 842–844. \href{https://doi.org/10.1038/s41591-020-0901-9}}
+#'  \item{\strong{Liao_sc_BALF_G4_macrophages}}{: Liao, M., Liu, Y., Yuan, J. et al. 2020. "Single-cell landscape of bronchoalveolar immune cells in patients with COVID-19." Nature Medicine 26 (6): 842–844. \href{https://doi.org/10.1038/s41591-020-0901-9}}
+#'  \item{\strong{Liao_sc_BALF_CD8_T_cells_up}}{: Liao, M., Liu, Y., Yuan, J. et al. 2020. "Single-cell landscape of bronchoalveolar immune cells in patients with COVID-19." Nature Medicine 26 (6): 842–844. \href{https://doi.org/10.1038/s41591-020-0901-9}}
+#'  \item{\strong{Liao_sc_BALF_CD8_T_cells_down}}{: Liao, M., Liu, Y., Yuan, J. et al. 2020. "Single-cell landscape of bronchoalveolar immune cells in patients with COVID-19." Nature Medicine 26 (6): 842–844. \href{https://doi.org/10.1038/s41591-020-0901-9}}
+#'  \item{\strong{Hadjadj_nanostring_WB_gene_signature_up}}{: Hadjadj J, Yatim N, Barnabei L, et al. 2020. "Impaired type I interferon activity and inflammatory responses in severe COVID-19 patients." Science 369 (6504): 718-724. \href{https://doi.org/10.1126/science.abc6027}}
+#'  \item{\strong{Hadjadj_nanostring_WB_gene_signature_down}}{: Hadjadj J, Yatim N, Barnabei L, et al. 2020. "Impaired type I interferon activity and inflammatory responses in severe COVID-19 patients." Science 369 (6504): 718-724. \href{https://doi.org/10.1126/science.abc6027}}
+#'  \item{\strong{Hadjadj_nanostring_WB_ISG_signature}}{: Hadjadj J, Yatim N, Barnabei L, et al. 2020. "Impaired type I interferon activity and inflammatory responses in severe COVID-19 patients." Science 369 (6504): 718-724. \href{https://doi.org/10.1126/science.abc6027}}
+#'  \item{\strong{Hadjadj_nanostring_WB_mild_moderate_up}}{: Hadjadj J, Yatim N, Barnabei L, et al. 2020. "Impaired type I interferon activity and inflammatory responses in severe COVID-19 patients." Science 369 (6504): 718-724. \href{https://doi.org/10.1126/science.abc6027}}
+#'  \item{\strong{Hadjadj_nanostring_WB_mild_moderate_down}}{: Hadjadj J, Yatim N, Barnabei L, et al. 2020. "Impaired type I interferon activity and inflammatory responses in severe COVID-19 patients." Science 369 (6504): 718-724. \href{https://doi.org/10.1126/science.abc6027}}
+#'  \item{\strong{Hadjadj_nanostring_WB_severe_up}}{: Hadjadj J, Yatim N, Barnabei L, et al. 2020. "Impaired type I interferon activity and inflammatory responses in severe COVID-19 patients." Science 369 (6504): 718-724. \href{https://doi.org/10.1126/science.abc6027}}
+#'  \item{\strong{Hadjadj_nanostring_WB_severe_down}}{: Hadjadj J, Yatim N, Barnabei L, et al. 2020. "Impaired type I interferon activity and inflammatory responses in severe COVID-19 patients." Science 369 (6504): 718-724. \href{https://doi.org/10.1126/science.abc6027}}
+#'  \item{\strong{Hadjadj_nanostring_critical_up}}{: Hadjadj J, Yatim N, Barnabei L, et al. 2020. "Impaired type I interferon activity and inflammatory responses in severe COVID-19 patients." Science 369 (6504): 718-724. \href{https://doi.org/10.1126/science.abc6027}}
+#'  \item{\strong{Hadjadj_nanostring_critical_down}}{: Hadjadj J, Yatim N, Barnabei L, et al. 2020. "Impaired type I interferon activity and inflammatory responses in severe COVID-19 patients." Science 369 (6504): 718-724. \href{https://doi.org/10.1126/science.abc6027}}
+#'  \item{\strong{Wei_sc_PBMC_inactivated_monocytes}}{: Wei et al. 2020. "Viral Invasion and Type I Interferon Response Characterize the Immunophenotypes during COVID-19 Infection." SSRN:\href{http://dx.doi.org/10.2139/ssrn.3555695}}
+#'  \item{\strong{Wei_sc_PBMC_classical_monocytes}}{: Wei et al. 2020. "Viral Invasion and Type I Interferon Response Characterize the Immunophenotypes during COVID-19 Infection." SSRN:\href{http://dx.doi.org/10.2139/ssrn.3555695}}
+#'  \item{\strong{Wei_sc_PBMCs_T_cells}}{: Wei et al. 2020. "Viral Invasion and Type I Interferon Response Characterize the Immunophenotypes during COVID-19 Infection." SSRN:\href{http://dx.doi.org/10.2139/ssrn.3555695}}
+#'  \item{\strong{Wei_sc_PBMC_B_cells}}{: Wei et al. 2020. "Viral Invasion and Type I Interferon Response Characterize the Immunophenotypes during COVID-19 Infection." SSRN:\href{http://dx.doi.org/10.2139/ssrn.3555695}}
+#'  \item{\strong{Silvin_sc_WB_combined_signature}}{: Silvin A, Chapuis N, Dunsmore G, et al. 2020. "Elevated Calprotectin and Abnormal Myeloid Cell Subsets Discriminate Severe from Mild COVID-19." Cell 182 (6): 1401-1418.E18. \href{https://doi.org/10.1016/j.cell.2020.08.002}}
+#'  \item{\strong{Silvin_sc_WB_monocytes_up}}{: Silvin A, Chapuis N, Dunsmore G, et al. 2020. "Elevated Calprotectin and Abnormal Myeloid Cell Subsets Discriminate Severe from Mild COVID-19." Cell 182 (6): 1401-1418.E18. \href{https://doi.org/10.1016/j.cell.2020.08.002}}
+#'  \item{\strong{Silvin_sc_WB_monocytes_down}}{: Silvin A, Chapuis N, Dunsmore G, et al. 2020. "Elevated Calprotectin and Abnormal Myeloid Cell Subsets Discriminate Severe from Mild COVID-19." Cell 182 (6): 1401-1418.E18. \href{https://doi.org/10.1016/j.cell.2020.08.002}}
+#'  \item{\strong{Silvin_sc_WB_neutrophils_up}}{: Silvin A, Chapuis N, Dunsmore G, et al. "Elevated Calprotectin and Abnormal Myeloid Cell Subsets Discriminate Severe from Mild COVID-19." Cell 182 (6): 1401-1418.E18. \href{https://doi.org/10.1016/j.cell.2020.08.002}}
+#'  \item{\strong{Silvin_sc_WB_neutrophils_down}}{: Silvin A, Chapuis N, Dunsmore G, et al. "Elevated Calprotectin and Abnormal Myeloid Cell Subsets Discriminate Severe from Mild COVID-19." Cell 182 (6): 1401-1418.E18. \href{https://doi.org/10.1016/j.cell.2020.08.002}}
+#'  \item{\strong{Arunachalam_bulk_PBMC_blood_modules}}{: Arunachalam PS, Wimmers F, Mok CKP, et al. 2020. "Systems biological assessment of immunity to mild versus severe COVID-19 infection in humans." Science 369 (6508): 1210-1220. \href{https://doi.org/10.1126/science.abc6261}}
+#'  \item{\strong{Arunachalam_bulk_PBMC_covid_combined}}{: Arunachalam PS, Wimmers F, Mok CKP, et al. 2020. "Systems biological assessment of immunity to mild versus severe COVID-19 infection in humans." Science 369 (6508): 1210-1220. \href{https://doi.org/10.1126/science.abc6261}}
+#'  \item{\strong{Arunachalam_bulk_PBMC_moderate}}{: Arunachalam PS, Wimmers F, Mok CKP, et al. 2020. "Systems biological assessment of immunity to mild versus severe COVID-19 infection in humans." Science 369 (6508): 1210-1220. \href{https://doi.org/10.1126/science.abc6261}}
+#'  \item{\strong{Arunachalam_bulk_PBMC_severe}}{: Arunachalam PS, Wimmers F, Mok CKP, et al. 2020. "Systems biological assessment of immunity to mild versus severe COVID-19 infection in humans." Science 369 (6508): 1210-1220. \href{https://doi.org/10.1126/science.abc6261}}
+#'  \item{\strong{Arunachalam_bulk_PBMC_intensive_care}}{: Arunachalam PS, Wimmers F, Mok CKP, et al. 2020. "Systems biological assessment of immunity to mild versus severe COVID-19 infection in humans." Science 369 (6508): 1210-1220. \href{https://doi.org/10.1126/science.abc6261}}
+#'  \item{\strong{Dunning_bulk_WB_flu}}{: Dunning J, Blankley S, Hoang LT, et al. 2018. "Progression of whole-blood transcriptional signatures from interferon-induced to neutrophil-associated patterns in severe influenza." Nature Immunology 19 (6): 625-635. \href{https://doi.org/10.1038/s41590-018-0111-5}}
+#'  }
+#'
+#' @keywords datasets
+#' @examples
+#' data("COVIDsignatures")
+
+"COVIDsignatures"
