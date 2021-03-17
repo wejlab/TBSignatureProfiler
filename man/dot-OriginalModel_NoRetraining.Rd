@@ -2,7 +2,8 @@
 % Please edit documentation in R/OriginalModel.R
 \name{.OriginalModel_NoRetraining}
 \alias{.OriginalModel_NoRetraining}
-\title{TB gene signatures do not require retraining}
+\title{TB gene signatures do not require retraining
+A function to obtain predicted score for TB gene signatures that do not need to retrain.}
 \usage{
 .OriginalModel_NoRetraining(input, useAssay, geneSignaturesName, BPPARAM)
 }
@@ -10,20 +11,16 @@
 \item{input}{A SummarizedExperiment object with gene symbols as the assay row names.}
 
 \item{useAssay}{A character string or an integer specifying the assay in the \code{input}.
-Used for the test SummarizedExperiment object. Default is 1, indicating the first assay 
-in the \code{input}.}
+Used for the test SummarizedExperiment object. Default is 1, indicating the 
+first assay in the \code{input}.}
 
 \item{geneSignaturesName}{A character string/vector specifying the signature of interest.
-Default is NULL. If geneSignaturesName is NULL, 
-run all available gene signatures' original model in the package.}
+Default is NULL. If geneSignaturesName is NULL, run all available gene signatures' original model in the package.}
 
-\item{BPPARAM}{An instance inherited from \code{bplappy}.
+\item{BPPARAM}{An instance inherited from \code{bplappy}. 
 See \code{\link[BiocParallel]{bplapply}} for details.}
 }
 \description{
-A function to obtain predicted score for TB gene signatures that do not need to retrain.
-}
-\details{
 Anderson_42 and Anderson_OD_51 used difference of sums to calculate prediction scores.
 Difference of sums is obtained by subtracting the sum of the expression of
 genes within signatures that are down-regulated from the sum of the expression
