@@ -413,7 +413,6 @@ ref_combat_impute <- function(theObject_train, useAssay = 1, gene_set, input,
     row_names <- dat_exprs_combine$id
     dat_exprs_count <- data.frame(dat_exprs_combine[, -which(colnames(dat_exprs_combine) == "id")])
     row.names(dat_exprs_count) <- row_names
-    
     # Check for NA's in the dat_exprs_counts
     if (sum(is.na(dat_exprs_count)) == 0) {
         dat_exprs_count1 <- as.matrix(dat_exprs_count)
@@ -430,7 +429,6 @@ ref_combat_impute <- function(theObject_train, useAssay = 1, gene_set, input,
                                                         %in% common_genes]
         message(sprintf("Gene(s): %s is(are) not found in the input study for gene signature: %s. \n Impute missing features using KNN",
                         paste0(missing_genes, collapse = ", "), SigName))
-        
         if (requireNamespace("impute", quietly = TRUE)) {
           output <- impute::impute.knn(as.matrix(dat_exprs_count), k = 10,
                                        rowmax = rowmax, colmax = colmax)
