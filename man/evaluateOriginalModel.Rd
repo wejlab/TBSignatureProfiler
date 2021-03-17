@@ -15,17 +15,18 @@ evaluateOriginalModel(
 \item{input}{A SummarizedExperiment object with gene symbols as the assay row names.}
 
 \item{useAssay}{A character string or an integer specifying the assay in the \code{input}.
-Used for the test SummarizedExperiment object. Default is 1, indicating the 
+Used for the test SummarizedExperiment object. Default is 1, indicating the
 first assay in the \code{input}.}
 
 \item{geneSignaturesName}{A character string/vector specifying the signature of interest.
 Default is NULL. If geneSignaturesName is NULL, run all available gene signatures' original model in the package.}
 
-\item{BPPARAM}{An instance inherited from \code{bplappy}. 
+\item{BPPARAM}{An instance inherited from \code{bplappy}.
 See \code{\link[BiocParallel]{bplapply}} for details.}
 }
 \value{
-A SummarizedExperiment object with predicted scores for each sample obtained from the signature's original model.
+A SummarizedExperiment object with predicted scores for each sample
+obtained from the signature's original model.
 }
 \description{
 TB signatures with available original models are: Anderson_42,
@@ -38,7 +39,7 @@ of the input SummarizedExperiment study.
 \examples{
 library(TBSignatureProfiler)
 data("TB_hiv",package = "TBSignatureProfiler")
-re <- evaluateOriginalModel(input = TB_hiv, useAssay = "counts", 
+re <- evaluateOriginalModel(input = TB_hiv, useAssay = "counts",
 geneSignaturesName = c("Anderson_42","Maertzdorf_15"))
-re$Anderson_42_OriginalModel                                                
+re$Anderson_42_OriginalModel
 }

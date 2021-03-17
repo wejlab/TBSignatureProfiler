@@ -2,20 +2,22 @@
 % Please edit documentation in R/OriginalModel.R
 \name{Maertzdorf_Verhagen_daCosta_OriginalModel}
 \alias{Maertzdorf_Verhagen_daCosta_OriginalModel}
-\title{Train original model for gene signatures: Maertzdorf_4, Maertzdorf_15, Verhagen_10, and LauxdaCosta_OD_3}
+\title{Train original model for gene signatures: Maertzdorf_4, Maertzdorf_15, Verhagen_10,
+and LauxdaCosta_OD_3}
 \usage{
 Maertzdorf_Verhagen_daCosta_OriginalModel(dat_list, dat_test_sig)
 }
 \arguments{
-\item{dat_list}{A list contains training data and disease status outcomes from 
+\item{dat_list}{A list contains training data and disease status outcomes from
 the discovery data of corresponding gene signatures.}
 
-\item{dat_test_sig}{A data frame contains correpsonding biomarker gene features. 
+\item{dat_test_sig}{A data frame contains correpsonding biomarker gene features.
 Used to evaluate the performance of biomarker using its original models.}
 }
 \value{
 The predicted score for each sample in the test study.
 }
 \description{
-Train original model for gene signatures: Maertzdorf_4, Maertzdorf_15, Verhagen_10, and LauxdaCosta_OD_3
+Train original model for gene signatures: Maertzdorf_4, Maertzdorf_15, Verhagen_10,
+and LauxdaCosta_OD_3
 }

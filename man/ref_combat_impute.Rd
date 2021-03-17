@@ -18,7 +18,7 @@ ref_combat_impute(
 data file: OriginalTrainingData.}
 
 \item{useAssay}{A character string or an integer specifying the assay in the \code{input}.
-Used for the test SummarizedExperiment object. Default is 1, indicating the first assay 
+Used for the test SummarizedExperiment object. Default is 1, indicating the first assay
 in the test SummarizedExperiment object.}
 
 \item{gene_set}{A character vector that includes gene symbols for selected gene signature.}
@@ -26,25 +26,25 @@ in the test SummarizedExperiment object.}
 \item{input}{A SummarizedExperiment object with gene symbols as the assay row names.}
 
 \item{SigName}{Optional. A character string that indicates the name for \code{gene_set}.
-\code{SigName} is used to provide information when gene signatures were missing 
+\code{SigName} is used to provide information when gene signatures were missing
 in the test data. The default is an empty string.}
 
 \item{geneMax}{A real number between 0 and 1. This is used to detect the
-maximum percent missing genes allowed in the evaluated signatures. 
+maximum percent missing genes allowed in the evaluated signatures.
 See \code{\link[impute]{impute.knn}} for details. The default value is 0.8.}
 }
 \description{
 A function for reference batch correction and imputation.
 }
 \details{
-A function used to perform reference batch correction and imputation in the 
+A function used to perform reference batch correction and imputation in the
 testing data for gene signatures that require retraining of the model.
 We used the k-nearest neighbors to impute the expression values for missing gene(s).
 The imputation operation is achieved using \code{\link[impute]{impute.knn}}.
 Since the computational time for the imputation step can be excessive for large
 number of missing genes. We made some constrains to prevent the overflow of imputation
-operation. The evaluation will not run if more than \code{geneMax}*100\% percent 
-of the genes are not found for the corresponding gene signature in the input study. 
-By default \code{geneMax}=0.8, so the evaluation will not run if more than 80\% 
+operation. The evaluation will not run if more than \code{geneMax}*100\% percent
+of the genes are not found for the corresponding gene signature in the input study.
+By default \code{geneMax}=0.8, so the evaluation will not run if more than 80\%
 of the genes are missing when matching the input study to the reference data.
 }

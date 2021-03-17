@@ -27,8 +27,8 @@ that will be selected. Default is 1, indicating the first assay of the Summarize
 Only used when creating training data. Default is NULL.}
 }
 \value{
-A matrix with selected gene expression value if \code{obtainDiagnosis} is FALSE. 
-  else, return a list contains the selected gene expression value and diagnosis results for each observation.
+A matrix with selected gene expression value if \code{obtainDiagnosis} is FALSE.
+else, return a list contains the selected gene expression value and diagnosis results for each observation.
 }
 \description{
 A function used to subset gene expression value matrix based on certatin gene sets.

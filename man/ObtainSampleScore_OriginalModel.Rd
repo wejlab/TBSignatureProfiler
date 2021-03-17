@@ -20,7 +20,7 @@ ObtainSampleScore_OriginalModel(
 data file: OriginalTrainingData.}
 
 \item{useAssay}{A character string or an integer specifying the assay in the \code{input}.
-Used for the test SummarizedExperiment object. Default is 1, indicating the first assay 
+Used for the test SummarizedExperiment object. Default is 1, indicating the first assay
 in the test SummarizedExperiment object.}
 
 \item{gene_set}{A character vector that includes gene symbols for selected gene signature.}
@@ -28,7 +28,7 @@ in the test SummarizedExperiment object.}
 \item{input}{A SummarizedExperiment object with gene symbols as the assay row names.}
 
 \item{SigName}{Optional. A character string that indicates the name for \code{gene_set}.
-\code{SigName} is used to provide information when gene signatures were missing 
+\code{SigName} is used to provide information when gene signatures were missing
 in the test data. The default is an empty string.}
 
 \item{obtainDiagnosis}{Boolean. Used to create training data if TRUE. Default is FALSE}
