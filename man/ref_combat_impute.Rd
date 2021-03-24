@@ -33,6 +33,9 @@ in the test data. The default is an empty string.}
 maximum percent missing genes allowed in the evaluated signatures.
 See \code{\link[impute]{impute.knn}} for details. The default value is 0.8.}
 }
+\value{
+Gene set subset
+}
 \description{
 A function for reference batch correction and imputation.
 }
@@ -45,6 +48,6 @@ Since the computational time for the imputation step can be excessive for large
 number of missing genes. We made some constrains to prevent the overflow of imputation
 operation. The evaluation will not run if more than \code{geneMax}*100\% percent
 of the genes are not found for the corresponding gene signature in the input study.
-By default \code{geneMax}=0.8, so the evaluation will not run if more than 80\%
+By default \code{geneMax} = 0.8, so the evaluation will not run if more than 80\%
 of the genes are missing when matching the input study to the reference data.
 }

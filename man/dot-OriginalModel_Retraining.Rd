@@ -7,20 +7,28 @@
 .OriginalModel_Retraining(input, useAssay, geneSignaturesName, BPPARAM)
 }
 \arguments{
-\item{input}{A SummarizedExperiment object with gene symbols as the assay row names.}
+\item{input}{A SummarizedExperiment object with gene symbols as the assay row
+names.}
 
-\item{useAssay}{A character string or an integer specifying the assay in the \code{input}.
+\item{useAssay}{A character string or an integer specifying the assay in the
+\code{input}.
 Used for the test SummarizedExperiment object. Default is 1, indicating the
 first assay in the \code{input}.}
 
-\item{geneSignaturesName}{A character string/vector specifying the signature of interest.
-Default is NULL. If geneSignaturesName is NULL, run all available gene signatures' original model in the package.}
+\item{geneSignaturesName}{A character string/vector specifying the signature
+of interest.
+Default is \code{NULL}. If geneSignaturesName is \code{NULL}, run all
+available gene signatures' original model in the package.}
 
 \item{BPPARAM}{An instance inherited from \code{bplappy}.
 See \code{\link[BiocParallel]{bplapply}} for details.}
 }
+\value{
+A SummarizedExperiment object with predicted scores for each sample
+obtained from the signature's original model.
+}
 \description{
-A function to obtain predicted score for TB gene signatures that required retraining of their original model.
+A function to obtain predicted score for TB gene signatures that need retraining of original models.
 }
 \details{
 Maertzdorf_4 and Maertzdorf_15 were trained using random forest to distinguish

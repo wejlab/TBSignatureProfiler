@@ -1,20 +1,25 @@
 globalVariables(c("TBsignaturesSplit", "OriginalTrainingData"))
 
-#' A function that implements TB gene signatures' original model.
+#' A function that implements the original models for various TB signatures.
 #'
 #' TB signatures with available original models are: Anderson_42,
 #' Anderson_OD_51, Kaforou_27, Kaforou_OD_44, Kaforou_OD_53, Sweeney_OD_3,
-#' Maertzdorf_4, Verhagen_10, Jacobsen_3, Sambarey_HIV_10, Leong_24, Berry_OD_86,
+#' Maertzdorf_4, Verhagen_10, Jacobsen_3, Sambarey_HIV_10, Leong_24,
+#' Berry_OD_86,
 #' Berry_393, Bloom_OD_144, Suliman_RISK_4, Zak_RISK_16, and Leong_RISK_29.
-#' The predicted score for each signature has been stored in the column data section
-#' of the input SummarizedExperiment study.
+#' The predicted score for each signature has been stored in the column data
+#' section of the input SummarizedExperiment study.
 #'
-#' @param input A SummarizedExperiment object with gene symbols as the assay row names.
-#' @param useAssay A character string or an integer specifying the assay in the \code{input}.
+#' @param input A SummarizedExperiment object with gene symbols as the assay row
+#' names.
+#' @param useAssay A character string or an integer specifying the assay in the
+#' \code{input}.
 #' Used for the test SummarizedExperiment object. Default is 1, indicating the
 #' first assay in the \code{input}.
-#' @param geneSignaturesName A character string/vector specifying the signature of interest.
-#' Default is NULL. If geneSignaturesName is NULL, run all available gene signatures' original model in the package.
+#' @param geneSignaturesName A character string/vector specifying the signature
+#' of interest.
+#' Default is \code{NULL}. If geneSignaturesName is \code{NULL}, run all
+#' available gene signatures' original model in the package.
 #' @param BPPARAM An instance inherited from \code{bplappy}.
 #' See \code{\link[BiocParallel]{bplapply}} for details.
 #'
@@ -22,11 +27,11 @@ globalVariables(c("TBsignaturesSplit", "OriginalTrainingData"))
 #' obtained from the signature's original model.
 #' @export
 #' @examples
-#' library(TBSignatureProfiler)
-#' data("TB_hiv",package = "TBSignatureProfiler")
+#' data("TB_hiv", package = "TBSignatureProfiler")
 #' re <- evaluateOriginalModel(input = TB_hiv, useAssay = "counts",
-#' geneSignaturesName = c("Anderson_42","Maertzdorf_15"))
+#' geneSignaturesName = c("Anderson_42", "Maertzdorf_15"))
 #' re$Anderson_42_OriginalModel
+
 evaluateOriginalModel <- function(input, useAssay = 1, geneSignaturesName = NULL,
                                    BPPARAM = BiocParallel::SerialParam(progressbar = TRUE)) {
     signature_NoRetraining <- c("Anderson_42", "Anderson_OD_51", "Kaforou_27",
@@ -81,19 +86,25 @@ evaluateOriginalModel <- function(input, useAssay = 1, geneSignaturesName = NULL
 }
 
 #' TB gene signatures do not require retraining
-#' A function to obtain predicted score for TB gene signatures that do not need to retrain.
+#' A function to obtain predicted score for TB gene signatures that do not need to be retrained.
 #'
-#' Anderson_42 and Anderson_OD_51 used difference of sums to calculate prediction scores.
-#' Difference of sums is obtained by subtracting the sum of the expression of
-#' genes within signatures that are down-regulated from the sum of the expression
-#' of genes that are up-regulated within signatures.\cr
-#' Kaforou_27, Kaforou_OD_44, and Kaforou_OD_53 used difference of arithmetic means
-#' to calculate prediction scores.\cr
+#' Anderson_42 and Anderson_OD_51 used difference of sums to calculate
+#' prediction scores. Difference of sums is obtained by subtracting the sum of
+#' the expression of genes within signatures that are down-regulated from the
+#' sum of the expression of genes that are up-regulated within signatures.
+#' Kaforou_27, Kaforou_OD_44, and Kaforou_OD_53 used difference of arithmetic
+#' means to calculate prediction scores.
 #' Sweeney_OD_3 used difference of geometric mean to calculate prediction score.
 #'
 #' @inheritParams evaluateOriginalModel
-.OriginalModel_NoRetraining <- function(input, useAssay, geneSignaturesName, BPPARAM) {
-    sample_score_list <- BiocParallel::bplapply(seq_len(length(geneSignaturesName)), function(i) {
+#' 
+#' @return A SummarizedExperiment object with predicted scores for each sample
+#' obtained from the signature's original model.
+
+.OriginalModel_NoRetraining <- function(input, useAssay, geneSignaturesName,
+                                        BPPARAM) {
+    sample_score_list <- BiocParallel::bplapply(seq_len(length(geneSignaturesName)),
+                                                function(i) {
         TBsignaturesSplit <- TBSignatureProfiler::TBsignaturesSplit
         sig <- geneSignaturesName[i]
         message(sprintf("Now Evaluating: %s", sig))
@@ -102,11 +113,13 @@ evaluateOriginalModel <- function(input, useAssay = 1, geneSignaturesName = NULL
         dat_sig_up <- data.frame(subsetGeneSet(input, up_set, useAssay))
         dat_sig_dn <- data.frame(subsetGeneSet(input, dn_set, useAssay))
         if (ncol(dat_sig_up) == 0) {
-            message("No signature genes found in ", paste(up_set, collapse = " "),
+            message("No signature genes found in ", paste(up_set,
+                                                          collapse = " "),
                     " for signature ", sig, ", prediction score is NA.")
             up_sample_score <- NA
             } else if (ncol(dat_sig_dn) == 0) {
-            message("No signature genes found in ", paste(dn_set, collapse = " "),
+            message("No signature genes found in ", paste(dn_set,
+                                                          collapse = " "),
                     " for signature ", sig, ", prediction score is NA.")
             dn_sample_score <- NA
             }
@@ -119,21 +132,24 @@ evaluateOriginalModel <- function(input, useAssay = 1, geneSignaturesName = NULL
                 up_sample_score <- BiocGenerics::rowMeans(dat_sig_up)
                 dn_sample_score <- BiocGenerics::rowMeans(dat_sig_dn)
             } else if (sig == "Sweeney_OD_3") { # Only one gene in down set.
-                up_sample_score <- base::apply(dat_sig_up, 1, function(x) exp(mean(log(x))))
-                dn_sample_score <- base::apply(dat_sig_dn, 1, function(x) exp(mean(log(x))))
+                up_sample_score <- base::apply(dat_sig_up, 1,
+                                               function(x) exp(mean(log(x))))
+                dn_sample_score <- base::apply(dat_sig_dn, 1,
+                                               function(x) exp(mean(log(x))))
             }
         }
         sample_score <- up_sample_score - dn_sample_score
         sample_score
     }, BPPARAM = BPPARAM)
     sample_score_result <- do.call(cbind, sample_score_list)
-    colnames(sample_score_result) <- paste0(geneSignaturesName, "_OriginalModel")
+    colnames(sample_score_result) <- paste0(geneSignaturesName,
+                                            "_OriginalModel")
     return(sample_score_result)
 }
 
 #' TB gene signatures require retraining
 #'
-#' A function to obtain predicted score for TB gene signatures that required retraining of their original model.
+#' A function to obtain predicted score for TB gene signatures that need retraining of original models.
 #'
 #' Maertzdorf_4 and Maertzdorf_15 were trained using random forest to distinguish
 #' samples with active TB from healthy controls.
@@ -155,6 +171,9 @@ evaluateOriginalModel <- function(input, useAssay = 1, geneSignaturesName = NULL
 #' @importFrom magrittr %>%
 #' @importFrom rlang .data
 #' @inheritParams evaluateOriginalModel
+#' @return A SummarizedExperiment object with predicted scores for each sample
+#' obtained from the signature's original model.
+
 .OriginalModel_Retraining <- function(input, useAssay, geneSignaturesName, BPPARAM) {
     OriginalTrainingData <- TBSignatureProfiler::OriginalTrainingData
     TBsignatures <- TBSignatureProfiler::TBsignatures
@@ -339,6 +358,7 @@ ObtainSampleScore_OriginalModel <- function(theObject_train, useAssay, gene_set,
 #' Only used when creating training data. Default is NULL.
 #' @return A matrix with selected gene expression value if \code{obtainDiagnosis} is FALSE.
 #' else, return a list contains the selected gene expression value and diagnosis results for each observation.
+
 subsetGeneSet <- function(theObject, gene_set, useAssay = 1,
                           obtainDiagnosis = FALSE, annotationColName = NULL) {
     dat_assay <- base::data.frame(SummarizedExperiment::assay(theObject, useAssay))
@@ -370,7 +390,7 @@ subsetGeneSet <- function(theObject, gene_set, useAssay = 1,
 #' number of missing genes. We made some constrains to prevent the overflow of imputation
 #' operation. The evaluation will not run if more than \code{geneMax}*100\% percent
 #' of the genes are not found for the corresponding gene signature in the input study.
-#' By default \code{geneMax}=0.8, so the evaluation will not run if more than 80\%
+#' By default \code{geneMax} = 0.8, so the evaluation will not run if more than 80\%
 #' of the genes are missing when matching the input study to the reference data.
 #'
 #' @param theObject_train A SummarizedExperiment object that has been prestored in the
@@ -386,6 +406,9 @@ subsetGeneSet <- function(theObject, gene_set, useAssay = 1,
 #' @param geneMax A real number between 0 and 1. This is used to detect the
 #' maximum percent missing genes allowed in the evaluated signatures.
 #' See \code{\link[impute]{impute.knn}} for details. The default value is 0.8.
+#' 
+#' @return Gene set subset
+
 ref_combat_impute <- function(theObject_train, useAssay = 1, gene_set, input,
                               SigName = "", geneMax = 0.8) {
     object_list <- list(GSE_train = theObject_train, GSE_test = input)
@@ -506,6 +529,7 @@ ref_combat_impute <- function(theObject_train, useAssay = 1, gene_set, input,
 #' @param dat_test_sig A data frame contains correpsonding biomarker gene features.
 #' Used to evaluate the performance of biomarker using its original models.
 #' @return The predicted score for each sample in the test study.
+
 LeongOriginalModel <- function(dat_list, dat_test_sig) {
     diagnosis_train <- dat_list$diagnosis_train
     diagnosis_train_new <- base::ifelse(diagnosis_train == "PTB", "PTB", "Others")
@@ -532,6 +556,7 @@ LeongOriginalModel <- function(dat_list, dat_test_sig) {
 #' @inheritParams LeongOriginalModel
 #' @importFrom stats na.omit
 #' @return The predicted score for each sample in the test study.
+
 Maertzdorf_Verhagen_daCosta_OriginalModel <- function(dat_list, dat_test_sig) {
     diagnosis_train <- dat_list$diagnosis_train
     diagnosis_train_new <- base::ifelse(diagnosis_train == "PTB", "PTB", "Others")
@@ -558,6 +583,7 @@ Maertzdorf_Verhagen_daCosta_OriginalModel <- function(dat_list, dat_test_sig) {
 #'
 #' @inheritParams LeongOriginalModel
 #' @return The predicted score for each sample in the test study.
+
 Jacobsen_Sambarey_OriginalModel <- function(dat_list, dat_test_sig) {
     diagnosis_train <- dat_list$diagnosis_train
     diagnosis_train_new <- base::ifelse(diagnosis_train == "PTB", "PTB", "Others")
@@ -580,6 +606,7 @@ Jacobsen_Sambarey_OriginalModel <- function(dat_list, dat_test_sig) {
 #'
 #' @inheritParams LeongOriginalModel
 #' @return The predicted score for each sample in the test study.
+
 BerryOriginalModel <- function(dat_list, dat_test_sig) {
     diagnosis_train <- dat_list$diagnosis_train
     dat_train_sig <- dat_list$dat_train_sig
@@ -611,6 +638,7 @@ BerryOriginalModel <- function(dat_list, dat_test_sig) {
 #'
 #' @inheritParams LeongOriginalModel
 #' @return The predicted score for each sample in the test study.
+
 Bloom_Zak_OriginalModel <- function(dat_list, dat_test_sig) {
     diagnosis_train <- dat_list$diagnosis_train
     diagnosis_train_new <- base::ifelse(diagnosis_train == "PTB", "PTB", "Others")
@@ -638,6 +666,7 @@ Bloom_Zak_OriginalModel <- function(dat_list, dat_test_sig) {
 #'
 #' @inheritParams LeongOriginalModel
 #' @return The predicted score for each sample in the test study.
+
 SulimanOriginalModel <- function(dat_list, dat_test_sig) {
     diagnosis_train <- dat_list$diagnosis_train
     diagnosis_train_new <- base::ifelse(diagnosis_train == "PTB", "PTB", "Others")

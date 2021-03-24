@@ -3,29 +3,37 @@
 \name{.OriginalModel_NoRetraining}
 \alias{.OriginalModel_NoRetraining}
 \title{TB gene signatures do not require retraining
-A function to obtain predicted score for TB gene signatures that do not need to retrain.}
+A function to obtain predicted score for TB gene signatures that do not need to be retrained.}
 \usage{
 .OriginalModel_NoRetraining(input, useAssay, geneSignaturesName, BPPARAM)
 }
 \arguments{
-\item{input}{A SummarizedExperiment object with gene symbols as the assay row names.}
+\item{input}{A SummarizedExperiment object with gene symbols as the assay row
+names.}
 
-\item{useAssay}{A character string or an integer specifying the assay in the \code{input}.
+\item{useAssay}{A character string or an integer specifying the assay in the
+\code{input}.
 Used for the test SummarizedExperiment object. Default is 1, indicating the
 first assay in the \code{input}.}
 
-\item{geneSignaturesName}{A character string/vector specifying the signature of interest.
-Default is NULL. If geneSignaturesName is NULL, run all available gene signatures' original model in the package.}
+\item{geneSignaturesName}{A character string/vector specifying the signature
+of interest.
+Default is \code{NULL}. If geneSignaturesName is \code{NULL}, run all
+available gene signatures' original model in the package.}
 
 \item{BPPARAM}{An instance inherited from \code{bplappy}.
 See \code{\link[BiocParallel]{bplapply}} for details.}
 }
+\value{
+A SummarizedExperiment object with predicted scores for each sample
+obtained from the signature's original model.
+}
 \description{
-Anderson_42 and Anderson_OD_51 used difference of sums to calculate prediction scores.
-Difference of sums is obtained by subtracting the sum of the expression of
-genes within signatures that are down-regulated from the sum of the expression
-of genes that are up-regulated within signatures.\cr
-Kaforou_27, Kaforou_OD_44, and Kaforou_OD_53 used difference of arithmetic means
-to calculate prediction scores.\cr
+Anderson_42 and Anderson_OD_51 used difference of sums to calculate
+prediction scores. Difference of sums is obtained by subtracting the sum of
+the expression of genes within signatures that are down-regulated from the
+sum of the expression of genes that are up-regulated within signatures.
+Kaforou_27, Kaforou_OD_44, and Kaforou_OD_53 used difference of arithmetic
+means to calculate prediction scores.
 Sweeney_OD_3 used difference of geometric mean to calculate prediction score.
 }
