@@ -97,7 +97,6 @@ evaluateOriginalModel <- function(input, useAssay = 1, geneSignaturesName = NULL
 #' Sweeney_OD_3 used difference of geometric mean to calculate prediction score.
 #'
 #' @inheritParams evaluateOriginalModel
-#' 
 #' @return A SummarizedExperiment object with predicted scores for each sample
 #' obtained from the signature's original model.
 
@@ -406,7 +405,6 @@ subsetGeneSet <- function(theObject, gene_set, useAssay = 1,
 #' @param geneMax A real number between 0 and 1. This is used to detect the
 #' maximum percent missing genes allowed in the evaluated signatures.
 #' See \code{\link[impute]{impute.knn}} for details. The default value is 0.8.
-#' 
 #' @return Gene set subset
 
 ref_combat_impute <- function(theObject_train, useAssay = 1, gene_set, input,
