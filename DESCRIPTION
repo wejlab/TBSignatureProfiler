@@ -33,7 +33,12 @@ Imports:
     DT,
     edgeR,
     gdata,
-    SummarizedExperiment
+    SummarizedExperiment,
+    magrittr,
+    stats,
+    rlang,
+    BiocParallel,
+    BiocGenerics
 Suggests:
     testthat,
     spelling,
@@ -44,8 +49,15 @@ Suggests:
     BiocStyle,
     shiny,
     circlize,
-    glmnet,
     caret,
+    dplyr,
+    plyr,
+    impute,
+    sva,
+    glmnet,
+    randomForest,
+    MASS,
+    class,
     e1071
 URL: https://github.com/compbiomed/TBSignatureProfiler
 BugReports: https://github.com/compbiomed/TBSignatureProfiler/issues
