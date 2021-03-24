@@ -185,30 +185,20 @@ evaluateOriginalModel <- function(input, useAssay = 1, geneSignaturesName = NULL
             if (sig == "Leong_RISK_29") {
                 col_info <- SummarizedExperiment::colData(theObject_train)
                 index_NA <- which(is.na(col_info$PatientID))
-                if (requireNamespace("dplyr", quietly = TRUE)) {
-                  sample_baseline_GSE79362 <- col_info[-index_NA, c("PatientID", "MeasurementTime")] %>%
-                    data.frame() %>%
-                    dplyr::mutate(sample_name = row.names(col_info)[-index_NA]) %>%
-                    dplyr::arrange(.data$MeasurementTime, .data$PatientID) %>%
-                    dplyr::group_by(.data$PatientID) %>%
-                    dplyr::mutate(first = dplyr::first(.data$sample_name))
-                } else {
-                  message("Installing packages: \"dplyr\" for the function to work")
-                  utils::install.packages("dplyr")
-                  sample_baseline_GSE79362 <- col_info[-index_NA, c("PatientID", "MeasurementTime")] %>%
-                      data.frame() %>%
-                      dplyr::mutate(sample_name = row.names(col_info)[-index_NA]) %>%
-                      dplyr::arrange(.data$MeasurementTime, .data$PatientID) %>%
-                      dplyr::group_by(.data$PatientID) %>%
-                      dplyr::mutate(first = dplyr::first(.data$sample_name))
-                  }
-                theObject_train <- theObject_train[, unique(sample_baseline_GSE79362$first)]
-                sample_score <- ObtainSampleScore_OriginalModel(theObject_train, useAssay,
-                                                                gene_set = TBsignatures[[sig]],
-                                                                input = input, SigName = sig,
-                                                                obtainDiagnosis = TRUE,
-                                                                annotationColName = "TBStatus",
-                                                                FUN = "LeongOriginalModel")
+                sample_baseline_GSE79362 <- col_info[-index_NA, c("PatientID", "MeasurementTime")] %>%
+                  data.frame() %>%
+                  dplyr::mutate(sample_name = row.names(col_info)[-index_NA]) %>%
+                  dplyr::arrange(.data$MeasurementTime, .data$PatientID) %>%
+                  dplyr::group_by(.data$PatientID) %>%
+                  dplyr::mutate(first = dplyr::first(.data$sample_name))
+                }
+            theObject_train <- theObject_train[, unique(sample_baseline_GSE79362$first)]
+            sample_score <- ObtainSampleScore_OriginalModel(theObject_train, useAssay,
+                                                            gene_set = TBsignatures[[sig]],
+                                                            input = input, SigName = sig,
+                                                            obtainDiagnosis = TRUE,
+                                                            annotationColName = "TBStatus",
+                                                            FUN = "LeongOriginalModel")
             }
             if (sig == "Zak_RISK_16") {
                 theObject_train <- theObject_train[, theObject_train$ACS_cohort %in% "Training"]
@@ -452,30 +442,17 @@ ref_combat_impute <- function(theObject_train, useAssay = 1, gene_set, input,
                                                         %in% common_genes]
         message(sprintf("Gene(s): %s is(are) not found in the input study for gene signature: %s. \n Impute missing features using KNN",
                         paste0(missing_genes, collapse = ", "), SigName))
-        if (requireNamespace("impute", quietly = TRUE)) {
-          output <- impute::impute.knn(as.matrix(dat_exprs_count), k = 10,
-                                       rowmax = rowmax, colmax = colmax)
-        } else {
-          message("Installing required packages: \"impute\" for the function to work")
-          utils::installed.packages("impute")
-          output <- impute::impute.knn(as.matrix(dat_exprs_count), k = 10,
-                                       rowmax = rowmax, colmax = colmax)
+        output <- impute::impute.knn(as.matrix(dat_exprs_count), k = 10,
+                                     rowmax = rowmax, colmax = colmax)
         }
-        dat_exprs_count1 <- output$data
-    }
+      dat_exprs_count1 <- output$data
+      }
     col_data <- lapply(seq_len(length(object_list)), function(x) { # Obtain annotation data from the samples
         col_data <- SummarizedExperiment::colData(object_list[[x]])
         col_data$GSE <- names(object_list[x])
         col_data
     })
     if (requireNamespace("plyr", quietly = TRUE)) {
-      col_info <- plyr::rbind.fill(lapply(col_data, function(x) {
-        x$SampleName <- row.names(x)
-        as.data.frame(x)
-      }))
-    } else {
-      message("Installing required package: \"plyr\" for the function to work")
-      utils::installed.packages("plyr")
       col_info <- plyr::rbind.fill(lapply(col_data, function(x) {
         x$SampleName <- row.names(x)
         as.data.frame(x)
@@ -491,22 +468,10 @@ ref_combat_impute <- function(theObject_train, useAssay = 1, gene_set, input,
                 sva::ComBat(dat = dat_exprs_count1,
                             batch = col_info$GSE, mod = mod1,
                             ref.batch = "GSE_train")
-              } else {
-                message("Installing required packages: \"sva\" for the function to work")
-                utils::installed.packages("sva")
-                sva::ComBat(dat = dat_exprs_count1,
-                            batch = col_info$GSE, mod = mod1,
-                            ref.batch = "GSE_train")
               }
             },
             error = function(e) {
               if (requireNamespace("sva", quietly = TRUE)) {
-                sva::ComBat(dat = dat_exprs_count1 + 1e-3,
-                            batch = col_info$GSE, mod = mod1,
-                            ref.batch = "GSE_train")
-              } else {
-                message("Installing required packages: \"sva\" for the function to work")
-                utils::installed.packages("sva")
                 sva::ComBat(dat = dat_exprs_count1 + 1e-3,
                             batch = col_info$GSE, mod = mod1,
                             ref.batch = "GSE_train")
@@ -538,11 +503,6 @@ LeongOriginalModel <- function(dat_list, dat_test_sig) {
     if (requireNamespace("glmnet", quietly = TRUE)) {
       sig_model <- glmnet::cv.glmnet(x = dat_list$dat_train_sig,
                                      y = diagnosis_train)
-    } else {
-      message("Installing required packages: \"glmnet\" for the function to work")
-      utils::installed.packages("glmnet")
-      sig_model <- glmnet::cv.glmnet(x = dat_list$dat_train_sig,
-                                     y = diagnosis_train)
     }
     sample_score <- stats::predict(sig_model$glmnet.fit, s = sig_model$lambda.min,
                                    newx = dat_test_sig, na.action = na.omit)
@@ -566,12 +526,6 @@ Maertzdorf_Verhagen_daCosta_OriginalModel <- function(dat_list, dat_test_sig) {
       sig_model <- randomForest::randomForest(x = dat_list$dat_train_sig,
                                               y = as.factor(diagnosis_train),
                                               ntree = 5000, importance = TRUE)
-    } else {
-      message("Installing required packages: \"randomForest\" for the function to work")
-      utils::installed.packages("randomForest")
-      sig_model <- randomForest::randomForest(x = dat_list$dat_train_sig,
-                                              y = as.factor(diagnosis_train),
-                                              ntree = 5000, importance = TRUE)
     }
     sample_score <- stats::predict(object = sig_model, newdata = dat_test_sig,
                                    type = "prob")
@@ -591,11 +545,6 @@ Jacobsen_Sambarey_OriginalModel <- function(dat_list, dat_test_sig) {
     if (requireNamespace("MASS", quietly = TRUE)) {
       sig_model <- MASS::lda(diagnosis_train ~ ., data.frame(dat_list$dat_train_sig,
                                                              diagnosis_train))
-    } else {
-      message("Installing required packages: \"MASS\" for the function to work")
-      utils::installed.packages("MASS")
-      sig_model <- MASS::lda(diagnosis_train ~ ., data.frame(dat_list$dat_train_sig,
-                                                             diagnosis_train))
     }
     sample_score <- stats::predict(sig_model, data.frame(dat_test_sig))
     pred_score <- as.vector(sample_score$posterior[, 2])
@@ -613,11 +562,6 @@ BerryOriginalModel <- function(dat_list, dat_test_sig) {
     diagnosis_train_new <- base::ifelse(diagnosis_train == "PTB", "PTB", "Others")
     diagnosis_train <- as.integer(factor(diagnosis_train_new, levels = c("Others", "PTB")))
     if (requireNamespace("class", quietly = TRUE)) {
-      sig_model <- class::knn(train = dat_train_sig, test = dat_test_sig,
-                              cl = diagnosis_train, k = 10, prob = TRUE)
-    } else {
-      message("Installing required packages: \"class\" for the function to work")
-      utils::installed.packages("class")
       sig_model <- class::knn(train = dat_train_sig, test = dat_test_sig,
                               cl = diagnosis_train, k = 10, prob = TRUE)
     }
@@ -649,14 +593,6 @@ Bloom_Zak_OriginalModel <- function(dat_list, dat_test_sig) {
                                                type = "nu-regression", kernel = "linear",
                                                cost = 100, cachesize = 5000, tolerance = 0.01,
                                                shrinking = FALSE, cross = 3))
-    } else {
-      message("Installing required packages: \"e1071\" for the function to work")
-      utils::installed.packages("e1071")
-      sig_model <- suppressWarnings(e1071::svm(x = dat_list$dat_train_sig,
-                                               y = diagnosis_train,
-                                               type = "nu-regression", kernel = "linear",
-                                               cost = 100, cachesize = 5000, tolerance = 0.01,
-                                               shrinking = FALSE, cross = 3))
     }
     pred_score <- stats::predict(sig_model, dat_test_sig)
     return(pred_score)
@@ -681,14 +617,6 @@ SulimanOriginalModel <- function(dat_list, dat_test_sig) {
                                SEPT4_CD1C = dat_test_sig[, "SEPT4"] / dat_test_sig[, "CD1C"],
                                GAS6_BLK = dat_test_sig[, "GAS6"] / dat_test_sig[, "BLK"])
     if (requireNamespace("e1071", quietly = TRUE)) {
-      sig_model <- suppressWarnings(e1071::svm(x = dat_train_sig,
-                                               y = diagnosis_train,
-                                               type = "nu-regression", kernel = "linear",
-                                               cost = 100, cachesize = 5000, tolerance = 0.01,
-                                               shrinking = FALSE, cross = 3))
-    } else {
-      message("Installing required packages: \"e1071\" for the function to work")
-      utils::installed.packages("e1071")
       sig_model <- suppressWarnings(e1071::svm(x = dat_train_sig,
                                                y = diagnosis_train,
                                                type = "nu-regression", kernel = "linear",
