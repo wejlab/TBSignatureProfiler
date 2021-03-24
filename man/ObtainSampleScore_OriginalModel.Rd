@@ -14,6 +14,17 @@ ObtainSampleScore_OriginalModel(
   annotationColName,
   FUN
 )
+
+ObtainSampleScore_OriginalModel(
+  theObject_train,
+  useAssay,
+  gene_set,
+  input,
+  SigName,
+  obtainDiagnosis,
+  annotationColName,
+  FUN
+)
 }
 \arguments{
 \item{theObject_train}{A SummarizedExperiment object that has been prestored in the
@@ -40,7 +51,11 @@ Only used when creating training data. Default is NULL.}
 }
 \value{
 The predicted score for each sample in the test study using corresponding gene signature's original model.
+
+The predicted score for each sample in the test study using corresponding gene signature's original model.
 }
 \description{
+Obtain training data, testing data, and train signature's original model.
+
 Obtain training data, testing data, and train signature's original model.
 }
