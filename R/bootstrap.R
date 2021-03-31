@@ -18,9 +18,11 @@ globalVariables(c("BS_AUC", "FPR", "LowerTPR", "Signatures",
 #' @param pb.show logical for whether to show a progress bar while running code.
 #' The default is \code{TRUE}.
 #'
-#' @return A list of length 3 returning a vector of p-values for a 2-sample
-#' t-test, bootstrapped AUC values, and an AUC value for using all scored values
-#' for all signatures specified in \code{signatureColNames}.
+#' @return A list of length 5 returning a vector of p-values for a 2-sample
+#' t-test, bootstrapped AUC values, an AUC value for using all scored values
+#' for all signatures specified in \code{signatureColNames},
+#' and values for the lower and upper bounds of a bootstrapped AUC confidence
+#' interval using \code{pROC::roc()}.
 #'
 #' @export
 #'
@@ -48,7 +50,7 @@ bootstrapAUC <- function(SE_scored, annotationColName, signatureColNames,
   if (pb.show)  pb <- utils::txtProgressBar(min = 0, max = total, style = 3)
 
   # Initialize containers
-  pvals <- aucs <- numeric(total)
+  pvals <- aucs <- pROC_lower <- pROC_upper <- numeric(total)
   aucs_boot <- matrix(nrow = num.boot,
                       ncol = total,
                       dimnames = list(seq(num.boot),
@@ -74,6 +76,13 @@ bootstrapAUC <- function(SE_scored, annotationColName, signatureColNames,
       tmp_auc <- max(pred$AUC, 1 - pred$AUC)
       aucs_boot[j, which.sig] <- tmp_auc
     }
+    
+    # pROC
+    roc1 <- suppressMessages(pROC::roc(predictor = score,
+                                       response = annotationData))
+    conf <- pROC::ci.auc(roc1, method = "delong", progress = "none")
+    pROC_lower[which.sig] <- round(conf[1], 4)
+    pROC_upper[which.sig] <- round(conf[2], 4)
 
     # Update the progress bar
     counter <- counter + 1
@@ -82,7 +91,8 @@ bootstrapAUC <- function(SE_scored, annotationColName, signatureColNames,
 
   if (pb.show) close(pb)
   return(list("P-values" = pvals, "Boot AUC Values" = aucs_boot,
-              "Non-Boot AUC Values" = aucs))
+              "Non-Boot AUC Values" = aucs,
+              "pROC Lower" = pROC_lower, "pROC Upper" = pROC_upper))
 }
 
 #' Create a table of results for t-tests and bootstrapped AUCs for multiple scored signatures.
@@ -95,6 +105,8 @@ bootstrapAUC <- function(SE_scored, annotationColName, signatureColNames,
 #' @param output a character string indicating the table output format. Possible
 #' values are \code{DataTable} and \code{data.frame}. The default is
 #' \code{DataTable}.
+#' @param pROC logical. Should pROC AUC confidence intervals be used? Default
+#' is \code{TRUE}.
 #'
 #' @export
 #'
@@ -113,29 +125,36 @@ bootstrapAUC <- function(SE_scored, annotationColName, signatureColNames,
 #'
 #'  # Create data.frame object
 #' h <-  tableAUC(SE_scored = prof_indian, annotationColName = "label",
-#'           signatureColNames = names(choose_sigs), output = "data.frame",
-#'           num.boot = 5)
+#'                signatureColNames = names(choose_sigs),
+#'                output = "data.frame",
+#'                num.boot = 5)
 #' head(h)
 #'
 tableAUC <- function(SE_scored, annotationColName, signatureColNames,
-                     num.boot = 100, pb.show = TRUE, output = "DataTable") {
+                     num.boot = 100, pb.show = TRUE, output = "DataTable",
+                     pROC = TRUE) {
   # Run the bootstrapping function
   BS.Results <- bootstrapAUC(SE_scored, annotationColName, signatureColNames,
                              num.boot, pb.show)
   pvals <- BS.Results[["P-values"]]
   aucs_boot <- BS.Results[["Boot AUC Values"]]
   aucs <- BS.Results[["Non-Boot AUC Values"]]
+  if (pROC) {
+    lowerAUC <- BS.Results[["pROC Lower"]]
+    upperAUC <- BS.Results[["pROC Upper"]]
+  } else {
+    lowerAUC <- round(apply(aucs_boot, 2, stats::quantile,
+                            probs = .05), 4)
+    upperAUC <- round(apply(aucs_boot, 2, stats::quantile,
+                            probs = .95), 4)
+  }
   return_table <- data.frame("Signature" = signatureColNames,
                                    "P.value" = round(pvals, 4),
                                    "neg10xLog(P.value)" =
                                      round(-10 * log(pvals), 4),
-                                   "LowerAUC" = round(apply(aucs_boot, 2,
-                                                            stats::quantile,
-                                                            probs = .05), 4),
+                                   "LowerAUC" = lowerAUC,
                                    "AUC" = round(aucs, 4),
-                                   "UpperAUC" = round(apply(aucs_boot, 2,
-                                                            stats::quantile,
-                                                            probs = .95), 4))
+                                   "UpperAUC" = upperAUC)
   return_table$Signature <- paste(return_table$Signature)
   rownames(return_table) <- c(seq(1, nrow(return_table)))
 

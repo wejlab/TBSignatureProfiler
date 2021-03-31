@@ -58,7 +58,8 @@ Suggests:
     randomForest,
     MASS,
     class,
-    e1071
+    e1071,
+    pROC
 URL: https://github.com/compbiomed/TBSignatureProfiler
 BugReports: https://github.com/compbiomed/TBSignatureProfiler/issues
 Language: en-US

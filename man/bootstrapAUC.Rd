@@ -30,9 +30,11 @@ default is \code{100}.}
 The default is \code{TRUE}.}
 }
 \value{
-A list of length 3 returning a vector of p-values for a 2-sample
-t-test, bootstrapped AUC values, and an AUC value for using all scored values
-for all signatures specified in \code{signatureColNames}.
+A list of length 5 returning a vector of p-values for a 2-sample
+t-test, bootstrapped AUC values, an AUC value for using all scored values
+for all signatures specified in \code{signatureColNames},
+and values for the lower and upper bounds of a bootstrapped AUC confidence
+interval using \code{pROC::roc()}.
 }
 \description{
 Run bootstrapping of the AUC and derive the p-value for a 2-sample t-test
