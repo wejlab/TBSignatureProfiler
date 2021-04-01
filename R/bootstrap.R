@@ -76,7 +76,7 @@ bootstrapAUC <- function(SE_scored, annotationColName, signatureColNames,
       tmp_auc <- max(pred$AUC, 1 - pred$AUC)
       aucs_boot[j, which.sig] <- tmp_auc
     }
-    
+
     # pROC
     roc1 <- suppressMessages(pROC::roc(predictor = score,
                                        response = annotationData))
@@ -200,7 +200,7 @@ tableAUC <- function(SE_scored, annotationColName, signatureColNames,
 #'
 #' @examples
 #' # Run signature profiling
-#'  choose_sigs <- TBsignatures[c(1, 2)]
+#'  choose_sigs <- TBsignatures[c(1:2)]
 #'  prof_indian <- runTBsigProfiler(TB_indian[seq_len(25), ],
 #'                                  useAssay = "logcounts",
 #'                                  algorithm = "ssGSEA",
