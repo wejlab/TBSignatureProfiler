@@ -1,0 +1,25 @@
+{
+    "collab_server" : "",
+    "contents" : "",
+    "created" : 1620497738020.000,
+    "dirty" : false,
+    "encoding" : "UTF-8",
+    "folds" : "",
+    "hash" : "0",
+    "id" : "F39DA3A4",
+    "lastKnownWriteTime" : 1616904059,
+    "last_content_update" : 1616904059,
+    "path" : "~/Desktop/practice/WrapUpAnalysis_OriginvsGSEA.R",
+    "project_path" : null,
+    "properties" : {
+        "cursorPosition" : "105,17",
+        "scrollLine" : "100"
+    },
+    "read_only" : false,
+    "read_only_alternatives" : [
+    ],
+    "relative_order" : 4,
+    "source_on_save" : false,
+    "source_window" : "",
+    "type" : "r_source"
+}

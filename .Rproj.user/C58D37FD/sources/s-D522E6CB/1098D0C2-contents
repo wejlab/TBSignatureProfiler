@@ -1,0 +1,46 @@
+dat <- readRDS("~/Desktop/RA work/NanoString/nano_data_all.rds")
+Zhao_NANO_6 <- c("ANKRD22", "ATP1A1", "BLK", "CCR6", "DARS2", "EXOC2")
+dat_count <- assays(dat)[["counts"]]
+dat_count_norm <- TBSignatureProfiler::deseq2_norm_rle(dat_count)
+dat_count_norm_sub <- dat_count[which(row.names(dat_count_norm) %in% Zhao_NANO_6),]
+col_info <- colData(dat)
+col_info$TB_status <- ifelse(col_info$TB_status == "LTBI", "LTBI", "PTB")
+colnames(col_info)[1] <- "TBStatus"
+zhao_original_dat <- SummarizedExperiment(assays = list(dat_count_norm_sub),
+                                          colData = col_info)
+OriginalTrainingData$Zhao_NANO_6 <- zhao_original_dat
+
+usethis::use_data(OriginalTrainingData, compress = "xz", overwrite = TRUE)
+
+# Make the Zhao_NANO_6 available in the TBsignatures list
+# Add Duffy_MOUSE_23 to TBSignatureProfiler
+addTBsignature(sigsymbols = c("ANKRD22", "ATP1A1", "BLK", "CCR6", "DARS2", "EXOC2"),
+               authname = "Zhao_NANO",
+               sigtype = "Disease",
+               tissuetype = "whole blood",
+               saveobjs = FALSE,
+               views = FALSE)
+
+addTBsignature(sigsymbols = c("ANKRD22", "ATP1A1", "BLK", "CCR6", "DARS2", "EXOC2"),
+               authname = "Zhao_NANO",
+               sigtype = "Disease",
+               tissuetype = "whole blood",
+               saveobjs = TRUE,
+               views = TRUE)
+
+mkTBreference <- function(TBsigname, ref, DOInum) {
+    cat("\\item{\\strong{", TBsigname, "}}{: ", ref,
+        " \\href{http://dx.doi.org/", DOInum, "}{", DOInum, "}}", sep = "")
+}
+
+mkTBreference(TBsigname = "Zhao_NANO_6", # The name output in a message from addTBsignature()
+              ref = "To be available when published",
+              DOInum = "To be available when published")
+
+######### Testing
+Khatri_set_PTB_Others = readRDS("~/Desktop/Khatri_set_PTB_Others.RDS")
+
+results_Sobject <- evaluateOriginalModel(input = Khatri_set_PTB_Others[[1]], 
+                                      geneSignaturesName = "Zhao_NANO_6")
+rocit(results_Sobject$Zhao_NANO_6_OriginalModel, Khatri_set_PTB_Others[[1]]$TBStatus)
+

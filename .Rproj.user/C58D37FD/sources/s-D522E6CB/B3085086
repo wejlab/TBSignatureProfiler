@@ -1,0 +1,25 @@
+{
+    "collab_server" : "",
+    "contents" : "",
+    "created" : 1614983144184.000,
+    "dirty" : false,
+    "encoding" : "UTF-8",
+    "folds" : "",
+    "hash" : "0",
+    "id" : "B3085086",
+    "lastKnownWriteTime" : 1620507791,
+    "last_content_update" : 1620507791725,
+    "path" : "~/Desktop/RA work/TBSignatureProfiler/R/OriginalModel.R",
+    "project_path" : "R/OriginalModel.R",
+    "properties" : {
+        "cursorPosition" : "630,6",
+        "scrollLine" : "608"
+    },
+    "read_only" : false,
+    "read_only_alternatives" : [
+    ],
+    "relative_order" : 3,
+    "source_on_save" : false,
+    "source_window" : "",
+    "type" : "r_source"
+}

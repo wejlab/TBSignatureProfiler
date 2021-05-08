@@ -1,0 +1,1846 @@
+library(BiocParallel)
+library(caret)
+library(dplyr)
+library(DESeq2)
+library(edgeR)
+library(GEOquery)
+library(ggplot2)
+library(ggpubr)
+library(ggridges)
+library(gridExtra)
+library(limma)
+library(MultiAssayExperiment)
+library(SummarizedExperiment)
+library(TBSignatureProfiler)
+source("~/Desktop/curatedTBData/R/TBSignatureProfiling.R")
+devtools::load_all()
+library(curatedTBData)
+
+objects_list <- get_curatedTBData(geo_access = "All")
+
+#### Normalization and Match ProbeID to Gene Symbol ####
+param <- MulticoreParam(workers = 8, progressbar = TRUE)
+register(param)
+
+object_norm <- bplapply(objects_list, function(x)
+    Normalization(x, microarray_method = "quantile", RNAseq_method = "TMM",
+                  experiment_name = "assay_raw"), BPPARAM = param)
+object_match1 <- bplapply(object_norm, function(x)
+    MatchProbe(x, useAssay = c("TMM","quantile","RMA"),
+               createExperimentName = "assay_MatchProbe"), BPPARAM = param)
+# Remove samples with TBStatus == NA
+object_match <- lapply(object_match1, function(x)
+    x[,which(colData(x)[,"TBStatus"] != "NA")])
+
+# Impute NA values in GSE74092
+GSE74092_impute <- impute::impute.knn(object_match1$GSE74092[["assay_MatchProbe"]])
+GSE74092_impute_dat <- GSE74092_impute$data
+object_match$GSE74092[["assay_MatchProbe"]] <- GSE74092_impute_dat
+saveRDS(object_match, "~/Desktop/object_match.RDS")
+
+#### Subset Khatri studies (24 in total) from curatedTBData ####
+Khatri_set_nochange <- c("GSE28623", "GSE29536", "GSE34608", "GSE37250", "GSE39939",
+                         "GSE39940", "GSE41055", "GSE50834", "GSE62525", "GSE73408",
+                         "GSE83892", "GSE101705", "GSE107731")
+Khatri_set_need_change <- c("GSE19491", "GSE42834", "GSE56153", "GSE54992", "GSE62147",
+                            "GSE69581", "GSE79362", "GSE81746", "GSE83456", "GSE84076",
+                            "GSE107994")
+Khatri_set_list <- lapply(object_match[Khatri_set_nochange], function(x){
+  SummarizedExperiment(list(counts = x[["assay_MatchProbe"]]),
+                       colData = colData(x))
+})
+#### Combine GSE19491 ####
+GSE19491_Khatri_geo <- c("GSE19435", "GSE19439", "GSE19442",
+                         "GSE19444", "GSE22098")
+
+GSE19491_combine <- CombineObjects(object_match,
+                                   list_name = GSE19491_Khatri_geo,
+                                   experiment_name = "assay_MatchProbe")
+
+GSE19435_baseline <- objects_list$GSE19435[,objects_list$GSE19435$MeasurementTime
+                                           == "0_months"]
+
+GSE19491_combine_Khatri <- GSE19491_combine[,c(colnames(GSE19435_baseline),
+                                      colnames(objects_list$GSE19439),
+                                      colnames(objects_list$GSE19442),
+                                      colnames(objects_list$GSE19444),
+                                      colnames(objects_list$GSE22098))]
+Khatri_set_list$GSE19491_Khatri <- GSE19491_combine_Khatri
+#### Combine GSE42834 ####
+GSE42834_geo <- c("GSE42825", "GSE42826", "GSE42827", "GSE42830", "GSE42831",
+                  "GSE42832")
+GSE42834_combine <- CombineObjects(object_match,
+                                   list_name = GSE42834_geo,
+                                   experiment_name = "assay_MatchProbe")
+
+
+GSE42832_sobject_WB <- objects_list$GSE42832[,objects_list$GSE42832$Tissue ==
+                                                 "Whole Blood"]
+
+GSE42834_combine_Khatri <- GSE42834_combine[,c(colnames(objects_list$GSE42825),
+                                               colnames(objects_list$GSE42826),
+                                               colnames(objects_list$GSE42827),
+                                               colnames(objects_list$GSE42830),
+                                               colnames(objects_list$GSE42831),
+                                               colnames(GSE42832_sobject_WB))]
+Khatri_set_list$GSE42834_Khatri <- GSE42834_combine_Khatri
+
+#### Subset GSE56153 ####
+# Get PTB measurement at Baseline and Controls
+GSE56153_baseline <- object_match$GSE56153[,object_match$GSE56153$MeasurementTime
+                                           %in% c("Baseline",NA)]
+Khatri_set_list$GSE56153_Khatri <- SummarizedExperiment(
+  list(counts = GSE56153_baseline[["assay_MatchProbe"]]),
+  colData = colData(GSE56153_baseline))
+
+#### Subset GSE54992 ####
+GSE54992_baseline <- object_match$GSE54992[,object_match$GSE54992$MeasurementTime
+                                           == "Baseline"]
+Khatri_set_list$GSE54992_Khatri <- SummarizedExperiment(
+  list(counts = GSE54992_baseline[["assay_MatchProbe"]]),
+  colData = colData(GSE54992_baseline))
+
+#### Subset GSE62147 ####
+GSE62147_pre_treatment <- object_match$GSE62147[,object_match$GSE62147$MeasurementTime
+                                                == "recruit"]
+Khatri_set_list$GSE62147_Khatri <- SummarizedExperiment(
+  list(counts = GSE62147_pre_treatment[["assay_MatchProbe"]]),
+  colData = colData(GSE62147_pre_treatment))
+
+#### Subset GSE69581 ####
+GSE69581_PTB_Latent <- object_match$GSE69581[,object_match$GSE69581$TBStatus
+                                                %in% c("PTB", "Latent")]
+Khatri_set_list$GSE69581_Khatri <- SummarizedExperiment(
+  list(counts = GSE69581_PTB_Latent[["assay_MatchProbe"]]),
+  colData = colData(GSE69581_PTB_Latent))
+
+#### Subset GSE79362 ####
+# counts.africa.baseline <- objects_list$GSE79362[["assay_reprocess"]]
+load("~/Desktop/curatedTBData/data/GSE79362_assay_reprocess.rda")
+load("~/Desktop/curatedTBData/data/GSE79362_column_data.rda")
+counts.africa.baseline <- GSE79362_assay_reprocess
+
+# Max 5 filter
+MaxFilter <- function(df, max.value = 10){
+  df.filtered <- df[which(apply(df,1,max) >= max.value),]
+  return(df.filtered)
+}
+counts.africa.baseline.filtered <- MaxFilter(counts.africa.baseline, 5)
+# Normalization
+counts.africa.baseline.norm <- TBSignatureProfiler::deseq2_norm_rle(counts.africa.baseline.filtered)
+# Select samples at baseline
+GSE79362_train_full <- SummarizedExperiment(list(counts=counts.africa.baseline.norm),
+                                            colData = colData(objects_list$GSE79362))
+GSE79362_train_full <- SummarizedExperiment(list(counts=counts.africa.baseline.norm),
+                                            colData = GSE79362_column_data)
+attributes(row.names(GSE79362_train_full)) <- NULL
+# remove NAs and subset samples at baseline
+index_NA <- which(is.na(colData(GSE79362_train_full)$PatientID))
+sample_baseline_GSE79362 <- colData(GSE79362_train_full)[-index_NA,
+                                                         c("PatientID","MeasurementTime")] %>%
+  data.frame() %>%
+  mutate(sample_name=row.names(colData(GSE79362_train_full))[-index_NA]) %>%
+  dplyr::arrange(MeasurementTime,PatientID) %>%
+  dplyr::group_by(PatientID) %>%
+  dplyr::mutate(first = dplyr::first(sample_name))
+GSE79362_baseline <- GSE79362_train_full[,unique(sample_baseline_GSE79362$first)]
+
+##
+Khatri_set_list$GSE79362_Khatri <- GSE79362_baseline ##
+## Did not get the same number of samples as provided in the table
+
+#### GSE81746 ####
+GSE81746_sub <- object_match$GSE81746[,object_match$GSE81746$Gender == "Male"]
+Khatri_set_list$GSE81746_Khatri <- SummarizedExperiment(
+  list(counts = GSE81746_sub[["assay_MatchProbe"]]),
+  colData = colData(GSE81746_sub))
+
+#### GSE83456 ####
+GSE83456_sub <- object_match$GSE83456[,object_match$GSE83456$TBStatus != "EPTB"]
+Khatri_set_list$GSE83456_Khatri <- SummarizedExperiment(
+  list(counts = GSE83456_sub[["assay_MatchProbe"]]),
+  colData = colData(GSE83456_sub))
+
+#### GSE84076 ####
+# Take BCG vaccinated controls and LTBIs
+# Take PTB before treatment results
+GSE84076_sub <- object_match$GSE84076[,object_match$GSE84076$BcgVaccinated
+                                      %in% c("Yes", NA)]
+GSE84076_sub1 <- GSE84076_sub[,GSE84076_sub$TreatmentResult %in% NA]
+
+##
+Khatri_set_list$GSE84076_Khatri <- SummarizedExperiment(
+  list(counts = GSE84076_sub1[["assay_MatchProbe"]]),
+  colData = colData(GSE84076_sub1))
+## Did not get the same number of samples as provided in the table
+
+#### GSE107994 ####
+counts.gse107994.baseline <- objects_list$GSE107994[["assay_reprocess"]]
+# Max 5 filter
+counts.gse107994.baseline.filtered <- MaxFilter(counts.gse107994.baseline, 5)
+# Normalization
+counts.gse107994.baseline.norm <- deseq2_norm_rle(counts.gse107994.baseline.filtered)
+
+GSE107994_test_full <- SummarizedExperiment(list(counts=counts.gse107994.baseline.norm),
+                                            colData = colData(objects_list$GSE107994))
+# index <- which(is.na(GSE107994_test_full$PatientID))
+sample_baseline_GSE107994 <- colData(GSE107994_test_full)[,c("PatientID","Progression")] %>% data.frame() %>%
+  mutate(sample_name=row.names(colData(GSE107994_test_full))) %>%
+  dplyr::group_by(PatientID) %>%
+  dplyr::mutate(first = dplyr::first(sample_name))
+
+# Patient_087 does not have baseline measurement
+GSE107994_baseline <- GSE107994_test_full[,unique(sample_baseline_GSE107994$first)]
+
+##
+Khatri_set_list$GSE107994_Khatri <- GSE107994_baseline ##
+## Did not get the same number of samples as provided in the table
+
+#### Subset GSE94438 for Suliman_RISK_4 ####
+counts.gse94438.baseline <- objects_list$GSE94438[["assay_reprocess"]]
+# Max 5 filter
+counts.gse94438.baseline.filtered <- MaxFilter(counts.gse94438.baseline, 5)
+# Normalization
+counts.gse94438.baseline.norm <- deseq2_norm_rle(counts.gse94438.baseline.filtered)
+
+GSE94438_test_full <- SummarizedExperiment(list(counts=counts.gse94438.baseline.norm),
+                                           colData = colData(objects_list$GSE94438))
+attributes(row.names(GSE94438_test_full)) <- NULL
+GSE94438_test_full_NoNA <- GSE94438_test_full[,GSE94438_test_full$Progression %in% c("Positive","Negative")]
+Khatri_set_list$GSE94438 <- GSE94438_test_full_NoNA
+
+#### GSE74092 ####
+Khatri_set_list$GSE74092 <- SummarizedExperiment(
+  list(counts = object_match$GSE74092[["assay_MatchProbe"]]),
+  colData = colData(object_match$GSE74092))
+# 17 gene signatures and 8 training studies
+saveRDS(Khatri_set_list,"~/Desktop/Khatri_set_list.RDS")
+################ End of Data modification ###################
+#############################################################
+################ Running Analysis ###########################
+Khatri_set_list <- readRDS("~/Desktop/Khatri_set_list.RDS")
+#### Check with study tables in the paper ####
+# lapply(Khatri_set_list, function(x) table(x$TBStatus))
+TBsignatures_update <-  TBSignatureProfiler::TBsignatures
+TBsignatures_update$Maertzdorf_15 <- c("CNIH4", "GBP1", "P2RY14", "PCNXL2",
+                                       "CD274", "FCGR1C", "GBP5", "S100A8", "ID3",
+                                       "DHRS9", "FBXL5", "FAM26F", "BATF2", "CD96",
+                                       "FCGR1A")
+TBsignatures_update$daCosta_OD_3 <- c("GZMA", "GBP5", "CD64")
+TBsignatures <-  TBsignatures_update
+Khatri_set_num <- data.frame(GSE = names(Khatri_set_list),
+                             Observation = unlist(lapply(Khatri_set_list,ncol)))
+Khatri_set_num_24 <- Khatri_set_num %>% filter(!GSE %in% c("GSE94438","GSE74092"))
+Khatri_training <- list(Maertzdorf_4 = "GSE74092", Maertzdorf_15 = "GSE74092",
+                        Verhagen_10 = "GSE41055", daCosta_OD_3 = "GSE42834_Khatri",
+                        Jacobsen_3 = "GSE19491_Khatri", Sambarey_HIV_10 = "GSE37250",
+                        Leong_24 = "GSE101705", Bloom_OD_144 = "GSE42834_Khatri",
+                        Berry_OD_86 = "GSE19491_Khatri", Berry_393 = "GSE19491_Khatri",
+                        Anderson_42 = "GSE39940", Anderson_OD_51 = "GSE39940",
+                        Kaforou_27 = "GSE19491_Khatri", Kaforou_OD_44 = "GSE19491_Khatri",
+                        Kaforou_OD_53 = "GSE19491_Khatri",
+                        Zak_RISK_16 = "GSE79362_Khatri",
+                        Leong_RISK_29 = "GSE79362_Khatri",
+                        Suliman_RISK_4 = "GSE94438",
+                        Sweeney_OD_3 = c("GSE19491_Khatri", "GSE42834_Khatri", "GSE37250"))
+############################# Run Analysis across 24 studies
+
+#### Convert to TB vs. Others ####
+# 24 studies for comparison
+Khatri_set_PTB_Others <- lapply(Khatri_set_list[-which(names(Khatri_set_list) %in%
+                                                         c("GSE74092", "GSE94438"))],
+                                function(x){
+  annotationColName <- "TBStatus"
+  annotation_temp <- ifelse(colData(x)[,annotationColName] == "PTB",
+                            "PTB", "Others")
+  colData(x)[,annotationColName] <- annotation_temp
+  return(x)
+})
+
+get_weighted_mean <- function(dat, signature, train_list, percent=0.95,
+                              num.boot = NULL, box_plot = FALSE){
+  lower <- (1-percent)/2
+  upper <- 1-lower
+  traindata <- train_list[[signature]]
+  dat <- dat %>% dplyr::filter(!GSE %in% traindata & Signature == signature)
+  # Remove NA's
+  dat <- dat[complete.cases(dat),]
+  weighted_mean <- sum(dat$AUC * dat$Observation)/sum(dat$Observation)
+  if(is.null(num.boot)){
+    return(weighted_mean)
+
+  }else{
+    bootCI <- lapply(seq_len(num.boot), function(x){
+      index <- sample(seq_len(nrow(dat)), replace = TRUE)
+      AUC_boot <- dat$AUC[index]
+      obs_boot <- dat$Observation[index]
+
+      sum(AUC_boot * obs_boot, na.rm = T)/sum(obs_boot, na.rm = T)
+
+    })
+    bootCI <- unlist(bootCI)
+
+    bootCI <- stats::na.omit(bootCI)
+    if (box_plot){
+      re <- data.frame(Signature = signature, weighted_mean = bootCI)
+      return(re)
+
+    }
+
+    LowerAUC <- stats::quantile(bootCI, prob=lower, na.rm=TRUE)
+    UpperAUC <- stats::quantile(bootCI, prob=upper, na.rm=TRUE)
+    re <- c(weighted_mean,round(LowerAUC,4), round(UpperAUC,4))
+    names(re) <- c("Weighted Mean", paste0("CI lower.",lower*100,"%"),
+                   paste0("CI upper.",upper*100,"%"))
+    return(re)
+
+  }
+
+}
+
+extract_weighted_mean_CI <- function(method_Khatri_final,colName){
+  re <- data.frame(Signature = method_Khatri_final$Signature,
+             Re = sprintf("%.2f (%.2f-%.2f)",method_Khatri_final$Weighted.Mean,
+                                             method_Khatri_final$CI.lower.2.5.,
+                                             method_Khatri_final$CI.upper.97.5.))
+  colnames(re)[2] <- colName
+  return(re)
+}
+
+extract_weighted_mean_CI_split <- function(method_Khatri_split_final, colNames){
+  method_Khatri_split_final$SignatureAll <- gsub("_[^_]+$","",
+                                              method_Khatri_split_final$Signature)
+  re <- data.frame(SignatureAll = method_Khatri_split_final$SignatureAll,
+                   Direction = sapply(strsplit(method_Khatri_split_final$Signature,"_"), function(x) x[length(x)]),
+                   Re = sprintf("%.2f (%.2f-%.2f)",method_Khatri_split_final$Weighted.Mean,
+                                method_Khatri_split_final$CI.lower.2.5.,
+                                method_Khatri_split_final$CI.upper.97.5.))
+  re1 <- reshape(re, idvar = "SignatureAll",
+                 timevar = "Direction", direction = "wide")
+  colnames(re1)[2:3] <- c(paste0(colNames,"_up"),paste0(colNames,"_dn"))
+  return(re1)
+
+}
+
+Khatri_signatures1 <- TBsignatures[names(Khatri_training)]
+table_sig_order <- Khatri_signatures1[sapply(strsplit(names(Khatri_signatures1),"_"),
+                      function(x) x[length(x)]) %>%
+                        as.numeric() %>% order()]
+
+#index_RISK <- grep("RISK",names(table_sig_order))
+#index_rest <- which(is.na(match(1:19,grep("RISK",names(table_sig_order)))))
+Khatri_signatures <- table_sig_order[c(which(is.na(match(1:19,grep("RISK",names(table_sig_order))))),
+                                     grep("RISK",names(table_sig_order)))]
+
+#### Run ssGSEA Khatri_set_PTB_Others ####
+ssgsea_Khatri_set_PTB_Others <- lapply(Khatri_set_PTB_Others,
+                             function(x) TBSignatureProfiler::runTBsigProfiler(
+                               input = x,
+                               useAssay = assayNames(x),
+                               signatures = Khatri_signatures,
+                               algorithm = "ssGSEA",
+                               combineSigAndAlgorithm = TRUE))
+ssgsea_Khatri_set_PTB_Others_combine <- combine_auc(ssgsea_Khatri_set_PTB_Others,
+                                                   annotationColName = "TBStatus",
+                                                   signatureColNames = names(Khatri_signatures),
+                                                   num.boot = NULL, percent = 0.95)
+ssgsea_Khatri <- ssgsea_Khatri_set_PTB_Others_combine %>% inner_join(Khatri_set_num_24)
+ssgsea_Khatri_final1 <- lapply(names(Khatri_signatures), function(x){
+  get_weighted_mean(ssgsea_Khatri, x, Khatri_training, num.boot = 10000)
+})
+ssgsea_Khatri_final2 <- lapply(names(Khatri_signatures), function(x){
+  get_weighted_mean(ssgsea_Khatri, x, Khatri_training, num.boot = 10000,
+                    box_plot = T)
+})
+
+ssgsea_Khatri_final <- do.call(rbind, ssgsea_Khatri_final1) %>% data.frame()
+row.names(ssgsea_Khatri_final) <- names(Khatri_signatures)
+ssgsea_Khatri_final$Method <- "ssGSEA"
+ssgsea_Khatri_final$Signature <- row.names(ssgsea_Khatri_final)
+View(ssgsea_Khatri_final)
+
+# ggpubr::ggtexttable(extract_weighted_mean_CI(ssgsea_Khatri_final,"ssGSEA"), rows=NULL)
+
+#### Run Splitting signatures ssGSEA on Khatri_set_PTB_Others ####
+# See file TBsignaturesSplit.R for relevant data
+signature_split <- readRDS("~/Desktop/signature_split.RDS")
+Khatri_training_df <- data.frame(signature = rep(names(Khatri_training),sapply(Khatri_training, length)),
+                                 train_data = unlist(Khatri_training),row.names = NULL)
+Khatri_training_split <- gsub("_[^_]+$","",names(signature_split)) %>%
+  as_tibble() %>% inner_join(Khatri_training_df, by = c("value"="signature"))
+
+
+Khatri_training_split_list <- list()
+for(i in 1:nrow(Khatri_training_split)){
+  Khatri_training_split_list[[i]] <- Khatri_training_split$train_data[i]
+}
+names(Khatri_training_split_list) <- names(signature_split)
+
+
+ssgsea_Khatri_set_PTB_Others_split <- lapply(Khatri_set_PTB_Others,
+                                       function(x) TBSignatureProfiler::runTBsigProfiler(
+                                         input = x,
+                                         useAssay = assayNames(x),
+                                         signatures = signature_split,
+                                         algorithm = "ssGSEA",
+                                         combineSigAndAlgorithm = TRUE))
+ssgsea_Khatri_set_PTB_Others_split_combine <- combine_auc(ssgsea_Khatri_set_PTB_Others_split,
+                                                    annotationColName = "TBStatus",
+                                                    signatureColNames = names(signature_split),
+                                                    num.boot = NULL, percent = 0.95)
+
+ssgsea_Khatri_split <- ssgsea_Khatri_set_PTB_Others_split_combine %>%
+  inner_join(Khatri_set_num_24)
+
+ssgsea_Khatri_split_final1 <- lapply(names(signature_split), function(x){
+  get_weighted_mean(ssgsea_Khatri_split, x, Khatri_training_split_list,
+                    num.boot = 10000)
+})
+ssgsea_Khatri_split_final <- do.call(rbind, ssgsea_Khatri_split_final1) %>% data.frame()
+
+row.names(ssgsea_Khatri_split_final) <- names(signature_split)
+ssgsea_Khatri_split_final$Signature <- row.names(ssgsea_Khatri_split_final)
+View(ssgsea_Khatri_split_final)
+
+#extract_weighted_mean_CI_split(ssgsea_Khatri_split_final,"ssGSEA") %>% View
+#### RUN GSVA ####
+# kcdf <- data.frame(GSE = names(Khatri_set_PTB_Others),
+#                    DataType = rep("Gaussian", length(Khatri_set_PTB_Others)))
+# kcdf[which(kcdf$GSE %in% c("GSE101705", "GSE79362_Khatri","GSE84076_Khatri", "GSE107994_Khatri")),"DataType"] <- "Poisson"
+# gsva_Khatri_set_PTB_Others <- lapply(1:length(Khatri_set_PTB_Others), function(i){
+#   GSE_name <- names(Khatri_set_PTB_Others)[i]
+#   x <- Khatri_set_PTB_Others[[i]]
+#   kcdf <- kcdf %>% filter(GSE == GSE_name) %>% dplyr::select(DataType) %>%
+#     unlist(use.names = FALSE)
+#   # Set ssgsea.norm = F for absolute value
+#   result <- GSVA::gsva(x, Khatri_signatures, method = "gsva", kcdf = kcdf)
+#   colData(x) <- cbind(colData(x),t(assay(result)), GSE = GSE_name)
+#   x
+# })
+# names(gsva_Khatri_set_PTB_Others) <- names(Khatri_set_PTB_Others)
+gsva_Khatri_set_PTB_Others <- lapply(Khatri_set_PTB_Others,
+                                     function(x) TBSignatureProfiler::runTBsigProfiler(
+                                       input = x,
+                                       useAssay = assayNames(x),
+                                       signatures = Khatri_signatures,
+                                       algorithm = "GSVA",
+                                       combineSigAndAlgorithm = TRUE))
+
+gsva_Khatri_set_PTB_Others_combine <- combine_auc(gsva_Khatri_set_PTB_Others,
+                                                   annotationColName = "TBStatus",
+                                                   signatureColNames = names(Khatri_signatures),
+                                                   num.boot = NULL, percent = 0.95)
+gsva_Khatri <- gsva_Khatri_set_PTB_Others_combine %>% inner_join(Khatri_set_num_24)
+gsva_Khatri_final1 <- lapply(names(Khatri_signatures), function(x){
+  get_weighted_mean(gsva_Khatri, x, Khatri_training, num.boot = 10000)
+})
+gsva_Khatri_final <- do.call(rbind, gsva_Khatri_final1) %>% data.frame()
+row.names(gsva_Khatri_final) <- names(Khatri_signatures)
+gsva_Khatri_final$Method <- "GSVA"
+gsva_Khatri_final$Signature <- row.names(gsva_Khatri_final)
+View(gsva_Khatri_final)
+
+#### Run Splitting signatures GSVA on Khatri_set_PTB_Others ####
+gsva_Khatri_set_PTB_Others_split <- lapply(Khatri_set_PTB_Others,
+                                             function(x) TBSignatureProfiler::runTBsigProfiler(
+                                               input = x,
+                                               useAssay = assayNames(x),
+                                               signatures = signature_split,
+                                               algorithm = "GSVA",
+                                               combineSigAndAlgorithm = TRUE))
+gsva_Khatri_set_PTB_Others_split_combine <- combine_auc(gsva_Khatri_set_PTB_Others_split,
+                                                          annotationColName = "TBStatus",
+                                                          signatureColNames = names(signature_split),
+                                                          num.boot = NULL, percent = 0.95)
+
+gsva_Khatri_split <- gsva_Khatri_set_PTB_Others_split_combine %>%
+  inner_join(Khatri_set_num_24)
+
+gsva_Khatri_split_final1 <- lapply(names(signature_split), function(x){
+  get_weighted_mean(gsva_Khatri_split, x, Khatri_training_split_list, num.boot = 10000)
+})
+gsva_Khatri_split_final <- do.call(rbind, gsva_Khatri_split_final1) %>% data.frame()
+row.names(gsva_Khatri_split_final) <- names(signature_split)
+gsva_Khatri_split_final$Signature <- row.names(gsva_Khatri_split_final)
+View(gsva_Khatri_split_final)
+
+#### Run PLAGE Khatri_set_PTB_Others ####
+
+plage_Khatri_set_PTB_Others <- lapply(Khatri_set_PTB_Others,
+                                      function(x) TBSignatureProfiler::runTBsigProfiler(
+                                        input = x,
+                                        useAssay = assayNames(x),
+                                        signatures = Khatri_signatures,
+                                        algorithm = "PLAGE",
+                                        combineSigAndAlgorithm = TRUE))
+plage_Khatri_set_PTB_Others_combine <- combine_auc(plage_Khatri_set_PTB_Others,
+                                                   annotationColName = "TBStatus",
+                                                   signatureColNames = names(Khatri_signatures),
+                                                   num.boot = NULL, percent = 0.95)
+plage_Khatri <- plage_Khatri_set_PTB_Others_combine %>% inner_join(Khatri_set_num_24)
+plage_Khatri_final1 <- lapply(names(Khatri_signatures), function(x){
+  get_weighted_mean(plage_Khatri, x, Khatri_training, num.boot = 10000)
+})
+plage_Khatri_final <- do.call(rbind, plage_Khatri_final1) %>% data.frame()
+row.names(plage_Khatri_final) <- names(Khatri_signatures)
+plage_Khatri_final$Method <- "PLAGE"
+plage_Khatri_final$Signature <- row.names(plage_Khatri_final)
+View(plage_Khatri_final)
+
+#### RUN Z-Score ####
+zscore_Khatri_set_PTB_Others <- lapply(Khatri_set_PTB_Others,
+                                     function(x) TBSignatureProfiler::runTBsigProfiler(
+                                       input = x,
+                                       useAssay = assayNames(x),
+                                       signatures = Khatri_signatures,
+                                       algorithm = "Zscore",
+                                       combineSigAndAlgorithm = TRUE))
+zscore_Khatri_set_PTB_Others_combine <- combine_auc(zscore_Khatri_set_PTB_Others,
+                                                  annotationColName = "TBStatus",
+                                                  signatureColNames = names(Khatri_signatures),
+                                                  num.boot = NULL, percent = 0.95)
+zscore_Khatri <- zscore_Khatri_set_PTB_Others_combine %>% inner_join(Khatri_set_num_24)
+zscore_Khatri_final1 <- lapply(names(Khatri_signatures), function(x){
+  get_weighted_mean(zscore_Khatri, x, Khatri_training, num.boot = 10000)
+})
+zscore_Khatri_final <- do.call(rbind, zscore_Khatri_final1) %>% data.frame()
+row.names(zscore_Khatri_final) <- names(Khatri_signatures)
+zscore_Khatri_final$Method <- "Zscore"
+zscore_Khatri_final$Signature <- row.names(zscore_Khatri_final)
+View(zscore_Khatri_final)
+
+#### RUN SingScore ####
+singScore_Khatri_set_PTB_Others <- lapply(Khatri_set_PTB_Others,
+                                     function(x) TBSignatureProfiler::runTBsigProfiler(
+                                       input = x,
+                                       useAssay = assayNames(x),
+                                       signatures = Khatri_signatures,
+                                       algorithm = "singscore",
+                                       combineSigAndAlgorithm = TRUE))
+singScore_Khatri_set_PTB_Others_combine <- combine_auc(singScore_Khatri_set_PTB_Others,
+                                                  annotationColName = "TBStatus",
+                                                  signatureColNames = names(Khatri_signatures),
+                                                  num.boot = NULL, percent = 0.95)
+singScore_Khatri <- singScore_Khatri_set_PTB_Others_combine %>% inner_join(Khatri_set_num_24)
+singScore_Khatri_final1 <- lapply(names(Khatri_signatures), function(x){
+  get_weighted_mean(singScore_Khatri, x, Khatri_training, num.boot = 1000)
+})
+singScore_Khatri_final <- do.call(rbind, singScore_Khatri_final1) %>% data.frame()
+row.names(singScore_Khatri_final) <- names(Khatri_signatures)
+singScore_Khatri_final$Method <- "SingScore"
+singScore_Khatri_final$Signature <- row.names(singScore_Khatri_final)
+View(singScore_Khatri_final)
+
+#### RUN Singscore for bidirectional gene sets ####
+library(singscore)
+# Test for bidirectional
+tt <- simpleScore(rankGenes(assay(Khatri_set_PTB_Others[[3]])),
+                  upSet = signature_split$Kaforou_27_up,
+                  downSet = signature_split$Kaforou_27_dn)
+signatures_with_split <- gsub("_up","",names(signature_split)[grep("_up",names(signature_split))])
+singScore_Khatri_set_PTB_Others_split <- lapply(Khatri_set_PTB_Others,
+                                                function(x){
+  data <- rankGenes(assay(x))
+  sample_score_list <- lapply(signatures_with_split, function(sig_name){
+    re <- simpleScore(data, upSet = signature_split[[paste0(sig_name,"_up")]],
+                      downSet = signature_split[[paste0(sig_name,"_dn")]])
+    re$TotalScore
+
+  })
+  sample_score_result <- do.call(cbind, sample_score_list)
+  colnames(sample_score_result) <- signatures_with_split
+  col_info <- SummarizedExperiment::colData(x)
+  colData(x) <- S4Vectors::cbind(col_info, sample_score_result)
+  x
+
+})
+singScore_Khatri_set_PTB_Others_split_combine <- combine_auc(singScore_Khatri_set_PTB_Others_split,
+                                                        annotationColName = "TBStatus",
+                                                        signatureColNames = signatures_with_split,
+                                                        num.boot = NULL, percent = 0.95)
+
+singScore_Khatri_split <- singScore_Khatri_set_PTB_Others_split_combine %>%
+  inner_join(Khatri_set_num_24)
+
+singScore_Khatri_split_final1 <- lapply(signatures_with_split, function(x){
+  get_weighted_mean(singScore_Khatri_split, x, Khatri_training_split_list, num.boot = 10000)
+})
+singScore_Khatri_split_final <- do.call(rbind, singScore_Khatri_split_final1) %>% data.frame()
+row.names(singScore_Khatri_split_final) <- signatures_with_split
+singScore_Khatri_split_final$Signature <- row.names(singScore_Khatri_split_final)
+View(singScore_Khatri_split_final)
+
+#### RUN ASSIGN ####
+# assign_Khatri_set_PTB_Others <- bplapply(Khatri_set_PTB_Others,
+#                                           function(x) TBSignatureProfiler::runTBsigProfiler(
+#                                             input = x,
+#                                             useAssay = assayNames(x),
+#                                             signatures = Khatri_signatures,
+#                                             algorithm = "ASSIGN",
+#                                             ASSIGNiter = 15000,
+#                                             ASSIGNburnin = 5000,
+#                                             combineSigAndAlgorithm = TRUE),
+#                                          BPPARAM = MulticoreParam(workers = 6, progressbar = T))
+# assign_Khatri_set_PTB_Others <- readRDS("~/Desktop/assign_Khatri_set_PTB_Others.RDS")
+# assign_Khatri_set_PTB_Others_combine <- combine_auc(assign_Khatri_set_PTB_Others,
+#                                                        annotationColName = "TBStatus",
+#                                                        signatureColNames = names(Khatri_signatures),
+#                                                        num.boot = NULL, percent = 0.95)
+# assign_Khatri <- assign_Khatri_set_PTB_Others_combine %>% inner_join(Khatri_set_num_24)
+# assign_Khatri_final1 <- lapply(names(Khatri_signatures), function(x){
+#   get_weighted_mean(assign_Khatri, x, Khatri_training, num.boot = 1000)
+# })
+# assign_Khatri_final <- do.call(rbind, assign_Khatri_final1) %>% data.frame()
+# row.names(assign_Khatri_final) <- names(Khatri_signatures)
+# assign_Khatri_final$Method <- "ASSIGN"
+# assign_Khatri_final$Signature <- row.names(assign_Khatri_final)
+#
+# View(assign_Khatri_final)
+
+#### Prepare Original Model ####
+## No retraining required
+# See TBsignatureSplit.R
+## Retraining required
+# See Prepare_data_model.R
+# source("~/Desktop/curatedTBData/practice/OriginalModel_TBsignatureProfiler.R")
+source("~/Desktop/practice/OriginalModel_TrainFromRaw.R")
+TBsignaturesSplit <- readRDS("~/Desktop/TBsignaturesSplit.RDS")
+#### Run Original Model for gene sets do not require retraining ####
+
+gene_set_NoRetraining <- c("Anderson_42", "Anderson_OD_51", "Kaforou_27",
+                            "Kaforou_OD_44", "Kaforou_OD_53", "Sweeney_OD_3")
+
+out_list_NoRetraining <- lapply(Khatri_set_PTB_Others, function(x)
+  evaluateOriginalModel(input = x, useAssay = 1, geneSignaturesName = gene_set_NoRetraining))
+
+# source("~/Desktop/curatedTBData/R/TBSignatureProfiling.R")
+out_list_combine_NoRetraining <- combine_auc(out_list_NoRetraining, annotationColName = "TBStatus",
+                                signatureColNames = paste0(gene_set_NoRetraining, "_OriginalModel"),
+                                num.boot = 1000, percent = 0.95, AUC.abs = F)
+AUC_OriginalModel_NoRetraining <- c()
+out_list_combine_join_NoRetraining <- out_list_combine_NoRetraining %>%
+  inner_join(Khatri_set_num_24, by=c("GSE" = "GSE"))
+out_list_combine_join_NoRetraining$Signature <- gsub("_OriginalModel","",
+                                                     out_list_combine_join_NoRetraining$Signature)
+
+out_list_NoRetraining_final1 <- lapply(gene_set_NoRetraining, function(x){
+  get_weighted_mean(out_list_combine_join_NoRetraining, x, Khatri_training,
+                    num.boot = 10000)
+})
+out_list_NoRetraining_final <- do.call(rbind, out_list_NoRetraining_final1) %>% data.frame()
+row.names(out_list_NoRetraining_final) <- gene_set_NoRetraining
+out_list_NoRetraining_final$Method <- "OriginalModel"
+out_list_NoRetraining_final$Signature <- row.names(out_list_NoRetraining_final)
+View(out_list_NoRetraining_final)
+
+#### Run Original Model for gene sets REQUIRED retraining ####
+gene_set_Retraining <- c("Maertzdorf_4", "Maertzdorf_15", "LauxdaCosta_OD_3",
+                         "Verhagen_10", "Jacobsen_3", "Sambarey_HIV_10",
+                         "Leong_24", "Berry_OD_86", "Berry_393", "Bloom_OD_144",
+                         "Suliman_RISK_4", "Zak_RISK_16", "Leong_RISK_29")
+
+out_list_Retraining <- lapply(Khatri_set_PTB_Others, function(x)
+  evaluateOriginalModel(input = x, useAssay = 1, geneSignaturesName = gene_set_Retraining))
+
+# Use BPPARAM = MulticoreParam(workers = 6, progressbar = T) might cause error, why???
+# Setting AUC.abs = T.
+# Get the absolute value of AUC, do not use max(AUC, 1-AUC)
+out_list_combine_Retraining <- combine_auc(out_list_Retraining, annotationColName = "TBStatus",
+                                           signatureColNames = paste0(gene_set_Retraining, "_OriginalModel"),
+                                           num.boot = 1000, percent = 0.95, AUC.abs = F)
+# out_list_combine_Retraining1 <- combine_auc(out_list_Retraining, annotationColName = "TBStatus",
+#                                             signatureColNames = paste0(gene_set_Retraining, "_OriginalModel"),
+#                                             num.boot = NULL, percent = 0.95, AUC.abs = T)
+
+AUC_OriginalModel_Retraining <- c()
+out_list_combine_join_Retraining <- out_list_combine_Retraining %>%
+  inner_join(Khatri_set_num_24, by=c("GSE" = "GSE"))
+out_list_combine_join_Retraining$Signature <- gsub("_OriginalModel","",
+                                                     out_list_combine_join_Retraining$Signature)
+out_list_Retraining_final1 <- lapply(gene_set_Retraining, function(x){
+  get_weighted_mean(out_list_combine_join_Retraining, x, Khatri_training, num.boot = 10000)
+})
+out_list_Retraining_final <- do.call(rbind, out_list_Retraining_final1) %>% data.frame()
+row.names(out_list_Retraining_final) <- gene_set_Retraining
+out_list_Retraining_final$Method <- "OriginalModel"
+out_list_Retraining_final$Signature <- row.names(out_list_Retraining_final)
+
+View(out_list_Retraining_final)
+
+Original_Khatri_final1 <- rbind(out_list_Retraining_final,out_list_NoRetraining_final)
+Original_Khatri_final <- Original_Khatri_final1[match(ssgsea_Khatri_final$Signature,Original_Khatri_final1$Signature),]
+
+##################### END of PTB vs. Others Analysis
+
+##### Boxplot for Report India ####
+# out_list_combine_all <- rbind(out_list_combine_Retraining,out_list_combine_NoRetraining)
+# out_list_combine_all$Method <- "Original Model"
+# out_list_combine_all$Signature <- gsub("_OriginalModel","",
+#                                        out_list_combine_all$Signature)
+# plage_Khatri_set_PTB_Others_combine$Method <- "PLAGE"
+# ssgsea_Khatri_set_PTB_Others_combine$Method <- "ssGSEA"
+# gsva_Khatri_set_PTB_Others_combine$Method <- "GSVA"
+# zscore_Khatri_set_PTB_Others_combine$Method <- "Zscore"
+# singScore_Khatri_set_PTB_Others_combine$Method <- "Singscore"
+# final_for_boxplot <- rbind(out_list_combine_all %>% dplyr::select(!c("CI upper.97.5%","CI lower.2.5%")),
+#                            plage_Khatri_set_PTB_Others_combine,
+#                            ssgsea_Khatri_set_PTB_Others_combine %>% dplyr::select(!c("CI upper.97.5%","CI lower.2.5%")), gsva_Khatri_set_PTB_Others_combine,
+#                            zscore_Khatri_set_PTB_Others_combine, singScore_Khatri_set_PTB_Others_combine)
+# final_for_boxplot$Method <- factor(final_for_boxplot$Method,
+#                                    levels = c("Original Model", "ssGSEA", "GSVA",
+#                                               "PLAGE","Singscore","Zscore"))
+# ggplot(final_for_boxplot, aes(x=Method, y=AUC)) + geom_boxplot() +
+#   facet_wrap(~Signature, ncol = 5) +
+#   theme(axis.text.x = element_text(angle = 45, vjust = 0.7, size = 12))
+
+#### Boxplot for UNSPLITTED signatures
+ssgsea_Khatri_final2 <- lapply(names(Khatri_signatures), function(x){
+  get_weighted_mean(ssgsea_Khatri, x, Khatri_training, num.boot = 10000,
+                    box_plot = T)
+})
+ssgsea_Khatri_final2_df <- do.call(rbind, ssgsea_Khatri_final2)
+ssgsea_Khatri_final2_df$Method <- "ssGSEA"
+
+gsva_Khatri_final2 <- lapply(names(Khatri_signatures), function(x){
+  get_weighted_mean(gsva_Khatri, x, Khatri_training, num.boot = 10000,
+                    box_plot = T)
+})
+gsva_Khatri_final2_df <- do.call(rbind, gsva_Khatri_final2)
+gsva_Khatri_final2_df$Method <- "GSVA"
+
+plage_Khatri_final2 <- lapply(names(Khatri_signatures), function(x){
+  get_weighted_mean(plage_Khatri, x, Khatri_training, num.boot = 10000,
+                    box_plot = T)
+})
+plage_Khatri_final2_df <- do.call(rbind, plage_Khatri_final2)
+plage_Khatri_final2_df$Method <- "PLAGE"
+
+zscore_Khatri_final2 <- lapply(names(Khatri_signatures), function(x){
+  get_weighted_mean(zscore_Khatri, x, Khatri_training, num.boot = 10000,
+                    box_plot = T)
+})
+zscore_Khatri_final2_df <- do.call(rbind, zscore_Khatri_final2)
+zscore_Khatri_final2_df$Method <- "Zscore"
+
+singscore_Khatri_final2 <- lapply(names(Khatri_signatures), function(x){
+  get_weighted_mean(singScore_Khatri, x, Khatri_training, num.boot = 10000,
+                    box_plot = T)
+})
+singscore_Khatri_final2_df <- do.call(rbind, singscore_Khatri_final2)
+singscore_Khatri_final2_df$Method <- "Singscore"
+
+out_list_Retraining_final2 <- lapply(gene_set_Retraining, function(x){
+  get_weighted_mean(out_list_combine_join_Retraining, x, Khatri_training,
+                    num.boot = 10000, box_plot = T)
+})
+out_list_Retraining_final2_df <- do.call(rbind, out_list_Retraining_final2)
+out_list_Retraining_final2_df$Method <- "Original Model"
+
+out_list_NoRetraining_final2 <- lapply(gene_set_NoRetraining, function(x){
+  get_weighted_mean(out_list_combine_join_NoRetraining, x, Khatri_training,
+                    num.boot = 10000, box_plot = T)
+})
+out_list_NoRetraining_final2_df <- do.call(rbind, out_list_NoRetraining_final2)
+out_list_NoRetraining_final2_df$Method <- "Original Model"
+
+
+summary_for_box_plot <- rbind(ssgsea_Khatri_final2_df, gsva_Khatri_final2_df,
+                              plage_Khatri_final2_df, zscore_Khatri_final2_df,
+                              singscore_Khatri_final2_df, out_list_Retraining_final2_df,
+                              out_list_NoRetraining_final2_df)
+summary_for_box_plot$Method <- factor(summary_for_box_plot$Method,
+                                   levels = c("Original Model", "ssGSEA", "GSVA",
+                                              "PLAGE","Singscore","Zscore"))
+summary_for_box_plot1 <- summary_for_box_plot %>%
+  dplyr::filter(Signature %in% c("Anderson_42","Kaforou_OD_53", "Leong_RISK_29",
+                                 "Sweeney_OD_3","Leong_24", "Zak_RISK_16"))
+ggplot(summary_for_box_plot1,
+       aes(x = Method,y =  weighted_mean)) + geom_boxplot() +
+  theme_bw() + facet_wrap(~Signature, ncol = 3) + ylab("Weighted Mean") +
+  theme(strip.text = element_text(size = 20),
+        axis.text.x = element_text(angle = 45, vjust = 1, hjust = 0.95,
+                                   size = 14, face = "bold"))
+
+##### Boxplot for splited signatures
+ssgsea_Khatri_split_final2 <- lapply(names(signature_split), function(x){
+  get_weighted_mean(ssgsea_Khatri_split, x, Khatri_training_split_list,
+                    num.boot = 10000, box_plot = T)
+})
+ssgsea_Khatri_split_final2_df <- do.call(rbind, ssgsea_Khatri_split_final2)
+ssgsea_Khatri_split_final2_df$Method <- "ssGSEA_up"
+ssgsea_Khatri_split_final2_df$Method[grep("_dn",ssgsea_Khatri_split_final2_df$Signature)] <- "ssGSEA_dn"
+ssgsea_Khatri_split_final2_df$Signature <- gsub("_[^_]+$","", ssgsea_Khatri_split_final2_df$Signature)
+
+gsva_Khatri_split_final2 <- lapply(names(signature_split), function(x){
+  get_weighted_mean(gsva_Khatri_split, x, Khatri_training_split_list,
+                    num.boot = 10000, box_plot = T)
+})
+gsva_Khatri_split_final2_df <- do.call(rbind, gsva_Khatri_split_final2)
+gsva_Khatri_split_final2_df$Method <- "GSVA_up"
+gsva_Khatri_split_final2_df$Method[grep("_dn",gsva_Khatri_split_final2_df$Signature)] <- "GSVA_dn"
+gsva_Khatri_split_final2_df$Signature <- gsub("_[^_]+$","", gsva_Khatri_split_final2_df$Signature)
+
+singScore_Khatri_split_final2 <- lapply(signatures_with_split, function(x){
+  get_weighted_mean(singScore_Khatri_split, x, Khatri_training_split_list,
+                    num.boot = 10000, box_plot = T)
+})
+
+singScore_Khatri_split_final2_df <- do.call(rbind, singScore_Khatri_split_final2)
+singScore_Khatri_split_final2_df$Method <- "Singscore_bi"
+
+summary_for_box_plot_split <- rbind(ssgsea_Khatri_split_final2_df, gsva_Khatri_split_final2_df,
+                                    singScore_Khatri_split_final2_df,
+                                   out_list_Retraining_final2_df, out_list_NoRetraining_final2_df)
+summary_for_box_plot_split$Method <- factor(summary_for_box_plot_split$Method,
+                                      levels = c("Original Model", "ssGSEA_up", "ssGSEA_dn",
+                                                 "GSVA_up","GSVA_dn","Singscore_bi"))
+
+summary_for_box_plot_split1 <- summary_for_box_plot_split %>%
+  dplyr::filter(Signature %in% c("Anderson_42","Kaforou_OD_53","Leong_RISK_29",
+                                 "Leong_24"))
+ggplot(summary_for_box_plot_split1,
+       aes(x = Method,y =  weighted_mean)) + geom_boxplot() +
+  theme_bw() + facet_wrap(~Signature, ncol = 2) + ylab("Weighted Mean") +
+  theme(strip.text = element_text(size = 20),
+        axis.text.x = element_text(angle = 45, vjust = 1, hjust = 0.95,
+                                   size = 14, face = "bold"))
+
+
+##### Check Number of missing genes in in each signature across 24 studies ####
+missing_genes_list <- lapply(1:length(Khatri_set_list), function(j) {
+  missing_genes_one_study <- lapply(1:length(Khatri_signatures), function(i){
+    index_match <- match(Khatri_signatures[[i]], row.names(Khatri_set_list[[j]]))
+    missing_genes <- Khatri_signatures[[i]][is.na(index_match)]
+    if(identical(missing_genes, "character(0)")){
+      missing_genes <- NULL
+    }
+    data.frame(Missing_Gene = paste0(missing_genes, collapse = ","),
+               Signature = names(Khatri_signatures)[i])
+
+  })
+  results_one_study <- data.frame(do.call(rbind, missing_genes_one_study), GSE = names(Khatri_set_list)[j])
+  results_one_study
+})
+missing_genes_result <- do.call(rbind, missing_genes_list)
+missing_genes_summary <- reshape(missing_genes_result, idvar = "Signature", timevar = "GSE", direction = "wide")
+colnames(missing_genes_summary) <- gsub("Missing_Gene.","", colnames(missing_genes_summary))
+View(missing_genes_summary)
+###### Create Weighted Mean table for UNSPLITED signatures ####
+Khatri_OriginalResult <- read_excel("practice/Signature_data_cur.xlsx",
+                                 sheet = "WeightedMean_oldVersion", range = "A9:B29") %>%
+  dplyr::filter(!is.na(Signature))
+
+weighted_mean_summary_unsplited <- Khatri_OriginalResult %>%
+  dplyr::right_join(extract_weighted_mean_CI(Original_Khatri_final,"OriginalModel"), by="Signature") %>%
+  dplyr::right_join(extract_weighted_mean_CI(ssgsea_Khatri_final,"ssGSEA"), by = "Signature") %>%
+  dplyr::right_join(extract_weighted_mean_CI(gsva_Khatri_final,"GSVA"), by = "Signature") %>%
+  dplyr::right_join(extract_weighted_mean_CI(plage_Khatri_final,"PLAGE"), by = "Signature") %>%
+  dplyr::right_join(extract_weighted_mean_CI(zscore_Khatri_final,"Zscore"), by = "Signature") %>%
+  dplyr::right_join(extract_weighted_mean_CI(singScore_Khatri_final,"Singscore"), by = "Signature")
+ggpubr::ggtexttable(weighted_mean_summary_unsplited, rows=NULL)
+###################################### END
+###################################### END
+#### Create Wieghted Mean for SPLIT signatures ####
+weighted_mean_summary_split <- extract_weighted_mean_CI(Original_Khatri_final,"OriginalModel") %>%
+  dplyr::right_join(extract_weighted_mean_CI_split(ssgsea_Khatri_split_final,"ssGSEA"), by = c("Signature"="SignatureAll")) %>%
+  dplyr::right_join(extract_weighted_mean_CI_split(gsva_Khatri_split_final,"GSVA"), by = c("Signature"="SignatureAll")) %>%
+  dplyr::right_join(extract_weighted_mean_CI(singScore_Khatri_split_final,"Singscore"), by = "Signature")
+
+#### Weighted Mean Summary for heatmap and Wilcoxon Test####
+ssgsea_Khatri_split_up <- ssgsea_Khatri_split_final[grep("_up",ssgsea_Khatri_split_final$Signature),]
+ssgsea_Khatri_split_up$Signature <- gsub("_up","",ssgsea_Khatri_split_up$Signature)
+ssgsea_Khatri_split_up$Method <- "ssGSEA_up"
+ssgsea_Khatri_split_dn <- ssgsea_Khatri_split_final[grep("_dn",ssgsea_Khatri_split_final$Signature),]
+ssgsea_Khatri_split_dn$Signature <- gsub("_dn","",ssgsea_Khatri_split_dn$Signature)
+ssgsea_Khatri_split_dn$Method <- "ssGSEA_dn"
+
+gsva_Khatri_split_up <- gsva_Khatri_split_final[grep("_up",gsva_Khatri_split_final$Signature),]
+gsva_Khatri_split_up$Signature <- gsub("_up","",gsva_Khatri_split_up$Signature)
+gsva_Khatri_split_up$Method <- "GSVA_up"
+gsva_Khatri_split_dn <- gsva_Khatri_split_final[grep("_dn",gsva_Khatri_split_final$Signature),]
+gsva_Khatri_split_dn$Signature <- gsub("_dn","",gsva_Khatri_split_dn$Signature)
+gsva_Khatri_split_dn$Method <- "GSVA_dn"
+
+Khatri_OriginalModel <- data.frame(Weighted.Mean = Original_Khatri_final$Weighted.Mean,
+                                   Signature = names(Khatri_signatures),
+                                   Method = "OriginalModel_Khatri",
+                                   abs.Mean = rep(0,19))
+out_list_final <- rbind(out_list_NoRetraining_final,out_list_Retraining_final)
+out_list_final <- out_list_final[match(Khatri_OriginalModel$Signature, out_list_final$Signature),]
+ssgsea_Khatri_final$abs.Mean <- ssgsea_Khatri_final$Weighted.Mean - out_list_final$Weighted.Mean
+gsva_Khatri_final$abs.Mean <- gsva_Khatri_final$Weighted.Mean - out_list_final$Weighted.Mean
+zscore_Khatri_final$abs.Mean <- zscore_Khatri_final$Weighted.Mean - out_list_final$Weighted.Mean
+plage_Khatri_final$abs.Mean <- plage_Khatri_final$Weighted.Mean - out_list_final$Weighted.Mean
+singScore_Khatri_final$abs.Mean <- singScore_Khatri_final$Weighted.Mean - out_list_final$Weighted.Mean
+#assign_Khatri_final$abs.Mean <- assign_Khatri_final$Weighted.Mean - out_list_final$Weighted.Mean
+out_list_final <- rbind(out_list_NoRetraining_final,out_list_Retraining_final)
+out_list_final <- out_list_final[match(Khatri_OriginalModel$Signature, out_list_final$Signature),]
+out_list_final$abs.Mean <- out_list_final$Weighted.Mean - out_list_final$Weighted.Mean
+
+#### Wilcoxon signed rank test (paired) for unsplit signatures ####
+WeightedMean_long_table_wilcoxon_test <- plyr::rbind.fill(ssgsea_Khatri_final,
+                                 gsva_Khatri_final, zscore_Khatri_final,
+                                 plage_Khatri_final, singScore_Khatri_final,
+                                 out_list_final) %>%
+  dplyr::select(Signature, Weighted.Mean, Method)
+
+WeightedMean_wide_table_wilcoxon_test <- reshape(WeightedMean_long_table_wilcoxon_test,
+                                                 idvar = "Signature", timevar = "Method", direction = "wide")
+wilcox_re <- list()
+wilcox_re[[1]] = "aa"
+for(i in 2:(ncol(WeightedMean_wide_table_wilcoxon_test)-1)){
+  wilcox_re[[i]] <-  wilcox.test(WeightedMean_wide_table_wilcoxon_test$Weighted.Mean.OriginalModel,
+              WeightedMean_wide_table_wilcoxon_test[,i], paired = TRUE, exact = FALSE)
+}
+names(wilcox_re) <- c("aa", colnames(WeightedMean_wide_table_wilcoxon_test)[2:i])
+# ssGSEA = 0.09491
+# GSVA = 0.07333
+# Z-score = 0.02299
+# PLAGE = 0.05594
+# SingScore = 0.004011
+
+library(ComplexHeatmap)
+WeightedMean_long_table <- plyr::rbind.fill(ssgsea_Khatri_final,
+                                            gsva_Khatri_final, zscore_Khatri_final,
+                                            plage_Khatri_final, singScore_Khatri_final) %>%
+  dplyr::select(Signature, abs.Mean, Method)
+WeightedMean_wide_table <- reshape(WeightedMean_long_table, idvar = "Signature", timevar = "Method", direction = "wide")
+WeightedMean_wide_table1 <- WeightedMean_wide_table[,-1]
+colnames(WeightedMean_wide_table1) <- gsub("abs.Mean.","",colnames(WeightedMean_wide_table1))
+row.names(WeightedMean_wide_table1) <- WeightedMean_wide_table$Signature
+signature_type <- unlist(lapply(strsplit(WeightedMean_wide_table$Signature, "_"),
+                                function(x) x[2]))
+signature_type[which(!is.na(as.numeric(signature_type)))] <- "Disease"
+# colnames(WeightedMean_wide_table1) <- gsub("abs.Mean.","",colnames(WeightedMean_wide_table1))
+colnames(WeightedMean_wide_table1) <- c("ssGSEA", "GSVA","Zscore*","PLAGE", "SingScore**")
+Heatmap(WeightedMean_wide_table1, na_col = "black",column_names_rot = 45,
+        row_split = signature_type, name = "AUC Difference",
+        row_names_gp = gpar(fontsize = 14),
+        column_names_gp = gpar(fontsize = 14))
+####
+####
+#### Wilcoxon signed rank test (paired) for SPLITED signatures ####
+ssgsea_Khatri_split_up <- ssgsea_Khatri_split_up[match(out_list_final$Signature,ssgsea_Khatri_split_up$Signature),]
+ssgsea_Khatri_split_up$abs.Mean <- ssgsea_Khatri_split_up$Weighted.Mean - out_list_final$Weighted.Mean
+ssgsea_Khatri_split_dn <- ssgsea_Khatri_split_dn[match(out_list_final$Signature,ssgsea_Khatri_split_dn$Signature),]
+ssgsea_Khatri_split_dn$abs.Mean <- ssgsea_Khatri_split_dn$Weighted.Mean - out_list_final$Weighted.Mean
+
+gsva_Khatri_split_up <- gsva_Khatri_split_up[match(out_list_final$Signature,gsva_Khatri_split_up$Signature),]
+gsva_Khatri_split_up$abs.Mean <- gsva_Khatri_split_up$Weighted.Mean - out_list_final$Weighted.Mean
+gsva_Khatri_split_dn <- gsva_Khatri_split_dn[match(out_list_final$Signature,gsva_Khatri_split_dn$Signature),]
+gsva_Khatri_split_dn$abs.Mean <- gsva_Khatri_split_dn$Weighted.Mean - out_list_final$Weighted.Mean
+
+singScore_Khatri_split <- singScore_Khatri_split_final[match(out_list_final$Signature,singScore_Khatri_split_final$Signature),]
+singScore_Khatri_split$Method <- "SingScore"
+singScore_Khatri_split$abs.Mean <- singScore_Khatri_split$Weighted.Mean - out_list_final$Weighted.Mean
+
+## Perform wilcoxon signed rank test
+WeightedMean_long_table_split_wxtest <- plyr::rbind.fill(ssgsea_Khatri_split_up, ssgsea_Khatri_split_dn,
+                                                  gsva_Khatri_split_up, gsva_Khatri_split_dn, singScore_Khatri_split,
+                                                  out_list_final) %>%
+  dplyr::filter(!Signature %in% c("Sweeney_OD_3", "Jacobsen_3",
+                                  "daCosta_OD_3", "Maertzdorf_4",
+                                  "Zak_RISK_16", "Suliman_RISK_4")) %>%
+  dplyr::select(Signature, Weighted.Mean, Method) %>% dplyr::filter(!is.na(Signature))
+WeightedMean_wide_table_split_wxtest <- reshape(WeightedMean_long_table_split_wxtest,
+                                                idvar = "Signature", timevar = "Method", direction = "wide")
+wilcox_re_split <- list()
+wilcox_re_split[[1]] = "aa"
+for(j in 2:(ncol(WeightedMean_wide_table_split_wxtest)-1)){
+  wilcox_re_split[[j]] <-  wilcox.test(WeightedMean_wide_table_split_wxtest$Weighted.Mean.OriginalModel,
+                                       WeightedMean_wide_table_split_wxtest[,j], paired = TRUE, exact = FALSE)
+}
+names(wilcox_re_split) <- c("aa", colnames(WeightedMean_wide_table_split_wxtest)[2:j])
+# ssGSEA_up = 0.1842
+# ssGSEA_dn = 0.02533
+# GSVA_up = 0.108
+# GSVA_dn = 0.2348
+# Singscore = 0.3636
+library(ComplexHeatmap)
+WeightedMean_long_table_split <- plyr::rbind.fill(ssgsea_Khatri_split_up, ssgsea_Khatri_split_dn,
+                                                  gsva_Khatri_split_up, gsva_Khatri_split_dn,
+                                                  singScore_Khatri_split) %>%
+  dplyr::filter(!Signature %in% c("Sweeney_OD_3", "Jacobsen_3",
+                                  "daCosta_OD_3", "Maertzdorf_4",
+                                  "Zak_RISK_16", "Suliman_RISK_4")) %>%
+  dplyr::select(Signature, abs.Mean, Method) %>% dplyr::filter(!is.na(Signature))
+
+WeightedMean_wide_table_split <- reshape(WeightedMean_long_table_split[complete.cases(WeightedMean_long_table_split),],
+                                         idvar = "Signature", timevar = "Method", direction = "wide")
+WeightedMean_wide_table1_split <- WeightedMean_wide_table_split[,-1]
+row.names(WeightedMean_wide_table1_split) <- WeightedMean_wide_table_split$Signature
+signature_type_split <- unlist(lapply(strsplit(WeightedMean_wide_table_split$Signature, "_"),
+                                function(x) x[2]))
+signature_type_split[which(!is.na(as.numeric(signature_type_split)))] <- "Disease"
+# colnames(WeightedMean_wide_table1_split) <- gsub("AUC.","",colnames(WeightedMean_wide_table1_split))
+colnames(WeightedMean_wide_table1_split) <- c("ssGSEA_up", "ssGSEA_dn*", "GSVA_up", "GSVA_dn","SingScore")
+Heatmap(WeightedMean_wide_table1_split, name = "AUC Difference",
+        na_col = "black",column_names_rot = 45,
+        row_split = signature_type_split,
+        row_names_gp = gpar(fontsize = 14),
+        column_names_gp = gpar(fontsize = 14))
+
+#### Heatmap for distribution of AUC ####
+# Heatmap
+out_list_final_all <- plyr::rbind.fill(out_list_combine_NoRetraining,
+                            out_list_combine_Retraining)
+out_list_final_all[out_list_final_all$Signature  == "Berry_OD_86_OriginalModel"
+                   & out_list_final_all$GSE == "GSE84076_Khatri", c(2:5)] <- 0.5
+
+Khatri_training_data <- data.frame(Signature = c(names(Khatri_training), "Sweeney_OD_3",
+                                                 "Sweeney_OD_3"),
+                                   GSE = unlist(Khatri_training))
+Khatri_training_split_data <- data.frame(Signature = names(Khatri_training_split_list),
+                                         GSE = unlist(Khatri_training_split_list))
+# Trained on Original Model
+out_list_final_all_plot <- out_list_final_all
+out_list_final_all_plot$Signature <- gsub("_OriginalModel","",
+                                           out_list_final_all_plot$Signature)
+# Record signature order levels
+out_list_final_all_plot$Signature <- factor(out_list_final_all_plot$Signature,
+                                            levels = gsub("_OriginalModel","",
+                                                          levels(out_list_final_all$Signature)))
+
+#### Modify the order of heatmaps ####
+dat <- cbind(out_list_final_all_plot[,c("Signature","GSE","AUC")])
+data_wide <- tidyr::spread(dat, .data$Signature, .data$AUC)
+row.names(data_wide) <- data_wide$GSE
+dat_input <- as.matrix(data_wide[,-1])
+dat_input[is.na(dat_input)] <- NA
+datasets_order_name <- apply(dat_input, 1,function(x) mean(x,na.rm=T)) %>% sort(decreasing=T) %>% names()
+
+heatmap_auc(out_list_final_all_plot, Khatri_training_data,
+            c(gene_set_Retraining, gene_set_NoRetraining), facet = TRUE, clustering = F,
+              order_increase_avg = TRUE) +
+  ggtitle("AUC Distribution using Original Model")
+
+# Using ssGSEA
+heatmap_auc(ssgsea_Khatri_set_PTB_Others_combine1, Khatri_training_data,
+            c(gene_set_Retraining, gene_set_NoRetraining), facet = TRUE,
+            clustering = F, x_axis_name = datasets_order_name) +
+  ggtitle("AUC Distribution using ssGSEA")
+
+# Using ssGSEA split
+heatmap_auc(ssgsea_Khatri_set_PTB_Others_split_combine, Khatri_training_split_data,
+            c(gene_set_Retraining, gene_set_NoRetraining), facet = TRUE,
+            clustering = F, x_axis_name = datasets_order_name) +
+  ggtitle("AUC Distribution of split signatures using ssGSEA")
+
+# Using PLAGE
+heatmap_auc(plage_Khatri_set_PTB_Others_combine, Khatri_training_data,
+            c(gene_set_Retraining, gene_set_NoRetraining), facet = TRUE,
+            clustering = F, x_axis_name = datasets_order_name) +
+  ggtitle("AUC Distribution of signatures using PLAGE")
+
+# Using GSVA
+heatmap_auc(gsva_Khatri_set_PTB_Others_combine, Khatri_training_data,
+            c(gene_set_Retraining, gene_set_NoRetraining), facet = TRUE,
+            clustering = F, x_axis_name = datasets_order_name) +
+  ggtitle("AUC Distribution of signatures using GSVA")
+
+# Using GSVA split
+heatmap_auc(gsva_Khatri_set_PTB_Others_split_combine, Khatri_training_split_data,
+            c(gene_set_Retraining, gene_set_NoRetraining), facet = TRUE,
+            clustering = F, x_axis_name = datasets_order_name) +
+  ggtitle("AUC Distribution of split signatures using GSVA")
+
+# Using SingScore
+heatmap_auc(singScore_Khatri_set_PTB_Others_combine, Khatri_training_data,
+            c(gene_set_Retraining, gene_set_NoRetraining), facet = TRUE,
+            clustering = F, x_axis_name = datasets_order_name) +
+  ggtitle("AUC Distribution of signatures using Singscore")
+
+# Using SingScore split
+heatmap_auc(singScore_Khatri_set_PTB_Others_split_combine, Khatri_training_data,
+            c(gene_set_Retraining, gene_set_NoRetraining), facet = TRUE,
+            clustering = F, x_axis_name = datasets_order_name) +
+  ggtitle("AUC Distribution of signatures using Singscore Bidirection version")
+
+# Using Zscore
+heatmap_auc(zscore_Khatri_set_PTB_Others_combine, Khatri_training_data,
+            c(gene_set_Retraining, gene_set_NoRetraining), facet = TRUE,
+            clustering = F, x_axis_name = datasets_order_name) +
+  ggtitle("AUC Distribution of signatures using Zscore")
+
+# Using ASSIGN
+#heatmap_auc(assign_Khatri_set_PTB_Others_combine, Khatri_training_data,
+#            c(gene_set_Retraining, gene_set_NoRetraining), facet = TRUE, clustering = F) +
+#  ggtitle("AUC Distribution of split signatures using ASSIGN")
+
+##### Perform pair-wise Spearman rank correlation ####
+compute_rank_correlation <- function(list_method, splitting = FALSE, direction = NULL){
+
+  # Get rank correlation for gene signatures DO NOT need retraining
+  if(splitting){
+    gs_NoRetraining <- intersect(gene_set_NoRetraining,weighted_mean_summary_split$Signature)
+    gs_Retraining <- intersect(gene_set_Retraining,weighted_mean_summary_split$Signature)
+  }
+  else{
+    gs_NoRetraining <- gene_set_NoRetraining
+    gs_Retraining <- gene_set_Retraining
+  }
+
+  result_geneSetNoRetraining1 <- lapply(gs_NoRetraining, function(x){
+
+    if (splitting){
+      re_temp <- mapply(function(SobjectA, SobjectB, colDataNameA, colDataNameB){
+        cor_re <- stats::cor.test(colData(SobjectA)[,colDataNameA], colData(SobjectB)[,colDataNameB],
+                                  method = "spearman")
+        re <- data.frame(rho = cor_re$estimate, p_value = cor_re$p.value,
+                         Signature = colDataNameB)
+        re
+      }, out_list_NoRetraining, list_method,
+      colDataNameA = paste0(x,"_OriginalModel"),
+      colDataNameB = paste0(x,"_",direction), SIMPLIFY = FALSE)
+    }
+    else{
+    re_temp <- mapply(function(SobjectA, SobjectB, colDataNameA, colDataNameB){
+      cor_re <- stats::cor.test(colData(SobjectA)[,colDataNameA], colData(SobjectB)[,colDataNameB],
+                                method = "spearman")
+      re <- data.frame(rho = cor_re$estimate, p_value = cor_re$p.value,
+                       Signature = colDataNameB)
+      re
+    }, out_list_NoRetraining, list_method,
+    colDataNameA = paste0(x,"_OriginalModel"), colDataNameB = x, SIMPLIFY = FALSE)
+    }
+    final <- do.call(rbind, re_temp)
+    final$GSE <- row.names(final)
+    final
+  })
+  result_geneSetNoRetraining <- do.call(rbind,result_geneSetNoRetraining1)
+
+  # Get rank correlation for gene signatures need retraining
+  result_geneSetRetraining1 <- lapply(gs_Retraining, function(x){
+    if(splitting){
+      re_temp1 <- mapply(function(SobjectA, SobjectB, colDataNameA, colDataNameB){
+        cor_re <- stats::cor.test(colData(SobjectA)[,colDataNameA], colData(SobjectB)[,colDataNameB],
+                                  method = "spearman")
+        re <- data.frame(rho = cor_re$estimate, p_value = cor_re$p.value,
+                         Signature = colDataNameB)
+        re
+      }, out_list_Retraining, list_method,
+      colDataNameA = paste0(x,"_OriginalModel"),
+      ## Specific for splitting signature
+      colDataNameB = paste0(x,"_",direction), SIMPLIFY = FALSE)
+      ###### END
+    }else{
+    re_temp1 <- mapply(function(SobjectA, SobjectB, colDataNameA, colDataNameB){
+      cor_re <- stats::cor.test(colData(SobjectA)[,colDataNameA], colData(SobjectB)[,colDataNameB],
+                                method = "spearman")
+      re <- data.frame(rho = cor_re$estimate, p_value = cor_re$p.value,
+                       Signature = colDataNameB)
+      re
+    }, out_list_Retraining, list_method,
+    colDataNameA = paste0(x,"_OriginalModel"), colDataNameB = x, SIMPLIFY = FALSE)
+    }
+    final <- do.call(rbind, re_temp1)
+    final$GSE <- row.names(final)
+    final
+  })
+  result_geneSetRetraining <- do.call(rbind,result_geneSetRetraining1)
+
+  return(data.frame(rbind(result_geneSetNoRetraining,result_geneSetRetraining)))
+
+}
+
+get_rank_final <- function(method_rank_correlation, method_combine, long.table=FALSE){
+  method_combine$Info <- paste0(method_combine$Signature,"_",method_combine$GSE)
+  method_rank_correlation$Info <- paste0(method_rank_correlation$Signature,"_",
+                                         method_rank_correlation$GSE)
+  method_rank_AUC <- out_list_combine %>% dplyr::inner_join(method_combine, by="Info") %>%
+    dplyr::mutate(AUC_diff = round(AUC.y-AUC.x,2)) %>% inner_join(method_rank_correlation, by="Info") %>%
+    dplyr::select(rho,p_value,AUC_diff,GSE,Signature)
+  if(long.table){
+    return(method_rank_AUC)
+  }
+  method_rank_AUC$Summary <- paste0("rho:",round(method_rank_AUC$rho,2),"\n",
+                                    "p.value:",round(method_rank_AUC$p_value,2),"\n",
+                                    "AUC_diff:", round(method_rank_AUC$AUC_diff,2))
+  method_rank_final <- reshape(method_rank_AUC[,c(4:6)], idvar = "GSE",
+                               timevar = "Signature", direction = "wide")
+  colnames(method_rank_final) <- gsub("Summary.","",colnames(method_rank_final))
+  return(method_rank_final)
+
+}
+
+out_list_combine <- rbind(out_list_combine_NoRetraining,out_list_combine_Retraining)
+out_list_combine$Signature <- gsub("_[^_]+$","", out_list_combine$Signature)
+out_list_combine$Info <- paste0(out_list_combine$Signature,"_",out_list_combine$GSE)
+
+
+ssgsea_rank_correlation <- compute_rank_correlation(ssgsea_Khatri_set_PTB_Others)
+ssgsea_rank_AUC_long <- get_rank_final(ssgsea_rank_correlation, ssgsea_Khatri_set_PTB_Others_combine,
+                                    long.table = T)
+
+ssgsea_rank_final <- get_rank_final(ssgsea_rank_correlation, ssgsea_Khatri_set_PTB_Others_combine)
+
+#ssgsea_ht <- as_hux(ssgsea_rank_final, add_colnames = TRUE)
+#escape_contents(ssgsea_ht) <- FALSE
+#ssgsea_ht
+######################## NEXT
+ssgsea_rank_correlation_up <- compute_rank_correlation(ssgsea_Khatri_set_PTB_Others_split,
+                                                          splitting = TRUE, direction = "up") %>%
+  dplyr::mutate(Signature = gsub("_[^_]+$","", .data$Signature))
+ssgsea_split_combine_up <- ssgsea_Khatri_set_PTB_Others_split_combine[grep("up",ssgsea_Khatri_set_PTB_Others_split_combine$Signature),] %>%
+  dplyr::mutate(Signature = gsub("_[^_]+$","", .data$Signature))
+ssgsea_rank_AUC_long_up <- get_rank_final(ssgsea_rank_correlation_up, ssgsea_split_combine_up,
+                                     long.table = T)
+ssgsea_rank_final_up <- get_rank_final(ssgsea_rank_correlation_up, ssgsea_split_combine_up)
+######################## NEXT
+ssgsea_rank_correlation_dn <- compute_rank_correlation(ssgsea_Khatri_set_PTB_Others_split,
+                                                       splitting = TRUE, direction = "dn") %>%
+  dplyr::mutate(Signature = gsub("_[^_]+$","", .data$Signature))
+ssgsea_split_combine_dn <- ssgsea_Khatri_set_PTB_Others_split_combine[grep("dn",ssgsea_Khatri_set_PTB_Others_split_combine$Signature),] %>%
+  dplyr::mutate(Signature = gsub("_[^_]+$","", .data$Signature))
+ssgsea_rank_AUC_long_dn <- get_rank_final(ssgsea_rank_correlation_dn, ssgsea_split_combine_dn,
+                                          long.table = T)
+ssgsea_rank_final_dn <- get_rank_final(ssgsea_rank_correlation_dn, ssgsea_split_combine_dn)
+######################## NEXT
+gsva_rank_correlation <- compute_rank_correlation(gsva_Khatri_set_PTB_Others)
+gsva_rank_AUC_long <- get_rank_final(gsva_rank_correlation, gsva_Khatri_set_PTB_Others_combine,
+                                       long.table = T)
+gsva_rank_final <- get_rank_final(gsva_rank_correlation, gsva_Khatri_set_PTB_Others_combine)
+
+plage_rank_correlation <- compute_rank_correlation(plage_Khatri_set_PTB_Others)
+plage_rank_AUC_long <- get_rank_final(plage_rank_correlation, plage_Khatri_set_PTB_Others_combine,
+                                   long.table = T)
+plage_rank_final <- get_rank_final(plage_rank_correlation, plage_Khatri_set_PTB_Others_combine)
+
+zscore_rank_correlation <- compute_rank_correlation(zscore_Khatri_set_PTB_Others)
+zscore_rank_AUC_long <- get_rank_final(zscore_rank_correlation, zscore_Khatri_set_PTB_Others_combine,
+                                      long.table = T)
+zscore_rank_final <- get_rank_final(zscore_rank_correlation, zscore_Khatri_set_PTB_Others_combine)
+
+singscore_rank_correlation <- compute_rank_correlation(singScore_Khatri_set_PTB_Others)
+singscore_rank_AUC_long <- get_rank_final(singscore_rank_correlation, singScore_Khatri_set_PTB_Others_combine,
+                                       long.table = T)
+
+singscore_rank_final <- get_rank_final(singscore_rank_correlation, singScore_Khatri_set_PTB_Others_combine)
+
+
+#### Overlapping for ridge plot####
+out_list_final_all_ridge <- out_list_final_all
+out_list_final_all_ridge$Signature <- gsub("\\_OriginalModel","",
+                                           out_list_final_all$Signature)
+myColors <- RColorBrewer::brewer.pal(4,"Set1")
+d_Original <- out_list_final_all_ridge %>% dplyr::mutate(type = "Original Model")
+#d_Original <- stats::na.omit(d_Original)
+d_Original_median <- d_Original %>% dplyr::group_by(.data$Signature) %>%
+  dplyr::summarise(AUC = median(AUC)) %>%
+  dplyr::arrange(dplyr::desc(.data$AUC))
+
+# Re-order gene siganture, re-level
+# this step is to let ridge plot ordered based on median value
+d_Original$Signature <- factor(d_Original$Signature,
+                               levels = as.character(d_Original_median$Signature))
+
+d_ssgsea <- ssgsea_Khatri_set_PTB_Others_combine %>% dplyr::mutate(type = "ssGSEA")
+d_ssgsea_median <- d_Original %>% dplyr::group_by(.data$Signature) %>%
+  dplyr::summarise_all(stats::median) %>%
+  dplyr::arrange(dplyr::desc(.data$AUC))
+d_ssgsea$Signature <- factor(d_ssgsea$Signature,
+                             levels = as.character(d_ssgsea_median$Signature))
+
+ssgsea_index_up <- grep("_up", ssgsea_Khatri_set_PTB_Others_split_combine$Signature)
+d_ssgsea_up <- ssgsea_Khatri_set_PTB_Others_split_combine[ssgsea_index_up,] %>%
+  dplyr::mutate(type = "ssGSEA_up")
+d_ssgsea_up$Signature <- as.factor(gsub("_up","",d_ssgsea_up$Signature))
+ssgsea_index_dn <- grep("_dn", ssgsea_Khatri_set_PTB_Others_split_combine$Signature)
+d_ssgsea_dn <- ssgsea_Khatri_set_PTB_Others_split_combine[ssgsea_index_dn,] %>%
+  dplyr::mutate(type = "ssGSEA_dn")
+d_ssgsea_dn$Signature <- as.factor(gsub("_dn","",d_ssgsea_up$Signature))
+
+gsva_index_up <- grep("_up", gsva_Khatri_set_PTB_Others_split_combine$Signature)
+d_gsva_up <- gsva_Khatri_set_PTB_Others_split_combine[gsva_index_up,] %>%
+  dplyr::mutate(type = "GSVA_up")
+d_gsva_up$Signature <- as.factor(gsub("_up","",d_gsva_up$Signature))
+gsva_index_dn <- grep("_dn", gsva_Khatri_set_PTB_Others_split_combine$Signature)
+d_gsva_dn <- gsva_Khatri_set_PTB_Others_split_combine[gsva_index_dn,] %>%
+  dplyr::mutate(type = "GSVA_dn")
+d_gsva_dn$Signature <- as.factor(gsub("_dn","",d_gsva_up$Signature))
+
+d_plage <- plage_Khatri_set_PTB_Others_combine %>% dplyr::mutate(type = "PLAGE")
+d_gsva <- gsva_Khatri_set_PTB_Others_combine %>% dplyr::mutate(type = "GSVA")
+d_singscore <- singScore_Khatri_set_PTB_Others_combine %>% dplyr::mutate(type = "SingScore")
+d_zscore <- zscore_Khatri_set_PTB_Others_combine %>% dplyr::mutate(type = "Zscore")
+d_assign <- assign_Khatri_set_PTB_Others_combine %>% dplyr::mutate(type = "ASSIGN")
+d_all <- plyr::rbind.fill(d_Original, d_ssgsea, d_ssgsea_up, d_plage)
+d_all$type <- factor(d_all$type, levels = c("PLAGE", "ssGSEA", "ssGSEA_up", "Original Model"))
+aucs_result_dat_lines <- data.frame(Signature = d_Original$Signature,x0=0.5)
+
+ggplot(d_all,aes(x=AUC,y=Signature)) +
+  geom_density_ridges(aes(fill=factor(type)), alpha=0.8, scale=1.0) +
+  scale_fill_manual( name = "Methods",values = myColors) + theme_bw()
+
+d_GSEA <- plyr::rbind.fill(d_ssgsea, d_plage, d_gsva, d_singscore,
+                           d_zscore, d_assign, d_Original)
+d_GSEA$Signature <- factor(d_GSEA$Signature,
+                           levels = as.character(levels(d_all$Signature)))
+d_GSEA$type <- factor(d_GSEA$type, levels = unique(d_GSEA$type))
+myColors1 <- RColorBrewer::brewer.pal(7,"Set1")
+ggplot(d_GSEA,aes(x=AUC,y=Signature)) +
+  geom_density_ridges(aes(fill=factor(type)), alpha=0.8, scale = 1.0) +
+  scale_fill_manual( name = "Methods",values = myColors1) + theme_bw()
+
+d_GSEA_split <- plyr::rbind.fill(d_ssgsea_up, d_ssgsea_dn, d_gsva_up, d_gsva_dn,
+                                 d_Original) %>%
+  dplyr::filter(!Signature %in% c("Sweeney_OD_3", "Jacobsen_3", "daCosta_OD_3",
+                                  "Maertzdorf_4", "Zak_RISK_16", "Suliman_RISK_4"))
+d_GSEA_split$Signature <- factor(d_GSEA_split$Signature,
+                           levels = as.character(levels(d_all$Signature)))
+d_GSEA_split$type <- factor(d_GSEA_split$type, levels = unique(d_GSEA_split$type))
+
+myColors3 <- RColorBrewer::brewer.pal(5,"Set1")
+ggplot(d_GSEA_split,aes(x=AUC,y=Signature)) +
+  geom_density_ridges(aes(fill=factor(type)), alpha=0.8, scale = 1.0) +
+  scale_fill_manual( name = "Methods",values = myColors3) + theme_bw()
+
+# Ridgeplot in the paper
+# PLAGE ssGSEA_up Original Model
+d_sub <- plyr::rbind.fill(d_Original, d_ssgsea_up, d_plage) %>%
+  dplyr::filter(!Signature %in% c("Sweeney_OD_3", "Jacobsen_3", "daCosta_OD_3",
+                                  "Maertzdorf_4", "Zak_RISK_16", "Suliman_RISK_4"))
+d_sub$type <- factor(d_sub$type, levels = c("PLAGE", "ssGSEA_up", "Original Model"))
+
+ggplot(d_sub,aes(x=AUC,y=Signature)) +
+  geom_density_ridges(aes(fill=factor(type)), alpha=0.8, scale=1.0) +
+  scale_fill_manual( name = "Methods",values = RColorBrewer::brewer.pal(3,"Set1")) +
+  theme_bw()
+
+# Violin Plot
+ggplot(d_all, aes(x=AUC, y=Signature, fill=type)) +
+  geom_violin()+
+  theme_classic()
+#### Check on individual study ####
+# PTB vs. Control
+Khatri_set_PTB_Control <- lapply(Khatri_set_list, function(x){
+  subset_curatedTBData(x, annotationColName = "TBStatus",
+                       annotationCondition = c("PTB","Control"))
+}) %>% plyr::compact()
+out_list_PTB_Control <- lapply(Khatri_set_PTB_Control[c("GSE19491_Khatri",
+                                                        "GSE42834_Khatri", "GSE74092")],
+                               function(x){
+  evaluate_OriginalModel(input = x, useAssay = 1,
+                         signatures = c("Sweeney_OD_3", "Maertzdorf_4",
+                                        "Berry_OD_86", "Berry_393"),
+                         BPPARAM = MulticoreParam(workers = 6,progressbar = T))
+})
+out_list_PTB_Control_combine <- combine_auc(out_list_PTB_Control, annotationColName = "TBStatus",
+                                           signatureColNames = paste0(c("Sweeney_OD_3", "Maertzdorf_4",
+                                                                        "Berry_OD_86", "Berry_393"),
+                                                                      "_OriginalModel"),
+                                           num.boot = 1000, percent = 0.95)
+ssgsea_Khatri_PTB_Control <- lapply(Khatri_set_PTB_Control[c("GSE19491_Khatri",
+                                                             "GSE42834_Khatri", "GSE74092")],
+                                    function(x){
+                                      TBSignatureProfiler::runTBsigProfiler(
+                                        input = x,
+                                        useAssay = assayNames(x),
+                                        signatures = TBsignatures[c("Sweeney_OD_3", "Maertzdorf_4",
+                                                                    "Berry_OD_86", "Berry_393",
+                                                                    "Maertzdorf_15")],
+                                        algorithm = "ssGSEA",
+                                        combineSigAndAlgorithm = TRUE)
+
+                                    })
+ssgsea_Khatri_PTB_Control_combine <- combine_auc(ssgsea_Khatri_PTB_Control,
+                                                    annotationColName = "TBStatus",
+                                                    signatureColNames = c("Sweeney_OD_3", "Maertzdorf_4",
+                                                                          "Berry_OD_86", "Berry_393",
+                                                                          "Maertzdorf_15"),
+                                                    num.boot = 1000, percent = 0.95, AUC.abs = F)
+View(ssgsea_Khatri_PTB_Control_combine)
+# PTB vs. Latent
+Khatri_set_PTB_Latent <- lapply(Khatri_set_list, function(x){
+  subset_curatedTBData(x, annotationColName = "TBStatus",
+                       annotationCondition = c("PTB","Latent"))
+}) %>% plyr::compact()
+
+out_list_PTB_Latent <- lapply(Khatri_set_PTB_Latent[c("GSE19491_Khatri", "GSE37250",
+                                                      "GSE101705", "GSE39940","GSE94438")],
+                               function(x){
+                                 evaluate_OriginalModel(input = x, useAssay = 1,
+                                                        signatures = c("Sweeney_OD_3", "Leong_24",
+                                                                       "Anderson_42", "Kaforou_27",
+                                                                       "Suliman_RISK_4"),
+                                                        BPPARAM = MulticoreParam(workers = 6,progressbar = T))
+                               })
+out_list_PTB_Latent_combine <- combine_auc(out_list_PTB_Latent, annotationColName = "TBStatus",
+                                            signatureColNames = paste0(c("Sweeney_OD_3", "Leong_24",
+                                                                         "Anderson_42", "Kaforou_27",
+                                                                         "Suliman_RISK_4"),
+                                                                       "_OriginalModel"),
+                                            num.boot = 1000, percent = 0.95, AUC.abs = T)
+View(out_list_PTB_Latent_combine)
+
+ssgsea_Khatri_PTB_Latent <- lapply(Khatri_set_PTB_Latent[c("GSE19491_Khatri", "GSE37250",
+                                                           "GSE101705", "GSE39940","GSE94438")],
+        function(x){
+              TBSignatureProfiler::runTBsigProfiler(
+                        input = x, useAssay = assayNames(x),
+                        signatures = TBsignatures[c("Sweeney_OD_3", "Leong_24",
+                                                    "Anderson_42", "Kaforou_27",
+                                                     "Berry_OD_86", "Berry_393",
+                                                      "Jacobsen_3","Suliman_RISK_4")],
+                        algorithm = "ssGSEA",
+                        combineSigAndAlgorithm = TRUE)
+
+                                    })
+ssgsea_Khatri_PTB_Latent_combine <- combine_auc(ssgsea_Khatri_PTB_Latent,
+                                                 annotationColName = "TBStatus",
+                                                 signatureColNames = c("Sweeney_OD_3", "Leong_24",
+                                                                       "Anderson_42", "Kaforou_27",
+                                                                       "Berry_OD_86", "Berry_393",
+                                                                       "Jacobsen_3","Suliman_RISK_4"),
+                                                 num.boot = 1000, percent = 0.95, AUC.abs = T)
+View(ssgsea_Khatri_PTB_Latent_combine)
+
+# PTB vs. OD
+Khatri_set_PTB_OD <- lapply(Khatri_set_list, function(x){
+  subset_curatedTBData(x, annotationColName = "TBStatus",
+                       annotationCondition = c("PTB","OD"))
+}) %>% plyr::compact()
+
+out_list_PTB_OD <- lapply(Khatri_set_PTB_OD[c("GSE19491_Khatri", "GSE37250",
+                                              "GSE42834_Khatri", "GSE39940")],
+                              function(x){
+                                evaluate_OriginalModel(input = x, useAssay = 1,
+                                                       signatures = c("Sweeney_OD_3", "Kaforou_OD_44",
+                                                                      "Anderson_OD_51", "Kaforou_27", "daCosta_OD_3"),
+                                                       BPPARAM = MulticoreParam(workers = 6,progressbar = T))
+                              })
+out_list_PTB_OD_combine <- combine_auc(out_list_PTB_OD, annotationColName = "TBStatus",
+                                           signatureColNames = paste0(c("Sweeney_OD_3", "Kaforou_OD_44",
+                                                                        "Anderson_OD_51", "Kaforou_27", "daCosta_OD_3"),
+                                                                      "_OriginalModel"),
+                                           num.boot = 100, percent = 0.95, AUC.abs = F)
+View(out_list_PTB_OD_combine)
+
+
+ssgsea_Khatri_PTB_OD <- lapply(Khatri_set_PTB_OD[c("GSE19491_Khatri", "GSE37250",
+                                                   "GSE42834_Khatri", "GSE39940")],
+                                   function(x){
+                                     TBSignatureProfiler::runTBsigProfiler(
+                                       input = x, useAssay = assayNames(x),
+                                       signatures = TBsignatures[c("Sweeney_OD_3", "Kaforou_OD_44",
+                                                                   "Anderson_OD_51", "daCosta_OD_3")],
+                                       algorithm = "ssGSEA",
+                                       combineSigAndAlgorithm = TRUE)
+                                   })
+ssgsea_Khatri_PTB_OD_combine <- combine_auc(ssgsea_Khatri_PTB_OD,
+                                                annotationColName = "TBStatus",
+                                                signatureColNames = c("Sweeney_OD_3", "Kaforou_OD_44",
+                                                "Anderson_OD_51", "Kaforou_27","daCosta_OD_3"),
+                                                num.boot = 100, percent = 0.95, AUC.abs = F)
+View(ssgsea_Khatri_PTB_OD_combine)
+
+# Original Model for Berry_OD_85 and Berry_393
+eval_Original <- function(theObject_train, useAssay = NULL,
+                           annotationColName, signatureName){
+  if(signatureName == "Berry_OD_86" || signatureName == "Berry_393"){
+    if(is.null(useAssay)){useAssay = 1}
+
+    gene_set <- TBsignatures[[signatureName]]
+
+    # Prepare training and testing data
+    dat_list <- ref_combat_train_test(theObject_train, theObject_test = NULL,
+                                      useAssay, gene_set, annotationColName)
+    # Relevel diagnosis_train
+    # Always use PTB as the evaluated level
+    diagnosis_train <- dat_list$diagnosis_train
+    diagnosis_train_unique <- unique(dat_list$diagnosis_train)
+    ref_level <- diagnosis_train_unique[which(diagnosis_train_unique != "PTB")]
+    diagnosis_train <- as.integer(factor(diagnosis_train, levels = c(ref_level,"PTB")))
+
+
+    # Build signature model
+    # Used integer in KNN
+    sig_model <- class::knn(train = dat_list$trainSig, test = dat_list$testSig,
+                            cl= diagnosis_train, k = 10, prob = T)
+    data_model <- list(data_train = theObject_train, OriginalModel = sig_model)
+
+    sample_score_ori <- attributes(sig_model)$prob
+    pred_result <- data.frame(sample_score_ori,sig_model)
+
+    pred_score <- sapply(1:nrow(pred_result), function(i){
+      if(pred_result$sig_model[i] == 2){
+        pred_result$sample_score_ori[i]
+      }else{1-pred_result$sample_score_ori[i]}
+    })
+
+  }
+  if(signatureName == "Jacobsen_3"){
+    if(is.null(useAssay)){useAssay = 1}
+
+    gene_set <- TBsignatures[[signatureName]]
+
+    # Prepare training and testing data
+    dat_list <- ref_combat_train_test(theObject_train, theObject_test = NULL,
+                                      useAssay, gene_set, annotationColName)
+    # Relevel diagnosis_train
+    # Always use PTB as the evaluated level
+    diagnosis_train <- dat_list$diagnosis_train
+    diagnosis_train_unique <- unique(dat_list$diagnosis_train)
+    ref_level <- diagnosis_train_unique[which(diagnosis_train_unique != "PTB")]
+    diagnosis_train <- as.integer(factor(diagnosis_train, levels = c(ref_level,"PTB")))
+
+    # Build signature model
+    sig_model <- MASS::lda(diagnosis_train ~ .,
+                           data.frame(dat_list$trainSig, diagnosis_train))
+    data_model <- list(data_train = theObject_train, OriginalModel = sig_model)
+
+    sample_score <- stats::predict(sig_model,data.frame(dat_list$testSig))
+
+    pred_score <- as.vector(sample_score$posterior[,2])
+
+
+  }
+  message("The in-sample AUC is:")
+  print(ROCit::rocit(pred_score, theObject_train$TBStatus)$AUC)
+  col_info <- colData(theObject_train)
+  col_info$pred_score <- pred_score
+  colnames(col_info)[colnames(col_info) == "pred_score"] <- signatureName
+  colData(theObject_train) <- col_info
+
+  return(theObject_train)
+
+}
+GSE19491_PTB_Latent <- Khatri_set_PTB_Latent$GSE19491_Khatri
+GSE19491_PTB_Latent_re1 <- eval_Original(GSE19491_PTB_Latent,
+            useAssay = NULL,
+            annotationColName = "TBStatus",
+            signatureName = "Berry_OD_86")
+GSE19491_PTB_Latent_re2 <- eval_Original(GSE19491_PTB_Latent,
+                                      useAssay = NULL,
+                                      annotationColName = "TBStatus",
+                                      signatureName = "Berry_393")
+GSE19491_PTB_Latent_re3 <- eval_Original(GSE19491_PTB_Latent,
+                                         useAssay = NULL,
+                                         annotationColName = "TBStatus",
+                                         signatureName = "Jacobsen_3")
+GSE19491_PTB_Latent_final <- combine_auc(list(GSE19491_PTB_Latent_re1, GSE19491_PTB_Latent_re2,GSE19491_PTB_Latent_re3),
+            annotationColName = "TBStatus",
+            signatureColNames = c("Berry_OD_86", "Berry_393", "Jacobsen_3"),
+            num.boot=1000)
+View(GSE19491_PTB_Latent_final)
+
+GSE19491_PTB_Control <- Khatri_set_PTB_Control$GSE19491_Khatri
+GSE19491_PTB_Control_re1 <- eval_Original(GSE19491_PTB_Control,
+                                      useAssay = NULL,
+                                      annotationColName = "TBStatus",
+                                      signatureName = "Berry_OD_86")
+GSE19491_PTB_Control_re2 <- eval_Original(GSE19491_PTB_Control,
+                                    useAssay = NULL,
+                                    annotationColName = "TBStatus",
+                                    signatureName = "Berry_393")
+GSE19491_PTB_Control_final <- combine_auc(list(GSE19491_PTB_Control_re1, GSE19491_PTB_Control_re2),
+                                         annotationColName = "TBStatus",
+                                         signatureColNames = c("Berry_OD_86", "Berry_393"),
+                                         num.boot=1000)
+View(GSE19491_PTB_Control_final)
+
+##### Run Analysis on PTB vs. OD ####
+
+out_list_NoRetraining_PTB_OD <- lapply(Khatri_set_PTB_OD, function(x)
+  evaluate_OriginalModel(input = x, useAssay = 1, signatures = gene_set_NoRetraining,
+                         BPPARAM = MulticoreParam(workers = 6,progressbar = T)))
+
+out_list_combine_NoRetraining_PTB_OD <- combine_auc(out_list_NoRetraining_PTB_OD, annotationColName = "TBStatus",
+                                             signatureColNames = paste0(gene_set_NoRetraining, "_OriginalModel"),
+                                             num.boot = 100, percent = 0.95, AUC.abs = F)
+AUC_OriginalModel_NoRetraining_PTB_OD <- c()
+out_list_combine_join_NoRetraining_PTB_OD <- out_list_combine_NoRetraining_PTB_OD %>%
+  inner_join(Khatri_set_num_24, by=c("GSE" = "GSE"))
+out_list_combine_join_NoRetraining_PTB_OD$Signature <- gsub("_OriginalModel","",
+                                                     out_list_combine_join_NoRetraining_PTB_OD$Signature)
+
+out_list_NoRetraining_final1_PTB_OD <- lapply(gene_set_NoRetraining, function(x){
+  get_weighted_mean(out_list_combine_join_NoRetraining_PTB_OD, x, Khatri_training,
+                    num.boot = 10000)
+})
+out_list_NoRetraining_final_PTB_OD <- do.call(rbind, out_list_NoRetraining_final1_PTB_OD) %>% data.frame()
+row.names(out_list_NoRetraining_final_PTB_OD) <- gene_set_NoRetraining
+out_list_NoRetraining_final_PTB_OD$Method <- "OriginalModel"
+out_list_NoRetraining_final_PTB_OD$Signature <- row.names(out_list_NoRetraining_final_PTB_OD)
+View(out_list_NoRetraining_final_PTB_OD)
+
+#### Run Original Model for gene sets REQUIRED retraining on PTB vs. OD####
+out_list_Retraining_PTB_OD <- lapply(Khatri_set_PTB_OD, function(x)
+  evaluate_OriginalModel(input = x, useAssay = 1, signatures = gene_set_Retraining))
+
+out_list_combine_Retraining_PTB_OD <- combine_auc(out_list_Retraining_PTB_OD, annotationColName = "TBStatus",
+                                           signatureColNames = paste0(gene_set_Retraining, "_OriginalModel"),
+                                           num.boot = NULL, percent = 0.95, AUC.abs = F)
+AUC_OriginalModel_Retraining_PTB_OD <- c()
+out_list_combine_join_Retraining_PTB_OD <- out_list_combine_Retraining_PTB_OD %>%
+  inner_join(Khatri_set_num_24, by=c("GSE" = "GSE"))
+out_list_combine_join_Retraining_PTB_OD$Signature <- gsub("_OriginalModel","",
+                                                          out_list_combine_join_Retraining_PTB_OD$Signature)
+
+out_list_Retraining_final1_PTB_OD <- lapply(gene_set_Retraining, function(x){
+  get_weighted_mean(out_list_combine_join_Retraining_PTB_OD, x, Khatri_training, num.boot = 10000)
+})
+out_list_Retraining_final_PTB_OD <- do.call(rbind, out_list_Retraining_final1_PTB_OD) %>% data.frame()
+row.names(out_list_Retraining_final_PTB_OD) <- gene_set_Retraining
+out_list_Retraining_final_PTB_OD$Method <- "OriginalModel"
+out_list_Retraining_final_PTB_OD$Signature <- row.names(out_list_Retraining_final_PTB_OD)
+View(out_list_Retraining_final_PTB_OD)
+
+##### Run PLAGE on Khatri_set_PTB_OD ####
+plage_Khatri_set_PTB_OD <- lapply(Khatri_set_PTB_OD,
+                                      function(x) TBSignatureProfiler::runTBsigProfiler(
+                                        input = x,
+                                        useAssay = assayNames(x),
+                                        signatures = Khatri_signatures,
+                                        algorithm = "PLAGE",
+                                        combineSigAndAlgorithm = TRUE))
+plage_Khatri_set_PTB_OD_combine <- combine_auc(plage_Khatri_set_PTB_OD,
+                                                   annotationColName = "TBStatus",
+                                                   signatureColNames = names(Khatri_signatures),
+                                                   num.boot = NULL, percent = 0.95)
+plage_Khatri_PTB_OD <- plage_Khatri_set_PTB_OD_combine %>% inner_join(Khatri_set_num_24)
+plage_Khatri_final1_PTB_OD <- lapply(names(Khatri_signatures), function(x){
+  get_weighted_mean(plage_Khatri_PTB_OD, x, Khatri_training, num.boot = 10000)
+})
+plage_Khatri_final_PTB_OD <- do.call(rbind, plage_Khatri_final1_PTB_OD) %>% data.frame()
+row.names(plage_Khatri_final_PTB_OD) <- names(Khatri_signatures)
+plage_Khatri_final_PTB_OD$Method <- "PLAGE"
+plage_Khatri_final_PTB_OD$Signature <- row.names(plage_Khatri_final_PTB_OD)
+View(plage_Khatri_final_PTB_OD)
+#### Run ssGSEA Khatri_set_PTB_OD ####
+ssgsea_Khatri_set_PTB_OD <- lapply(Khatri_set_PTB_OD,
+                                       function(x) TBSignatureProfiler::runTBsigProfiler(
+                                         input = x,
+                                         useAssay = assayNames(x),
+                                         signatures = Khatri_signatures,
+                                         algorithm = "ssGSEA",
+                                         combineSigAndAlgorithm = TRUE))
+ssgsea_Khatri_set_PTB_OD_combine <- combine_auc(ssgsea_Khatri_set_PTB_OD,
+                                                    annotationColName = "TBStatus",
+                                                    signatureColNames = names(Khatri_signatures),
+                                                    num.boot = NULL, percent = 0.95)
+ssgsea_Khatri_PTB_OD <- ssgsea_Khatri_set_PTB_OD_combine %>% inner_join(Khatri_set_num_24)
+ssgsea_Khatri_final1_PTB_OD <- lapply(names(Khatri_signatures), function(x){
+  get_weighted_mean(ssgsea_Khatri_PTB_OD, x, Khatri_training, num.boot = 10000)
+})
+ssgsea_Khatri_final_PTB_OD <- do.call(rbind, ssgsea_Khatri_final1_PTB_OD) %>% data.frame()
+row.names(ssgsea_Khatri_final_PTB_OD) <- names(Khatri_signatures)
+ssgsea_Khatri_final_PTB_OD$Method <- "ssGSEA"
+ssgsea_Khatri_final_PTB_OD$Signature <- row.names(ssgsea_Khatri_final_PTB_OD)
+View(ssgsea_Khatri_final_PTB_OD)
+
+#### Run Splitting signatures ssGSEA on Khatri_set_PTB_OD ####
+signature_split <- readRDS("~/Desktop/signature_split.RDS")
+
+ssgsea_Khatri_set_PTB_OD_split <- lapply(Khatri_set_PTB_OD,
+                                             function(x) TBSignatureProfiler::runTBsigProfiler(
+                                               input = x,
+                                               useAssay = assayNames(x),
+                                               signatures = signature_split,
+                                               algorithm = "ssGSEA",
+                                               combineSigAndAlgorithm = TRUE))
+ssgsea_Khatri_set_PTB_OD_split_combine <- combine_auc(ssgsea_Khatri_set_PTB_OD_split,
+                                                          annotationColName = "TBStatus",
+                                                          signatureColNames = names(signature_split),
+                                                          num.boot = NULL, percent = 0.95)
+
+ssgsea_Khatri_split_PTB_OD <- ssgsea_Khatri_set_PTB_OD_split_combine %>%
+  inner_join(Khatri_set_num_24)
+
+ssgsea_Khatri_split_final1_PTB_OD <- lapply(names(signature_split), function(x){
+  get_weighted_mean(ssgsea_Khatri_split_PTB_OD, x, Khatri_training_split_list, num.boot = 10000)
+})
+ssgsea_Khatri_split_final_PTB_OD <- do.call(rbind, ssgsea_Khatri_split_final1_PTB_OD) %>% data.frame()
+
+row.names(ssgsea_Khatri_split_final_PTB_OD) <- names(signature_split)
+ssgsea_Khatri_split_final_PTB_OD$Signature <- row.names(ssgsea_Khatri_split_final_PTB_OD)
+View(ssgsea_Khatri_split_final_PTB_OD)
+
+#### RUN GSVA ####
+
+gsva_Khatri_set_PTB_OD <- lapply(Khatri_set_PTB_OD,
+                                     function(x) TBSignatureProfiler::runTBsigProfiler(
+                                       input = x,
+                                       useAssay = assayNames(x),
+                                       signatures = Khatri_signatures,
+                                       algorithm = "GSVA",
+                                       combineSigAndAlgorithm = TRUE))
+
+gsva_Khatri_set_PTB_OD_combine <- combine_auc(gsva_Khatri_set_PTB_OD,
+                                                  annotationColName = "TBStatus",
+                                                  signatureColNames = names(Khatri_signatures),
+                                                  num.boot = NULL, percent = 0.95)
+gsva_Khatri_PTB_OD <- gsva_Khatri_set_PTB_OD_combine %>% inner_join(Khatri_set_num_24)
+gsva_Khatri_final1_PTB_OD <- lapply(names(Khatri_signatures), function(x){
+  get_weighted_mean(gsva_Khatri_PTB_OD, x, Khatri_training, num.boot = 10000)
+})
+gsva_Khatri_final_PTB_OD <- do.call(rbind, gsva_Khatri_final1_PTB_OD) %>% data.frame()
+row.names(gsva_Khatri_final_PTB_OD) <- names(Khatri_signatures)
+gsva_Khatri_final_PTB_OD$Method <- "GSVA"
+gsva_Khatri_final_PTB_OD$Signature <- row.names(gsva_Khatri_final_PTB_OD)
+View(gsva_Khatri_final_PTB_OD)
+
+#### Run Splitting signatures GSVA on Khatri_set_PTB_Others ####
+gsva_Khatri_set_PTB_OD_split <- lapply(Khatri_set_PTB_OD,
+                                           function(x) TBSignatureProfiler::runTBsigProfiler(
+                                             input = x,
+                                             useAssay = assayNames(x),
+                                             signatures = signature_split,
+                                             algorithm = "GSVA",
+                                             combineSigAndAlgorithm = TRUE))
+gsva_Khatri_set_PTB_OD_split_combine <- combine_auc(gsva_Khatri_set_PTB_OD_split,
+                                                        annotationColName = "TBStatus",
+                                                        signatureColNames = names(signature_split),
+                                                        num.boot = NULL, percent = 0.95)
+
+gsva_Khatri_split_PTB_OD <- gsva_Khatri_set_PTB_OD_split_combine %>%
+  inner_join(Khatri_set_num_24)
+
+gsva_Khatri_split_final1_PTB_OD <- lapply(names(signature_split), function(x){
+  get_weighted_mean(gsva_Khatri_split_PTB_OD, x, Khatri_training_split_list, num.boot = 100)
+})
+gsva_Khatri_split_final_PTB_OD <- do.call(rbind, gsva_Khatri_split_final1_PTB_OD) %>% data.frame()
+row.names(gsva_Khatri_split_final_PTB_OD) <- names(signature_split)
+gsva_Khatri_split_final_PTB_OD$Signature <- row.names(gsva_Khatri_split_final_PTB_OD)
+View(gsva_Khatri_split_final_PTB_OD)
+
+
+#### Heatmap to display the results ####
+ssgsea_Khatri_split_up_PTB_OD <- ssgsea_Khatri_split_final_PTB_OD[grep("_up",ssgsea_Khatri_split_final_PTB_OD$Signature),]
+ssgsea_Khatri_split_up_PTB_OD$Signature <- gsub("_up","",ssgsea_Khatri_split_up_PTB_OD$Signature)
+ssgsea_Khatri_split_up_PTB_OD$Method <- "ssGSEA_up"
+ssgsea_Khatri_split_dn_PTB_OD <- ssgsea_Khatri_split_final_PTB_OD[grep("_dn",ssgsea_Khatri_split_final_PTB_OD$Signature),]
+ssgsea_Khatri_split_dn_PTB_OD$Signature <- gsub("_dn","",ssgsea_Khatri_split_dn_PTB_OD$Signature)
+ssgsea_Khatri_split_dn_PTB_OD$Method <- "ssGSEA_dn"
+
+gsva_Khatri_split_up_PTB_OD <- gsva_Khatri_split_final_PTB_OD[grep("_up",gsva_Khatri_split_final_PTB_OD$Signature),]
+gsva_Khatri_split_up_PTB_OD$Signature <- gsub("_up","",gsva_Khatri_split_up_PTB_OD$Signature)
+gsva_Khatri_split_up_PTB_OD$Method <- "GSVA_up"
+gsva_Khatri_split_dn_PTB_OD <- gsva_Khatri_split_final_PTB_OD[grep("_dn",gsva_Khatri_split_final_PTB_OD$Signature),]
+gsva_Khatri_split_dn_PTB_OD$Signature <- gsub("_dn","",gsva_Khatri_split_dn_PTB_OD$Signature)
+gsva_Khatri_split_dn_PTB_OD$Method <- "GSVA_dn"
+
+WeightedMean_long_table_PTB_OD <- plyr::rbind.fill(out_list_NoRetraining_final_PTB_OD,
+                                                   out_list_Retraining_final_PTB_OD,
+                                                   ssgsea_Khatri_split_up_PTB_OD,
+                                                   ssgsea_Khatri_split_dn_PTB_OD,
+                                                   gsva_Khatri_split_up_PTB_OD,
+                                                   gsva_Khatri_split_dn_PTB_OD,
+                                                   plage_Khatri_final_PTB_OD,
+                                                   ssgsea_Khatri_final_PTB_OD,
+                                                   gsva_Khatri_final_PTB_OD) %>%
+  dplyr::filter(!Signature %in% c("Sweeney_OD_3", "Jacobsen_3",
+                                  "daCosta_OD_3", "Maertzdorf_4",
+                                  "Zak_RISK_16", "Suliman_RISK_4")) %>%
+  dplyr::select(Signature, Weighted.Mean, Method)
+colnames(WeightedMean_long_table_PTB_OD) <- c("Signature", "AUC","GSE")
+heatmap_auc(WeightedMean_long_table_PTB_OD, GSE_sig = NULL, names(Khatri_signatures)) +
+  ggtitle("Weighted Mean for ATB vs. Other Diseases")
+
+#### Add p-value for comaprison ####
+# Anderson_OD_51 original model vs. ssGSEA/GSVA/PALGE/Zscore/Singscore
+compute_pvalue <- function(df1, df2, signatureName, split = FALSE, direction = NULL,
+                           singScore=FALSE, OriginalModel=FALSE) {
+  if (split) {
+    df1Sig <- df1 %>% dplyr::filter(Signature == paste0(signatureName,"_",direction))
+  } else {
+    df1Sig <- df1 %>% dplyr::filter(Signature == paste0(signatureName,"_OriginalModel"))
+  }
+  if(singScore) {
+    df1Sig <- df1 %>% dplyr::filter(Signature == paste0(signatureName))
+  }
+  if(OriginalModel) {
+    df2Sig <- df2 %>% dplyr::filter(Signature == paste0(signatureName,"_OriginalModel"))
+  } else {
+    df2Sig <- df2 %>% dplyr::filter(Signature == paste0(signatureName))
+  }
+
+  dfFinal <- df1Sig %>% inner_join(df2Sig, by = c("GSE" = "GSE"))
+  ans <- wilcox.test(dfFinal$AUC.x, dfFinal$AUC.y, paired = TRUE, exact = FALSE)
+  return(ans)
+}
+
+compute_pvalue(out_list_combine_join_NoRetraining, ssgsea_Khatri, "Anderson_OD_51")
+compute_pvalue(out_list_combine_join_NoRetraining, gsva_Khatri, "Anderson_OD_51")
+compute_pvalue(out_list_combine_join_NoRetraining, plage_Khatri, "Anderson_OD_51")
+compute_pvalue(out_list_combine_join_NoRetraining, zscore_Khatri, "Anderson_OD_51")
+compute_pvalue(out_list_combine_join_NoRetraining, singScore_Khatri, "Anderson_OD_51")
+
+# Berry_393 original model vs. ssGSEA/GSVA/PALGE/Zscore/Singscore/ssGSEA_up
+compute_pvalue(df1 = out_list_combine_join_Retraining, df2 = ssgsea_Khatri,
+               signatureName = "Berry_393")
+compute_pvalue(out_list_combine_join_Retraining, gsva_Khatri, "Berry_393")
+compute_pvalue(out_list_combine_join_Retraining, plage_Khatri, "Berry_393")
+compute_pvalue(out_list_combine_join_Retraining, zscore_Khatri, "Berry_393")
+compute_pvalue(out_list_combine_join_Retraining, singScore_Khatri, "Berry_393")
+compute_pvalue(df1 = singScore_Khatri_split, df2 = singScore_Khatri,
+               signatureName = "Berry_393", singScore = TRUE)
+compute_pvalue(ssgsea_Khatri_split, out_list_combine_join_Retraining,
+               signatureName = "Berry_393",split = TRUE, direction = "up",OriginalModel = TRUE)
+
+# Jacobsen_3 original model vs. ssGSEA/GSVA/PALGE/Zscore/Singscore
+compute_pvalue(df1 = out_list_combine_join_Retraining, df2 = ssgsea_Khatri,
+               signatureName = "Jacobsen_3")
+compute_pvalue(out_list_combine_join_Retraining, gsva_Khatri, "Jacobsen_3")
+compute_pvalue(out_list_combine_join_Retraining, plage_Khatri, "Jacobsen_3")
+compute_pvalue(out_list_combine_join_Retraining, zscore_Khatri, "Jacobsen_3")
+compute_pvalue(out_list_combine_join_Retraining, singScore_Khatri, "Jacobsen_3")
+
+# Leong_RISK_29 ssGSEA vs ssGSEA_up
+compute_pvalue(df1 = ssgsea_Khatri_split, df2 = ssgsea_Khatri,
+               signatureName = "Leong_RISK_29", split = TRUE, direction = "up")
+compute_pvalue(df1 = ssgsea_Khatri_split, df2 = gsva_Khatri,
+               signatureName = "Leong_RISK_29", split = TRUE, direction = "up")
+# Leong_RISK_29 singScore vs. singScore_split
+compute_pvalue(df1 = singScore_Khatri_split, df2 = singScore_Khatri,
+               signatureName = "Leong_RISK_29", singScore = TRUE)
+
+# Anderson_42 ssGSEA vs. ssGSEA_up
+compute_pvalue(df1 = ssgsea_Khatri_split, df2 = ssgsea_Khatri,
+               signatureName = "Anderson_42", split = TRUE, direction = "up")
+compute_pvalue(df1 = gsva_Khatri_split, df2 = gsva_Khatri,
+               signatureName = "Anderson_42", split = TRUE, direction = "up")
+
+# Kaforou_OD_44 ssGSEA vs. ssGSEA_up
+compute_pvalue(df1 = ssgsea_Khatri_split, df2 = ssgsea_Khatri,
+               signatureName = "Kaforou_OD_44", split = TRUE, direction = "up")
+compute_pvalue(df1 = gsva_Khatri_split, df2 = gsva_Khatri,
+               signatureName = "Kaforou_OD_44", split = TRUE, direction = "up")
+
+# Kaforou_OD_44 original model vs. ssGSEA_up/PLAGE
+compute_pvalue(out_list_combine_join_NoRetraining, plage_Khatri, "Kaforou_OD_44")
+compute_pvalue(ssgsea_Khatri_split, out_list_combine_join_NoRetraining,
+               signatureName = "Kaforou_OD_44",split = TRUE, direction = "up",OriginalModel = TRUE)
+
+# Kaforou_OD_53 original model vs. ssGSEA_up/PLAGE
+compute_pvalue(out_list_combine_join_NoRetraining, plage_Khatri, "Kaforou_OD_53")
+compute_pvalue(ssgsea_Khatri_split, out_list_combine_join_NoRetraining,
+               signatureName = "Kaforou_OD_53",split = TRUE, direction = "up",OriginalModel = TRUE)
+
+
+# Berry_OD_86 ssGSEA vs. ssGSEA_up
+compute_pvalue(df1 = ssgsea_Khatri_split, df2 = ssgsea_Khatri,
+               signatureName = "Berry_OD_86", split = TRUE, direction = "up")
+compute_pvalue(df1 = gsva_Khatri_split, df2 = gsva_Khatri,
+               signatureName = "Berry_OD_86", split = TRUE, direction = "up")
+# Berry_OD_86 singScore vs. singScore_split
+compute_pvalue(df1 = singScore_Khatri_split, df2 = singScore_Khatri,
+               signatureName = "Berry_OD_86", singScore = TRUE)
+
+# Maertzdorf_15 ssGSEA_up vs. ssGSEA_dn
+df1Sig <- gsva_Khatri_split %>% dplyr::filter(Signature == paste0("Maertzdorf_15_up"))
+df2Sig <- gsva_Khatri_split %>% dplyr::filter(Signature == paste0("Maertzdorf_15_dn"))
+wilcox.test(df1Sig$AUC, df2Sig$AUC, paired = TRUE, exact = FALSE)
+
+# Bloom_OD_144 singScore vs. singScore_split
+compute_pvalue(df1 = singScore_Khatri_split, df2 = singScore_Khatri,
+               signatureName = "Bloom_OD_144", singScore = TRUE)
+
+# Bloom_OD_144 original model vs. ssGSEA_up/PLAGE
+compute_pvalue(out_list_combine_join_Retraining, plage_Khatri, "Bloom_OD_144")
+compute_pvalue(ssgsea_Khatri_split, out_list_combine_join_Retraining,
+               signatureName = "Bloom_OD_144",split = TRUE, direction = "up",OriginalModel = TRUE)
+
+# Leong_24 singScore vs. singScore_split
+compute_pvalue(df1 = singScore_Khatri_split, df2 = singScore_Khatri,
+               signatureName = "Berry_393", singScore = TRUE)

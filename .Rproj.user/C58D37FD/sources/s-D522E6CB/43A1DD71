@@ -1,0 +1,25 @@
+{
+    "collab_server" : "",
+    "contents" : "",
+    "created" : 1620506391249.000,
+    "dirty" : false,
+    "encoding" : "UTF-8",
+    "folds" : "",
+    "hash" : "0",
+    "id" : "43A1DD71",
+    "lastKnownWriteTime" : 1620499615,
+    "last_content_update" : 1620499615,
+    "path" : "~/Desktop/test_deleteLater.R",
+    "project_path" : null,
+    "properties" : {
+        "cursorPosition" : "20,60",
+        "scrollLine" : "15"
+    },
+    "read_only" : false,
+    "read_only_alternatives" : [
+    ],
+    "relative_order" : 9,
+    "source_on_save" : false,
+    "source_window" : "",
+    "type" : "r_source"
+}

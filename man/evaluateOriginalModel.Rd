@@ -36,8 +36,8 @@ obtained from the signature's original model.
 TB signatures with available original models are: Anderson_42,
 Anderson_OD_51, Kaforou_27, Kaforou_OD_44, Kaforou_OD_53, Sweeney_OD_3,
 Maertzdorf_4, Verhagen_10, Jacobsen_3, Sambarey_HIV_10, Leong_24,
-Berry_OD_86,
-Berry_393, Bloom_OD_144, Suliman_RISK_4, Zak_RISK_16, and Leong_RISK_29.
+Berry_OD_86, Berry_393, Bloom_OD_144, Suliman_RISK_4, Zak_RISK_16,
+Leong_RISK_29, and Zhao_NANO_6.
 The predicted score for each signature has been stored in the column data
 section of the input SummarizedExperiment study.
 }
