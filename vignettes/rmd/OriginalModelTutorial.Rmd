@@ -21,7 +21,7 @@ editor_options:
 This document provides some examples, which helps you to evaluate certain signature's performance using its original models. Currently, the package has incoporated the original methods for the following gene signatures. The specifc genes within each biomarker can be found at `TBsignatures`. Users should choose signatures from the below list when using the original model feature.
 
 ```{r}
-# signatureOriginalModel <- c("Anderson_42", "Anderson_OD_51", "Kaforou_27",
+signatureOriginalModel <- c("Anderson_42", "Anderson_OD_51", "Kaforou_27",
                             "Kaforou_OD_44", "Kaforou_OD_53", "Sweeney_OD_3",
                             "Maertzdorf_4", "Maertzdorf_15", "LauxdaCosta_OD_3",
                             "Verhagen_10", "Jacobsen_3", "Sambarey_HIV_10",
