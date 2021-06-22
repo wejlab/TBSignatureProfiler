@@ -12,7 +12,8 @@ ObtainSampleScore_OriginalModel(
   SigName,
   obtainDiagnosis,
   annotationColName,
-  FUN
+  FUN,
+  adj
 )
 }
 \arguments{
@@ -37,6 +38,9 @@ in the test data. The default is an empty string.}
 Only used when creating training data. Default is NULL.}
 
 \item{FUN}{A character string specifying the function name of the corresponding signature's original model.}
+
+\item{adj}{A small real number used in combat to solve for genes with 0 counts in rare cases.
+Do not required for most of cases.}
 }
 \value{
 The predicted score for each sample in the test study using corresponding gene signature's original model.

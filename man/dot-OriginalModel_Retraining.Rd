@@ -4,7 +4,7 @@
 \alias{.OriginalModel_Retraining}
 \title{TB gene signatures require retraining}
 \usage{
-.OriginalModel_Retraining(input, useAssay, geneSignaturesName, BPPARAM)
+.OriginalModel_Retraining(input, useAssay, geneSignaturesName, adj, BPPARAM)
 }
 \arguments{
 \item{input}{A SummarizedExperiment object with gene symbols as the assay row
@@ -19,6 +19,8 @@ first assay in the \code{input}.}
 of interest.
 Default is \code{NULL}. If geneSignaturesName is \code{NULL}, run all
 available gene signatures' original model in the package.}
+
+\item{adj}{A small real number used in combat to solve for genes with 0 counts in rare cases.}
 
 \item{BPPARAM}{An instance inherited from \code{bplappy}.
 See \code{\link[BiocParallel]{bplapply}} for details.}
