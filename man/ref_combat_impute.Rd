@@ -10,7 +10,6 @@ ref_combat_impute(
   gene_set,
   input,
   SigName = "",
-  adj,
   geneMax = 0.8
 )
 }
@@ -29,9 +28,6 @@ in the test SummarizedExperiment object.}
 \item{SigName}{Optional. A character string that indicates the name for \code{gene_set}.
 \code{SigName} is used to provide information when gene signatures were missing
 in the test data. The default is an empty string.}
-
-\item{adj}{A small real number used in combat to solve for genes with 0 counts in rare cases.
-Do not required for most of cases.}
 
 \item{geneMax}{A real number between 0 and 1. This is used to detect the
 maximum percent missing genes allowed in the evaluated signatures.
