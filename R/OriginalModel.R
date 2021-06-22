@@ -21,7 +21,6 @@ globalVariables(c("TBsignaturesSplit", "OriginalTrainingData", "TBsignatures"))
 #' Default is \code{NULL}. If geneSignaturesName is \code{NULL}, run all
 #' available gene signatures' original model in the package.
 #' @param adj A small real number used in combat to solve for genes with 0 counts in rare cases.
-#' Do not required for most of cases.
 #' @param BPPARAM An instance inherited from \code{bplappy}.
 #' See \code{\link[BiocParallel]{bplapply}} for details.
 #'
@@ -419,7 +418,7 @@ subsetGeneSet <- function(theObject, gene_set, useAssay = 1,
 #' \code{SigName} is used to provide information when gene signatures were missing
 #' in the test data. The default is an empty string.
 #' @param adj A small real number used in combat to solve for genes with 0 counts in rare cases.
-#' Do not required for most of cases.
+#' Not required for most of cases.
 #' @param geneMax A real number between 0 and 1. This is used to detect the
 #' maximum percent missing genes allowed in the evaluated signatures.
 #' See \code{\link[impute]{impute.knn}} for details. The default value is 0.8.

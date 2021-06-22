@@ -32,7 +32,8 @@ signatureOriginalModel <- c("Anderson_42", "Anderson_OD_51", "Kaforou_27",
 ```
 
 # Evaluation
-In this tutorial, we will work with HIV and Tuberculosis (TB) gene expression data in a `SummarizedExperiment` format. First of all, we are going to evaluate the performance of all available TB gene signatures whose original models have been included in the package. 
+In this tutorial, we will work with HIV and Tuberculosis (TB) gene expression data in a `SummarizedExperiment` format. First of all, we evaluate the performance of all available TB gene signatures whose original models have been included in the package. 
+
 ```{r, message=FALSE}
 ## HIV/TB gene expression data, included in the package
 hivtb_data <- TB_hiv
@@ -40,6 +41,7 @@ out <- evaluateOriginalModel(input = hivtb_data, useAssay = "counts")
 ```
 
 Users can also evaluate selected gene signatures based on their preference.
+
 ```{r, message=FALSE}
 outSub <- evaluateOriginalModel(input = hivtb_data, useAssay = "counts",
                                 geneSignaturesName = c("Anderson_42",

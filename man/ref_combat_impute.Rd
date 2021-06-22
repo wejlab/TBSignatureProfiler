@@ -31,7 +31,7 @@ in the test SummarizedExperiment object.}
 in the test data. The default is an empty string.}
 
 \item{adj}{A small real number used in combat to solve for genes with 0 counts in rare cases.
-Do not required for most of cases.}
+Not required for most of cases.}
 
 \item{geneMax}{A real number between 0 and 1. This is used to detect the
 maximum percent missing genes allowed in the evaluated signatures.

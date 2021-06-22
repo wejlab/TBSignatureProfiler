@@ -20,8 +20,7 @@ of interest.
 Default is \code{NULL}. If geneSignaturesName is \code{NULL}, run all
 available gene signatures' original model in the package.}
 
-\item{adj}{A small real number used in combat to solve for genes with 0 counts in rare cases.
-Do not required for most of cases.}
+\item{adj}{A small real number used in combat to solve for genes with 0 counts in rare cases.}
 
 \item{BPPARAM}{An instance inherited from \code{bplappy}.
 See \code{\link[BiocParallel]{bplapply}} for details.}
