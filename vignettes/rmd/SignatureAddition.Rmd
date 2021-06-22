@@ -101,7 +101,7 @@ kable(info)
 
 # Updating the data objects
   
-  To streamline the process of adding signatures, we have introduced the addTBsignature() function to the package. To use the function, users must access the function by calling the unexported function, `TbSignatureProfiler:::addTBsignature()`. This function will take as input the various pieces of information listed previously, as well as a few other parameters. It will easily update the package's `TBsignatures` and `TBcommon` signature lists, as well as the `sigAnnotData` and `commonAnnotData` annotation data tables. After doing so, we will just need to update the documentation for the signature objects and pull in the updates to the repository, and the addition of the signature will be complete. But first, we need to ensure that the data objects can be updated correctly.
+  To streamline the process of adding signatures, we have introduced the addTBsignature() function to the package. To use the function, users must access the function by calling the unexported function, `TBSignatureProfiler:::addTBsignature()`. This function will take as input the various pieces of information listed previously, as well as a few other parameters. It will easily update the package's `TBsignatures` and `TBcommon` signature lists, as well as the `sigAnnotData` and `commonAnnotData` annotation data tables. After doing so, we will just need to update the documentation for the signature objects and pull in the updates to the repository, and the addition of the signature will be complete. But first, we need to ensure that the data objects can be updated correctly.
   
   From the code below, you should be able to pretty clearly see what needs to be inputted based on the table created above, but if this is unclear, please run `?TBSignatureProfiler:::addTBsignature` for more details on the paramaters. 
   
@@ -112,8 +112,10 @@ kable(info)
 We will run the function using the information gathered from the Laux da Costa publication (note that spaces should be omitted from the author name):
   
 ```{r try function}
+# Append a 2 since the signature is already in the package
+# This is merely for testing
 addTBsignature(sigsymbols = c("GBP5", "CD64", "GZMA"),
-             authname = "LauxdaCosta",
+             authname = "LauxdaCosta2", 
              sigtype = "Disease/Other Diseases",
              tissuetype = "whole blood",
              signame_common = NULL,
@@ -129,7 +131,7 @@ addTBsignature(sigsymbols = c("GBP5", "CD64", "GZMA"),
 
 ```{r saveobjs true, eval = FALSE}
 addTBsignature(sigsymbols = c("GBP5", "CD64", "GZMA"),
-             authname = "LauxdaCosta",
+             authname = "LauxdaCosta2",
              signame_common = NULL,
              sigtype = "Disease/Other Diseases",
              tissuetype = "whole blood",
@@ -155,7 +157,7 @@ mkTBreference <- function(TBsigname, ref, DOInum) {
       " \\href{http://dx.doi.org/", DOInum, "}{", DOInum, "}}", sep = "")
 }
 
-mkTBreference(TBsigname = "LauxdaCosta_OD_3", # The name output in a message from addTBsignature()
+mkTBreference(TBsigname = "LauxdaCosta2_OD_3", # The name output in a message from addTBsignature()
               ref = "Laux da Costa L, Delcroix M, Dalla Costa ER, et al. A real-time PCR signature to discriminate between tuberculosis and other pulmonary diseases. Tuberculosis (Edinb). 2015;95(4):421-425.",
               DOInum = "10.1016/j.tube.2015.04.008")
 
@@ -164,6 +166,8 @@ mkTBreference(TBsigname = "LauxdaCosta_OD_3", # The name output in a message fro
   In the case that an alternative publication signature name exists, `mkTBreference` will need to be rerun with the alternative name as the `TBsigname` argument, for use with the `TBcommon` documentation table. Otherwise, the package assigned signature name can be used for both `TBcommon` and `TBsignatures` entries.
 
  Once you have you have the requisite entries, open up data/data.R. First, find the table for `TBsignatures`, and insert the entry (with the #' at the beginning like all other entries) at the appropriate position. All signatures should have the same position in the table as they do when you look at ordering of the names of the TBsignatures object (`names(TBsignatures)`). Once this is complete, do the same to the `TBcommon` table, which should be a little further down on the page. 
+ 
+Please make sure to compile the documentation by running `devtools::document()` upon completion of your documentation edits.
 
   
 # Pull in your changes to the repository
