@@ -2,6 +2,7 @@
 ^docs$
 ^pkgdown$
 ^vignettes/rmd
+^news
 ^index.md$
 ^\.git$
 ^Meta$

@@ -1,0 +1,16 @@
+citHeader("To cite the TBSignatureProfiler package in publications, use:")
+
+citEntry(
+  entry    = "Article",
+  title    = "Comparing tuberculosis gene signatures in malnourished individuals using the TBSignatureProfiler",
+  author   = "Johnson, W. Evan and Odom, Aubrey and Cintron, Chelsie and Muthaiah, Mutharaj and Knudsen, Selby and Joseph, Noyal and Babu, Senbagavalli and Lakshminarayanan, Subitha and Jenkins, David F. and Zhao, Yue and Nankya, Ethel and Horsburgh, C. Robert and Roy, Gautam and Ellner, Jerrold and Sarkar, Sonali and Salgame, Padmini and Hochberg, Natasha S.",
+  journal  = "BMC Infectious Diseases",
+  year     = "2021",
+  volume   = "21",
+  number   = "1",
+  pages    = "106",
+  url      = "https://bmcinfectdis.biomedcentral.com/articles/10.1186/s12879-020-05598-z",
+  textVersion = paste(
+
+  )
+)
