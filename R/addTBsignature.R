@@ -105,6 +105,10 @@ addTBsignature <- function(sigsymbols, authname,
     stop(paste("Resulting signature name is too long.",
                "Please shorten or abbreviate authname to", howmanyletters,
                "characters."))
+  } else if(signame_TBSP %in% names(TBsignatures)) {
+    stop(paste("There is already a signature with that name.",
+               "Please alter the authname to distinguish it from the previous",
+               "signature."))
   } else message(paste("The assigned signature name is", signame_TBSP))
 
   if (is.null(signame_common)) {
