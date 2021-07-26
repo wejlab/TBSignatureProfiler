@@ -11,9 +11,12 @@ reference:
   - compareAlgs
   - mkAssay
   - TBsignatures
-  - sigAnnotData
   - TBcommon
+  - sigAnnotData
   - common_sigAnnotData
+  - COVIDsignatures
+  - addTBsignature
+  - TBsignaturesSplit
 - title: "Plotting Profiled Signatures"
   desc: Functions to plot profiled RNA-seq data and compare signatures.
   contents:
@@ -42,6 +45,23 @@ reference:
   contents: 
   - TB_hiv
   - TB_indian
+  - OriginalTrainingData
+- title: "Original Models"
+  desc: A collection of functions for the use of evaluating certain signatures' performance using their original models.
+  contents: 
+  - .OriginalModel_NoRetraining
+  - .OriginalModel_Retraining
+  - ObtainSampleScore_OriginalModel
+  - evaluateOriginalModel
+  - BerryOriginalModel
+  - ZhaoOriginalModel 
+  - SulimanOriginalModel
+  - LeongOriginalModel
+  - Bloom_Zak_OriginalModel
+  - Jacobsen_Sambarey_OriginalModel
+  - Maertzdorf_Verhagen_daCosta_OriginalModel
+  - subsetGeneSet
+  - ref_combat_impute
   
 navbar:
   title: "TBSignatureProfiler"
@@ -50,13 +70,15 @@ navbar:
       href: index.html
     - text: "Command Line Analysis"
       href: articles/rmd/TBSig_Vignette.html
+    - text: "Original Models"
+      href: articles/rmd/OriginalModelTutorial.RMD
     - text: "Interactive Shiny Analysis"
       href: articles/rmd/shinytutorial.html
     - text: "Adding Signatures to the Profiler"
       href: articles/rmd/SignatureAddition.html
     - text: "Reference"
       href: reference/index.html
-    - news: "News"
+    - text: "News"
       href: news/index.html
   right:
     - icon: fa-github

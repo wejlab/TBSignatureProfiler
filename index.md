@@ -19,7 +19,7 @@ The TBSignatureProfiler requires R 4.0 and Bioconductor 3.10.
 
 * Install the development version of the package from Github 
 
-``` r
+``` 
 if (!requireNamespace("devtools", quietly = TRUE))
   install.packages("devtools")
 devtools::install_github("compbiomed/TBSignatureProfiler")
@@ -27,7 +27,7 @@ devtools::install_github("compbiomed/TBSignatureProfiler")
 
 * Install the release version of the package from Bioconductor
 
-``` r
+``` 
 if (!requireNamespace("BiocManager", quietly = TRUE))
   install.packages("BiocManager")
 BiocManager::install("TBSignatureProfiler")
@@ -35,7 +35,7 @@ BiocManager::install("TBSignatureProfiler")
 ```
 ## Run TBSignatureProfiler shiny app
 
-``` r
+``` 
 library(TBSignatureProfiler)
 TBSPapp()
 ```
