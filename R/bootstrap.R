@@ -68,7 +68,7 @@ bootstrapAUC <- function(SE_scored, annotationColName, signatureColNames,
     aucs[which.sig] <- max(auc, 1 - auc)
 
     # Proceed with bootstrapping
-    for (j in 1:num.boot) {
+    for (j in seq_len(num.boot)) {
       index <- sample(seq_along(score), replace = TRUE)
       tmp_score <- score[index]
       tmp_annotationData <- annotationData[index]
