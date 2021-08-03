@@ -2,7 +2,7 @@
 % Please edit documentation in R/addTBsignature.R
 \name{addTBsignature}
 \alias{addTBsignature}
-\title{Introduce a new signature into the TBSignatureProfiler}
+\title{Introduce a new signature into the TBSignatureProfiler.}
 \usage{
 addTBsignature(
   sigsymbols,

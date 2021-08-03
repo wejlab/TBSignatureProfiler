@@ -2,15 +2,31 @@ citHeader("To cite the TBSignatureProfiler package in publications, use:")
 
 citEntry(
   entry    = "Article",
-  title    = "Comparing tuberculosis gene signatures in malnourished individuals using the TBSignatureProfiler",
-  author   = "Johnson, W. Evan and Odom, Aubrey and Cintron, Chelsie and Muthaiah, Mutharaj and Knudsen, Selby and Joseph, Noyal and Babu, Senbagavalli and Lakshminarayanan, Subitha and Jenkins, David F. and Zhao, Yue and Nankya, Ethel and Horsburgh, C. Robert and Roy, Gautam and Ellner, Jerrold and Sarkar, Sonali and Salgame, Padmini and Hochberg, Natasha S.",
+  title    = "Comparing tuberculosis gene signatures in malnourished individuals using the {TBSignatureProfiler}",
+  author   = personList(as.person("W. Evan Johnson"),
+                        as.person("Aubrey Odom"),
+                        as.person("Chelsie Cintron"),
+                        as.person("Mutharaj Muthaiah"),
+                        as.person("Selby Knudsen"),
+                        as.person("Noyal Joseph"),
+                        as.person("Senbagavalli Babu"),
+                        as.person("Subitha Lakshminarayanan"),
+                        as.person("David F. Jenkins"),
+                        as.person("Ethel Nankya"),
+                        as.person("C. Robert Horsburgh"),
+                        as.person("Gautam Roy"),
+                        as.person("Jerrold Ellner"),
+                        as.person("Sonali Sarkar"),
+                        as.person("Padmini Salgame"),
+                        as.person("Natasha S. Hochberg")),
   journal  = "BMC Infectious Diseases",
   year     = "2021",
   volume   = "21",
   number   = "1",
   pages    = "106",
   url      = "https://bmcinfectdis.biomedcentral.com/articles/10.1186/s12879-020-05598-z",
-  textVersion = paste(
-
-  )
+  doi = "10.1186/s12879-020-05598-z",
+  textVersion = paste("Johnson, W.E., Odom, A., Cintron, C. et al.",
+  "Comparing tuberculosis gene signatures in malnourished individuals using the TBSignatureProfiler.",
+  "BMC Infect Dis 21, 106 (2021). https://doi.org/10.1186/s12879-020-05598-z")
 )

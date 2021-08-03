@@ -2,7 +2,7 @@
 % Please edit documentation in R/OriginalModel.R
 \name{ref_combat_impute}
 \alias{ref_combat_impute}
-\title{A function for reference batch correction and imputation}
+\title{A function for reference batch correction and imputation.}
 \usage{
 ref_combat_impute(
   theObject_train,
@@ -41,9 +41,6 @@ See \code{\link[impute]{impute.knn}} for details. The default value is 0.8.}
 Gene set subset
 }
 \description{
-A function for reference batch correction and imputation.
-}
-\details{
 A function used to perform reference batch correction and imputation in the
 testing data for gene signatures that require retraining of the model.
 We used the k-nearest neighbors to impute the expression values for missing gene(s).

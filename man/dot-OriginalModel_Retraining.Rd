@@ -2,7 +2,7 @@
 % Please edit documentation in R/OriginalModel.R
 \name{.OriginalModel_Retraining}
 \alias{.OriginalModel_Retraining}
-\title{TB gene signatures require retraining}
+\title{TB gene signatures that require retraining.}
 \usage{
 .OriginalModel_Retraining(input, useAssay, geneSignaturesName, adj, BPPARAM)
 }

@@ -3,7 +3,7 @@
 \docType{data}
 \name{TBsignaturesSplit}
 \alias{TBsignaturesSplit}
-\title{Up/Down-regulated genes information for selected TB signatures}
+\title{Up/Down-regulated genes information for selected TB signatures.}
 \format{
 list
 }
@@ -14,7 +14,7 @@ See \code{?TBsignatures} for reference information.
 TBsignaturesSplit
 }
 \description{
-Up/Down-regulated genes information for selected TB signatures
+Up/Down-regulated genes information for selected TB signatures.
 }
 \examples{
 data("TBsignaturesSplit")

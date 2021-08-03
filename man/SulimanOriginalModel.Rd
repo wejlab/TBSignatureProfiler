@@ -2,7 +2,7 @@
 % Please edit documentation in R/OriginalModel.R
 \name{SulimanOriginalModel}
 \alias{SulimanOriginalModel}
-\title{Train original model gene signature Suliman_RISK_4}
+\title{Train original model gene signature Suliman_RISK_4.}
 \usage{
 SulimanOriginalModel(dat_list, dat_test_sig)
 }
@@ -17,5 +17,5 @@ Used to evaluate the performance of biomarker using its original models.}
 The predicted score for each sample in the test study.
 }
 \description{
-Train original model gene signature Suliman_RISK_4
+Train original model gene signature Suliman_RISK_4.
 }

@@ -2,7 +2,7 @@
 % Please edit documentation in R/OriginalModel.R
 \name{BerryOriginalModel}
 \alias{BerryOriginalModel}
-\title{Train original model for gene signatures: Berry_393 and Berry_OD_86}
+\title{Train original model for gene signatures Berry_393 and Berry_OD_86.}
 \usage{
 BerryOriginalModel(dat_list, dat_test_sig)
 }
@@ -17,5 +17,5 @@ Used to evaluate the performance of biomarker using its original models.}
 The predicted score for each sample in the test study.
 }
 \description{
-Train original model for gene signatures: Berry_393 and Berry_OD_86
+Train original model for gene signatures Berry_393 and Berry_OD_86.
 }

@@ -2,7 +2,7 @@
 % Please edit documentation in R/OriginalModel.R
 \name{LeongOriginalModel}
 \alias{LeongOriginalModel}
-\title{Train original model for gene signatures: Leong_24 and Leong_RISK_29}
+\title{Train original model for gene signatures Leong_24 and Leong_RISK_29.}
 \usage{
 LeongOriginalModel(dat_list, dat_test_sig)
 }
@@ -17,5 +17,5 @@ Used to evaluate the performance of biomarker using its original models.}
 The predicted score for each sample in the test study.
 }
 \description{
-Train original model for gene signatures: Leong_24 and Leong_RISK_29
+Train original model for gene signatures Leong_24 and Leong_RISK_29.
 }

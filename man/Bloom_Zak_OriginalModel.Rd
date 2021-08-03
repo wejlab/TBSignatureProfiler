@@ -2,7 +2,7 @@
 % Please edit documentation in R/OriginalModel.R
 \name{Bloom_Zak_OriginalModel}
 \alias{Bloom_Zak_OriginalModel}
-\title{Train original model for gene signatures Bloom_OD_144 and Zak_RISK_16}
+\title{Train original model for gene signatures Bloom_OD_144 and Zak_RISK_16.}
 \usage{
 Bloom_Zak_OriginalModel(dat_list, dat_test_sig)
 }
@@ -17,5 +17,5 @@ Used to evaluate the performance of biomarker using its original models.}
 The predicted score for each sample in the test study.
 }
 \description{
-Train original model for gene signatures Bloom_OD_144 and Zak_RISK_16
+Train original model for gene signatures Bloom_OD_144 and Zak_RISK_16.
 }

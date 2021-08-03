@@ -425,7 +425,7 @@ globalVariables(c("BS_AUC", "FPR", "LowerTPR", "Signatures",
 
 "COVIDsignatures"
 
-#' Up/Down-regulated genes information for selected TB signatures
+#' Up/Down-regulated genes information for selected TB signatures.
 #' @name TBsignaturesSplit
 #' @docType data
 #' @format list
@@ -436,7 +436,7 @@ globalVariables(c("BS_AUC", "FPR", "LowerTPR", "Signatures",
 #' data("TBsignaturesSplit")
 "TBsignaturesSplit"
 
-#' Discovery datasets for correpsonding gene signatures
+#' Discovery datasets for correpsonding gene signatures.
 #' @name OriginalTrainingData
 #' @docType data
 #' @format list

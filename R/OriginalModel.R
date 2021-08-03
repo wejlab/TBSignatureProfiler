@@ -90,7 +90,8 @@ evaluateOriginalModel <- function(input, useAssay = 1,
     return(input)
 }
 
-#' TB gene signatures do not require retraining
+#' TB gene signatures that do not require retraining.
+#' 
 #' A function to obtain predicted score for TB gene signatures that do not need to be retrained.
 #'
 #' Anderson_42 and Anderson_OD_51 used difference of sums to calculate
@@ -151,7 +152,7 @@ evaluateOriginalModel <- function(input, useAssay = 1,
     return(sample_score_result)
 }
 
-#' TB gene signatures require retraining
+#' TB gene signatures that require retraining.
 #'
 #' A function to obtain predicted score for TB gene signatures that need retraining of original models.
 #'
@@ -392,8 +393,6 @@ subsetGeneSet <- function(theObject, gene_set, useAssay = 1,
     }
 }
 
-#' A function for reference batch correction and imputation
-#'
 #' A function for reference batch correction and imputation.
 #'
 #' A function used to perform reference batch correction and imputation in the
@@ -505,7 +504,7 @@ ref_combat_impute <- function(theObject_train, useAssay = 1, gene_set, input,
     return(dat_test_sig)
 }
 
-#' Train original model for gene signatures: Leong_24 and Leong_RISK_29
+#' Train original model for gene signatures Leong_24 and Leong_RISK_29.
 #'
 #' @param dat_list A list contains training data and disease status outcomes from
 #' the discovery data of corresponding gene signatures.
@@ -526,7 +525,7 @@ LeongOriginalModel <- function(dat_list, dat_test_sig) {
     return(pred_score)
 }
 
-#' Train original model for Zhao_NANO_6
+#' Train original model for Zhao_NANO_6.
 #'
 #' @inheritParams LeongOriginalModel
 #' @return The predicted score for each sample in the test study.
@@ -544,8 +543,8 @@ ZhaoOriginalModel <- function(dat_list, dat_test_sig) {
     return(pred_score)
 }
 
-#' Train original model for gene signatures: Maertzdorf_4, Maertzdorf_15, Verhagen_10,
-#' and LauxdaCosta_OD_3
+#' Train original model for gene signatures Maertzdorf_4, Maertzdorf_15, Verhagen_10,
+#' and LauxdaCosta_OD_3.
 #'
 #' @inheritParams LeongOriginalModel
 #' @importFrom stats na.omit
@@ -565,7 +564,7 @@ Maertzdorf_Verhagen_daCosta_OriginalModel <- function(dat_list, dat_test_sig) {
     return(pred_score)
 }
 
-#' Train original model for gene signatrues: Jacobsen_3 and Sambarey_HIV_10
+#' Train original model for gene signatures Jacobsen_3 and Sambarey_HIV_10.
 #'
 #' @inheritParams LeongOriginalModel
 #' @return The predicted score for each sample in the test study.
@@ -581,7 +580,7 @@ Jacobsen_Sambarey_OriginalModel <- function(dat_list, dat_test_sig) {
     return(pred_score)
 }
 
-#' Train original model for gene signatures: Berry_393 and Berry_OD_86
+#' Train original model for gene signatures Berry_393 and Berry_OD_86.
 #'
 #' @inheritParams LeongOriginalModel
 #' @return The predicted score for each sample in the test study.
@@ -606,7 +605,7 @@ BerryOriginalModel <- function(dat_list, dat_test_sig) {
     return(pred_score)
 }
 
-#' Train original model for gene signatures Bloom_OD_144 and Zak_RISK_16
+#' Train original model for gene signatures Bloom_OD_144 and Zak_RISK_16.
 #'
 #' @inheritParams LeongOriginalModel
 #' @return The predicted score for each sample in the test study.
@@ -624,7 +623,7 @@ Bloom_Zak_OriginalModel <- function(dat_list, dat_test_sig) {
     return(pred_score)
 }
 
-#' Train original model gene signature Suliman_RISK_4
+#' Train original model gene signature Suliman_RISK_4.
 #'
 #' @inheritParams LeongOriginalModel
 #' @return The predicted score for each sample in the test study.

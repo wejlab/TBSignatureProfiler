@@ -2,7 +2,7 @@
 % Please edit documentation in R/OriginalModel.R
 \name{ZhaoOriginalModel}
 \alias{ZhaoOriginalModel}
-\title{Train original model for Zhao_NANO_6}
+\title{Train original model for Zhao_NANO_6.}
 \usage{
 ZhaoOriginalModel(dat_list, dat_test_sig)
 }
@@ -17,5 +17,5 @@ Used to evaluate the performance of biomarker using its original models.}
 The predicted score for each sample in the test study.
 }
 \description{
-Train original model for Zhao_NANO_6
+Train original model for Zhao_NANO_6.
 }

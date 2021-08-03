@@ -71,7 +71,7 @@ navbar:
     - text: "Command Line Analysis"
       href: articles/rmd/TBSig_Vignette.html
     - text: "Original Models"
-      href: articles/rmd/OriginalModelTutorial.RMD
+      href: articles/rmd/OriginalModelTutorial.html
     - text: "Interactive Shiny Analysis"
       href: articles/rmd/shinytutorial.html
     - text: "Adding Signatures to the Profiler"

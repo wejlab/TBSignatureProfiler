@@ -2,8 +2,7 @@
 % Please edit documentation in R/OriginalModel.R
 \name{.OriginalModel_NoRetraining}
 \alias{.OriginalModel_NoRetraining}
-\title{TB gene signatures do not require retraining
-A function to obtain predicted score for TB gene signatures that do not need to be retrained.}
+\title{TB gene signatures that do not require retraining.}
 \usage{
 .OriginalModel_NoRetraining(input, useAssay, geneSignaturesName, BPPARAM)
 }
@@ -29,6 +28,9 @@ A SummarizedExperiment object with predicted scores for each sample
 obtained from the signature's original model.
 }
 \description{
+A function to obtain predicted score for TB gene signatures that do not need to be retrained.
+}
+\details{
 Anderson_42 and Anderson_OD_51 used difference of sums to calculate
 prediction scores. Difference of sums is obtained by subtracting the sum of
 the expression of genes within signatures that are down-regulated from the

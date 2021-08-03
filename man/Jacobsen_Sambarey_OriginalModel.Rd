@@ -2,7 +2,7 @@
 % Please edit documentation in R/OriginalModel.R
 \name{Jacobsen_Sambarey_OriginalModel}
 \alias{Jacobsen_Sambarey_OriginalModel}
-\title{Train original model for gene signatrues: Jacobsen_3 and Sambarey_HIV_10}
+\title{Train original model for gene signatures Jacobsen_3 and Sambarey_HIV_10.}
 \usage{
 Jacobsen_Sambarey_OriginalModel(dat_list, dat_test_sig)
 }
@@ -17,5 +17,5 @@ Used to evaluate the performance of biomarker using its original models.}
 The predicted score for each sample in the test study.
 }
 \description{
-Train original model for gene signatrues: Jacobsen_3 and Sambarey_HIV_10
+Train original model for gene signatures Jacobsen_3 and Sambarey_HIV_10.
 }

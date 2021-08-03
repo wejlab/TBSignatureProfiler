@@ -1,4 +1,4 @@
-#' Introduce a new signature into the TBSignatureProfiler
+#' Introduce a new signature into the TBSignatureProfiler.
 #'
 #' This function allows users to integrate new signatures into the TBSP
 #' with a function that updates the TBsignatures, TBcommon,
