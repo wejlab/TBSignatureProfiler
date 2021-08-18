@@ -2,6 +2,139 @@ globalVariables(c("BS_AUC", "FPR", "LowerTPR", "Signatures",
                   "TBsignatures", "TPR", "UpperTPR", "sigAnnotData"))
 .myenv <- new.env(parent = emptyenv())
 
+# Helper functions for runTBsigProfiler
+
+# Check whether a new sig list is in the working environment
+check_sig_env <- function(signatures) {
+  # Override with global environment
+  if ("TBsignatures" %in% ls(envir = .GlobalEnv)) {
+    get("TBsignatures", envir = .GlobalEnv)
+    return(TBsignatures)
+  } else {
+    utils::data("TBsignatures", package = "TBSignatureProfiler",
+                envir = .myenv)
+    return(.myenv$TBsignatures)
+  }
+}
+
+# Update gene names that are mogrified or outdated
+update_genenames <- function(siglist) {
+  newgenes <- suppressMessages(suppressWarnings(
+    HGNChelper::checkGeneSymbols(siglist,
+                                 unmapped.as.na = FALSE)))$Suggested.Symbol
+  ind <- grep("//", newgenes)
+  if (length(ind) != 0) newgenes[ind] <- strsplit(newgenes[ind], 
+                                                  " /// ")[[1]][1]
+  # if(any(newgenes != siglist)) message("One or more gene names were altered.")
+  return(newgenes)
+}
+
+# run scoring algorithms
+score_algorithm <- function(runindata, signatures, alg, assignDir = NULL,
+                            parallel.sz = 0,
+                            ASSIGNiter = 100000, ASSIGNburnin = 50000,
+                            ssgsea_norm = TRUE, combineSigAndAlgorithm,
+                            one_alg) {
+  if (alg %in% c("GSVA", "ssGSEA", "PLAGE", "Zscore")) {
+    message("Running ", alg)
+    algout <- GSVA::gsva(runindata, signatures, method = tolower(alg),
+                         parallel.sz = parallel.sz, ssgsea.norm = ssgsea_norm)
+  } else if (alg == "singscore") {
+    message("Running singscore")
+    algout <- matrix(ncol = ncol(runindata), nrow = length(signatures),
+                     dimnames = list(names(signatures), colnames(runindata)))
+    rankDat <- singscore::rankGenes(runindata)
+    for (sig in names(signatures)) {
+      algout[sig, ] <- suppressWarnings(singscore::simpleScore(
+        rankData = rankDat, upSet = TBsignatures[[sig]],
+        knownDirection = FALSE)$TotalScore)
+    }
+  } else if (alg == "ASSIGN") {
+    delete_intermediate <- FALSE
+    if (is.null(assignDir)) {
+      assignDir <- tempfile("assign")
+      dir.create(assignDir)
+      delete_intermediate <- TRUE
+    } else if (!dir.exists(assignDir)) dir.create(assignDir)
+    for (i in names(signatures)) {
+      message("Running ASSIGN: ", i)
+      currlist <- signatures[i]
+      currlist[[1]] <- currlist[[1]][currlist[[1]] %in% rownames(runindata)]
+      if (length(currlist[[1]]) < 2) {
+        message("Not enough signature genes in ", i, "; cannot run.")
+      } else {
+        if (!file.exists(i)) {
+          ASSIGN::assign.wrapper(testData = runindata, trainingLabel = NULL,
+                                 geneList = currlist, adaptive_S = TRUE,
+                                 iter = ASSIGNiter, burn_in = ASSIGNburnin,
+                                 outputDir = file.path(assignDir, i))
+        } else message("Result already exists. Delete to re-run.")
+      }
+    }
+    algout <- as.matrix(t(ASSIGN::gather_assign_results(assignDir)))
+    if (nrow(algout) == 0) algout <- NULL
+    if (delete_intermediate) {
+      unlink(assignDir, recursive = TRUE)
+    } else {
+      message("Intermediate ASSIGN results available at ", assignDir)
+    }
+  }
+  if (one_alg) return(algout)
+  if (length(combineSigAndAlgorithm) == 0) {
+    stop("You must choose whether or not to combine the ",
+         "signature and algorithm name using combineSigAndAlgorithm.")
+  } else if (combineSigAndAlgorithm & !is.null(algout)) {
+    scoremat <- algout
+    rownames(scoremat) <- paste(alg, rownames(algout), sep = "_")
+  } else if (!combineSigAndAlgorithm) {
+    alg_col <- algout[, 1, drop = FALSE]
+    colnames(alg_col) <- "algorithm"
+    alg_col[, 1] <- rep(alg, nrow(algout))
+    pathcol <- alg_col
+    pathcol[, 1] <- rownames(algout)
+    colnames(pathcol) <- "pathway"
+    scoremat <- cbind(pathcol, alg_col, algout)
+    rownames(scoremat) <- NULL
+  }
+  return(scoremat)
+}
+
+# Create proper output class for runTBsigProfiler
+output_function <- function(input, signatures, algorithm, outputFormat,
+                            runindata, sig_result) {
+  if (is.null(outputFormat)) {
+    # Output will be the same as input class
+    if (class(input)[1] %in% c("SummarizedExperiment", "SingleCellExperiment",
+                               "SCtkExperiment")) {
+      SummarizedExperiment::colData(input) <-
+        S4Vectors::cbind(SummarizedExperiment::colData(input),
+                         S4Vectors::DataFrame(t(sig_result)))
+      return(input)
+    } else if (methods::is(input, "matrix")) {
+      return(sig_result)
+    } else if (methods::is(input, "data.frame")) {
+      dfres <- data.frame(sig_result)
+      colnames(dfres) <- colnames(sig_result)
+      return(dfres)
+    }
+  } else if (outputFormat == "matrix") {
+    return(sig_result)
+  } else if (outputFormat == "data.frame") {
+    dfres <- data.frame(sig_result)
+    colnames(dfres) <- colnames(sig_result)
+    return(dfres)
+  } else if (outputFormat == "SummarizedExperiment") {
+    attr(rownames(runindata), ".match.hash") <- NULL
+    outdata <- SummarizedExperiment::SummarizedExperiment(
+      assays = S4Vectors::SimpleList(data = runindata),
+      colData = S4Vectors::DataFrame(t(sig_result)))
+    return(outdata)
+  } else {
+    stop("Output format error.")
+  }
+}
+
+
 #' Run TB gene signature profiling.
 #'
 #' Using some subset of the signatures listed in \code{TBsignatures} and
@@ -24,13 +157,15 @@ globalVariables(c("BS_AUC", "FPR", "LowerTPR", "Signatures",
 #' @param algorithm a vector of algorithms to run, or character string if only
 #' one is desired. The default is \code{c("GSVA", "ssGSEA", "ASSIGN",
 #' "PLAGE", "Zscore", "singscore")}.
-#' @param combineSigAndAlgorithm logical, not supported if \code{input} is a
-#' SummarizedExperiment object (in which case, the default is \code{TRUE}).
-#' For a matrix or data frame, if \code{TRUE}, the row names will be in the form
-#' <algorithm>_<signature>. If \code{FALSE}, there will be a column named
-#' 'algorithm' that lists which algorithm is used, and a column named 'pathway'
-#' that lists the signature profiled. If \code{NULL}, and one algorithm was used,
-#' the algorithm will not be listed. The default is \code{FALSE}.
+#' @param combineSigAndAlgorithm logical, if \code{TRUE}, output row names will
+#' be of the form <algorithm>_<signature>. It must be set to code{TRUE} if the
+#' \code{ouputFormat} will be a SummarizedExperiment and
+#' \code{length(algorithm) > 1}.
+#' It will always be \code{FALSE} if only one algorithm is selected.
+#' If \code{FALSE}, there will be a column named algorithm' that lists which
+#' algorithm is used, and a column named 'pathway' that lists the signature
+#' profiled. If \code{NULL}, and one algorithm was used, the algorithm will not
+#' be listed. The default is \code{FALSE}.
 #' @param assignDir a character string naming a directory to save intermediate
 #' ASSIGN results if \code{algorithm} specifies \code{"ASSIGN"}. The default is
 #' \code{NULL}, in which case intermediate results will not be saved.
@@ -53,6 +188,11 @@ globalVariables(c("BS_AUC", "FPR", "LowerTPR", "Signatures",
 #' between the minimum and the maximum, as described in their paper.
 #' When \code{ssgsea.norm = FALSE}, this last normalization step is skipped.
 #' The default is \code{TRUE}.
+#' @param update_genes logical, denotes whether gene names from \code{signatures}
+#' and the rownames of \code{input} should be checked for accuracy using 
+#' \code{HGNChelper::checkGeneSymbols()}. The mapping assumes
+#' genes are from humans and will keep unmapped genes as the original
+#' input gene name. Default is \code{TRUE}.
 #'
 #' @return A \code{SummarizedExperiment} object, \code{data.frame}, or
 #' \code{matrix} of signature profiling results. The returned object will be
@@ -126,337 +266,61 @@ globalVariables(c("BS_AUC", "FPR", "LowerTPR", "Signatures",
 #'                              combineSigAndAlgorithm = FALSE,
 #'                              parallel.sz = 1)
 #' GSVA_res$Zak_RISK_16
-runTBsigProfiler <- function(input, useAssay = NULL,
-                             signatures = NULL,
+runTBsigProfiler <- function(input, useAssay = NULL, signatures = NULL,
                              algorithm = c("GSVA", "ssGSEA", "ASSIGN",
                                            "PLAGE", "Zscore", "singscore"),
                              combineSigAndAlgorithm = FALSE, assignDir = NULL,
                              outputFormat = NULL, parallel.sz = 0,
-                             ASSIGNiter = 100000, ASSIGNburnin = 50000, ssgsea_norm = TRUE) {
-  if (is.null(signatures)) {
-    # Override with global environment
-    if ("TBsignatures" %in% ls(envir = .GlobalEnv)) {
-      get("TBsignatures", envir = .GlobalEnv)
-      signatures <- TBsignatures
-    } else {
-      utils::data("TBsignatures", package = "TBSignatureProfiler",
-                  envir = .myenv)
-      signatures <- .myenv$TBsignatures
-    }
+                             ASSIGNiter = 100000, ASSIGNburnin = 50000,
+                             ssgsea_norm = TRUE, update_genes = TRUE) {
+  if (is.null(signatures)) signatures <- check_sig_env(signatures)
+  acc_methods <- c("GSVA", "ssGSEA", "ASSIGN", "PLAGE", "Zscore", "singscore")
+  if (!all(algorithm %in% acc_methods)) {
+    stop("Invalid algorithm. Supported algorithms are: ",
+         "GSVA, ssGSEA, PLAGE, Zscore, singscore, and ASSIGN")
   }
   runindata <- input
   if (methods::is(runindata, "SummarizedExperiment")) {
     if (is.null(useAssay)) {
       if ("counts" %in% names(SummarizedExperiment::assays(input))) {
         useAssay <- "counts"
-      } else {
-        stop("useAssay required for SummarizedExperiment Input")
-      }
+      } else stop("useAssay required for SummarizedExperiment Input")
     }
     runindata <- SummarizedExperiment::assay(input, useAssay)
     if (!combineSigAndAlgorithm & length(algorithm) > 1) {
-      stop("SummarizedExperiment not supported with combineSigAndAlgorithm FALSE.")
+      stop("SummarizedExperiment not supported when ",
+           "combineSigAndAlgorithm FALSE.")
     }
   } else if (!is.null(useAssay)) {
     stop("useAssay only supported for SummarizedExperiment objects")
-  }
-  if (methods::is(runindata, "data.frame")) {
+  } else if (methods::is(runindata, "data.frame")) {
     runindata <- as.matrix(runindata)
-  }
-  if (!methods::is(runindata, "matrix")) {
+  } else if (!methods::is(runindata, "matrix")) {
     stop("Invalid input data type. Accepted input formats are matrix, ",
          "data.frame, or SummarizedExperiment. Your input: ",
          as.character(class(input)))
   }
-  if (!all(algorithm %in% c("GSVA", "ssGSEA", "ASSIGN",
-                            "PLAGE", "Zscore", "singscore"))) {
-    stop("Invalid algorithm. Supported algorithms are
-    GSVA, ssGSEA, PLAGE, Zscore, singscore, and ASSIGN")
+  if (update_genes) {
+    message("Parameter update_genes is TRUE. Gene names will be updated.")
+    signatures <- lapply(signatures, update_genenames)
+    rownames(runindata) <- update_genenames(rownames(runindata))
   }
-  gsvaRes <- NULL
-  if ("GSVA" %in% algorithm) {
-    message("Running GSVA")
-    gsvaRes <- GSVA::gsva(runindata, signatures,
-                          parallel.sz = parallel.sz)
-  }
-  gsvaRes_ssgsea <- NULL
-  if ("ssGSEA" %in% algorithm) {
-    message("Running ssGSEA")
-    gsvaRes_ssgsea <- GSVA::gsva(runindata, signatures, method = "ssgsea",
-                                 parallel.sz = parallel.sz, ssgsea.norm = ssgsea_norm)
-  }
-  gsvaRes_PLAGE <- NULL
-  if ("PLAGE" %in% algorithm) {
-    message("Running PLAGE")
-    gsvaRes_PLAGE <- GSVA::gsva(runindata, signatures, method = "plage",
-                                parallel.sz = parallel.sz)
-  }
-  gsvaRes_Z <- NULL
-  if ("Zscore" %in% algorithm) {
-    message("Running Z-score profiling")
-    gsvaRes_Z <- GSVA::gsva(runindata, signatures, method = "zscore",
-                            parallel.sz = parallel.sz)
-  }
-  singscore_res <- NULL
-  if ("singscore" %in% algorithm) {
-    message("Running singscore")
-    singscore_res <- matrix(ncol = ncol(runindata),
-                            nrow = length(signatures),
-                            dimnames = list(names(signatures),
-                                            colnames(runindata)))
-    rankDat <- singscore::rankGenes(runindata)
-    for (sig in names(signatures)) {
-      singscore_res[sig, ] <- suppressWarnings(singscore::simpleScore(
-        rankData = rankDat,
-        upSet = TBsignatures[[sig]],
-        knownDirection = FALSE)$TotalScore)
-    }
-  }
-  assign_res <- NULL
-  if ("ASSIGN" %in% algorithm) {
-    delete_intermediate <- FALSE
-    if (is.null(assignDir)) {
-      assignDir <- tempfile("assign")
-      dir.create(assignDir)
-      delete_intermediate <- TRUE
-    } else if (!dir.exists(assignDir)) {
-      dir.create(assignDir)
-    }
-    message("Running ASSIGN")
-    for (i in names(signatures)) {
-      message(i)
-      currlist <- signatures[i]
-      currlist[[1]] <- currlist[[1]][currlist[[1]] %in% rownames(runindata)]
-      if (length(currlist[[1]]) < 2) {
-        message("Not enough signature genes in ", i, ",
-                so analysis will not run.")
-      } else {
-        if (!file.exists(i)) {
-          ASSIGN::assign.wrapper(testData = runindata, trainingLabel = NULL,
-                                 geneList = currlist, adaptive_S = TRUE,
-                                 iter = ASSIGNiter, burn_in = ASSIGNburnin,
-                                 outputDir = file.path(assignDir, i))
-        } else {
-          message("Result already exists. Delete to re-run.")
-        }
-      }
-    }
-    assign_res <- as.matrix(t(ASSIGN::gather_assign_results(assignDir)))
-    if (nrow(assign_res) == 0) {
-      assign_res <- NULL
-    }
-    if (delete_intermediate) {
-      unlink(assignDir, recursive = TRUE)
-    } else {
-      message("Intermediate ASSIGN results available at ", assignDir)
-    }
-  }
-  sig_result <- NULL
   if (length(algorithm) == 1) {
-    if (!is.null(gsvaRes)) {
-      sig_result <- gsvaRes
-    } else if (!is.null(gsvaRes_ssgsea)) {
-      sig_result <- gsvaRes_ssgsea
-    } else if (!is.null(assign_res)) {
-      sig_result <- assign_res
-    } else if (!is.null(gsvaRes_Z)) {
-      sig_result <- gsvaRes_Z
-    } else if (!is.null(gsvaRes_PLAGE)) {
-      sig_result <- gsvaRes_PLAGE
-    } else if (!is.null(singscore_res)) {
-      sig_result <- singscore_res
-    } else {
-      stop("ERROR: all valid outputs are empty.")
-    }
+    sig_result <- score_algorithm(runindata, signatures, algorithm, assignDir,
+                                  parallel.sz, ASSIGNiter, ASSIGNburnin,
+                                  ssgsea_norm, combineSigAndAlgorithm,
+                                  one_alg = TRUE)
+    if (is.null(sig_result)) stop("ERROR: all valid outputs are empty.")
   } else {
-    combined_res <- data.frame()
-    # if combineSigAndAlgorithm TRUE, we can just concatenate the name to the
-    # sig name and combine. Otherwise we need to add an 'algorithm' column and
-    # SummarizedExperiment output is not supported.
-    if (is.null(combineSigAndAlgorithm)) {
-      stop("You must choose whether or not to combine the ",
-           "signature and algorithm name using combineSigAndAlgorithm.")
-    } else if (combineSigAndAlgorithm) {
-      if (!is.null(gsvaRes)) {
-        rownames(gsvaRes) <- paste("GSVA", rownames(gsvaRes), sep = "_")
-        combined_res <- gsvaRes
-      }
-      if (!is.null(gsvaRes_ssgsea)) {
-        rownames(gsvaRes_ssgsea) <- paste("ssGSEA", rownames(gsvaRes_ssgsea),
-                                          sep = "_")
-        if (nrow(combined_res) == 0) {
-          combined_res <- gsvaRes_ssgsea
-        } else {
-          combined_res <- rbind(combined_res, gsvaRes_ssgsea)
-        }
-      }
-      if (!is.null(assign_res)) {
-        rownames(assign_res) <- paste("ASSIGN", rownames(assign_res), sep = "_")
-        if (nrow(combined_res) == 0) {
-          combined_res <- assign_res
-        } else {
-          combined_res <- rbind(combined_res, assign_res)
-        }
-      }
-      if (!is.null(gsvaRes_PLAGE)) {
-        rownames(gsvaRes_PLAGE) <- paste("PLAGE", rownames(gsvaRes_PLAGE),
-                                         sep = "_")
-        if (nrow(combined_res) == 0) {
-          combined_res <- gsvaRes_PLAGE
-        } else {
-          combined_res <- rbind(combined_res, gsvaRes_PLAGE)
-        }
-      }
-      if (!is.null(gsvaRes_Z)) {
-        rownames(gsvaRes_Z) <- paste("Zscore", rownames(gsvaRes_Z),
-                                     sep = "_")
-        if (nrow(combined_res) == 0) {
-          combined_res <- gsvaRes_Z
-        } else {
-          combined_res <- rbind(combined_res, gsvaRes_Z)
-        }
-      }
-      if (!is.null(singscore_res)) {
-        rownames(singscore_res) <- paste("singscore", rownames(singscore_res),
-                                         sep = "_")
-        if (nrow(combined_res) == 0) {
-          combined_res <- singscore_res
-        } else {
-          combined_res <- rbind(combined_res, singscore_res)
-        }
-      }
-    } else {
-      if (!is.null(outputFormat)) {
-        if (outputFormat == "SummarizedExperiment") {
-          stop("SummarizedExperiment not supported with combineSigAndAlgorithm FALSE.")
-        }
-      } else if (methods::is(input, "SummarizedExperiment")) {
-        stop("SummarizedExperiment not supported with combineSigAndAlgorithm FALSE.")
-      }
-      if (!is.null(gsvaRes)) {
-        alg_col <- gsvaRes[, 1, drop = FALSE]
-        colnames(alg_col) <- "algorithm"
-        alg_col[, 1] <- rep("GSVA", nrow(gsvaRes))
-        pathcol <- alg_col
-        pathcol[, 1] <- rownames(gsvaRes)
-        colnames(pathcol) <- "pathway"
-        gsvaRes <- cbind(pathcol, alg_col, gsvaRes)
-        combined_res <- gsvaRes
-      }
-      if (!is.null(gsvaRes_ssgsea)) {
-        alg_col <- gsvaRes_ssgsea[, 1, drop = FALSE]
-        colnames(alg_col) <- "algorithm"
-        alg_col[, 1] <- rep("ssGSEA", nrow(gsvaRes_ssgsea))
-        pathcol <- alg_col
-        pathcol[, 1] <- rownames(gsvaRes_ssgsea)
-        colnames(pathcol) <- "pathway"
-        gsvaRes_ssgsea <- cbind(pathcol, alg_col, gsvaRes_ssgsea)
-        if (nrow(combined_res) == 0) {
-          combined_res <- gsvaRes_ssgsea
-        } else {
-          combined_res <- rbind(combined_res, gsvaRes_ssgsea)
-        }
-      }
-      if (!is.null(assign_res)) {
-        alg_col <- assign_res[, 1, drop = FALSE]
-        colnames(alg_col) <- "algorithm"
-        alg_col[, 1] <- rep("ASSIGN", nrow(assign_res))
-        pathcol <- alg_col
-        pathcol[, 1] <- rownames(assign_res)
-        colnames(pathcol) <- "pathway"
-        assign_res <- cbind(pathcol, alg_col, assign_res)
-        if (nrow(combined_res) == 0) {
-          combined_res <- assign_res
-        } else {
-          combined_res <- rbind(combined_res, assign_res)
-        }
-      }
-      if (!is.null(gsvaRes_PLAGE)) {
-        alg_col <- gsvaRes_PLAGE[, 1, drop = FALSE]
-        colnames(alg_col) <- "algorithm"
-        alg_col[, 1] <- rep("PLAGE", nrow(gsvaRes_PLAGE))
-        pathcol <- alg_col
-        pathcol[, 1] <- rownames(gsvaRes_PLAGE)
-        colnames(pathcol) <- "pathway"
-        gsvaRes_PLAGE <- cbind(pathcol, alg_col, gsvaRes_PLAGE)
-        if (nrow(combined_res) == 0) {
-          combined_res <- gsvaRes_PLAGE
-        } else {
-          combined_res <- rbind(combined_res, gsvaRes_PLAGE)
-        }
-      }
-      if (!is.null(gsvaRes_Z)) {
-        alg_col <- gsvaRes_Z[, 1, drop = FALSE]
-        colnames(alg_col) <- "algorithm"
-        alg_col[, 1] <- rep("Z-Score", nrow(gsvaRes_Z))
-        pathcol <- alg_col
-        pathcol[, 1] <- rownames(gsvaRes_Z)
-        colnames(pathcol) <- "pathway"
-        gsvaRes_Z <- cbind(pathcol, alg_col, gsvaRes_Z)
-        if (nrow(combined_res) == 0) {
-          combined_res <- gsvaRes_Z
-        } else {
-          combined_res <- rbind(combined_res, gsvaRes_Z)
-        }
-      }
-      if (!is.null(singscore_res)) {
-        alg_col <- singscore_res[, 1, drop = FALSE]
-        colnames(alg_col) <- "algorithm"
-        alg_col[, 1] <- rep("singscore", nrow(singscore_res))
-        pathcol <- alg_col
-        pathcol[, 1] <- rownames(singscore_res)
-        colnames(pathcol) <- "pathway"
-        singscore_res <- cbind(pathcol, alg_col, singscore_res)
-        if (nrow(combined_res) == 0) {
-          combined_res <- singscore_res
-        } else {
-          combined_res <- rbind(combined_res, singscore_res)
-        }
-      }
-      rownames(combined_res) <- NULL
-    }
-    sig_result <- as.matrix(combined_res)
+    combined <- lapply(algorithm, function(x) {
+      score_algorithm(runindata, signatures, x, assignDir,
+                      parallel.sz, ASSIGNiter, ASSIGNburnin,
+                      ssgsea_norm, combineSigAndAlgorithm, one_alg = FALSE)
+    })
+    sig_result <- as.matrix(do.call(rbind, combined))
   }
-  if (sum(names(signatures) %in% rownames(sig_result)) != length(signatures)) {
-    absent <- subset(names(signatures), !(names(signatures) %in%
-                                            rownames(sig_result)))
-    if (length(algorithm) == 1) {
-      warning(
-        paste("No identifiers in the gene sets could be matched to the identifiers
-          in the expression data for the following signatures: ",
-              paste(absent, collapse = ", ")))
-    }
-  }
-  if (is.null(outputFormat)) {
-    #output same as input
-    if (class(input)[1] %in% c("SummarizedExperiment", "SingleCellExperiment",
-                            "SCtkExperiment")) {
-      SummarizedExperiment::colData(input) <-
-        S4Vectors::cbind(SummarizedExperiment::colData(input),
-                         S4Vectors::DataFrame(t(sig_result)))
-      return(input)
-    } else if (methods::is(input, "matrix")) {
-      return(sig_result)
-    } else if (methods::is(input, "data.frame")) {
-      dfres <- data.frame(sig_result)
-      colnames(dfres) <- colnames(sig_result)
-      return(dfres)
-    }
-  } else if (outputFormat == "matrix") {
-    return(sig_result)
-  } else if (outputFormat == "data.frame") {
-    dfres <- data.frame(sig_result)
-    colnames(dfres) <- colnames(sig_result)
-    return(dfres)
-  } else if (outputFormat == "SummarizedExperiment") {
-    attr(rownames(runindata), ".match.hash") <- NULL
-    outdata <- SummarizedExperiment::SummarizedExperiment(
-      assays = S4Vectors::SimpleList(data = runindata),
-      colData = S4Vectors::DataFrame(t(sig_result)))
-    return(outdata)
-  } else {
-    stop("Output format error.")
-  }
+  return(output_function(input, signatures, algorithm, outputFormat, runindata,
+                         sig_result))
 }
 
 #' Compare scoring algorithms on a single signature via heatmap or boxplot.
@@ -510,42 +374,26 @@ compareAlgs <- function(input, signatures = NULL, annotationColName,
   if (output != "heatmap" & output != "boxplot") {
     stop("Output parameter must specify either 'heatmap' or 'boxplot'")
   }
-
-  if (is.null(signatures)) {
-    # Override with global environment
-    if ("TBsignatures" %in% ls(envir = .GlobalEnv)) {
-      get("TBsignatures", envir = .GlobalEnv)
-      signatures <- TBsignatures
-    } else {
-      utils::data("TBsignatures", package = "TBSignatureProfiler",
-                  envir = .myenv)
-      signatures <- .myenv$TBsignatures
-    }
-  }
+  if (is.null(signatures)) signatures <- check_sig_env(signatures)
   for (sig in names(signatures)) {
     new.name <- paste("Scoring Methods for", sig)
     if (!show.pb) {
-      utils::capture.output(scored <- runTBsigProfiler(input,
-                                                       useAssay = useAssay,
-                                                       combineSigAndAlgorithm = TRUE,
-                                                       signatures = signatures[sig],
-                                                       algorithm = algorithm,
-                                                       parallel.sz = parallel.sz))
+      utils::capture.output(scored <- runTBsigProfiler(
+        input, useAssay = useAssay, combineSigAndAlgorithm = TRUE,
+        signatures = signatures[sig], algorithm = algorithm,
+        parallel.sz = parallel.sz))
     } else if (show.pb) {
-      scored <- runTBsigProfiler(input, useAssay = useAssay,
-                                 combineSigAndAlgorithm = TRUE,
-                                 signatures = signatures[sig],
-                                 algorithm = algorithm,
-                                 parallel.sz = parallel.sz)
+      scored <- runTBsigProfiler(
+        input, useAssay = useAssay, combineSigAndAlgorithm = TRUE,
+        signatures = signatures[sig], algorithm = algorithm, 
+        parallel.sz = parallel.sz)
     }
-
     if (methods::is(input, "SummarizedExperiment")) {
       already.there <- names(SummarizedExperiment::colData(input))
       col.names <- subset(names(SummarizedExperiment::colData(scored)),
                           !(names(SummarizedExperiment::colData(scored))
                             %in% already.there))
     } else stop("Input must be a SummarizedExperiment object.")
-
     if (output == "heatmap") {
       return(signatureHeatmap(scored,
                               name = new.name,

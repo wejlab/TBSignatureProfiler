@@ -9,10 +9,12 @@
 #  covr::report(res)
 #}
 
-#test_for_me("R/plot.R", "tests/testthat/test-plot.R")
+#test_for_me("R/profile.R", "tests/testthat/test-profile.R")
+  
 # Look at whole package -------------------------------------------------------
 
 # Gets percent coverage for entire package, by script
+  
 #covr::package_coverage()
 #
 # Report with gui (probably the best here)

@@ -24,8 +24,8 @@ test_that("incorrect input", {
     runTBsigProfiler(mat_testdata,
                      signatures = list(sig1 = paste0("gene", 1:10)),
                      algorithm = "nothing", parallel.sz = 1),
-    paste0("Invalid algorithm. Supported algorithms are
-    GSVA, ssGSEA, PLAGE, Zscore, singscore, and ASSIGN")
+    paste0("Invalid algorithm. Supported algorithms are: ",
+           "GSVA, ssGSEA, PLAGE, Zscore, singscore, and ASSIGN")
   )
   expect_error(
     runTBsigProfiler(mat_testdata,
@@ -113,8 +113,8 @@ test_that("matrix input", {
                      combineSigAndAlgorithm = NULL,
                      algorithm = c("GSVA", "ssGSEA", "ASSIGN"),
                      ASSIGNiter = 100, ASSIGNburnin = 50, parallel.sz = 1),
-    paste0("You must choose whether or not to combine the signature and ",
-           "algorithm name using combineSigAndAlgorithm.")
+    paste0("You must choose whether or not to combine the ",
+           "signature and algorithm name using combineSigAndAlgorithm.")
   )
 })
 
@@ -316,7 +316,7 @@ test_that("SummarizedExperiment input", {
                      algorithm = c("GSVA", "ASSIGN"), parallel.sz = 1,
                      combineSigAndAlgorithm = FALSE,
                      ASSIGNiter = 100, ASSIGNburnin = 50),
-    "SummarizedExperiment not supported with combineSigAndAlgorithm FALSE."
+    "SummarizedExperiment not supported when combineSigAndAlgorithm FALSE."
   )
   expect_error(
     runTBsigProfiler(SEtestdata, useAssay = "data",
@@ -325,11 +325,14 @@ test_that("SummarizedExperiment input", {
                      algorithm = c("GSVA", "ASSIGN"), parallel.sz = 1,
                      combineSigAndAlgorithm = FALSE,
                      ASSIGNiter = 100, ASSIGNburnin = 50),
-    "SummarizedExperiment not supported with combineSigAndAlgorithm FALSE."
+    "SummarizedExperiment not supported when combineSigAndAlgorithm FALSE."
   )
 })
 
-# Test error in output
+# Test other things
+SEtestdata <- SummarizedExperiment::SummarizedExperiment(
+  assays = S4Vectors::SimpleList(data = mat_testdata,
+                                 counts = mat_testdata))
 test_that("Output error", {
   expect_error(
     runTBsigProfiler(SEtestdata, useAssay = "data",
@@ -340,19 +343,29 @@ test_that("Output error", {
                      ASSIGNiter = 100, ASSIGNburnin = 50),
     "Output format error."
   )
+  expect_is(
+    update_genenames(c("FN1", "TP53", "UNKNOWNGENE","7-Sep", "9/7", "1-Mar", "Oct4", "4-Oct",
+                       "OCT4-PG4", "C19ORF71", "C19orf71")),
+    "character"
+  )
+  expect_s4_class(
+    runTBsigProfiler(SEtestdata, useAssay = NULL,
+                     signatures = TBsignatures["Zak_RISK_16"],
+                     algorithm = "GSVA", parallel.sz = 1),
+    "SummarizedExperiment"
+  )
 })
 
 # Test compareAlgs function
-SummarizedExperiment::colData(SEtestdata)[, 1] <- factor(c(rep("yes", 5),
-                                                           rep("no", 5)))
-names(SummarizedExperiment::colData(SEtestdata)) <- "Disease"
+SEtestdata$Disease <- factor(c(rep("yes", 5), rep("no", 5)))
 test_that("CompareAlgs function", {
   expect_error(
     compareAlgs(SEtestdata,
                 useAssay = "data",
                 annotationColName = "Disease",
                 algorithm = "GSVA",
-                output = "None"),
+                output = "None",
+                signatures = list(sig1 = paste0("gene", 1:10))),
     "Output parameter must specify either 'heatmap' or 'boxplot'"
   )
   expect_is(
@@ -360,16 +373,9 @@ test_that("CompareAlgs function", {
                 useAssay = "data",
                 annotationColName = "Disease",
                 algorithm = "GSVA",
-                output = "heatmap"),
+                output = "heatmap",
+                signatures = list(sig1 = paste0("gene", 1:10))),
     "HeatmapList"
-  )
-  expect_is(
-    compareAlgs(SEtestdata,
-                useAssay = "data",
-                annotationColName = "Disease",
-                algorithm = "GSVA",
-                output = "boxplot"),
-    "ggplot"
   )
   expect_output(
     compareAlgs(SEtestdata,
@@ -377,7 +383,9 @@ test_that("CompareAlgs function", {
                 annotationColName = "Disease",
                 algorithm = "GSVA",
                 output = "boxplot",
-                show.pb = TRUE)
+                show.pb = TRUE,
+                signatures = list(sig1 = paste0("gene", 1:5),
+                                  sig2 = paste0("gene", 5:10)))
   )
   expect_error(
     compareAlgs(df_testdata,
@@ -385,7 +393,8 @@ test_that("CompareAlgs function", {
                 annotationColName = "Disease",
                 algorithm = "GSVA",
                 output = "boxplot",
-                show.pb = TRUE),
+                show.pb = TRUE,
+                signatures = list(sig1 = paste0("gene", 1:10))),
     "Input must be a SummarizedExperiment object."
   )
 })

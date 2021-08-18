@@ -1,6 +1,6 @@
 Package: TBSignatureProfiler
 Title: Profile RNA-Seq Data Using TB Pathway Signatures
-Version: 1.5.0
+Version: 1.5.1
 Authors@R:
     c(person(given = "David", family = "Jenkins", role = c("aut"), email = "dfj@bu.edu"),
       person(given = "Aubrey", family = "Odom", role = c("aut", "cre"), email = "aodom@bu.edu"),
@@ -19,7 +19,7 @@ Encoding: UTF-8
 biocViews: GeneExpression, DifferentialExpression
 RoxygenNote: 7.1.1
 LazyData: TRUE
-Depends:
+Depends: R (>= 4.1)
 Imports:
     ASSIGN (>= 1.23.1),
     GSVA,
@@ -61,7 +61,8 @@ Suggests:
     MASS,
     class,
     e1071,
-    pROC
+    pROC,
+    HGNChelper
 URL: 
   https://github.com/compbiomed/TBSignatureProfiler
   https://compbiomed.github.io/TBSignatureProfiler-docs/

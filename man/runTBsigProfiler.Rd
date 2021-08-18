@@ -21,7 +21,8 @@ runTBsigProfiler(
   parallel.sz = 0,
   ASSIGNiter = 1e+05,
   ASSIGNburnin = 50000,
-  ssgsea_norm = TRUE
+  ssgsea_norm = TRUE,
+  update_genes = TRUE
 )
 }
 \arguments{
@@ -43,13 +44,15 @@ of signatures \code{TBsignatures} list is used. For details, run
 one is desired. The default is \code{c("GSVA", "ssGSEA", "ASSIGN",
 "PLAGE", "Zscore", "singscore")}.}
 
-\item{combineSigAndAlgorithm}{logical, not supported if \code{input} is a
-SummarizedExperiment object (in which case, the default is \code{TRUE}).
-For a matrix or data frame, if \code{TRUE}, the row names will be in the form
-<algorithm>_<signature>. If \code{FALSE}, there will be a column named
-'algorithm' that lists which algorithm is used, and a column named 'pathway'
-that lists the signature profiled. If \code{NULL}, and one algorithm was used,
-the algorithm will not be listed. The default is \code{FALSE}.}
+\item{combineSigAndAlgorithm}{logical, if \code{TRUE}, output row names will
+be of the form <algorithm>_<signature>. It must be set to code{TRUE} if the
+\code{ouputFormat} will be a SummarizedExperiment and
+\code{length(algorithm) > 1}.
+It will always be \code{FALSE} if only one algorithm is selected.
+If \code{FALSE}, there will be a column named algorithm' that lists which
+algorithm is used, and a column named 'pathway' that lists the signature
+profiled. If \code{NULL}, and one algorithm was used, the algorithm will not
+be listed. The default is \code{FALSE}.}
 
 \item{assignDir}{a character string naming a directory to save intermediate
 ASSIGN results if \code{algorithm} specifies \code{"ASSIGN"}. The default is
@@ -78,6 +81,12 @@ Barbie et al. (2009) normalizing the scores by the absolute difference
 between the minimum and the maximum, as described in their paper.
 When \code{ssgsea.norm = FALSE}, this last normalization step is skipped.
 The default is \code{TRUE}.}
+
+\item{update_genes}{logical, denotes whether gene names from \code{signatures}
+and the rownames of \code{input} should be checked for accuracy using 
+\code{HGNChelper::checkGeneSymbols()}. The mapping assumes
+genes are from humans and will keep unmapped genes as the original
+input gene name. Default is \code{TRUE}.}
 }
 \value{
 A \code{SummarizedExperiment} object, \code{data.frame}, or
