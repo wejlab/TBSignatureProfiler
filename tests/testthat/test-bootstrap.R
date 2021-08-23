@@ -48,9 +48,10 @@ test_that("Run bootstrapAUC", {
 test_that("Run tableAUC", {
   expect_output(
     tableAUC(SE_scored = scored_testdata,
-                 signatureColNames = "sig1",
-                 annotationColName = "Disease",
-                 num.boot = 5)
+             signatureColNames = "sig1",
+             annotationColName = "Disease",
+             pROC = FALSE,   
+             num.boot = 5)
   )
   expect_is(
     tableAUC(SE_scored = scored_testdata,
@@ -82,6 +83,7 @@ test_that("compareBoxplots", {
                     signatureColNames = "sig1",
                     annotationColName = "Disease",
                     num.boot = 5,
+                    violinPlot = TRUE,
                     rotateLabels = TRUE)
   )
 })
