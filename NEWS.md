@@ -1,5 +1,14 @@
 # TBSignatureProfiler (development version)
 
+## Bug Fixes
+* Fixed some package tests for the profile.R script to increase coverage
+
+## Major Changes
+* Added the gene_update parameter to runTBsigProfiler() to allow users to check signature/sample gene names for excel mogrified or outdated gene symbols
+
+## Minor Changes
+* Rewrote runTBsigProfiler() to be shorter and easier to maintain
+
 # TBSignatureProfiler 1.5.0
 
 * 68 signatures currently available
