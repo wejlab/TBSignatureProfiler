@@ -2,7 +2,7 @@
 % Please edit documentation in R/OriginalModel.R
 \name{subsetGeneSet}
 \alias{subsetGeneSet}
-\title{Filter gene expression value matrix based on certatin gene sets.}
+\title{Filter gene expression value matrix based on certain gene sets.}
 \usage{
 subsetGeneSet(
   theObject,
@@ -31,5 +31,5 @@ A matrix with selected gene expression value if \code{obtainDiagnosis} is FALSE.
 else, return a list contains the selected gene expression value and diagnosis results for each observation.
 }
 \description{
-A function used to subset gene expression value matrix based on certatin gene sets.
+A function used to subset gene expression value matrix based on certain gene sets.
 }

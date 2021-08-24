@@ -3,7 +3,7 @@
 \docType{data}
 \name{OriginalTrainingData}
 \alias{OriginalTrainingData}
-\title{Discovery datasets for correpsonding gene signatures.}
+\title{Discovery datasets for corresponding gene signatures.}
 \format{
 list
 }
@@ -14,7 +14,7 @@ See \code{?TBsignatures} for reference information.
 OriginalTrainingData
 }
 \description{
-Discovery datasets for correpsonding gene signatures.
+Discovery datasets for corresponding gene signatures.
 }
 \examples{
 data("OriginalTrainingData")

@@ -9,7 +9,7 @@
 #  covr::report(res)
 #}
 
-#test_for_me("R/profile.R", "tests/testthat/test-profile.R")
+#test_for_me("R/evaluate.R", "tests/testthat/test-evaluate.R")
   
 # Look at whole package -------------------------------------------------------
 

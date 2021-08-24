@@ -31,7 +31,7 @@ test_that("incorrect input", {
     runTBsigProfiler(mat_testdata,
                      signatures = list(sig1 = paste0("fakegene", 1:10)),
                      algorithm = "ASSIGN", ASSIGNiter = 100, ASSIGNburnin = 50),
-    paste0("ERROR: all valid outputs are empty.")
+    paste0("All valid outputs are empty.")
   )
 })
 
@@ -341,7 +341,8 @@ test_that("Output error", {
                      algorithm = c("GSVA"), parallel.sz = 1,
                      combineSigAndAlgorithm = TRUE,
                      ASSIGNiter = 100, ASSIGNburnin = 50),
-    "Output format error."
+    paste("'OutputFormat' should be one of 'SummarizedExperiment',",
+          "'matrix', or 'data.frame'")
   )
   expect_is(
     update_genenames(c("FN1", "TP53", "UNKNOWNGENE","7-Sep", "9/7", "1-Mar", "Oct4", "4-Oct",

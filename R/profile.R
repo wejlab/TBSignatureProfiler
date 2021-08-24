@@ -129,9 +129,8 @@ output_function <- function(input, signatures, algorithm, outputFormat,
       assays = S4Vectors::SimpleList(data = runindata),
       colData = S4Vectors::DataFrame(t(sig_result)))
     return(outdata)
-  } else {
-    stop("Output format error.")
-  }
+  } else stop("'OutputFormat' should be one of 'SummarizedExperiment', ",
+              "'matrix', or 'data.frame'")
 }
 
 
@@ -310,7 +309,7 @@ runTBsigProfiler <- function(input, useAssay = NULL, signatures = NULL,
                                   parallel.sz, ASSIGNiter, ASSIGNburnin,
                                   ssgsea_norm, combineSigAndAlgorithm,
                                   one_alg = TRUE)
-    if (is.null(sig_result)) stop("ERROR: all valid outputs are empty.")
+    if (is.null(sig_result)) stop("All valid outputs are empty.")
   } else {
     combined <- lapply(algorithm, function(x) {
       score_algorithm(runindata, signatures, x, assignDir,

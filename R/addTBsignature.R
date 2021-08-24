@@ -17,7 +17,7 @@
 #' the signature to be added. Required.
 #' @param authname a \code{character} string containing the last name of the primary
 #' author of the publication where the signature was first identified.
-#' If spaces are present, omit them, and use proper captilization. Required.
+#' If spaces are present, omit them, and use proper capitalization. Required.
 #' @param signame_common a \code{character} string of the alternate name of the
 #' signature given by the publication, if it exists. If \code{NULL}, no
 #' assigned name is assumed to exist. Default is \code{null}.
@@ -66,12 +66,12 @@ addTBsignature <- function(sigsymbols, authname,
                          saveobjs = FALSE, views = TRUE) {
   # Checks and renaming
   if (!is.character(sigsymbols)) {
-    stop(paste("'sigsymbols' must be a character vector."))
+    stop("'sigsymbols' must be a character vector.")
   } else if (!is.character(authname)) {
-    stop(paste("'authname' must be a character string."))
+    stop("'authname' must be a character string.")
   } else if (length(sigsymbols) <= 1) {
-    stop(paste("Currently the TBSP only accepts gene signatures with 2 or more",
-               "gene symbols."))
+    stop("Currently the TBSP only accepts gene signatures with 2 or more ",
+               "gene symbols.")
   } else if (!is.logical(saveobjs)) {
     stop("'saveobjs' must be logical.")
   }
@@ -80,18 +80,18 @@ addTBsignature <- function(sigsymbols, authname,
                     "Disease/Pneumonia", "failure", "response", "risk")
   replacetypes <- c("Disease", "HIV", "OD", "PNA", "FAIL", "RES", "RISK")
   if (!(sigtype %in% diseasetypes)) {
-    stop(paste("Input string for 'sigtype' not recognized.",
-      "You must denote 'sigtype' as one of the following:",
-      "'Disease', 'Disease/HIV', 'Disease/Other Diseases',",
-      "'Disease/Pneumonia', 'failure', 'response', 'risk'"))
+    stop("Input string for 'sigtype' not recognized. You must denote ",
+    "'sigtype' as one of the following: 'Disease', 'Disease/HIV', ",
+    "'Disease/Other Diseases', 'Disease/Pneumonia', 'failure', ",
+    "'response', 'risk'")
   } else {
     sigtype <- replacetypes[which(sigtype == diseasetypes)]
   }
 
   alltissues <- c("mixed", "PBMC", "whole blood")
   if (!(tissuetype %in% alltissues)) {
-    stop(paste("'tissuetype' must be one of the following:",
-               "'mixed', 'PBMC', 'whole blood'"))
+    stop("'tissuetype' must be one of the following: ",
+         "'mixed', 'PBMC', 'whole blood'")
   } else if (tissuetype == "whole blood") tissuetype <- "whole"
 
   # Create signature name
@@ -102,14 +102,14 @@ addTBsignature <- function(sigsymbols, authname,
 
   if (nchar(signame_TBSP) > 17) {
     howmanyletters <- 17 - (2 + nchar(as.character(ngenes)) + length(sigtype))
-    stop(paste("Resulting signature name is too long.",
-               "Please shorten or abbreviate authname to", howmanyletters,
-               "characters."))
+    stop("Resulting signature name is too long. ",
+         "Please shorten or abbreviate authname to ", howmanyletters,
+         " characters.")
   } else if(signame_TBSP %in% names(TBsignatures)) {
-    stop(paste("There is already a signature with that name.",
-               "Please alter the authname to distinguish it from the previous",
-               "signature."))
-  } else message(paste("The assigned signature name is", signame_TBSP))
+    stop("There is already a signature with that name. ",
+         "Please alter the authname to distinguish it from the previous ",
+         "signature.")
+  } else message("The assigned signature name is", signame_TBSP)
 
   if (is.null(signame_common)) {
     message("No alternative signature name was provided")
@@ -145,8 +145,8 @@ addTBsignature <- function(sigsymbols, authname,
   sigAnnotData$disease <- as.factor(sigAnnotData$disease)
   sigAnnotData$tissue_type <- as.factor(sigAnnotData$tissue_type)
   if (all(sigAnnotData$names != names(TBsignatures))) {
-    stop(paste("The names in the sigAnnotData do not match the order",
-    "and/or names of the TBsignatures object."))
+    stop("The names in the sigAnnotData do not match the order ",
+         "and/or names of the TBsignatures object.")
   } else if (saveobjs) save(sigAnnotData, file = "data/sigAnnotData.rda")
   if (views) utils::View(sigAnnotData)
   message("sigAnnotData object updated")
@@ -160,9 +160,10 @@ addTBsignature <- function(sigsymbols, authname,
   common_sigAnnotData$tissue_type <- as.factor(
     common_sigAnnotData$tissue_type)
   if (all(common_sigAnnotData$names != names(TBcommon))) {
-    stop(paste("The names in the common_sigAnnotData table do not match",
-    "the order and/or names of the TBcommon object."))
-  } else if (saveobjs) save(common_sigAnnotData, file = "data/common_sigAnnotData.rda")
+    stop("The names in the common_sigAnnotData table do not match ",
+         "the order and/or names of the TBcommon object.")
+  } else if (saveobjs) save(common_sigAnnotData,
+                            file = "data/common_sigAnnotData.rda")
   if (views) utils::View(common_sigAnnotData)
   message("common_sigAnnotData updated")
 

@@ -167,7 +167,11 @@ test_that("SummarizedExperiment Plot Works", {
   expect_is(
     signatureHeatmap(inputData = SE_wres, signatureColNames = "sig1",
                      annotationColNames = "sample", scale = TRUE,
-                     split_heatmap = "none"),
+                     split_heatmap = "disease",
+                     annotationSignature = as.data.frame(
+                       cbind(names = "sig1",
+                             disease = "RISK",
+                             tissue_type = "Whole"))),
     "HeatmapList"
   )
   expect_is(

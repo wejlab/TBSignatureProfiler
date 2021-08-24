@@ -11,7 +11,7 @@ Maertzdorf_Verhagen_daCosta_OriginalModel(dat_list, dat_test_sig)
 \item{dat_list}{A list contains training data and disease status outcomes from
 the discovery data of corresponding gene signatures.}
 
-\item{dat_test_sig}{A data frame contains correpsonding biomarker gene features.
+\item{dat_test_sig}{A data frame contains corresponding biomarker gene features.
 Used to evaluate the performance of biomarker using its original models.}
 }
 \value{

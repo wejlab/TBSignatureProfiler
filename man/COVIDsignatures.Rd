@@ -42,10 +42,10 @@ list
  \item{\strong{Hadjadj_nanostring_WB_severe_down}}{: Hadjadj J, Yatim N, Barnabei L, et al. 2020. "Impaired type I interferon activity and inflammatory responses in severe COVID-19 patients." Science 369 (6504): 718-724.  {https://doi.org/10.1126/science.abc6027}}
  \item{\strong{Hadjadj_nanostring_critical_up}}{: Hadjadj J, Yatim N, Barnabei L, et al. 2020. "Impaired type I interferon activity and inflammatory responses in severe COVID-19 patients." Science 369 (6504): 718-724.  {https://doi.org/10.1126/science.abc6027}}
  \item{\strong{Hadjadj_nanostring_critical_down}}{: Hadjadj J, Yatim N, Barnabei L, et al. 2020. "Impaired type I interferon activity and inflammatory responses in severe COVID-19 patients." Science 369 (6504): 718-724.  {https://doi.org/10.1126/science.abc6027}}
- \item{\strong{Wei_sc_PBMC_inactivated_monocytes}}{: Wei et al. 2020. "Viral Invasion and Type I Interferon Response Characterize the Immunophenotypes during COVID-19 Infection." SSRN: {http://dx.doi.org/10.2139/ssrn.3555695}}
- \item{\strong{Wei_sc_PBMC_classical_monocytes}}{: Wei et al. 2020. "Viral Invasion and Type I Interferon Response Characterize the Immunophenotypes during COVID-19 Infection." SSRN: {http://dx.doi.org/10.2139/ssrn.3555695}}
- \item{\strong{Wei_sc_PBMCs_T_cells}}{: Wei et al. 2020. "Viral Invasion and Type I Interferon Response Characterize the Immunophenotypes during COVID-19 Infection." SSRN: {http://dx.doi.org/10.2139/ssrn.3555695}}
- \item{\strong{Wei_sc_PBMC_B_cells}}{: Wei et al. 2020. "Viral Invasion and Type I Interferon Response Characterize the Immunophenotypes during COVID-19 Infection." SSRN: {http://dx.doi.org/10.2139/ssrn.3555695}}
+ \item{\strong{Wei_sc_PBMC_inactivated_monocytes}}{: Wei et al. 2020. "Viral Invasion and Type I Interferon Response Characterize the Immunophenotypes during COVID-19 Infection." SSRN: {https://dx.doi.org/10.2139/ssrn.3555695}}
+ \item{\strong{Wei_sc_PBMC_classical_monocytes}}{: Wei et al. 2020. "Viral Invasion and Type I Interferon Response Characterize the Immunophenotypes during COVID-19 Infection." SSRN: {https://dx.doi.org/10.2139/ssrn.3555695}}
+ \item{\strong{Wei_sc_PBMCs_T_cells}}{: Wei et al. 2020. "Viral Invasion and Type I Interferon Response Characterize the Immunophenotypes during COVID-19 Infection." SSRN: {https://dx.doi.org/10.2139/ssrn.3555695}}
+ \item{\strong{Wei_sc_PBMC_B_cells}}{: Wei et al. 2020. "Viral Invasion and Type I Interferon Response Characterize the Immunophenotypes during COVID-19 Infection." SSRN: {https://dx.doi.org/10.2139/ssrn.3555695}}
  \item{\strong{Silvin_sc_WB_combined_signature}}{: Silvin A, Chapuis N, Dunsmore G, et al. 2020. "Elevated Calprotectin and Abnormal Myeloid Cell Subsets Discriminate Severe from Mild COVID-19." Cell 182 (6): 1401-1418.E18.  {https://doi.org/10.1016/j.cell.2020.08.002}}
  \item{\strong{Silvin_sc_WB_monocytes_up}}{: Silvin A, Chapuis N, Dunsmore G, et al. 2020. "Elevated Calprotectin and Abnormal Myeloid Cell Subsets Discriminate Severe from Mild COVID-19." Cell 182 (6): 1401-1418.E18.  {https://doi.org/10.1016/j.cell.2020.08.002}}
  \item{\strong{Silvin_sc_WB_monocytes_down}}{: Silvin A, Chapuis N, Dunsmore G, et al. 2020. "Elevated Calprotectin and Abnormal Myeloid Cell Subsets Discriminate Severe from Mild COVID-19." Cell 182 (6): 1401-1418.E18.  {https://doi.org/10.1016/j.cell.2020.08.002}}
@@ -64,7 +64,7 @@ COVIDsignatures
 }
 \description{
 A set of 47 COVID-19 gene signatures from various single-cell and bulk
-RNA-seq publications and pre-print manuscripts from early- to mid-2020.
+RNA-seq publications and preprint manuscripts from early- to mid-2020.
 This set of signatures uses gene symbols.
 }
 \details{

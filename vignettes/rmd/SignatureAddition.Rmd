@@ -80,7 +80,7 @@ devtools::load_all()
  Sometimes, but not typically, authors name their signatures in originating publication (or that of a peer). If this is the case, take note of this common name. We will use this name in the package alongside a name that we develop according to our own nomenclature system for convenience. Examples of alternative names include [RISK6](https://pubmed.ncbi.nlm.nih.gov/32451443/), [PREDICT29](https://www.sciencedirect.com/science/article/pii/S1472979219303907?via%3Dihub), and [ACS_COR](https://www.sciencedirect.com/science/article/pii/S0140673615013161?via%3Dihub).
   
 ### If any details cannot be clearly determined
-At this point, you should have recorded all of the neccessary information. If you are missing any of the pieces of information listed above, then you will not be able to add the signature at this time. If you have any concerns about recording the correct information, you can reach out to the package maintainer, Aubrey Odom, at <aodom@bu.edu>.
+At this point, you should have recorded all of the necessary information. If you are missing any of the pieces of information listed above, then you will not be able to add the signature at this time. If you have any concerns about recording the correct information, you can reach out to the package maintainer, Aubrey Odom, at <aodom@bu.edu>.
 
 ## Information table for Laux da Costa signature
 
@@ -103,7 +103,7 @@ kable(info)
   
   To streamline the process of adding signatures, we have introduced the addTBsignature() function to the package. To use the function, users must access the function by calling the unexported function, `TBSignatureProfiler:::addTBsignature()`. This function will take as input the various pieces of information listed previously, as well as a few other parameters. It will easily update the package's `TBsignatures` and `TBcommon` signature lists, as well as the `sigAnnotData` and `commonAnnotData` annotation data tables. After doing so, we will just need to update the documentation for the signature objects and pull in the updates to the repository, and the addition of the signature will be complete. But first, we need to ensure that the data objects can be updated correctly.
   
-  From the code below, you should be able to pretty clearly see what needs to be inputted based on the table created above, but if this is unclear, please run `?TBSignatureProfiler:::addTBsignature` for more details on the paramaters. 
+  From the code below, you should be able to pretty clearly see what needs to be inputted based on the table created above, but if this is unclear, please run `?TBSignatureProfiler:::addTBsignature` for more details on the parameters. 
   
   The one parameter that we will point out, however, is very important - `savobjs`. This takes a logical and denotes essentially whether this is a 'test run' or the real thing (i.e., saving all the objects with the new signature). Here, we will first run the function with `saveobjs = FALSE`. Doing so will not save or overwrite any new object files to the data directory - it will only produce error messages and other progress messages, and (if `views = TRUE`) invoke a data viewer with `View()` on each of the objects so we can see what the final objects will look like. Note that the function will never return anything in its output to be saved to the working environment, regardless of what `saveobjs` is set to, and this is why we produce the data views if nothing is actually being saved to the RDS files in the data directory.
   

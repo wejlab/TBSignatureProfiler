@@ -50,6 +50,7 @@ test_that("Run tableAUC", {
     tableAUC(SE_scored = scored_testdata,
                  signatureColNames = "sig1",
                  annotationColName = "Disease",
+                 pROC = FALSE,
                  num.boot = 5)
   )
   expect_is(

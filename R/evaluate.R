@@ -153,11 +153,7 @@ SignatureQuantitative <- function(df.input, targetVec.num, signature.list = NULL
          signature.name.vec, or leave them both empty to use
          TBsignatures as the list of signatures for profiling.")
   } else if (is.null(signature.list) & is.null(signature.name.vec)) {
-    if ("TBsignatures" %in% ls(envir = .GlobalEnv)) {
-      get("TBsignatures", envir = .GlobalEnv)
-    }
-    signature.list <- TBsignatures
-    signature.name.vec <- names(signature.list)
+    signatures <- check_sig_env(signatures)
   }
 
   if (length(signature.list) != length(signature.name.vec)) {
@@ -297,11 +293,7 @@ plotQuantitative <- function(df.input, targetVec.num, signature.list = NULL,
          signature.name.vec, or leave them both empty to use
          TBsignatures as the list of signatures for profiling.")
   } else if (is.null(signature.list) & is.null(signature.name.vec)) {
-    if ("TBsignatures" %in% ls(envir = .GlobalEnv)) {
-      get("TBsignatures", envir = .GlobalEnv)
-    }
-    signature.list <- TBsignatures
-    signature.name.vec <- names(signature.list)
+    signatures <- check_sig_env(signatures)
   }
 
   if (length(signature.list) != length(signature.name.vec)) {

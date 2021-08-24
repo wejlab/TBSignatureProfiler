@@ -11,6 +11,13 @@ signaturelist <- list(sig1 = c("gene1", "gene2", "gene3"),
 signaturenamevec <- c("sig1", "sig2")
 numboot <- 5
 
+test_that("deseq2_norm_rle works", {
+  expect_is(
+    deseq2_norm_rle(abs(inputTest)),
+    "data.frame"
+  )
+})
+
 test_that("LOOAUC works", {
   expect_is(
     LOOAUC_simple_multiple_noplot_one_df(inputTest,

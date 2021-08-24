@@ -359,9 +359,9 @@ ObtainSampleScore_OriginalModel <- function(theObject_train, useAssay, gene_set,
     return(sample_score)
 }
 
-#' Filter gene expression value matrix based on certatin gene sets.
+#' Filter gene expression value matrix based on certain gene sets.
 #'
-#' A function used to subset gene expression value matrix based on certatin gene sets.
+#' A function used to subset gene expression value matrix based on certain gene sets.
 #'
 #' @param theObject A SummarizedExperiment object that has been prestored in the
 #' RData file: OriginalTrainingData.
@@ -508,7 +508,7 @@ ref_combat_impute <- function(theObject_train, useAssay = 1, gene_set, input,
 #'
 #' @param dat_list A list contains training data and disease status outcomes from
 #' the discovery data of corresponding gene signatures.
-#' @param dat_test_sig A data frame contains correpsonding biomarker gene features.
+#' @param dat_test_sig A data frame contains corresponding biomarker gene features.
 #' Used to evaluate the performance of biomarker using its original models.
 #' @return The predicted score for each sample in the test study.
 

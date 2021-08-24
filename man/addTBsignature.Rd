@@ -20,7 +20,7 @@ the signature to be added. Required.}
 
 \item{authname}{a \code{character} string containing the last name of the primary
 author of the publication where the signature was first identified.
-If spaces are present, omit them, and use proper captilization. Required.}
+If spaces are present, omit them, and use proper capitalization. Required.}
 
 \item{signame_common}{a \code{character} string of the alternate name of the
 signature given by the publication, if it exists. If \code{NULL}, no
