@@ -1,7 +1,10 @@
 globalVariables(c("TBsignaturesSplit", "OriginalTrainingData", "TBsignatures"))
 
-#' A function that implements the original models for various TB signatures.
+#' A function that implements the original methods for multiple TB signatures.
 #'
+#' This function computes prediction foot multiple TB signatures based on their training
+#' models/methods. To avoid naming issues, the gene names for both training data and
+#' input gene sets have been updated using the \code{\link[HGNChelper]{checkGeneSymbols}}. 
 #' TB signatures with available original models are: Anderson_42,
 #' Anderson_OD_51, Kaforou_27, Kaforou_OD_44, Kaforou_OD_53, Sweeney_OD_3,
 #' Maertzdorf_4, Verhagen_10, Jacobsen_3, Sambarey_HIV_10, Leong_24,
@@ -14,15 +17,14 @@ globalVariables(c("TBsignaturesSplit", "OriginalTrainingData", "TBsignatures"))
 #' names.
 #' @param useAssay A character string or an integer specifying the assay in the
 #' \code{input}.
-#' Used for the test SummarizedExperiment object. Default is 1, indicating the
+#' Used for the test SummarizedExperiment object. Default is \code{1}, indicating the
 #' first assay in the \code{input}.
 #' @param geneSignaturesName A character string/vector specifying the signature
-#' of interest.
-#' Default is \code{NULL}. If geneSignaturesName is \code{NULL}, run all
-#' available gene signatures' original model in the package.
-#' @param adj A small real number used in combat to solve for genes with 0 counts in rare cases.
-#' @param BPPARAM An instance inherited from \code{bplappy}.
-#' See \code{\link[BiocParallel]{bplapply}} for details.
+#' of interest. If \code{any(geneSignaturesName == "") == TRUE} run all
+#' available gene signatures' original models.
+#' @param adj A small real number used in combat to solve for genes with 0 counts(rare cases).
+#' Default is \code{1e-3}.
+#' @param BPPARAM An instance inherited from \code{\link[BiocParallel]{bplapply}}.
 #'
 #' @return A SummarizedExperiment object with predicted scores for each sample
 #' obtained from the signature's original model.
@@ -34,7 +36,7 @@ globalVariables(c("TBsignaturesSplit", "OriginalTrainingData", "TBsignatures"))
 #' re$Anderson_42_OriginalModel
 
 evaluateOriginalModel <- function(input, useAssay = 1,
-                                  geneSignaturesName = NULL, adj = 1e-3,
+                                  geneSignaturesName, adj = 1e-3,
                                   BPPARAM = BiocParallel::SerialParam(
                                       progressbar = TRUE)) {
     signature_NoRetraining <- c("Anderson_42", "Anderson_OD_51", "Kaforou_27",
@@ -45,22 +47,30 @@ evaluateOriginalModel <- function(input, useAssay = 1,
                               "Bloom_OD_144", "Suliman_RISK_4", "Zak_RISK_16",
                               "Leong_RISK_29", "Zhao_NANO_6")
     signature_all <- c(signature_NoRetraining, signature_Retraining)
-    if (is.null(geneSignaturesName)) {
+    ## Check whether input geneSignaturesName is valid
+    if (base::missing(geneSignaturesName)) {
+        stop(base::sprintf("Argument \"geneSignaturesName\" is missing, with no default. Available signatures are: %s",
+                     base::paste0(signature_all, collapse = ", ")))
+        stop("Argument \"geneSignaturesName\" is missing, with no default.")
+    }
+    if (base::any(geneSignaturesName == "")) {
+        base::message("Evaluating all available signatures with their original model.")
         geneSignaturesName <- signature_all
-        message("Evaluating all available signatures with their original model.")
     }
+    ## Intersecting input geneSignaturesName with available signatures
     sig_sub <- base::intersect(geneSignaturesName, signature_all)
-    if (identical(sig_sub, character(0))) {
-        stop(sprintf("Original model(s) information for the input signature(s) is not available. Available signatures are: %s",
-                     paste0(signature_all, collapse = ", ")))
+    if (base::identical(sig_sub, character(0))) {
+        stop(base::sprintf("Original model(s) information for the input signature(s) is not available. Available signatures are: %s",
+                     base::paste0(signature_all, collapse = ", ")))
     }
-    sig_not_found <- geneSignaturesName[-which(geneSignaturesName %in% sig_sub)]
-    if (!identical(sig_not_found, character(0))) {
-        message(sprintf("The original model for signature(s): %s are/is not available.",
-                        paste0(sig_not_found, collapse = ", ")))
+    
+    ## Check geneSignaturesName that are not available
+    sig_not_found <- geneSignaturesName[-base::which(geneSignaturesName %in% sig_sub)]
+    if (!base::identical(sig_not_found, character(0))) {
+        base::message(base::sprintf("The original model for signature(s): %s are/is not available.",
+                                    paste0(sig_not_found, collapse = ", ")))
     }
     sig_sub_NoRetraining <- base::intersect(sig_sub, signature_NoRetraining)
-    sig_sub_Retraining <- base::intersect(sig_sub, signature_Retraining)
     if (!identical(sig_sub_NoRetraining, character(0))) {
         sample_score_NoRetraining <- .OriginalModel_NoRetraining(input, useAssay,
                                                                  sig_sub_NoRetraining,
@@ -68,6 +78,7 @@ evaluateOriginalModel <- function(input, useAssay = 1,
     } else {
         sample_score_NoRetraining <- NULL
     }
+    sig_sub_Retraining <- base::intersect(sig_sub, signature_Retraining)
     if (!identical(sig_sub_Retraining, character(0))) {
         sample_score_Retraining <- .OriginalModel_Retraining(input, useAssay,
                                                              sig_sub_Retraining,
@@ -112,23 +123,20 @@ evaluateOriginalModel <- function(input, useAssay = 1,
                                                 function(i) {
                                                     TBsignaturesSplit <- TBsignaturesSplit
                                                     sig <- geneSignaturesName[i]
-                                                    message(sprintf("Now Evaluating: %s", sig))
+                                                    base::message(base::sprintf("Now Evaluating: %s", sig))
                                                     up_set <- TBsignaturesSplit[[sig]][[paste0(sig, "_up")]]
                                                     dn_set <- TBsignaturesSplit[[sig]][[paste0(sig, "_dn")]]
-                                                    dat_sig_up <- data.frame(subsetGeneSet(input, up_set, useAssay))
-                                                    dat_sig_dn <- data.frame(subsetGeneSet(input, dn_set, useAssay))
-                                                    if (ncol(dat_sig_up) == 0) {
-                                                        message("No signature genes found in ", paste(up_set,
-                                                                                                      collapse = " "),
-                                                                " for signature ", sig, ", prediction score is NA.")
+                                                    dat_sig_up <- base::data.frame(subsetGeneSet(input, up_set, useAssay))
+                                                    dat_sig_dn <- base::data.frame(subsetGeneSet(input, dn_set, useAssay))
+                                                    if (base::ncol(dat_sig_up) == 0) {
+                                                        base::sprintf("All up-regulated genes are not found within the input. Prediciton score for signature: %s is NA",
+                                                                      sig)
                                                         up_sample_score <- NA
-                                                    } else if (ncol(dat_sig_dn) == 0) {
-                                                        message("No signature genes found in ", paste(dn_set,
-                                                                                                      collapse = " "),
-                                                                " for signature ", sig, ", prediction score is NA.")
+                                                    } else if (base::ncol(dat_sig_dn) == 0) {
+                                                        base::sprintf("All down-regulated genes are not found within the input. Prediciton score for signature: %s is NA",
+                                                                      sig)
                                                         dn_sample_score <- NA
-                                                    }
-                                                    else { # Need number of column >=1
+                                                    } else { # Need number of column >=1
                                                         if (sig == "Anderson_42" || sig == "Anderson_OD_51") {
                                                             up_sample_score <- BiocGenerics::rowSums(dat_sig_up)
                                                             dn_sample_score <- BiocGenerics::rowSums(dat_sig_dn)
@@ -136,11 +144,10 @@ evaluateOriginalModel <- function(input, useAssay = 1,
                                                                    || sig == "Kaforou_OD_53") {
                                                             up_sample_score <- BiocGenerics::rowMeans(dat_sig_up)
                                                             dn_sample_score <- BiocGenerics::rowMeans(dat_sig_dn)
-                                                        } else if (sig == "Sweeney_OD_3") { # Only one gene in down set.
-                                                            up_sample_score <- base::apply(dat_sig_up, 1,
-                                                                                           function(x) exp(mean(log(x))))
-                                                            dn_sample_score <- base::apply(dat_sig_dn, 1,
-                                                                                           function(x) exp(mean(log(x))))
+                                                        } else if (sig == "Sweeney_OD_3") { 
+                                                            ## Only one gene in down set for Sweeney_OD_3.
+                                                            up_sample_score <- base::apply(dat_sig_up, 1, function(x) exp(mean(log(x))))
+                                                            dn_sample_score <- base::apply(dat_sig_dn, 1, function(x) exp(mean(log(x))))
                                                         }
                                                     }
                                                     sample_score <- up_sample_score - dn_sample_score
