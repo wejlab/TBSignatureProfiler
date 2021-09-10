@@ -11,19 +11,18 @@
 names.}
 
 \item{useAssay}{A character string or an integer specifying the assay in the
-\code{input}.
-Used for the test SummarizedExperiment object. Default is 1, indicating the
+\code{input}. Default is the first assay in the assay list.
+Used for the test SummarizedExperiment object. Default is \code{1}, indicating the
 first assay in the \code{input}.}
 
 \item{geneSignaturesName}{A character string/vector specifying the signature
-of interest.
-Default is \code{NULL}. If geneSignaturesName is \code{NULL}, run all
-available gene signatures' original model in the package.}
+of interest. If \code{any(geneSignaturesName == "") == TRUE} run all
+available gene signatures' original models.}
 
-\item{adj}{A small real number used in combat to solve for genes with 0 counts in rare cases.}
+\item{adj}{A small positive real number used in \code{\link[sva]{ComBat}} to solve
+for genes with 0 counts(rare cases). Default is \code{1e-3}.}
 
-\item{BPPARAM}{An instance inherited from \code{bplappy}.
-See \code{\link[BiocParallel]{bplapply}} for details.}
+\item{BPPARAM}{An instance inherited from \code{\link[BiocParallel]{bplapply}}.}
 }
 \value{
 A SummarizedExperiment object with predicted scores for each sample
@@ -34,7 +33,7 @@ A function to obtain predicted score for TB gene signatures that need retraining
 }
 \details{
 Maertzdorf_4 and Maertzdorf_15 were trained using random forest to distinguish
-samples with active TB from healthy controls.
+patients with active TB from healthy controls.
 Verhagen_10 was also trained using random forest to distinguish samples with active TB
 from either latent infection or healthy controls.
 The random forest model was build using \code{\link[randomForest]{randomForest}}.\cr
@@ -48,6 +47,6 @@ differentiate samples with active TB from latent infection status.
 The KNN model was build using \code{\link[class]{knn}}.\cr
 Suliman_RISK_4 and Zak_RISK_16 were trained using support vector machines (SVM)
 to distinguish TB progressor from non-progressors. The input gene expression features
-for Suliman_RISK_4 used the paired ratio of GAS6/CD1C, SEPT4/BLK, SEPT4/CD1C, GAS6/BLK.
+for Suliman_RISK_4 used the paired ratio of GAS6/CD1C, SEPTIN4/BLK, SEPTIN4/CD1C, GAS6/BLK.
 The SVM model was build using \code{\link[e1071]{svm}}.
 }

@@ -1,5 +1,5 @@
 ---
-title: "Evaluating Signatures Using Their Original Models"
+title: "Evaluating Signatures Using Original Models"
 author: 
 - name: Xutao Wang
   affiliation: 
@@ -36,22 +36,25 @@ signatureOriginalModel <- c("Anderson_42", "Anderson_OD_51", "Kaforou_27",
 ```
 
 # Evaluation
-In this tutorial, we will work with HIV and Tuberculosis (TB) gene expression data in a `SummarizedExperiment` format. First, we evaluate the performance of all available TB gene signatures whose original models have been included in the package. 
+In this tutorial, we will work with HIV and Tuberculosis (TB) gene expression data in a `SummarizedExperiment` format. First, we evaluate the performance of all available TB gene signatures whose original models have been included in the package by setting `geneSignaturesName = ""`. 
 
-```{r, eval = FALSE, message=FALSE}
+```{r, eval = FALSE, message=FALSE, results='hide'}
 # HIV/TB gene expression data, included in the package
 hivtb_data <- TB_hiv
-out <- evaluateOriginalModel(input = hivtb_data, useAssay = "counts")
+out <- evaluateOriginalModel(input = hivtb_data, geneSignaturesName = "",
+                             useAssay = "counts")
+out$Zak_RISK_16_OriginalModel
 ```
 
 Users can also evaluate selected gene signatures based on their preference.
 
-```{r, eval = FALSE, message=FALSE}
-outSub <- evaluateOriginalModel(input = hivtb_data, useAssay = "counts",
-                                geneSignaturesName = c("Anderson_42",
-                                                       "Sweeney_OD_3",
-                                                       "Verhagen_10",
-                                                       "Zak_RISK_16"))
+```{r, eval = FALSE, message=FALSE, results='hide'}
+outSub <- evaluateOriginalModel(input = hivtb_data,
+                                geneSignaturesName = c("Anderson_42", "Sweeney_OD_3",
+                                                       "Verhagen_10", "Zak_RISK_16"),
+                                useAssay = "counts")
+# The predicted score from each signature can be viewed by calling: 
+colData(outSub)[, paste0(c("Anderson_42", "Sweeney_OD_3", "Verhagen_10", "Zak_RISK_16"), "_OriginalModel")]
 ```
 
 The returned object is also of the `SummarizedExperiment`. The scores will be returned as a part of the `colData` with column names formatted as "Name_Of_Signature_OriginalModel". The structure of the returned object is the same as the one given by `runTBsigProfiler`. At this point, users may now follow the guidance to using the package given in the main [package vignette](https://compbiomed.github.io/TBSignatureProfiler-docs/articles/rmd/TBSig_Vignette.html) for downstream analysis.
