@@ -2,12 +2,12 @@
 % Please edit documentation in R/OriginalModel.R
 \name{evaluateOriginalModel}
 \alias{evaluateOriginalModel}
-\title{A function that implements the original models for various TB signatures.}
+\title{A function that implements the original methods for multiple TB signatures.}
 \usage{
 evaluateOriginalModel(
   input,
+  geneSignaturesName,
   useAssay = 1,
-  geneSignaturesName = NULL,
   adj = 0.001,
   BPPARAM = BiocParallel::SerialParam(progressbar = TRUE)
 )
@@ -16,26 +16,28 @@ evaluateOriginalModel(
 \item{input}{A SummarizedExperiment object with gene symbols as the assay row
 names.}
 
+\item{geneSignaturesName}{A character string/vector specifying the signature
+of interest. If \code{any(geneSignaturesName == "") == TRUE} run all
+available gene signatures' original models.}
+
 \item{useAssay}{A character string or an integer specifying the assay in the
-\code{input}.
-Used for the test SummarizedExperiment object. Default is 1, indicating the
+\code{input}. Default is the first assay in the assay list.
+Used for the test SummarizedExperiment object. Default is \code{1}, indicating the
 first assay in the \code{input}.}
 
-\item{geneSignaturesName}{A character string/vector specifying the signature
-of interest.
-Default is \code{NULL}. If geneSignaturesName is \code{NULL}, run all
-available gene signatures' original model in the package.}
+\item{adj}{A small positive real number used in \code{\link[sva]{ComBat}} to solve
+for genes with 0 counts(rare cases). Default is \code{1e-3}.}
 
-\item{adj}{A small real number used in combat to solve for genes with 0 counts in rare cases.}
-
-\item{BPPARAM}{An instance inherited from \code{bplappy}.
-See \code{\link[BiocParallel]{bplapply}} for details.}
+\item{BPPARAM}{An instance inherited from \code{\link[BiocParallel]{bplapply}}.}
 }
 \value{
 A SummarizedExperiment object with predicted scores for each sample
 obtained from the signature's original model.
 }
 \description{
+This function computes prediction foot multiple TB signatures based on their training
+models/methods. To avoid naming issues, the gene names for both training data and
+input gene sets have been updated using the \code{\link[HGNChelper]{checkGeneSymbols}}.
 TB signatures with available original models are: Anderson_42,
 Anderson_OD_51, Kaforou_27, Kaforou_OD_44, Kaforou_OD_53, Sweeney_OD_3,
 Maertzdorf_4, Verhagen_10, Jacobsen_3, Sambarey_HIV_10, Leong_24,
@@ -46,7 +48,7 @@ section of the input SummarizedExperiment study.
 }
 \examples{
 data("TB_hiv", package = "TBSignatureProfiler")
-re <- evaluateOriginalModel(input = TB_hiv, useAssay = "counts",
-geneSignaturesName = c("Anderson_42", "Maertzdorf_15"))
+re <- evaluateOriginalModel(input = TB_hiv,
+geneSignaturesName = c("Anderson_42", "Maertzdorf_15"), useAssay = "counts")
 re$Anderson_42_OriginalModel
 }

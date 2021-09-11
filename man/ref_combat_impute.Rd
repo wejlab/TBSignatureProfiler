@@ -6,10 +6,10 @@
 \usage{
 ref_combat_impute(
   theObject_train,
-  useAssay = 1,
+  useAssay,
   gene_set,
   input,
-  SigName = "",
+  SigName,
   adj,
   geneMax = 0.8
 )
@@ -28,7 +28,7 @@ in the test SummarizedExperiment object.}
 
 \item{SigName}{Optional. A character string that indicates the name for \code{gene_set}.
 \code{SigName} is used to provide information when gene signatures were missing
-in the test data. The default is an empty string.}
+in the test data.}
 
 \item{adj}{A small real number used in combat to solve for genes with 0 counts in rare cases.
 Not required for most of cases.}

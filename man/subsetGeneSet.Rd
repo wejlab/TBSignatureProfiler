@@ -7,7 +7,7 @@
 subsetGeneSet(
   theObject,
   gene_set,
-  useAssay = 1,
+  useAssay,
   obtainDiagnosis = FALSE,
   annotationColName = NULL
 )
@@ -19,7 +19,7 @@ RData file: OriginalTrainingData.}
 \item{gene_set}{A character vector that includes gene symbols for gene signatures.}
 
 \item{useAssay}{A character string or an integer specifying the assay in the \code{theObject}
-that will be selected. Default is 1, indicating the first assay of the SummarizedExperiment object.}
+that will be selected.}
 
 \item{obtainDiagnosis}{Boolean. Usually used to create training data if TRUE. Default is FALSE}
 
@@ -27,8 +27,9 @@ that will be selected. Default is 1, indicating the first assay of the Summarize
 Only used when creating training data. Default is NULL.}
 }
 \value{
-A matrix with selected gene expression value if \code{obtainDiagnosis} is FALSE.
-else, return a list contains the selected gene expression value and diagnosis results for each observation.
+A \code{matrix} with selected gene expression value if \code{obtainDiagnosis == FALSE}.
+If \code{obtainDiagnosis == TRUE}, return a \code{list} contains the selected
+gene expression value and diagnosis results for each sample.
 }
 \description{
 A function used to subset gene expression value matrix based on certain gene sets.

@@ -30,7 +30,7 @@ in the test SummarizedExperiment object.}
 
 \item{SigName}{Optional. A character string that indicates the name for \code{gene_set}.
 \code{SigName} is used to provide information when gene signatures were missing
-in the test data. The default is an empty string.}
+in the test data.}
 
 \item{obtainDiagnosis}{Boolean. Used to create training data if TRUE. Default is FALSE}
 

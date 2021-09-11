@@ -11,17 +11,15 @@
 names.}
 
 \item{useAssay}{A character string or an integer specifying the assay in the
-\code{input}.
-Used for the test SummarizedExperiment object. Default is 1, indicating the
+\code{input}. Default is the first assay in the assay list.
+Used for the test SummarizedExperiment object. Default is \code{1}, indicating the
 first assay in the \code{input}.}
 
 \item{geneSignaturesName}{A character string/vector specifying the signature
-of interest.
-Default is \code{NULL}. If geneSignaturesName is \code{NULL}, run all
-available gene signatures' original model in the package.}
+of interest. If \code{any(geneSignaturesName == "") == TRUE} run all
+available gene signatures' original models.}
 
-\item{BPPARAM}{An instance inherited from \code{bplappy}.
-See \code{\link[BiocParallel]{bplapply}} for details.}
+\item{BPPARAM}{An instance inherited from \code{\link[BiocParallel]{bplapply}}.}
 }
 \value{
 A SummarizedExperiment object with predicted scores for each sample
@@ -37,5 +35,5 @@ the expression of genes within signatures that are down-regulated from the
 sum of the expression of genes that are up-regulated within signatures.
 Kaforou_27, Kaforou_OD_44, and Kaforou_OD_53 used difference of arithmetic
 means to calculate prediction scores.
-Sweeney_OD_3 used difference of geometric mean to calculate prediction score.
+Sweeney_OD_3 used difference of arithmetic mean to calculate prediction score.
 }
