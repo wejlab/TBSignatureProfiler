@@ -6,13 +6,13 @@ test_that("Run addTBsignature", {
     addTBsignature(sigsymbols = c("APOL1", "BATF2", "ETV7"),
                    authname = "Katarvi", signame_common = NULL,
                    sigtype = "Disease", tissuetype = "PBMC",
-                   saveobjs = FALSE, views = FALSE) 
+                   saveobjs = FALSE, views = FALSE)
   )
   expect_message(
     addTBsignature(sigsymbols = c("APOL1", "BATF2", "ETV7"),
                    authname = "Katarvi", signame_common = "KAT3",
                    sigtype = "Disease/HIV", tissuetype = "whole blood",
-                   saveobjs = FALSE, views = FALSE) 
+                   saveobjs = FALSE, views = FALSE)
   )
 })
 
@@ -36,13 +36,13 @@ test_that("Warnings", {
                paste("Currently the TBSP only accepts gene signatures with 2",
                      "or more gene symbols.")
   )
-  expect_error(addTBsignature(sigsymbols =c("APOL1", "BATF2", "ETV7"),
+  expect_error(addTBsignature(sigsymbols = c("APOL1", "BATF2", "ETV7"),
                               authname = "Katarvi", signame_common = "KAT3",
                               sigtype = "Disease/HIV", tissuetype = "PBMC",
                               saveobjs = NULL, views = FALSE),
                paste("'saveobjs' must be logical.")
   )
-  expect_error(addTBsignature(sigsymbols =c("APOL1", "BATF2", "ETV7"),
+  expect_error(addTBsignature(sigsymbols = c("APOL1", "BATF2", "ETV7"),
                               authname = "Katarvi", signame_common = "KAT3",
                               sigtype = "Response", tissuetype = "PBMC",
                               saveobjs = FALSE, views = FALSE),
@@ -51,14 +51,14 @@ test_that("Warnings", {
                      "'Disease', 'Disease/HIV', 'Disease/Other Diseases',",
                      "'Disease/Pneumonia', 'failure', 'response', 'risk'")
   )
-  expect_error(addTBsignature(sigsymbols =c("APOL1", "BATF2", "ETV7"),
+  expect_error(addTBsignature(sigsymbols = c("APOL1", "BATF2", "ETV7"),
                               authname = "Katarvi", signame_common = "KAT3",
                               sigtype = "Disease/HIV", tissuetype = "Not",
                               saveobjs = FALSE, views = FALSE),
                paste("'tissuetype' must be one of the following:",
                      "'mixed', 'PBMC', 'whole blood'")
   )
-  expect_error(addTBsignature(sigsymbols =c("APOL1", "BATF2", "ETV7"),
+  expect_error(addTBsignature(sigsymbols = c("APOL1", "BATF2", "ETV7"),
                               authname = "Thisisareallylongnamesok",
                               signame_common = "KAT3",
                               sigtype = "Disease/HIV", tissuetype = "PBMC",

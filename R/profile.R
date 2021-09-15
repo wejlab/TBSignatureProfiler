@@ -23,7 +23,7 @@ update_genenames <- function(siglist) {
     HGNChelper::checkGeneSymbols(siglist,
                                  unmapped.as.na = FALSE)))$Suggested.Symbol
   ind <- grep("//", newgenes)
-  if (length(ind) != 0) newgenes[ind] <- strsplit(newgenes[ind], 
+  if (length(ind) != 0) newgenes[ind] <- strsplit(newgenes[ind],
                                                   " /// ")[[1]][1]
   # if(any(newgenes != siglist)) message("One or more gene names were altered.")
   return(newgenes)
@@ -188,7 +188,7 @@ output_function <- function(input, signatures, algorithm, outputFormat,
 #' When \code{ssgsea.norm = FALSE}, this last normalization step is skipped.
 #' The default is \code{TRUE}.
 #' @param update_genes logical, denotes whether gene names from \code{signatures}
-#' and the rownames of \code{input} should be checked for accuracy using 
+#' and the rownames of \code{input} should be checked for accuracy using
 #' \code{HGNChelper::checkGeneSymbols()}. The mapping assumes
 #' genes are from humans and will keep unmapped genes as the original
 #' input gene name. Default is \code{TRUE}.
@@ -384,7 +384,7 @@ compareAlgs <- function(input, signatures = NULL, annotationColName,
     } else if (show.pb) {
       scored <- runTBsigProfiler(
         input, useAssay = useAssay, combineSigAndAlgorithm = TRUE,
-        signatures = signatures[sig], algorithm = algorithm, 
+        signatures = signatures[sig], algorithm = algorithm,
         parallel.sz = parallel.sz)
     }
     if (methods::is(input, "SummarizedExperiment")) {

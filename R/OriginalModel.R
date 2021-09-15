@@ -388,7 +388,7 @@ ObtainSampleScore_OriginalModel <- function(theObject_train, useAssay, gene_set,
 #' @return A \code{matrix} with selected gene expression value if \code{obtainDiagnosis == FALSE}.
 #' If \code{obtainDiagnosis == TRUE}, return a \code{list} contains the selected
 #' gene expression value and diagnosis results for each sample.
-#' @importFrom stats median na.pass 
+#' @importFrom stats median na.pass
 subsetGeneSet <- function(theObject, gene_set, useAssay,
                           obtainDiagnosis = FALSE, annotationColName = NULL) {
     dat_assay <- SummarizedExperiment::assays(theObject)[[useAssay]]

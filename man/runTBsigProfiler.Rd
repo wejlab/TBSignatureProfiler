@@ -83,7 +83,7 @@ When \code{ssgsea.norm = FALSE}, this last normalization step is skipped.
 The default is \code{TRUE}.}
 
 \item{update_genes}{logical, denotes whether gene names from \code{signatures}
-and the rownames of \code{input} should be checked for accuracy using 
+and the rownames of \code{input} should be checked for accuracy using
 \code{HGNChelper::checkGeneSymbols()}. The mapping assumes
 genes are from humans and will keep unmapped genes as the original
 input gene name. Default is \code{TRUE}.}
