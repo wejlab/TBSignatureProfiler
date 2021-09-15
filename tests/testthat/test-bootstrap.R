@@ -83,6 +83,7 @@ test_that("compareBoxplots", {
                     signatureColNames = "sig1",
                     annotationColName = "Disease",
                     num.boot = 5,
+                    violinPlot = TRUE,
                     rotateLabels = TRUE)
   )
 })
