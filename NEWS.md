@@ -1,10 +1,11 @@
 # TBSignatureProfiler (development version)
 
 ## Bug Fixes
-* Fixed some package tests for the profile.R script to increase coverage
+* Fixed some package tests for the profile.R, OriginalModel.R scripts to increase coverage
 
 ## Major Changes
 * Added the gene_update parameter to runTBsigProfiler() to allow users to check signature/sample gene names for excel mogrified or outdated gene symbols
+* Updated gene symbols for original models functions
 * Added Chendi_HIV_2 signature (8/24)
 
 ## Minor Changes
