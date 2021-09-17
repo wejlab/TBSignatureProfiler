@@ -52,14 +52,13 @@ reference:
   - .OriginalModel_NoRetraining
   - .OriginalModel_Retraining
   - ObtainSampleScore_OriginalModel
+  - cv_glmnet_OriginalModel
+  - knn_OriginalModel
+  - lda_OriginalModel
+  - randomForest_OriginalModel
+  - svm_OriginalModel 
   - evaluateOriginalModel
-  - BerryOriginalModel
-  - ZhaoOriginalModel 
   - SulimanOriginalModel
-  - LeongOriginalModel
-  - Bloom_Zak_OriginalModel
-  - Jacobsen_Sambarey_OriginalModel
-  - Maertzdorf_Verhagen_daCosta_OriginalModel
   - subsetGeneSet
   - ref_combat_impute
   
