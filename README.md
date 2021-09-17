@@ -13,7 +13,7 @@ The TBSignatureProfiler is an R package that allows researchers to easily profil
 
 ## Installation
 
-The TBSignatureProfiler requires R 4.0 and Bioconductor 3.10.
+The TBSignatureProfiler requires R 4.1 and Bioconductor 3.10.
 
 * Install the development version of the package from Github 
 
