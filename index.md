@@ -15,7 +15,7 @@ The goal of the TBSignatureProfiler is to aggregate these signatures and create 
 
 ## Installation
 
-The TBSignatureProfiler requires R 4.0 and Bioconductor 3.10.
+The TBSignatureProfiler requires R 4.1 and Bioconductor 3.10.
 
 * Install the development version of the package from Github 
 
