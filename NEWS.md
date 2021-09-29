@@ -7,6 +7,7 @@
 * Added the gene_update parameter to runTBsigProfiler() to allow users to check signature/sample gene names for excel mogrified or outdated gene symbols
 * Updated gene symbols for original models functions
 * Added Chendi_HIV_2 signature (8/24)
+* Removed Mendelsoh_RISK_11 as it was originally published in Darboe_RISK_11. Changed Darboe_RISK_11 to RISK11 in common objects. (Thomas Scriba) 
 
 ## Minor Changes
 * Rewrote runTBsigProfiler() to be shorter and easier to maintain
