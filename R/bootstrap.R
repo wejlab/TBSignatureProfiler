@@ -72,7 +72,15 @@ bootstrapAUC <- function(SE_scored, annotationColName, signatureColNames,
       index <- sample(seq_along(score), replace = TRUE)
       tmp_score <- score[index]
       tmp_annotationData <- annotationData[index]
-      pred <- ROCit::rocit(tmp_score, tmp_annotationData)
+      if (length(unique(tmp_annotationData)) == 2) {
+        pred <- ROCit::rocit(tmp_score, tmp_annotationData)
+      } else {
+        # If there's only one value to be predicted, resample
+        index <- sample(seq_along(score), replace = TRUE)
+        tmp_score <- score[index]
+        tmp_annotationData <- annotationData[index]
+        pred <- ROCit::rocit(tmp_score, tmp_annotationData)
+      }
       tmp_auc <- max(pred$AUC, 1 - pred$AUC)
       aucs_boot[j, which.sig] <- tmp_auc
     }
