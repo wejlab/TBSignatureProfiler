@@ -3,7 +3,7 @@ globalVariables(c("BS_AUC", "FPR", "LowerTPR", "Signatures",
 
 #' A list of published TB signatures.
 #'
-#' A set of Tuberculosis gene signatures from various publications. This set
+#' A set of Tuberculosis gene signatures compiled from various publications. This set
 #' of signatures uses gene symbols. Attempts have been made to use updated gene
 #' symbols and remove symbols that did not match the most recent annotation.
 #' Additional sets for Entrez IDs and Ensembl IDs are forthcoming.
@@ -12,10 +12,11 @@ globalVariables(c("BS_AUC", "FPR", "LowerTPR", "Signatures",
 #' followed by
 #' a possible context for the signature, and ending with either the number of
 #' gene transcripts or genes in the signature, with respect to however
-#' it was described in the signature in the original publication.
+#' it was described in the signature's original publication.
 #'
 #' Possible signature contexts:
 #' \itemize{
+#' \item{<blank>: TB vs LTBI or Healthy Controls}
 #' \item{OD: Other diseases}
 #' \item{HIV: Human Immunodeficiency Virus}
 #' \item{PNA: Pneumonia}

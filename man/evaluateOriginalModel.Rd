@@ -17,7 +17,7 @@ evaluateOriginalModel(
 names.}
 
 \item{geneSignaturesName}{A character string/vector specifying the signature
-of interest. If \code{any(geneSignaturesName == "") == TRUE} run all
+of interest. If \code{any(geneSignaturesName == "") == TRUE}, it will run all
 available gene signatures' original models.}
 
 \item{useAssay}{A character string or an integer specifying the assay in the
@@ -35,7 +35,7 @@ A SummarizedExperiment object with predicted scores for each sample
 obtained from the signature's original model.
 }
 \description{
-This function computes prediction foot multiple TB signatures based on their training
+This function computes prediction for multiple TB signatures based on their training
 models/methods. To avoid naming issues, the gene names for both training data and
 input gene sets have been updated using the \code{\link[HGNChelper]{checkGeneSymbols}}.
 TB signatures with available original models are: Anderson_42,

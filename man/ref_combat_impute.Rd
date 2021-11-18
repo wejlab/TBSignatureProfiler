@@ -15,7 +15,7 @@ ref_combat_impute(
 )
 }
 \arguments{
-\item{theObject_train}{A SummarizedExperiment object that has been prestored in the
+\item{theObject_train}{A SummarizedExperiment object that has been pre-stored in the
 data file: OriginalTrainingData.}
 
 \item{useAssay}{A character string or an integer specifying the assay in the \code{input}.

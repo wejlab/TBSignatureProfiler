@@ -2,7 +2,7 @@ globalVariables(c("TBsignaturesSplit", "OriginalTrainingData", "TBsignatures"))
 
 #' A function that implements the original methods for multiple TB signatures.
 #'
-#' This function computes prediction foot multiple TB signatures based on their training
+#' This function computes prediction for multiple TB signatures based on their training
 #' models/methods. To avoid naming issues, the gene names for both training data and
 #' input gene sets have been updated using the \code{\link[HGNChelper]{checkGeneSymbols}}.
 #' TB signatures with available original models are: Anderson_42,
@@ -16,7 +16,7 @@ globalVariables(c("TBsignaturesSplit", "OriginalTrainingData", "TBsignatures"))
 #' @param input A SummarizedExperiment object with gene symbols as the assay row
 #' names.
 #' @param geneSignaturesName A character string/vector specifying the signature
-#' of interest. If \code{any(geneSignaturesName == "") == TRUE} run all
+#' of interest. If \code{any(geneSignaturesName == "") == TRUE}, it will run all
 #' available gene signatures' original models.
 #' @param useAssay A character string or an integer specifying the assay in the
 #' \code{input}. Default is the first assay in the assay list.
@@ -35,73 +35,122 @@ globalVariables(c("TBsignaturesSplit", "OriginalTrainingData", "TBsignatures"))
 #' geneSignaturesName = c("Anderson_42", "Maertzdorf_15"), useAssay = "counts")
 #' re$Anderson_42_OriginalModel
 
-evaluateOriginalModel <- function(input, geneSignaturesName, useAssay = 1, adj = 1e-3,
-                                  BPPARAM = BiocParallel::SerialParam(progressbar = TRUE)) {
+evaluateOriginalModel <- function(input, geneSignaturesName, useAssay = 1,
+                                  adj = 1e-3,
+                                  BPPARAM = BiocParallel::SerialParam(
+                                      progressbar = TRUE)) {
     ## Check input class, should be SummarizedExperiment
     if (!methods::is(input, "SummarizedExperiment")) {
         base::stop("The \"input\" should be a SummarizedExperiment object.")
     }
     signature_NoRetraining <- c("Anderson_42", "Anderson_OD_51", "Kaforou_27",
-                                "Kaforou_OD_44", "Kaforou_OD_53", "Sweeney_OD_3")
-    signature_Retraining <- c("Maertzdorf_4", "Maertzdorf_15", "LauxdaCosta_OD_3",
-                              "Verhagen_10", "Jacobsen_3", "Sambarey_HIV_10",
-                              "Leong_24", "Berry_OD_86", "Berry_393",
-                              "Bloom_OD_144", "Suliman_RISK_4", "Zak_RISK_16",
-                              "Leong_RISK_29", "Zhao_NANO_6")
+                                "Kaforou_OD_44", "Kaforou_OD_53",
+                                "Sweeney_OD_3")
+    signature_Retraining <- c("Maertzdorf_4", "Maertzdorf_15",
+                              "LauxdaCosta_OD_3", "Verhagen_10", "Jacobsen_3",
+                              "Sambarey_HIV_10", "Leong_24", "Berry_OD_86",
+                              "Berry_393", "Bloom_OD_144", "Suliman_RISK_4",
+                              "Zak_RISK_16", "Leong_RISK_29", "Zhao_NANO_6")
     signature_all <- c(signature_NoRetraining, signature_Retraining)
     ## Check whether input geneSignaturesName is valid
     if (base::missing(geneSignaturesName)) {
-        stop(base::sprintf("Argument \"geneSignaturesName\" is missing, with no default.\nAvailable signatures are: %s",
-                           base::paste0(signature_all, collapse = ", ")))
+        stop("Argument \"geneSignaturesName\" is missing, with no default.",
+             "\nAvailable signatures are: ",
+             base::paste0(signature_all, collapse = ", "))
     }
     if (base::any(geneSignaturesName == "")) {
-        base::message("Evaluating all available signatures with their original model.")
+        base::message("Evaluating all available signatures using",
+                      " their original model.")
         ## Remove "" from geneSignaturesName
-        geneSignaturesName <- geneSignaturesName[-base::which(geneSignaturesName == "")] %>%
+        geneSignaturesName <- geneSignaturesName[-base::which(
+            geneSignaturesName == "")] %>%
             base::union(signature_all)
     }
     ## Intersect input geneSignaturesName with available gene signatures
     sig_sub <- base::intersect(geneSignaturesName, signature_all)
     if (base::identical(sig_sub, character(0))) {
-        stop(base::sprintf("Original model(s) for \"geneSignaturesName\": %s is/are not available.\nAvailable signatures are: %s",
-                           base::paste0(geneSignaturesName, collapse = ", "),
-                           base::paste0(signature_all, collapse = ", ")), call. = FALSE)
+        stop("Original model(s) for \"geneSignaturesName\": ",
+             base::paste0(geneSignaturesName, collapse = ", "),
+             " is/are not available.\nAvailable signatures are: ",
+             base::paste0(signature_all, collapse = ", "))
     }
     ## Check geneSignaturesName that are not available
-    sig_not_found <- geneSignaturesName[-base::which(geneSignaturesName %in% sig_sub)]
+    sig_not_found <- geneSignaturesName[-base::which(
+        geneSignaturesName %in% sig_sub)]
     if (!base::identical(sig_not_found, character(0))) {
-        base::message(base::sprintf("Original model(s) for \"geneSignaturesName\": %s are/is not available.",
-                                    base::paste0(sig_not_found, collapse = ", ")))
+        message("Original model(s) for \"geneSignaturesName\": ",
+                paste0(sig_not_found, collapse = ", "),
+                " are/is not available.")
     }
     sig_sub_NoRetraining <- base::intersect(sig_sub, signature_NoRetraining)
     if (!base::identical(sig_sub_NoRetraining, character(0))) {
-        sample_score_NoRetraining <- .OriginalModel_NoRetraining(input, useAssay,
-                                                                 sig_sub_NoRetraining,
-                                                                 BPPARAM)
+        sample_score_NoRetraining <- 
+            .OriginalModel_NoRetraining(input, useAssay, sig_sub_NoRetraining,
+                                        BPPARAM)
     } else {
         sample_score_NoRetraining <- NULL
     }
     sig_sub_Retraining <- base::intersect(sig_sub, signature_Retraining)
     if (!identical(sig_sub_Retraining, character(0))) {
-        sample_score_Retraining <- .OriginalModel_Retraining(input, useAssay,
-                                                             sig_sub_Retraining,
-                                                             adj, BPPARAM)
+        sample_score_Retraining <- 
+            .OriginalModel_Retraining(input, useAssay, sig_sub_Retraining,
+                                      adj, BPPARAM)
     } else {
         sample_score_Retraining <- NULL
     }
     col_info <- SummarizedExperiment::colData(input)
-    if (!base::is.null(sample_score_NoRetraining) && !base::is.null(sample_score_Retraining)) {
-        SummarizedExperiment::colData(input) <- S4Vectors::cbind(col_info,
-                                                                 sample_score_NoRetraining,
-                                                                 sample_score_Retraining)
-    } else if (!base::is.null(sample_score_NoRetraining) && base::is.null(sample_score_Retraining)) {
-        SummarizedExperiment::colData(input) <- S4Vectors::cbind(col_info,
-                                                                 sample_score_NoRetraining)
+    if (!base::is.null(sample_score_NoRetraining) &&
+        !base::is.null(sample_score_Retraining)) {
+        SummarizedExperiment::colData(input) <-
+            S4Vectors::cbind(col_info, sample_score_NoRetraining,
+                             sample_score_Retraining)
+    } else if (!base::is.null(sample_score_NoRetraining) &&
+               base::is.null(sample_score_Retraining)) {
+        SummarizedExperiment::colData(input) <-
+            S4Vectors::cbind(col_info, sample_score_NoRetraining)
     } else {
-        SummarizedExperiment::colData(input) <- S4Vectors::cbind(col_info,
-                                                                 sample_score_Retraining)
+        SummarizedExperiment::colData(input) <-
+            S4Vectors::cbind(col_info, sample_score_Retraining)
     }
     return(input)
+}
+
+# Helper function for .OriginalModel_NoRetraining()
+noretrain_helper <- function(i, geneSignaturesName, input, useAssay) {
+    TBsignaturesSplit <- TBsignaturesSplit
+    sig <- geneSignaturesName[i]
+    base::message(base::sprintf("Now Evaluating: %s", sig))
+    up_set <- TBsignaturesSplit[[sig]][[base::paste0(sig, "_up")]]
+    dn_set <- TBsignaturesSplit[[sig]][[base::paste0(sig, "_dn")]]
+    dat_sig_up <- base::data.frame(subsetGeneSet(input, up_set, useAssay))
+    dat_sig_dn <- base::data.frame(subsetGeneSet(input, dn_set, useAssay))
+    if (base::ncol(dat_sig_up) == 0 || base::ncol(dat_sig_dn) == 0) {
+        if (base::ncol(dat_sig_up) == 0) {
+            base::warning(
+                "All up-regulated genes are not found within the input.",
+                " Prediction score is NA for signature: ", sig)
+        } else {
+            base::warning(
+                "All down-regulated genes are not found within the input.",
+                " Prediction score is NA for signature: ", sig)
+        }
+        sample_score <- NA
+    } else { # Need number of column >=1
+        if (sig == "Anderson_42" || sig == "Anderson_OD_51") {
+            up_sample_score <- BiocGenerics::rowSums(dat_sig_up)
+            dn_sample_score <- BiocGenerics::rowSums(dat_sig_dn)
+        } else if (sig == "Kaforou_27" || sig == "Kaforou_OD_44"
+                   || sig == "Kaforou_OD_53") {
+            up_sample_score <- BiocGenerics::rowMeans(dat_sig_up)
+            dn_sample_score <- BiocGenerics::rowMeans(dat_sig_dn)
+        } else if (sig == "Sweeney_OD_3") {
+            ## Only one gene in down set for Sweeney_OD_3.
+            up_sample_score <- base::apply(dat_sig_up, 1, function(x) mean(x))
+            dn_sample_score <- base::apply(dat_sig_dn, 1, function(x) mean(x))
+        }
+        sample_score <- up_sample_score - dn_sample_score
+    }
+    sample_score
 }
 
 #' TB gene signatures that do not require retraining.
@@ -120,231 +169,220 @@ evaluateOriginalModel <- function(input, geneSignaturesName, useAssay = 1, adj =
 #' @return A SummarizedExperiment object with predicted scores for each sample
 #' obtained from the signature's original model.
 
-.OriginalModel_NoRetraining <- function(input, useAssay, geneSignaturesName, BPPARAM) {
-    sample_score_list <- BiocParallel::bplapply(seq_len(length(geneSignaturesName)),
-                                                function(i) {
-                                                    TBsignaturesSplit <- TBsignaturesSplit
-                                                    sig <- geneSignaturesName[i]
-                                                    base::message(base::sprintf("Now Evaluating: %s", sig))
-                                                    up_set <- TBsignaturesSplit[[sig]][[base::paste0(sig, "_up")]]
-                                                    dn_set <- TBsignaturesSplit[[sig]][[base::paste0(sig, "_dn")]]
-                                                    dat_sig_up <- base::data.frame(subsetGeneSet(input, up_set, useAssay))
-                                                    dat_sig_dn <- base::data.frame(subsetGeneSet(input, dn_set, useAssay))
-                                                    if (base::ncol(dat_sig_up) == 0 || base::ncol(dat_sig_dn) == 0) {
-                                                        if (base::ncol(dat_sig_up) == 0) {
-                                                            base::warning(base::sprintf("All up-regulated genes are not found within the input. Prediciton score for signature: %s is NA",
-                                                                                        sig))
-                                                        } else {
-                                                            base::warning(base::sprintf("All down-regulated genes are not found within the input. Prediciton score for signature: %s is NA",
-                                                                                        sig))
-                                                        }
-                                                        sample_score <- NA
-                                                    } else { # Need number of column >=1
-                                                        if (sig == "Anderson_42" || sig == "Anderson_OD_51") {
-                                                            up_sample_score <- BiocGenerics::rowSums(dat_sig_up)
-                                                            dn_sample_score <- BiocGenerics::rowSums(dat_sig_dn)
-                                                        } else if (sig == "Kaforou_27" || sig == "Kaforou_OD_44"
-                                                                   || sig == "Kaforou_OD_53") {
-                                                            up_sample_score <- BiocGenerics::rowMeans(dat_sig_up)
-                                                            dn_sample_score <- BiocGenerics::rowMeans(dat_sig_dn)
-                                                        } else if (sig == "Sweeney_OD_3") {
-                                                            ## Only one gene in down set for Sweeney_OD_3.
-                                                            up_sample_score <- base::apply(dat_sig_up, 1, function(x) mean(x))
-                                                            dn_sample_score <- base::apply(dat_sig_dn, 1, function(x) mean(x))
-                                                        }
-                                                        sample_score <- up_sample_score - dn_sample_score
-                                                    }
-                                                    sample_score
-                                                }, BPPARAM = BPPARAM)
+.OriginalModel_NoRetraining <- function(input, useAssay,
+                                        geneSignaturesName, BPPARAM) {
+    sample_score_list <- BiocParallel::bplapply(
+        seq_len(length(geneSignaturesName)), noretrain_helper,
+        geneSignaturesName, input, useAssay, BPPARAM = BPPARAM)
     sample_score_result <- base::do.call(base::cbind, sample_score_list)
-    base::colnames(sample_score_result) <- base::paste0(geneSignaturesName, "_OriginalModel")
+    base::colnames(sample_score_result) <- base::paste0(geneSignaturesName,
+                                                        "_OriginalModel")
     return(sample_score_result)
+}
+
+# Helper function for .OriginalModel_Retraining()
+retrain_helper <- function(i, geneSignaturesName,
+                           input, useAssay, adj) {
+    ## Identify signature name
+    sig <- geneSignaturesName[i]
+    base::message(base::sprintf("Now Evaluating: %s", sig))
+    if (sig == "Leong_RISK_29" || sig == "Zak_RISK_16") {
+        theObject_train <- OriginalTrainingData[["GSE79362"]]
+        if (sig == "Leong_RISK_29") {
+            col_info <- SummarizedExperiment::colData(theObject_train)
+            ## Only include baseline samples from GSE79362
+            sample_baseline_GSE79362 <-
+                col_info[, c("PatientID", "MeasurementTime")] %>%
+                base::as.data.frame() %>%
+                dplyr::mutate(sample_name = base::row.names(col_info)) %>%
+                dplyr::arrange(.data$MeasurementTime, .data$PatientID) %>%
+                dplyr::group_by(.data$PatientID) %>%
+                dplyr::mutate(first = dplyr::first(.data$sample_name))
+            theObject_train <-
+                theObject_train[, base::unique(sample_baseline_GSE79362$first)]
+            sample_score <-
+                ObtainSampleScore_OriginalModel(
+                    theObject_train, useAssay, gene_set = TBsignatures[[sig]],
+                    input = input, SigName = sig, obtainDiagnosis = TRUE,
+                    annotationColName = "TBStatus",
+                    FUN = "cv_glmnet_OriginalModel", adj = adj)
+            }
+        if (sig == "Zak_RISK_16") {
+            theObject_train <-
+                theObject_train[, theObject_train$ACS_cohort %in% "Training"]
+            sample_score <-
+                ObtainSampleScore_OriginalModel(theObject_train, useAssay,
+                                                gene_set = TBsignatures[[sig]],
+                                                input = input, SigName = sig,
+                                                obtainDiagnosis = TRUE,
+                                                annotationColName = "TBStatus",
+                                                FUN = "svm_OriginalModel",
+                                                adj = adj)
+        }
+        return(sample_score)
+    } else if (sig == "Leong_24") {
+        theObject_train <- OriginalTrainingData[["GSE101705"]]
+        sample_score <-
+            ObtainSampleScore_OriginalModel(theObject_train, useAssay,
+                                            gene_set = TBsignatures[[sig]],
+                                            input = input, SigName = sig,
+                                            obtainDiagnosis = TRUE,
+                                            annotationColName = "TBStatus",
+                                            FUN = "cv_glmnet_OriginalModel",
+                                            adj = adj)
+        return(sample_score)
+    } else if (sig == "Maertzdorf_4" || sig == "Maertzdorf_15") {
+        theObject_train <- OriginalTrainingData[["GSE74092"]]
+        sample_score <-
+            ObtainSampleScore_OriginalModel(theObject_train, useAssay,
+                                            gene_set = TBsignatures[[sig]],
+                                            input = input, SigName = sig,
+                                            obtainDiagnosis = TRUE,
+                                            annotationColName = "TBStatus",
+                                            FUN = "randomForest_OriginalModel",
+                                            adj = adj)
+        return(sample_score)
+    }
+    else if (sig == "LauxdaCosta_OD_3" || sig == "Bloom_OD_144") {
+        theObject_train <- OriginalTrainingData[["GSE42834"]]
+        if (sig == "LauxdaCosta_OD_3") {
+            sample_score <-
+                ObtainSampleScore_OriginalModel(
+                    theObject_train, useAssay, gene_set = TBsignatures[[sig]],
+                    input = input, SigName = sig, obtainDiagnosis = TRUE,
+                    annotationColName = "TBStatus",
+                    FUN = "randomForest_OriginalModel", adj = adj)
+        
+        if (sig == "Bloom_OD_144") 
+            sample_score <-
+                ObtainSampleScore_OriginalModel(theObject_train, useAssay,
+                                                gene_set = TBsignatures[[sig]],
+                                                input = input, SigName = sig,
+                                                obtainDiagnosis = TRUE,
+                                                annotationColName = "TBStatus",
+                                                FUN = "svm_OriginalModel",
+                                                adj = adj)
+        
+        return(sample_score)
+    } else if (sig == "Jacobsen_3" || sig == "Berry_393" ||
+               sig == "Berry_OD_86") {
+        theObject_train <- OriginalTrainingData[["GSE19491"]]
+        if (sig == "Jacobsen_3") {
+            sample_score <-
+                ObtainSampleScore_OriginalModel(theObject_train, useAssay,
+                                                gene_set = TBsignatures[[sig]],
+                                                input = input, SigName = sig,
+                                                obtainDiagnosis = TRUE,
+                                                annotationColName = "TBStatus",
+                                                FUN = "lda_OriginalModel",
+                                                adj = adj)
+        }
+        if (sig == "Berry_393" || sig == "Berry_OD_86") {
+            sample_score <-
+                ObtainSampleScore_OriginalModel(theObject_train, useAssay,
+                                                gene_set = TBsignatures[[sig]],
+                                                input = input, SigName = sig,
+                                                obtainDiagnosis = TRUE,
+                                                annotationColName = "TBStatus",
+                                                FUN = "knn_OriginalModel",
+                                                adj = adj)
+        }
+        return(sample_score)
+    } else if (sig == "Sambarey_HIV_10") {
+        theObject_train <- OriginalTrainingData[["GSE37250"]]
+        sample_score <-
+            ObtainSampleScore_OriginalModel(theObject_train, useAssay,
+                                            gene_set = TBsignatures[[sig]],
+                                            input = input, SigName = sig,
+                                            obtainDiagnosis = TRUE,
+                                            annotationColName = "TBStatus",
+                                            FUN = "lda_OriginalModel",
+                                            adj = adj)
+        return(sample_score)
+    } else if (sig == "Verhagen_10") {
+        theObject_train <- OriginalTrainingData[["GSE41055"]]
+        sample_score <-
+            ObtainSampleScore_OriginalModel(theObject_train, useAssay,
+                                            gene_set = TBsignatures[[sig]],
+                                            input = input,SigName = sig,
+                                            obtainDiagnosis = TRUE,
+                                            annotationColName = "TBStatus",
+                                            FUN = "randomForest_OriginalModel",
+                                            adj = adj)
+        return(sample_score)
+    } else if (sig == "Suliman_RISK_4") {
+        theObject_train <- OriginalTrainingData[["GSE94438"]]
+        sample_score <-
+            ObtainSampleScore_OriginalModel(theObject_train, useAssay,
+                                            gene_set = TBsignatures[[sig]],
+                                            input = input,
+                                            SigName = sig,
+                                            obtainDiagnosis = TRUE,
+                                            annotationColName = "TBStatus",
+                                            FUN = "SulimanOriginalModel",
+                                            adj = adj)
+        return(sample_score)
+    } else if (sig == "Zhao_NANO_6") {
+        theObject_train <- OriginalTrainingData[["Zhao_NANO_6"]]
+        sample_score <-
+            ObtainSampleScore_OriginalModel(theObject_train, useAssay,
+                                            gene_set = TBsignatures[[sig]],
+                                            input = input, SigName = sig,
+                                            obtainDiagnosis = TRUE,
+                                            annotationColName = "TBStatus",
+                                            FUN = "cv_glmnet_OriginalModel",
+                                            adj = adj)
+        return(sample_score)
+        }
+    }
 }
 
 #' TB gene signatures that require retraining.
 #'
 #' A function to obtain predicted score for TB gene signatures that need retraining of original models.
 #'
-#' Maertzdorf_4 and Maertzdorf_15 were trained using random forest to distinguish
+#' Maertzdorf_4 and Maertzdorf_15 were trained using a random forest to distinguish
 #' patients with active TB from healthy controls.
-#' Verhagen_10 was also trained using random forest to distinguish samples with active TB
+#'
+#' Verhagen_10 was also trained using a random forest to distinguish samples with active TB
 #' from either latent infection or healthy controls.
 #' The random forest model was build using \code{\link[randomForest]{randomForest}}.\cr
-#' Jacobsen_3 were trained using linear discriminatory analysis (LDA)
+#'
+#' Jacobsen_3 were trained using linear discriminant analysis (LDA)
 #' to distinguish samples with active TB from latent infection status.
+#'
 #' Sambarey_HIV_10 were also trained using LDA to distinguish samples with active TB
 #' from either latent infection, healthy control, or other disease (HIV).
-#' The LDA model was build using \code{\link[MASS]{lda}}.\cr
+#' The LDA model was built using \code{\link[MASS]{lda}}.\cr
+#'
 #' Berry_OD_86 and Berry_393 were trained using K-nearest neighbors (KNN) model to
 #' differentiate samples with active TB from latent infection status.
-#' The KNN model was build using \code{\link[class]{knn}}.\cr
+#' The KNN model was built using \code{\link[class]{knn}}.\cr
+#'
 #' Suliman_RISK_4 and Zak_RISK_16 were trained using support vector machines (SVM)
 #' to distinguish TB progressor from non-progressors. The input gene expression features
 #' for Suliman_RISK_4 used the paired ratio of GAS6/CD1C, SEPTIN4/BLK, SEPTIN4/CD1C, GAS6/BLK.
-#' The SVM model was build using \code{\link[e1071]{svm}}.
+#' The SVM model was built using \code{\link[e1071]{svm}}.
+#'
 #' @importFrom magrittr %>%
 #' @importFrom rlang .data
 #' @inheritParams evaluateOriginalModel
 #' @return A SummarizedExperiment object with predicted scores for each sample
 #' obtained from the signature's original model.
 
-.OriginalModel_Retraining <- function(input, useAssay, geneSignaturesName, adj, BPPARAM) {
+.OriginalModel_Retraining <- function(input, useAssay, geneSignaturesName,
+                                      adj, BPPARAM) {
     OriginalTrainingData <- OriginalTrainingData
     TBsignatures <- TBsignatures
     gene_set_length <- base::length(geneSignaturesName)
-    sample_score_list <- BiocParallel::bplapply(base::seq_len(gene_set_length), function(i) {
-        ## Identify signature name
-        sig <- geneSignaturesName[i]
-        base::message(base::sprintf("Now Evaluating: %s", sig))
-        if (sig == "Leong_RISK_29" || sig == "Zak_RISK_16") {
-            theObject_train <- OriginalTrainingData[["GSE79362"]]
-            if (sig == "Leong_RISK_29") {
-                col_info <- SummarizedExperiment::colData(theObject_train)
-                ## Only include baseline samples from GSE79362
-                sample_baseline_GSE79362 <- col_info[, c("PatientID", "MeasurementTime")] %>%
-                    base::as.data.frame() %>%
-                    dplyr::mutate(sample_name = base::row.names(col_info)) %>%
-                    dplyr::arrange(.data$MeasurementTime, .data$PatientID) %>%
-                    dplyr::group_by(.data$PatientID) %>%
-                    dplyr::mutate(first = dplyr::first(.data$sample_name))
-                theObject_train <- theObject_train[, base::unique(sample_baseline_GSE79362$first)]
-                sample_score <- ObtainSampleScore_OriginalModel(theObject_train, useAssay,
-                                                                gene_set = TBsignatures[[sig]],
-                                                                input = input, SigName = sig,
-                                                                obtainDiagnosis = TRUE,
-                                                                annotationColName = "TBStatus",
-                                                                FUN = "cv_glmnet_OriginalModel",
-                                                                adj = adj)
-            }
-            if (sig == "Zak_RISK_16") {
-                theObject_train <- theObject_train[, theObject_train$ACS_cohort %in% "Training"]
-                sample_score <- ObtainSampleScore_OriginalModel(theObject_train, useAssay,
-                                                                gene_set = TBsignatures[[sig]],
-                                                                input = input,
-                                                                SigName = sig,
-                                                                obtainDiagnosis = TRUE,
-                                                                annotationColName = "TBStatus",
-                                                                FUN = "svm_OriginalModel",
-                                                                adj = adj)
-            }
-            return(sample_score)
-        } else if (sig == "Leong_24") {
-            theObject_train <- OriginalTrainingData[["GSE101705"]]
-            sample_score <- ObtainSampleScore_OriginalModel(theObject_train, useAssay,
-                                                            gene_set = TBsignatures[[sig]],
-                                                            input = input,
-                                                            SigName = sig,
-                                                            obtainDiagnosis = TRUE,
-                                                            annotationColName = "TBStatus",
-                                                            FUN = "cv_glmnet_OriginalModel",
-                                                            adj = adj)
-            return(sample_score)
-        } else if (sig == "Maertzdorf_4" || sig == "Maertzdorf_15") {
-            theObject_train <- OriginalTrainingData[["GSE74092"]]
-            sample_score <- ObtainSampleScore_OriginalModel(theObject_train, useAssay,
-                                                            gene_set = TBsignatures[[sig]],
-                                                            input = input,
-                                                            SigName = sig,
-                                                            obtainDiagnosis = TRUE,
-                                                            annotationColName = "TBStatus",
-                                                            FUN = "randomForest_OriginalModel",
-                                                            adj = adj)
-            return(sample_score)
-        }
-        else if (sig == "LauxdaCosta_OD_3" || sig == "Bloom_OD_144") {
-            theObject_train <- OriginalTrainingData[["GSE42834"]]
-            if (sig == "LauxdaCosta_OD_3") {
-                sample_score <- ObtainSampleScore_OriginalModel(theObject_train, useAssay,
-                                                                gene_set = TBsignatures[[sig]],
-                                                                input = input,
-                                                                SigName = sig,
-                                                                obtainDiagnosis = TRUE,
-                                                                annotationColName = "TBStatus",
-                                                                FUN = "randomForest_OriginalModel",
-                                                                adj = adj)
-            }
-            if (sig == "Bloom_OD_144") {
-                sample_score <- ObtainSampleScore_OriginalModel(theObject_train, useAssay,
-                                                                gene_set = TBsignatures[[sig]],
-                                                                input = input,
-                                                                SigName = sig,
-                                                                obtainDiagnosis = TRUE,
-                                                                annotationColName = "TBStatus",
-                                                                FUN = "svm_OriginalModel",
-                                                                adj = adj)
-            }
-            return(sample_score)
-        } else if (sig == "Jacobsen_3" || sig == "Berry_393" || sig == "Berry_OD_86") {
-            theObject_train <- OriginalTrainingData[["GSE19491"]]
-            if (sig == "Jacobsen_3") {
-                sample_score <- ObtainSampleScore_OriginalModel(theObject_train, useAssay,
-                                                                gene_set = TBsignatures[[sig]],
-                                                                input = input,
-                                                                SigName = sig,
-                                                                obtainDiagnosis = TRUE,
-                                                                annotationColName = "TBStatus",
-                                                                FUN = "lda_OriginalModel",
-                                                                adj = adj)
-            }
-            if (sig == "Berry_393" || sig == "Berry_OD_86") {
-                sample_score <- ObtainSampleScore_OriginalModel(theObject_train, useAssay,
-                                                                gene_set = TBsignatures[[sig]],
-                                                                input = input,
-                                                                SigName = sig,
-                                                                obtainDiagnosis = TRUE,
-                                                                annotationColName = "TBStatus",
-                                                                FUN = "knn_OriginalModel",
-                                                                adj = adj)
-            }
-            return(sample_score)
-        } else if (sig == "Sambarey_HIV_10") {
-            theObject_train <- OriginalTrainingData[["GSE37250"]]
-            sample_score <- ObtainSampleScore_OriginalModel(theObject_train, useAssay,
-                                                            gene_set = TBsignatures[[sig]],
-                                                            input = input,
-                                                            SigName = sig,
-                                                            obtainDiagnosis = TRUE,
-                                                            annotationColName = "TBStatus",
-                                                            FUN = "lda_OriginalModel",
-                                                            adj = adj)
-            return(sample_score)
-        } else if (sig == "Verhagen_10") {
-            theObject_train <- OriginalTrainingData[["GSE41055"]]
-            sample_score <- ObtainSampleScore_OriginalModel(theObject_train, useAssay,
-                                                            gene_set = TBsignatures[[sig]],
-                                                            input = input,
-                                                            SigName = sig,
-                                                            obtainDiagnosis = TRUE,
-                                                            annotationColName = "TBStatus",
-                                                            FUN = "randomForest_OriginalModel",
-                                                            adj = adj)
-            return(sample_score)
-        } else if (sig == "Suliman_RISK_4") {
-            theObject_train <- OriginalTrainingData[["GSE94438"]]
-            sample_score <- ObtainSampleScore_OriginalModel(theObject_train, useAssay,
-                                                            gene_set = TBsignatures[[sig]],
-                                                            input = input,
-                                                            SigName = sig,
-                                                            obtainDiagnosis = TRUE,
-                                                            annotationColName = "TBStatus",
-                                                            FUN = "SulimanOriginalModel",
-                                                            adj = adj)
-            return(sample_score)
-        } else if (sig == "Zhao_NANO_6") {
-            theObject_train <- OriginalTrainingData[["Zhao_NANO_6"]]
-            sample_score <- ObtainSampleScore_OriginalModel(theObject_train, useAssay,
-                                                            gene_set = TBsignatures[[sig]],
-                                                            input = input,
-                                                            SigName = sig,
-                                                            obtainDiagnosis = TRUE,
-                                                            annotationColName = "TBStatus",
-                                                            FUN = "cv_glmnet_OriginalModel",
-                                                            adj = adj)
-            return(sample_score)
-        }
-    }, BPPARAM = BPPARAM)
+    sample_score_list <- BiocParallel::bplapply(base::seq_len(gene_set_length),
+                                                retrain_helper,
+                                                geneSignaturesName,
+                                                input, useAssay, adj,
+                                                BPPARAM = BPPARAM)
     sample_score_result <- base::do.call(base::cbind, sample_score_list)
-    base::colnames(sample_score_result) <- base::paste0(geneSignaturesName, "_OriginalModel")
+    base::colnames(sample_score_result) <- base::paste0(geneSignaturesName,
+                                                        "_OriginalModel")
     return(sample_score_result)
 }
 
@@ -356,10 +394,12 @@ evaluateOriginalModel <- function(input, geneSignaturesName, useAssay = 1, adj =
 #' Only used when creating training data. Default is NULL.
 #' @param FUN A character string specifying the function name of the corresponding signature's original model.
 #' @return The predicted score for each sample in the test study using corresponding gene signature's original model.
-ObtainSampleScore_OriginalModel <- function(theObject_train, useAssay, gene_set,
-                                            input, SigName, obtainDiagnosis,
+ObtainSampleScore_OriginalModel <- function(theObject_train, useAssay,
+                                            gene_set, input, SigName,
+                                            obtainDiagnosis,
                                             annotationColName, FUN, adj) {
-    dat_test_sig <- ref_combat_impute(theObject_train, useAssay, gene_set, input,
+    dat_test_sig <- ref_combat_impute(theObject_train, useAssay, gene_set,
+                                      input,
                                       SigName, adj)
     if (base::is.null(dat_test_sig)) {
         sample_score <- base::rep(NA, base::ncol(input))
@@ -377,8 +417,8 @@ ObtainSampleScore_OriginalModel <- function(theObject_train, useAssay, gene_set,
 #'
 #' A function used to subset gene expression value matrix based on certain gene sets.
 #'
-#' @param theObject A SummarizedExperiment object that has been prestored in the
-#' RData file: OriginalTrainingData.
+#' @param theObject A SummarizedExperiment object that has been pre-stored in 
+#' OriginalTrainingData.RDA
 #' @param gene_set A character vector that includes gene symbols for gene signatures.
 #' @param useAssay A character string or an integer specifying the assay in the \code{theObject}
 #' that will be selected.
@@ -390,11 +430,13 @@ ObtainSampleScore_OriginalModel <- function(theObject_train, useAssay, gene_set,
 #' gene expression value and diagnosis results for each sample.
 #' @importFrom stats median na.pass
 subsetGeneSet <- function(theObject, gene_set, useAssay,
-                          obtainDiagnosis = FALSE, annotationColName = NULL) {
+                          obtainDiagnosis = FALSE,
+                          annotationColName = NULL) {
     dat_assay <- SummarizedExperiment::assays(theObject)[[useAssay]]
     ## Check assay names not found case
     if (base::is.null(dat_assay)) {
-        stop(base::sprintf("Input object does not have assay with name: %s", useAssay))
+        stop(base::sprintf("Input object does not have assay with name: %s",
+                           useAssay))
     }
     dat_assay <- dat_assay %>%
         base::as.data.frame()
@@ -415,23 +457,25 @@ subsetGeneSet <- function(theObject, gene_set, useAssay,
                                    data = dat_assay_sig, FUN = median,
                                    na.action = na.pass)
         base::row.names(exprs2) <- exprs2$SYMBOL
-        dat_assay_sig <- exprs2[, -base::which(base::colnames(exprs2) == "SYMBOL"),
+        dat_assay_sig <- exprs2[, -base::which(
+            base::colnames(exprs2) == "SYMBOL"),
                                 drop = FALSE]
     } else {
         base::row.names(dat_assay_sig) <- update_rownames[index]
     }
     dat_assay_sig <- base::t(dat_assay_sig)
-    dat_assay_sig <- dat_assay_sig[, base::sort(base::colnames(dat_assay_sig)),
+    dat_assay_sig <- dat_assay_sig[, sort(colnames(dat_assay_sig)),
                                    drop = FALSE] %>%
         base::as.matrix()
     if (obtainDiagnosis == FALSE) {
         return(dat_assay_sig)
     } else {
         if (base::is.null(annotationColName)) {
-            stop("\"annotationColName\" is not given.
-                 Need annotation column name to obtain sample diagnosis results.")
+            stop("\"annotationColName\" is not given. Need annotation column",
+                 " name to obtain sample diagnosis results.")
         }
-        diagnosis_train <- SummarizedExperiment::colData(theObject)[, annotationColName]
+        diagnosis_train <- SummarizedExperiment::colData(
+            theObject)[, annotationColName]
         dat_list <- base::list(dat_train_sig = dat_assay_sig,
                                diagnosis_train = diagnosis_train)
         return(dat_list)
@@ -451,7 +495,7 @@ subsetGeneSet <- function(theObject, gene_set, useAssay,
 #' By default \code{geneMax} = 0.8, so the evaluation will not run if more than 80\%
 #' of the genes are missing when matching the input study to the reference data.
 #'
-#' @param theObject_train A SummarizedExperiment object that has been prestored in the
+#' @param theObject_train A SummarizedExperiment object that has been pre-stored in the
 #' data file: OriginalTrainingData.
 #' @param useAssay A character string or an integer specifying the assay in the \code{input}.
 #' Used for the test SummarizedExperiment object. Default is 1, indicating the first assay
@@ -478,16 +522,18 @@ ref_combat_impute <- function(theObject_train, useAssay, gene_set, input,
                                base::row.names(dat_test_assay_sig))
     index_match_boolean <- base::is.na(index_match)
     if (base::all(index_match_boolean)) {
-        base::warning(base::sprintf("No genes are found in the input study within given gene signatures: %s. The model will not run and signature score will be NA",
-                                    SigName))
+        warning("No genes are found in the input study within given gene",
+        " signatures: ", SigName, ". The model will not run and signature ",
+        "score will be NA.")
         return(NULL)
     }
-    if (base::sum(index_match_boolean) > base::floor(geneMax * base::length(index_match))) {
-        base::warning(base::sprintf("More than %1.2f%% of the genes are missing in the input study \n for gene signatures: %s. ",
+    if (sum(index_match_boolean) > floor(geneMax * length(index_match))) {
+        warning(sprintf("More than %1.2f%% of the genes are missing in the input study for gene signatures: %s.",
                                     100 * geneMax, SigName))
     }
-    dat_exprs_match_sub <- base::list(GSE_train = base::data.frame(dat_train_assay_sig),
-                                      GSE_test = base::data.frame(dat_test_assay_sig))
+    dat_exprs_match_sub <- list(
+        GSE_train = base::data.frame(dat_train_assay_sig),
+        GSE_test = base::data.frame(dat_test_assay_sig))
     dat_exprs_combine <- base::Reduce(function(x, y)
         base::merge(x, y, by = "id", all.x = TRUE),
         base::lapply(dat_exprs_match_sub, function(x) {
@@ -506,14 +552,20 @@ ref_combat_impute <- function(theObject_train, useAssay, gene_set, input,
         # Genes in the training data are not found in testing.
         # Use KNN imputation
         # DO some checks on the number of missing genes
-        num_missing_gene <- base::sum(base::is.na(dat_exprs_count[, ncol(dat_exprs_count)]))
+        num_missing_gene <- sum(is.na(
+            dat_exprs_count[, ncol(dat_exprs_count)]))
         # Calculate impute parameters for function: impute.knn
-        colmax <- base::min(1, base::round(num_missing_gene / base::nrow(dat_exprs_count), 5) + 1e-5)
-        rowmax <- base::min(1, base::round(ncol(dat_test_assay_sig) / base::ncol(dat_exprs_count), 5) + 1e-5)
-        common_genes <- base::row.names(dat_test_assay_sig)[stats::na.omit(index_match)]
-        missing_genes <- base::row.names(dat_train_assay_sig)[!base::row.names(dat_train_assay_sig) %in% common_genes]
-        message(sprintf("Gene(s): %s is/are not found in the input study for gene signature: %s.\nImpute missing features using KNN",
-                        paste0(missing_genes, collapse = ", "), SigName))
+        colmax <- min(1, round(num_missing_gene / nrow(dat_exprs_count),
+                               5) + 1e-5)
+        rowmax <- min(1, round(
+            ncol(dat_test_assay_sig) / ncol(dat_exprs_count), 5) + 1e-5)
+        common_genes <- row.names(dat_test_assay_sig)[
+            stats::na.omit(index_match)]
+        missing_genes <- row.names(dat_train_assay_sig)[
+            !row.names(dat_train_assay_sig) %in% common_genes]
+        message("Gene(s): ", paste0(missing_genes, collapse = ", "),
+                " is/are not found in the input study for gene signature: ",
+                SigName, "\nImpute missing features using KNN")
         output <- impute::impute.knn(as.matrix(dat_exprs_count), k = 10,
                                      rowmax = rowmax, colmax = colmax)
         dat_exprs_count1 <- output$data
@@ -546,29 +598,34 @@ ref_combat_impute <- function(theObject_train, useAssay, gene_set, input,
         )
     }
     combat_edata <- ref_combat_tryCatch(dat_exprs_count1)
-    runindata_test <- combat_edata[, (base::ncol(theObject_train) + 1):base::ncol(combat_edata)]
+    runindata_test <-
+        combat_edata[, (ncol(theObject_train) + 1):ncol(combat_edata)]
     base::colnames(runindata_test) <- base::colnames(input)
     ## Specify useAssay = 1 explicitly as we are creating new Sobject
-    dat_test_sig <- SummarizedExperiment::SummarizedExperiment(assay = as.matrix(runindata_test)) %>%
+    dat_test_sig <- SummarizedExperiment::SummarizedExperiment(
+        assay = as.matrix(runindata_test)) %>%
         subsetGeneSet(gene_set, useAssay = 1)
     return(dat_test_sig)
 }
 
 #' Train original model for gene signatures Leong_24, Leong_RISK_29, Zhao_NANO_6 using lasso logistic regression.
 #'
-#' @param dat_list A \code{list} contains training data and disease status outcomes from
-#' the discovery data of corresponding gene signatures.
-#' @param dat_test_sig A \code{data frame} contains corresponding gene sets from the \code{input}.
+#' @param dat_list A \code{list} contains training data and disease status
+#' outcomes from the discovery data of corresponding gene signatures.
+#' @param dat_test_sig A \code{data frame} contains corresponding gene sets
+#' from the \code{input}.
 #' @return The predicted score for each sample in the test study.
 
 cv_glmnet_OriginalModel <- function(dat_list, dat_test_sig) {
     diagnosis_train <- dat_list$diagnosis_train
-    diagnosis_train_new <- base::ifelse(diagnosis_train == "PTB", "PTB", "Others")
-    diagnosis_train <- base::factor(diagnosis_train_new, levels = c("Others", "PTB")) %>%
+    diagnosis_train_new <- ifelse(diagnosis_train == "PTB", "PTB", "Others")
+    diagnosis_train <- base::factor(diagnosis_train_new,
+                                    levels = c("Others", "PTB")) %>%
         base::as.integer()
     sig_model <- glmnet::cv.glmnet(x = dat_list$dat_train_sig,
                                    y = diagnosis_train)
-    sample_score <- stats::predict(sig_model$glmnet.fit, s = sig_model$lambda.min,
+    sample_score <- stats::predict(sig_model$glmnet.fit,
+                                   s = sig_model$lambda.min,
                                    newx = dat_test_sig, na.action = na.omit)
     pred_score <- base::as.vector(sample_score)
     return(pred_score)
@@ -583,8 +640,9 @@ cv_glmnet_OriginalModel <- function(dat_list, dat_test_sig) {
 
 randomForest_OriginalModel <- function(dat_list, dat_test_sig) {
     diagnosis_train <- dat_list$diagnosis_train
-    diagnosis_train_new <- base::ifelse(diagnosis_train == "PTB", "PTB", "Others")
-    diagnosis_train <- base::factor(diagnosis_train_new, levels = c("Others", "PTB"))
+    diagnosis_train_new <- ifelse(diagnosis_train == "PTB", "PTB", "Others")
+    diagnosis_train <- base::factor(diagnosis_train_new,
+                                    levels = c("Others", "PTB"))
     base::set.seed(1)
     sig_model <- randomForest::randomForest(x = dat_list$dat_train_sig,
                                             y = as.factor(diagnosis_train),
@@ -602,12 +660,13 @@ randomForest_OriginalModel <- function(dat_list, dat_test_sig) {
 
 lda_OriginalModel <- function(dat_list, dat_test_sig) {
     diagnosis_train <- dat_list$diagnosis_train
-    diagnosis_train_new <- base::ifelse(diagnosis_train == "PTB", "PTB", "Others")
-    diagnosis_train <- base::factor(diagnosis_train_new, levels = c("Others", "PTB")) %>%
+    diagnosis_train_new <- ifelse(diagnosis_train == "PTB", "PTB", "Others")
+    diagnosis_train <- base::factor(diagnosis_train_new,
+                                    levels = c("Others", "PTB")) %>%
         base::as.integer()
     sig_model <- MASS::lda(diagnosis_train ~ .,
-                           base::data.frame(dat_list$dat_train_sig, diagnosis_train))
-    sample_score <- stats::predict(sig_model, base::data.frame(dat_test_sig))
+                           data.frame(dat_list$dat_train_sig, diagnosis_train))
+    sample_score <- stats::predict(sig_model, data.frame(dat_test_sig))
     pred_score <- base::as.vector(sample_score$posterior[, 2])
     return(pred_score)
 }
@@ -620,8 +679,9 @@ lda_OriginalModel <- function(dat_list, dat_test_sig) {
 knn_OriginalModel <- function(dat_list, dat_test_sig) {
     diagnosis_train <- dat_list$diagnosis_train
     dat_train_sig <- dat_list$dat_train_sig
-    diagnosis_train_new <- base::ifelse(diagnosis_train == "PTB", "PTB", "Others")
-    diagnosis_train <- base::factor(diagnosis_train_new, levels = c("Others", "PTB")) %>%
+    diagnosis_train_new <- ifelse(diagnosis_train == "PTB", "PTB", "Others")
+    diagnosis_train <- base::factor(diagnosis_train_new,
+                                    levels = c("Others", "PTB")) %>%
         base::as.integer()
     sig_model <- class::knn(train = dat_train_sig, test = dat_test_sig,
                             cl = diagnosis_train, k = 10, prob = TRUE)
@@ -644,13 +704,16 @@ knn_OriginalModel <- function(dat_list, dat_test_sig) {
 
 svm_OriginalModel <- function(dat_list, dat_test_sig) {
     diagnosis_train <- dat_list$diagnosis_train
-    diagnosis_train_new <- base::ifelse(diagnosis_train == "PTB", "PTB", "Others")
-    diagnosis_train <- base::factor(diagnosis_train_new, levels = c("Others", "PTB")) %>%
+    diagnosis_train_new <- ifelse(diagnosis_train == "PTB", "PTB", "Others")
+    diagnosis_train <- factor(diagnosis_train_new,
+                              levels = c("Others", "PTB")) %>%
         base::as.integer()
     sig_model <- suppressWarnings(e1071::svm(x = dat_list$dat_train_sig,
                                              y = diagnosis_train,
-                                             type = "nu-regression", kernel = "linear",
-                                             cost = 100, cachesize = 5000, tolerance = 0.01,
+                                             type = "nu-regression",
+                                             kernel = "linear",
+                                             cost = 100, cachesize = 5000,
+                                             tolerance = 0.01,
                                              shrinking = FALSE, cross = 3))
     pred_score <- stats::predict(sig_model, dat_test_sig)
     return(pred_score)
@@ -663,23 +726,25 @@ svm_OriginalModel <- function(dat_list, dat_test_sig) {
 
 SulimanOriginalModel <- function(dat_list, dat_test_sig) {
     diagnosis_train <- dat_list$diagnosis_train
-    diagnosis_train_new <- base::ifelse(diagnosis_train == "PTB", "PTB", "Others")
-    diagnosis_train <- base::factor(diagnosis_train_new, levels = c("Others", "PTB")) %>%
+    diagnosis_train_new <- ifelse(diagnosis_train == "PTB", "PTB", "Others")
+    diagnosis_train <- base::factor(diagnosis_train_new,
+                                    levels = c("Others", "PTB")) %>%
         base::as.integer()
     dat_train_sig <- dat_list$dat_train_sig
-    dat_train_sig <- base::data.frame(GAS6_CD1C = dat_train_sig[, "GAS6"] / dat_train_sig[, "CD1C"],
-                                      SEPTIN4_BLK = dat_train_sig[, "SEPTIN4"] / dat_train_sig[, "BLK"],
-                                      SEPTIN4_CD1C = dat_train_sig[, "SEPTIN4"] / dat_train_sig[, "CD1C"],
-                                      GAS6_BLK = dat_train_sig[, "GAS6"] / dat_train_sig[, "BLK"])
-    dat_test_sig <- base::data.frame(GAS6_CD1C = dat_test_sig[, "GAS6"] / dat_test_sig[, "CD1C"],
-                                     SEPTIN4_BLK = dat_test_sig[, "SEPTIN4"] / dat_test_sig[, "BLK"],
-                                     SEPTIN4_CD1C = dat_test_sig[, "SEPTIN4"] / dat_test_sig[, "CD1C"],
-                                     GAS6_BLK = dat_test_sig[, "GAS6"] / dat_test_sig[, "BLK"])
-    sig_model <- suppressWarnings(e1071::svm(x = dat_train_sig,
-                                             y = diagnosis_train,
-                                             type = "nu-regression", kernel = "linear",
-                                             cost = 100, cachesize = 5000, tolerance = 0.01,
-                                             shrinking = FALSE, cross = 3))
+    dat_train_sig <- data.frame(
+        GAS6_CD1C = dat_train_sig[, "GAS6"] / dat_train_sig[, "CD1C"],
+        SEPTIN4_BLK = dat_train_sig[, "SEPTIN4"] / dat_train_sig[, "BLK"],
+        SEPTIN4_CD1C = dat_train_sig[, "SEPTIN4"] / dat_train_sig[, "CD1C"],
+        GAS6_BLK = dat_train_sig[, "GAS6"] / dat_train_sig[, "BLK"])
+    dat_test_sig <- data.frame(
+        GAS6_CD1C = dat_test_sig[, "GAS6"] / dat_test_sig[, "CD1C"],
+        SEPTIN4_BLK = dat_test_sig[, "SEPTIN4"] / dat_test_sig[, "BLK"],
+        SEPTIN4_CD1C = dat_test_sig[, "SEPTIN4"] / dat_test_sig[, "CD1C"],
+        GAS6_BLK = dat_test_sig[, "GAS6"] / dat_test_sig[, "BLK"])
+    sig_model <- suppressWarnings(e1071::svm(
+        x = dat_train_sig, y = diagnosis_train, type = "nu-regression",
+        kernel = "linear", cost = 100, cachesize = 5000, tolerance = 0.01,
+        shrinking = FALSE, cross = 3))
     pred_score <- stats::predict(sig_model, dat_test_sig)
     return(pred_score)
 }

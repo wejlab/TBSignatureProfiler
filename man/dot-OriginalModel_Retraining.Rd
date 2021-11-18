@@ -16,7 +16,7 @@ Used for the test SummarizedExperiment object. Default is \code{1}, indicating t
 first assay in the \code{input}.}
 
 \item{geneSignaturesName}{A character string/vector specifying the signature
-of interest. If \code{any(geneSignaturesName == "") == TRUE} run all
+of interest. If \code{any(geneSignaturesName == "") == TRUE}, it will run all
 available gene signatures' original models.}
 
 \item{adj}{A small positive real number used in \code{\link[sva]{ComBat}} to solve
@@ -32,21 +32,26 @@ obtained from the signature's original model.
 A function to obtain predicted score for TB gene signatures that need retraining of original models.
 }
 \details{
-Maertzdorf_4 and Maertzdorf_15 were trained using random forest to distinguish
+Maertzdorf_4 and Maertzdorf_15 were trained using a random forest to distinguish
 patients with active TB from healthy controls.
-Verhagen_10 was also trained using random forest to distinguish samples with active TB
+
+Verhagen_10 was also trained using a random forest to distinguish samples with active TB
 from either latent infection or healthy controls.
 The random forest model was build using \code{\link[randomForest]{randomForest}}.\cr
-Jacobsen_3 were trained using linear discriminatory analysis (LDA)
+
+Jacobsen_3 were trained using linear discriminant analysis (LDA)
 to distinguish samples with active TB from latent infection status.
+
 Sambarey_HIV_10 were also trained using LDA to distinguish samples with active TB
 from either latent infection, healthy control, or other disease (HIV).
-The LDA model was build using \code{\link[MASS]{lda}}.\cr
+The LDA model was built using \code{\link[MASS]{lda}}.\cr
+
 Berry_OD_86 and Berry_393 were trained using K-nearest neighbors (KNN) model to
 differentiate samples with active TB from latent infection status.
-The KNN model was build using \code{\link[class]{knn}}.\cr
+The KNN model was built using \code{\link[class]{knn}}.\cr
+
 Suliman_RISK_4 and Zak_RISK_16 were trained using support vector machines (SVM)
 to distinguish TB progressor from non-progressors. The input gene expression features
 for Suliman_RISK_4 used the paired ratio of GAS6/CD1C, SEPTIN4/BLK, SEPTIN4/CD1C, GAS6/BLK.
-The SVM model was build using \code{\link[e1071]{svm}}.
+The SVM model was built using \code{\link[e1071]{svm}}.
 }

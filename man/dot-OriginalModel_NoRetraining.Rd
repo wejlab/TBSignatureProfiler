@@ -16,7 +16,7 @@ Used for the test SummarizedExperiment object. Default is \code{1}, indicating t
 first assay in the \code{input}.}
 
 \item{geneSignaturesName}{A character string/vector specifying the signature
-of interest. If \code{any(geneSignaturesName == "") == TRUE} run all
+of interest. If \code{any(geneSignaturesName == "") == TRUE}, it will run all
 available gene signatures' original models.}
 
 \item{BPPARAM}{An instance inherited from \code{\link[BiocParallel]{bplapply}}.}
