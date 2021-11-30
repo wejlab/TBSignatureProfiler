@@ -7,10 +7,11 @@
 svm_OriginalModel(dat_list, dat_test_sig)
 }
 \arguments{
-\item{dat_list}{A \code{list} contains training data and disease status outcomes from
-the discovery data of corresponding gene signatures.}
+\item{dat_list}{A \code{list} contains training data and disease status
+outcomes from the discovery data of corresponding gene signatures.}
 
-\item{dat_test_sig}{A \code{data frame} contains corresponding gene sets from the \code{input}.}
+\item{dat_test_sig}{A \code{data frame} contains corresponding gene sets
+from the \code{input}.}
 }
 \value{
 The predicted score for each sample in the test study.

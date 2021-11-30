@@ -1,6 +1,16 @@
 # TBSignatureProfiler (development version)
 
 ## Bug Fixes
+* Fixed gene in RESPONSE5 (PNN to RP11-295G20.2) in TBsignatures and TBcommon objects. (Stanley M. Kimbung)
+
+## Major Changes
+
+## Minor Changes
+* Reorganized code for OriginalModel.R
+
+# TBSignatureProfiler 1.6.0
+
+## Bug Fixes
 * Fixed some package tests for the profile.R, OriginalModel.R scripts to increase coverage
 
 ## Major Changes

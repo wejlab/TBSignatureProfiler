@@ -1,6 +1,6 @@
 Package: TBSignatureProfiler
 Title: Profile RNA-Seq Data Using TB Pathway Signatures
-Version: 1.7.0
+Version: 1.6.11
 Authors@R:
     c(person(given = "David", family = "Jenkins", role = c("aut"), email = "dfj@bu.edu"),
       person(given = "Aubrey", family = "Odom", role = c("aut", "cre"), email = "aodom@bu.edu"),
@@ -17,7 +17,7 @@ Description: Gene signatures of TB progression, TB disease, and other TB disease
 License: MIT + file LICENSE
 Encoding: UTF-8
 biocViews: GeneExpression, DifferentialExpression
-RoxygenNote: 7.1.1
+RoxygenNote: 7.1.2
 LazyData: TRUE
 Depends: R (>= 4.1)
 Imports:

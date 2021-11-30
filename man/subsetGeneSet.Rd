@@ -13,8 +13,8 @@ subsetGeneSet(
 )
 }
 \arguments{
-\item{theObject}{A SummarizedExperiment object that has been prestored in the
-RData file: OriginalTrainingData.}
+\item{theObject}{A SummarizedExperiment object that has been pre-stored in 
+OriginalTrainingData.RDA}
 
 \item{gene_set}{A character vector that includes gene symbols for gene signatures.}
 
