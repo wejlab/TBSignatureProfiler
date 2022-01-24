@@ -115,6 +115,9 @@ out <- capture.output(ssgsea_result <- runTBsigProfiler(input = hivtb_data,
                                                  algorithm = "ssGSEA",
                                                  combineSigAndAlgorithm = TRUE,
                                                  parallel.sz = 1))
+
+## Remove any signatures that were not scored
+TBsignatures <- subset(TBsignatures, !(names(TBsignatures) %in% c("Chendi_HIV_2")))
 ```
 
 

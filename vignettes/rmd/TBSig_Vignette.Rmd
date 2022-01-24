@@ -113,6 +113,9 @@ out <- capture.output(ssgsea_result <- runTBsigProfiler(input = hivtb_data,
                                                  algorithm = "ssGSEA",
                                                  combineSigAndAlgorithm = TRUE,
                                                  parallel.sz = 1))
+
+## Remove any signatures that were not scored
+TBsignatures <- subset(TBsignatures, !(names(TBsignatures) %in% c("Chendi_HIV_2")))
 ```
 
 
@@ -163,7 +166,6 @@ Another method of visualization for scores is that of boxplots. When multiple si
 
  
 ```{r Boxplots all, message = FALSE, results = 'hide', fig.height = 9, fig.width=15}
-
 signatureBoxplot(inputData = ssgsea_result,
                  name = "Boxplots of Signatures, ssGSEA",
                  signatureColNames = names(TBsignatures),

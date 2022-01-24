@@ -64,7 +64,7 @@ signatures via boxplots.
 }
 \examples{
 # Run signature profiling
- choose_sigs <- TBsignatures[c(1, 2)]
+ choose_sigs <- TBsignatures[c("Zak_RISK_16", "Zhao_NANO_6")]
  prof_indian <- runTBsigProfiler(TB_indian[seq_len(25), ],
                                  useAssay = "logcounts",
                                  algorithm = "ssGSEA",

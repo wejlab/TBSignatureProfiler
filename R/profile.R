@@ -46,7 +46,8 @@ score_algorithm <- function(runindata, signatures, alg, assignDir = NULL,
     rankDat <- singscore::rankGenes(runindata)
     for (sig in names(signatures)) {
       algout[sig, ] <- suppressWarnings(singscore::simpleScore(
-        rankData = rankDat, upSet = TBsignatures[[sig]],
+        rankData = rankDat,
+        upSet = signatures[[sig]],
         knownDirection = FALSE)$TotalScore)
     }
   } else if (alg == "ASSIGN") {
@@ -151,8 +152,11 @@ output_function <- function(input, signatures, algorithm, outputFormat,
 #' @param signatures a \code{list} of signatures to run with their associated genes.
 #' This list should be in the same format as \code{TBsignatures}, included in
 #' the TBSignatureProfiler package. If \code{signatures = NULL}, the default set
-#' of signatures \code{TBsignatures} list is used. For details, run
-#' \code{?TBsignatures}. The default is \code{NULL}.
+#' of signatures \code{TBsignatures} list is used.
+#' For details, run \code{?TBsignatures}.
+#' If <2 genes in a signature are present in the sample, that signature will
+#' not be evaluated and will not be present in the resulting SE object.
+#' The default is \code{NULL}.
 #' @param algorithm a vector of algorithms to run, or character string if only
 #' one is desired. The default is \code{c("GSVA", "ssGSEA", "ASSIGN",
 #' "PLAGE", "Zscore", "singscore")}.
@@ -304,6 +308,15 @@ runTBsigProfiler <- function(input, useAssay = NULL, signatures = NULL,
     signatures <- lapply(signatures, update_genenames)
     rownames(runindata) <- update_genenames(rownames(runindata))
   }
+  # Remove signatures not present in the data
+  sig_ind <- sapply(signatures,
+                    function(x) sum(x %in% rownames(runindata))) > 1
+  if (any(!sig_ind)) message("The following signatures have <2 genes that",
+                            " coincide with the genes in the given sample",
+                            " and will not be scored: ",
+                            paste0(names(signatures)[which(!sig_ind)],
+                                   collapse = " "))
+  signatures <- signatures[which(sig_ind)]
   if (length(algorithm) == 1) {
     sig_result <- score_algorithm(runindata, signatures, algorithm, assignDir,
                                   parallel.sz, ASSIGNiter, ASSIGNburnin,
