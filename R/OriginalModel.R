@@ -84,7 +84,7 @@ evaluateOriginalModel <- function(input, geneSignaturesName, useAssay = 1,
     }
     sig_sub_NoRetraining <- base::intersect(sig_sub, signature_NoRetraining)
     if (!base::identical(sig_sub_NoRetraining, character(0))) {
-        sample_score_NoRetraining <- 
+        sample_score_NoRetraining <-
             .OriginalModel_NoRetraining(input, useAssay, sig_sub_NoRetraining,
                                         BPPARAM)
     } else {
@@ -92,7 +92,7 @@ evaluateOriginalModel <- function(input, geneSignaturesName, useAssay = 1,
     }
     sig_sub_Retraining <- base::intersect(sig_sub, signature_Retraining)
     if (!identical(sig_sub_Retraining, character(0))) {
-        sample_score_Retraining <- 
+        sample_score_Retraining <-
             .OriginalModel_Retraining(input, useAssay, sig_sub_Retraining,
                                       adj, BPPARAM)
     } else {
@@ -252,8 +252,8 @@ retrain_helper <- function(i, geneSignaturesName,
                     input = input, SigName = sig, obtainDiagnosis = TRUE,
                     annotationColName = "TBStatus",
                     FUN = "randomForest_OriginalModel", adj = adj)
-        
-        if (sig == "Bloom_OD_144") 
+
+        if (sig == "Bloom_OD_144")
             sample_score <-
                 ObtainSampleScore_OriginalModel(theObject_train, useAssay,
                                                 gene_set = TBsignatures[[sig]],
@@ -262,7 +262,7 @@ retrain_helper <- function(i, geneSignaturesName,
                                                 annotationColName = "TBStatus",
                                                 FUN = "svm_OriginalModel",
                                                 adj = adj)
-        
+
         return(sample_score)
     } else if (sig == "Jacobsen_3" || sig == "Berry_393" ||
                sig == "Berry_OD_86") {
@@ -304,7 +304,7 @@ retrain_helper <- function(i, geneSignaturesName,
         sample_score <-
             ObtainSampleScore_OriginalModel(theObject_train, useAssay,
                                             gene_set = TBsignatures[[sig]],
-                                            input = input,SigName = sig,
+                                            input = input, SigName = sig,
                                             obtainDiagnosis = TRUE,
                                             annotationColName = "TBStatus",
                                             FUN = "randomForest_OriginalModel",
@@ -417,7 +417,7 @@ ObtainSampleScore_OriginalModel <- function(theObject_train, useAssay,
 #'
 #' A function used to subset gene expression value matrix based on certain gene sets.
 #'
-#' @param theObject A SummarizedExperiment object that has been pre-stored in 
+#' @param theObject A SummarizedExperiment object that has been pre-stored in
 #' OriginalTrainingData.RDA
 #' @param gene_set A character vector that includes gene symbols for gene signatures.
 #' @param useAssay A character string or an integer specifying the assay in the \code{theObject}
