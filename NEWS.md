@@ -9,6 +9,7 @@
 
 ## Minor Changes
 * Reorganized code for OriginalModel.R
+* Fixed the TB_hiv data to remove unnecessary factor level of Disease metadata. 
 
 # TBSignatureProfiler 1.6.0
 
