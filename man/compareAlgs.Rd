@@ -31,8 +31,11 @@ Required.}
 \item{signatures}{a \code{list} of signatures to run with their associated genes.
 This list should be in the same format as \code{TBsignatures}, included in
 the TBSignatureProfiler package. If \code{signatures = NULL}, the default set
-of signatures \code{TBsignatures} list is used. For details, run
-\code{?TBsignatures}. The default is \code{NULL}.}
+of signatures \code{TBsignatures} list is used. 
+For details, run \code{?TBsignatures}.
+If <2 genes in a signature are present in the sample, that signature will
+not be evaluated and will not be present in the resulting SE object.
+The default is \code{NULL}.}
 
 \item{annotationColName}{a character string giving the column name in
 \code{colData} that contains the annotation data. Required.}

@@ -4,9 +4,12 @@
 * Fixed gene in RESPONSE5 (PNN to RP11-295G20.2) in TBsignatures and TBcommon objects. (Stanley M. Kimbung)
 
 ## Major Changes
+* If any signatures in the object used with runTBsigProfiler() have <2 genes present in the given sample, the signatures will not be scored. This may affect existing scripts.
+* Fixed a bug in the singscore algorithm called from runTBsigProfiler() that would not allow for the scoring of user-provided signatures. 
 
 ## Minor Changes
 * Reorganized code for OriginalModel.R
+* Fixed the TB_hiv data to remove unnecessary factor level of Disease metadata. 
 
 # TBSignatureProfiler 1.6.0
 
