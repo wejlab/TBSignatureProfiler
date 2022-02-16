@@ -3,7 +3,7 @@ Title: Profile RNA-Seq Data Using TB Pathway Signatures
 Version: 1.6.12
 Authors@R:
     c(person(given = "David", family = "Jenkins", role = c("aut"), email = "dfj@bu.edu"),
-      person(given = "Aubrey", family = "Odom", role = c("aut", "cre"), email = "aodom@bu.edu"),
+      person(given = "Aubrey", family = "Odom-Mabey", role = c("aut", "cre"), email = "aodom@bu.edu"),
       person(given = "Xutao", family = "Wang", role = "aut", email = "xutaow@bu.edu"),
       person(given = "Yue", family = "Zhao", role = c("aut"), email = "yuezh@bu.edu"),
       person(given = "Christian", family = "Love", role = c("aut"), email = "clove@bu.edu"),
