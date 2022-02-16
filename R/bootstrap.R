@@ -579,7 +579,7 @@ signatureROCplot_CI <- function(inputData, annotationData, signatureColNames,
 #' \code{<output_name>} will be replaced by inputted parameter.}
 #'
 #'
-#' @author Aubrey Odom
+#' @author Aubrey Odom-Mabey
 #'
 #' @export
 #'
