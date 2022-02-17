@@ -109,7 +109,7 @@ addTBsignature <- function(sigsymbols, authname,
     stop("There is already a signature with that name. ",
          "Please alter the authname to distinguish it from the previous ",
          "signature.")
-  } else message("The assigned signature name is", signame_TBSP)
+  } else message("The assigned signature name is ", signame_TBSP)
 
   if (is.null(signame_common)) {
     message("No alternative signature name was provided")

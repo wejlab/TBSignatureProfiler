@@ -10,6 +10,7 @@
 ## Minor Changes
 * Reorganized code for OriginalModel.R
 * Fixed the TB_hiv data to remove unnecessary factor level of Disease metadata. 
+* Added 4 new signatures (Tabone_OD_11/TB12, Tabone_RES_25/EarlyRESP-TB25, Tabone_RES_27/TREAT-TB27, Long_RES_10)
 
 # TBSignatureProfiler 1.6.0
 
