@@ -1,6 +1,6 @@
 for (package in c("shiny", "shinyWidgets", "shinythemes", "markdown", "DT",
                   "BiocManager", "SummarizedExperiment", "shinycssloaders")) {
-  if (identical(find.package(package, quiet = TRUE), character(0))) {
+  if (identical(find.package(package, quiet = FALSE), character(0))) {
     install.packages(package)
   }
 }

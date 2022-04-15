@@ -548,17 +548,17 @@ signatureROCplot_CI <- function(inputData, annotationData, signatureColNames,
 
 #' Add SummarizedExperiment assays to the data structure.
 #'
-#' Given an input of a Summarized Experiment with a counts or CPM assay, This
-#' function creates additional assays for a gene expression count dataset
-#' to be used in further analysis.
+#' Given a \code{SummarizedExperiment} input with a counts or CPM assay, this
+#' function creates additional assays for by computing the CPM, log, or both
+#' of the input assay to be used in further analysis.
 #'
-#' @param SE_obj a \code{SummarizedExperiment} object containing gene expression
+#' @param SE_obj a \code{SummarizedExperiment} object containing count or CPM
 #' data. Required.
 #' @param input_name a character string specifying the name of the assay to
 #' be referenced for creating additional assays. Default is \code{"counts"}.
-#' @param output_name a character string to concatenate to "log" when computing
-#' a log assay. If \code{NULL}, then \code{input_name} will be substituted.
-#' Only used if \code{log = TRUE}. Default is \code{NULL}.
+#' @param output_name a character string to use in place of the \code{input_name}.
+#' If \code{NULL}, then \code{input_name} will be substituted.
+#' Default is \code{NULL}. See Return details for how names are altered.
 #' @param log logical. Indicate whether an assay returned should be the log
 #' of whichever assay is specified in \code{"output_name"}. If
 #' \code{counts_to_CPM = TRUE} as well, then a log CPM assay will also
@@ -567,17 +567,15 @@ signatureROCplot_CI <- function(inputData, annotationData, signatureColNames,
 #' \code{input_type} is a counts assay. If \code{TRUE}, then the output assays
 #' will include a normalized CPM assay. If \code{log = TRUE} as well,
 #' then a log CPM assay will also be created. Default is \code{TRUE}.
-#' @param  prior_counts an integer specifying the average count to be added to
+#' @param  prior_counts a small integer specifying the average count to be added to
 #' each observation to avoid taking the log of zero. Used only if
 #' \code{log = TRUE}. The default is \code{3}.
 #'
 #' @return This function returns a \code{SummarizedExperiment} object with up
 #' to 3 additional assay types attached to the original inputted object.
-#' \item{cpm}{Counts per million}
-#' \item{logcpm}{Log counts per million}
-#' \item{log_<output_name>}{Log of original inputted assay.
-#' \code{<output_name>} will be replaced by inputted parameter.}
-#'
+#' \item{\code{output_name}_cpm}{Counts per million}
+#' \item{log_\code{output_name}_cpm}{Log counts per million}
+#' \item{log_\code{output_name}}{Log of original input assay.}
 #'
 #' @author Aubrey Odom-Mabey
 #'
@@ -600,35 +598,31 @@ signatureROCplot_CI <- function(inputData, annotationData, signatureColNames,
 mkAssay <- function(SE_obj, input_name = "counts", output_name = NULL,
                     log = FALSE, counts_to_CPM = TRUE,
                     prior_counts = 3) {
-
   if (!(log | counts_to_CPM)) {
     stop("At least counts_to_CPM or log must be TRUE.")
   } else if (!(input_name %in% names(SummarizedExperiment::assays(SE_obj)))) {
-    stop("input_name must be an SE_obj assay")
+    stop("input_name must be an assay in the SE_obj")
   }
-
   # Identify the main assay to be referenced
   assay_main <- SummarizedExperiment::assay(SE_obj, input_name)
   if (is.null(output_name)) output_name <- input_name
-
+  if (log) { # if no CPM, but yes log
+    SummarizedExperiment::assay(
+      SE_obj, paste("log", output_name, sep = "_")) <- log(assay_main + prior_counts)
+  }
   if (counts_to_CPM) {
     data.norm <- edgeR::DGEList(counts = assay_main)
     dge_data.norm <- edgeR::calcNormFactors(data.norm)
     CPM_data.norm <- edgeR::cpm(dge_data.norm, log = FALSE)
-    SummarizedExperiment::assay(SE_obj, "cpm") <- CPM_data.norm
-  }
-
-  if (log) {
     SummarizedExperiment::assay(
-      SE_obj, paste("log", output_name, sep = "_")) <- log(assay_main +
-                                                             prior_counts)
+      SE_obj, paste(output_name, "cpm", sep = "_")) <- CPM_data.norm
+    if (log) { # if log and counts_to_CPM
+      # log of CPM
+      logCPM_data.norm <- edgeR::cpm(
+        dge_data.norm, log = TRUE, prior.counts = prior_counts)
+      SummarizedExperiment::assay(
+        SE_obj, paste("log", output_name, "cpm", sep = "_")) <- logCPM_data.norm
+    }
   }
-
-  if (counts_to_CPM & log) {
-    logCPM_data.norm <- edgeR::cpm(
-      dge_data.norm, log = TRUE, prior.counts = prior_counts)
-    SummarizedExperiment::assay(SE_obj, "log_cpm") <- logCPM_data.norm
-  }
-
   return(SE_obj)
 }

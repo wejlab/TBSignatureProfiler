@@ -8,9 +8,12 @@
 * Fixed a bug in the singscore algorithm called from runTBsigProfiler() that would not allow for the scoring of user-provided signatures. 
 
 ## Minor Changes
-* Reorganized code for OriginalModel.R
+* Reorganized code for OriginalModel.R for clarity.
 * Fixed the TB_hiv data to remove unnecessary factor level of Disease metadata. 
 * Added 4 new signatures (Tabone_OD_11/TB12, Tabone_RES_25/EarlyRESP-TB25, Tabone_RES_27/TREAT-TB27, Long_RES_10)
+* Updated the website interface
+* Changed HGNChelper installation to be checked during profiling if update_genes = TRUE
+* Reorganized code in mkAssay() for clarity. The output_name argument is now appended to all output assays, whereas previously it was only appended to the log of the input assay.
 
 # TBSignatureProfiler 1.6.0
 

@@ -248,7 +248,7 @@ test_that("Run mk_Assay", {
   )
   expect_error(
     mkAssay(SEtestdata2, input_name = "not_here"),
-    "input_name must be an SE_obj assay"
+    "input_name must be an assay in the SE_obj"
   )
 
 })

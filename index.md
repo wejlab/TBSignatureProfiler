@@ -15,7 +15,7 @@ The goal of the TBSignatureProfiler is to aggregate these signatures and create 
 
 ## Installation
 
-The TBSignatureProfiler requires R 4.1 and Bioconductor 3.10.
+The TBSignatureProfiler requires R 4.1 and Bioconductor 3.14.
 
 * Install the development version of the package from Github 
 
@@ -33,9 +33,16 @@ if (!requireNamespace("BiocManager", quietly = TRUE))
 BiocManager::install("TBSignatureProfiler")
 
 ```
+
+## Tutorials
+
+Check the "Tutorials" tab at the top of the page for guided walkthroughs of the TBSP's many functions. "Command Line Analysis" is the best place to begin.
+
 ## Run TBSignatureProfiler shiny app
 
 ``` 
 library(TBSignatureProfiler)
 TBSPapp()
 ```
+
+Improvements to our shiny app are coming soon.

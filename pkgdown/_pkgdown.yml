@@ -1,7 +1,7 @@
 template:
-  params:
-    bootswatch: cosmo
-    
+  bootstrap: 5
+  bootswatch: cosmo
+
 reference:
 - title: "Signature Profiling"
   desc: Functions and data used for profiling RNA-seq data or organizing profiled data.
@@ -63,22 +63,33 @@ reference:
   - ref_combat_impute
   
 navbar:
+  bg: dark
   title: "TBSignatureProfiler"
   left: 
     - text: "Home"
       href: index.html
-    - text: "Command Line Analysis"
-      href: articles/rmd/TBSig_Vignette.html
-    - text: "Original Models"
-      href: articles/rmd/OriginalModelTutorial.html
-    - text: "Interactive Shiny Analysis"
-      href: articles/rmd/shinytutorial.html
-    - text: "Adding Signatures to the Profiler"
-      href: articles/rmd/SignatureAddition.html
-    - text: "Reference"
+    - text: "Tutorials"
+      menu:
+        - text: "Command Line Analysis"
+          href: articles/rmd/TBSig_Vignette.html
+        - text: "Original Models"
+          href: articles/rmd/OriginalModelTutorial.html
+        - text: "Interactive Shiny Analysis"
+          href: articles/rmd/shinytutorial.html
+        - text: "Adding Signatures to the Profiler"
+          href: articles/rmd/SignatureAddition.html   
+    - text: "Function Reference"
       href: reference/index.html
-    - text: "News"
+    - text: "TBSP News"
       href: news/index.html
   right:
     - icon: fa-github
       href: https://github.com/compbiomed/TBSignatureProfiler
+      
+authors:
+  footer:
+    roles: [cre]
+    text: "Site created by"
+  sidebar:
+    roles: [aut, ctb]
+    after: "Thanks all!"

@@ -1,5 +1,4 @@
 if (requireNamespace("lintr", quietly = TRUE)) {
-  context("lints")
   test_that("Package Style", {
     lintr::expect_lint_free(linters = c(lintr::trailing_whitespace_linter,
                                         lintr::no_tab_linter,

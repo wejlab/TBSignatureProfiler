@@ -3,4 +3,4 @@ title: "Tutorial for a Shiny Analysis with the TBSignatureProfiler"
 output: html_document
 ---
 
-A tutorial for the TBSP shiny app is not currently available. If you need assistance running the application, please contact the package maintainer, Aubrey Odom, at <aodom@bu.edu>.
+A tutorial for the TBSP shiny app is not currently available, but will be hopefully coming soon along with an overhaul of the Shiny app. If you need immediate assistance running the application, please contact the package maintainer, Aubrey Odom-Mabey, at <aodom@bu.edu>.

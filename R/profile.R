@@ -19,6 +19,11 @@ check_sig_env <- function(signatures) {
 
 # Update gene names that are mogrified or outdated
 update_genenames <- function(siglist) {
+  requireNamespace("ggplot2", quietly = TRUE)
+  if (!requireNamespace("HGNChelper", quietly = TRUE)) {
+    stop("Package 'HGNChelper' required to update gene names.",
+         "Either install or set update_genes = FALSE.")
+  }
   newgenes <- suppressMessages(suppressWarnings(
     HGNChelper::checkGeneSymbols(siglist,
                                  unmapped.as.na = FALSE)))$Suggested.Symbol
@@ -309,8 +314,9 @@ runTBsigProfiler <- function(input, useAssay = NULL, signatures = NULL,
     rownames(runindata) <- update_genenames(rownames(runindata))
   }
   # Remove signatures not present in the data
-  sig_ind <- sapply(signatures,
-                    function(x) sum(x %in% rownames(runindata))) > 1
+  sig_ind <- vapply(signatures,
+                    function(x) sum(x %in% rownames(runindata)),
+                    FUN.VALUE = numeric(1)) > 1
   if (any(!sig_ind)) message("The following signatures have <2 genes that",
                             " coincide with the genes in the given sample",
                             " and will not be scored: ",

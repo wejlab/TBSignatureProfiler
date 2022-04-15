@@ -13,9 +13,9 @@ The TBSignatureProfiler is an R package that allows researchers to easily profil
 
 ## Installation
 
-The TBSignatureProfiler requires R 4.1 and Bioconductor 3.10.
+The TBSignatureProfiler requires R Version 4.1 and Bioconductor 3.14.
 
-* Install the development version of the package from Github 
+* Install the development version of the package from Github:
 
 ``` r
 if (!requireNamespace("devtools", quietly=TRUE))
@@ -23,7 +23,7 @@ if (!requireNamespace("devtools", quietly=TRUE))
 devtools::install_github("compbiomed/TBSignatureProfiler")
 ```
 
-* Install the release version of the package from Bioconductor
+* Install the release version of the package from Bioconductor:
 
 ``` r
 if (!requireNamespace("BiocManager", quietly=TRUE))

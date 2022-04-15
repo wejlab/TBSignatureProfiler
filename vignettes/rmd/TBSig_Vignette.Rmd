@@ -9,6 +9,7 @@ author:
   affiliation:
   - The Section of Computational Biomedicine, Boston University School of Medicine, Boston, MA
   email: wej@bu.edu
+date: '`r format(Sys.Date(), "%B %e, %Y")`'
 package: TBSignatureProfiler
 output: 
   BiocStyle::html_document
@@ -17,7 +18,7 @@ vignette: >
   %\VignetteEncoding{UTF-8}  
   %\VignetteEngine{knitr::rmarkdown}
 editor_options: 
-  chunk_output_type: inline
+  chunk_output_type: console
 ---
 
 # Introduction to the TBSignatureProfiler
@@ -32,7 +33,7 @@ More recently, the TBSignatureProfiler has undertaken a new role in analyzing si
 
 In order to install the TBSignatureProfiler from Bioconductor, run the following code:
 
-```{r load profiler, eval = FALSE}
+```{r load_profiler, eval = FALSE}
 if (!requireNamespace("BiocManager", quietly = TRUE))
   install.packages("BiocManager")
 BiocManager::install("TBSignatureProfiler")
@@ -67,7 +68,7 @@ In this tutorial, we will work with HIV and Tuberculosis (TB) gene expression da
 
 We begin by examining the dataset, which contains a matrix of counts information (an "assay" in SummarizedExperiment terms) and another matrix of meta data information on our samples (the "colData"). We will also generate a few additional assays; these are the log(counts), the counts per million (CPM) reads mapped, and the log(CPM) assays. 
 
-```{r loading data}
+```{r loading_data}
 ## HIV/TB gene expression data, included in the package
 hivtb_data <- TB_hiv
 
@@ -80,7 +81,7 @@ assays(hivtb_data)
 
 
 We now make a log counts, CPM and log CPM assay.
-```{r add assays}
+```{r add_assays}
 ## Make a log counts, CPM and log CPM assay
 hivtb_data <- mkAssay(hivtb_data, log = TRUE, counts_to_CPM = TRUE)
 
@@ -96,7 +97,7 @@ With the `runTBSigProfiler` function, we are able to score these signatures with
 
 Here, we evaluate all signatures included in the package with ssGSEA. Paraphrasing from the [ssGSEA documentation](http://software.broadinstitute.org/cancer/software/genepattern/modules/docs/ssGSEAProjection/4), for each pairing of one of the 31 samples and its gene set, ssGSEA calculates a separate enrichment score independent of the phenotypic labeling (in this case, whether a sample has HIV/TB, or HIV only). The single sample's gene expression profile is then transformed to a gene set enrichment profile. A score from the set profile represents the activity level of the biological process in which the gene set's members are coordinately up- or down-regulated.  
 
-```{r run data}
+```{r run_data}
 ## List all signatures in the profiler
 data("TBsignatures")
 names(TBsignatures)
@@ -105,7 +106,7 @@ names(TBsignatures)
 siglist_hivtb <- names(TBsignatures)
 ```
 
-```{r run profiler}
+```{r run_profiler}
 ## Run the TBSignatureProfiler to score the signatures in the data
 out <- capture.output(ssgsea_result <- runTBsigProfiler(input = hivtb_data,
                                                  useAssay = "log_cpm",
@@ -124,7 +125,7 @@ When a `SummarizedExperiment` is the format of the input data for `runTBsigprofi
 Below, we subset the data to compare the enrichment scores for the Anderson_42, Anderson_OD_51, and Berry_393 signatures. 
 
 Signature Scores
-```{r show scores, message = FALSE}
+```{r show_scores, message = FALSE}
 ## New colData entries from the Profiler
 sigs <- c("Anderson_42", "Anderson_OD_51", "Berry_393")
 ssgsea_print_results <- as.data.frame(colData(ssgsea_result))[, c("Disease", sigs)]
@@ -143,7 +144,7 @@ Commonly, enrichment scores are compared across signatures by means of a heatmap
 Here, the columns of the heatmap represent samples, and rows represent signatures. Rows are split according to annotation data with associated signature disease type. As we move across the columns, we see different patterns of gene expression as indicated by the varying color and intensity of individual rectangles. In the top bar, the solid red represents a sample is HIV infected only, and solid blue indicates that the sample is both HIV and TB infected. In the gradient area of the heatmap, the scaled scores are associated with either up-regulated or down-regulated genes. A cluster of samples near the bottom of the heatmap reveals that some signatures are inversely associated with TB/HIV identification, as their phenotypic mapping for lower/higher scores is nearly the opposite of most of the other signatures.  
 
 
-```{r all sigs heatmap, message = FALSE, fig.height = 9}
+```{r all_sigs_heatmap, message = FALSE, fig.height = 9}
 
 # Colors for gradient
 colors <- RColorBrewer::brewer.pal(6, "Spectral")
@@ -165,7 +166,7 @@ signatureHeatmap(ssgsea_result, name = "Heatmap of Signatures,
 Another method of visualization for scores is that of boxplots. When multiple signatures in the input data are to be compared, the `signatureBoxplot` function takes the scores for each signature and produces an individual boxplot, with jittered points representing individual sample scores. For this specific example, it is clear that some signatures do a better job at differentiating the TB/HIV and HIV only samples than others, as seen by overlapping or separate spreads of the adjacent boxplots.
 
  
-```{r Boxplots all, message = FALSE, results = 'hide', fig.height = 9, fig.width=15}
+```{r Boxplots_all, message = FALSE, results = 'hide', fig.height = 9, fig.width=15}
 signatureBoxplot(inputData = ssgsea_result,
                  name = "Boxplots of Signatures, ssGSEA",
                  signatureColNames = names(TBsignatures),
@@ -177,7 +178,7 @@ signatureBoxplot(inputData = ssgsea_result,
  
 If only one boxplot of a signature is desired, then that signature alone should be specified in `signatureColNames`. Otherwise, an array of plots for all signatures will be produced. Here we use the signatures Anderson_42, Anderson_OD_51, and Berry_393.
 
-```{r Boxplots indiv, results = "asis", message = FALSE}
+```{r Boxplots_indiv, results = "asis", message = FALSE}
 for (i in sigs){
 
   cat("####", i, "\n")
@@ -194,7 +195,7 @@ for (i in sigs){
 
 
 The `signatureGeneHeatmap` function produces heatmaps that highlight a single selected signature. The resulting plots feature samples on the columns, and the genes in the signature on the rows. The annotation rows at the top are related to both the disease phenotype and to the signature score itself.  The gradient of the heatmap is created using the gene expression values in the assay specified by the `useAssay` parameter. Here, we observe how the log(CPM) values for specific genes relate to the signature score for each sample using the signatures Anderson_42, Anderson_OD_51, and Berry_393.
-```{r Heatmaps indiv, results = "asis", message = FALSE, fig.height = 11}
+```{r Heatmaps_indiv, results = "asis", message = FALSE, fig.height = 11}
 for (i in sigs){
 
   cat("####", i, "\n")
@@ -217,7 +218,7 @@ The `compareAlgs` function allows multiple scoring methods to be compared via a 
 
 An examination of the boxplot and heatmap together determine that PLAGE and the comparing Z-score methods are least helpful in correctly identifying TB from LTBI subjects - AUC scores are little more than 0.5 and subjects in different groups are falsely assigned similar scores. According to the boxplot, we see that ssGSEA has the highest predictive AUC.
 
-```{r compareAlgs ex, warning = FALSE, message = FALSE}
+```{r compareAlgs_ex, warning = FALSE, message = FALSE}
 # Heatmap
 compareAlgs(hivtb_data, annotationColName = "Disease",
             scale = TRUE,
@@ -245,7 +246,7 @@ compareAlgs(hivtb_data, annotationColName = "Disease",
 The `TableAUC` function creates a table of useful information regarding the scored  signatures. First, a 2-sample t-test is conducted on the scores with the TB/HIV status as the response variable. This is intended to give one metric of whether the signature is a valuable identifier of the disease phenotype. The log-scaled p-values are provided for easier means of comparison. 
 
 The table also gives the AUC values for the signature scores, along with confidence intervals derived from bootstrapping. Most AUC estimates are fairly high.
-```{r AUC table, message = FALSE}
+```{r AUC_table, message = FALSE}
 tableAUC(ssgsea_result,
          annotationColName = "Disease",
          signatureColNames = names(TBsignatures),
@@ -256,7 +257,7 @@ tableAUC(ssgsea_result,
 ### Boxplots for the bootstrapped AUCs
 We can visualize the bootstrapped AUCs for the scored signatures by creating a collection of boxplots. 
 
-```{r BS Boxplots, message = FALSE}
+```{r BS_Boxplots, message = FALSE}
 compareBoxplots(ssgsea_result, annotationColName = "Disease",
                 signatureColNames = names(TBsignatures),
                 pb.show = FALSE, rotateLabels = TRUE)
@@ -269,7 +270,7 @@ The `signatureROCplot_CI` function plots the ROC curves for signature scores in 
 Note that, in some cases, signatures will be positive identifiers of TB whereas others are negative identifiers, hence some ROC curves will be below the chance line.
  
  
-```{r ROC all, message = FALSE, fig.height = 9, fig.width = 12}
+```{r ROC_all, message = FALSE, fig.height = 9, fig.width = 12}
 signatureROCplot_CI(inputData = ssgsea_result,
                    signatureColNames = names(TBsignatures),
                    annotationColName = "Disease", pb.show = FALSE)
@@ -278,7 +279,7 @@ signatureROCplot_CI(inputData = ssgsea_result,
 
 ### Separate ROC plots, 95% CI bands {.tabset}
  
-```{r ROC indiv, results = 'asis', message = FALSE}
+```{r ROC_indiv, results = 'asis', message = FALSE}
 for (i in sigs){
 
   cat("####", i, "\n")
@@ -314,7 +315,7 @@ quantitative.result <- SignatureQuantitative(hivtb_norm,
 
 We also create a boxplot of AUC for each signature, which provides a clear comparison between the signatures. 
 
-```{r sigeval plot, message = FALSE}
+```{r sigeval_plot, message = FALSE}
 plotQuantitative(hivtb_norm, targetVec.num = colData(hivtb_data)$BinaryTB,
                        signature.list = TBsignatures[sigs],
                        signature.name.vec = sigs,
@@ -323,7 +324,7 @@ plotQuantitative(hivtb_norm, targetVec.num = colData(hivtb_data)$BinaryTB,
 
 
 ### Table of AUC Results
-```{r AUC sigeval}
+```{r AUC_sigeval}
 DT::datatable(round(quantitative.result$df.auc.ci, 4),
               options = list(scrollX = TRUE, pageLength = 10),
               rownames = FALSE)
@@ -331,7 +332,7 @@ DT::datatable(round(quantitative.result$df.auc.ci, 4),
 
 
 ### Table of Sensitivity Results
-```{r sens sigeval}
+```{r sens_sigeval}
 DT::datatable(round(quantitative.result$df.sensitivity.ci, 4),
               options = list(scrollX = TRUE, pageLength = 10),
               rownames = FALSE)
@@ -339,7 +340,7 @@ DT::datatable(round(quantitative.result$df.sensitivity.ci, 4),
 
 
 ### Table of Specificity Results
-```{r spec sigeval}
+```{r spec_sigeval}
 DT::datatable(round(quantitative.result$df.specificity.ci, 4),
               options = list(scrollX = TRUE, pageLength = 10),
               rownames = FALSE)

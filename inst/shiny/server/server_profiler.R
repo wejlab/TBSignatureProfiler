@@ -38,7 +38,8 @@ shiny::observeEvent(input$runprofiler, {
                      signatures = TBsignatures,
                      algorithm = input$profalg,
                      combineSigAndAlgorithm = TRUE,
-                     parallel.sz = 4))
+                     parallel.sz = 4,
+                     update_genes = FALSE))
 })
 
 shiny::observeEvent(input$runprofiler, {
