@@ -14,6 +14,7 @@
 * Updated the website interface
 * Changed HGNChelper installation to be checked during profiling if update_genes = TRUE
 * Reorganized code in mkAssay() for clarity. The output_name argument is now appended to all output assays, whereas previously it was only appended to the log of the input assay.
+* Fixed the row numbers of existing sigAnnotData and common_sigAnnotData objects, and added code to update them after new signatures are added.
 
 # TBSignatureProfiler 1.6.0
 

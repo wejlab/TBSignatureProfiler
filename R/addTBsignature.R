@@ -144,6 +144,7 @@ addTBsignature <- function(sigsymbols, authname,
   sigAnnotData <- as.data.frame(rbind(sigAnnotData, newrow))[index, ]
   sigAnnotData$disease <- as.factor(sigAnnotData$disease)
   sigAnnotData$tissue_type <- as.factor(sigAnnotData$tissue_type)
+  rownames(sigAnnotData) <- seq_len(nrow(sigAnnotData))
   if (all(sigAnnotData$names != names(TBsignatures))) {
     stop("The names in the sigAnnotData do not match the order ",
          "and/or names of the TBsignatures object.")
@@ -159,6 +160,7 @@ addTBsignature <- function(sigsymbols, authname,
   common_sigAnnotData$disease <- as.factor(common_sigAnnotData$disease)
   common_sigAnnotData$tissue_type <- as.factor(
     common_sigAnnotData$tissue_type)
+  rownames(common_sigAnnotData) <- seq_len(nrow(common_sigAnnotData))
   if (all(common_sigAnnotData$names != names(TBcommon))) {
     stop("The names in the common_sigAnnotData table do not match ",
          "the order and/or names of the TBcommon object.")
