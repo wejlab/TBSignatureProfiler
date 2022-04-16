@@ -109,7 +109,7 @@ siglist_hivtb <- names(TBsignatures)
 ```{r run_profiler}
 ## Run the TBSignatureProfiler to score the signatures in the data
 out <- capture.output(ssgsea_result <- runTBsigProfiler(input = hivtb_data,
-                                                 useAssay = "log_cpm",
+                                                 useAssay = "log_counts_cpm",
                                                  signatures = TBsignatures,
                                                  algorithm = "ssGSEA",
                                                  combineSigAndAlgorithm = TRUE,
@@ -200,7 +200,7 @@ for (i in sigs){
 
   cat("####", i, "\n")
 
-  signatureGeneHeatmap(inputData = ssgsea_result, useAssay = "log_cpm",
+  signatureGeneHeatmap(inputData = ssgsea_result, useAssay = "log_counts_cpm",
                        TBsignatures[sigs][[i]],
                        name = i, signatureColNames = i,
                        annotationColNames = c("Disease"),

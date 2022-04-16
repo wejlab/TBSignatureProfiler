@@ -110,7 +110,7 @@ siglist_hivtb <- names(TBsignatures)
 ```{r run_profiler}
 ## Run the TBSignatureProfiler to score the signatures in the data
 out <- capture.output(ssgsea_result <- runTBsigProfiler(input = hivtb_data,
-                                                 useAssay = "log_cpm",
+                                                 useAssay = "log_counts_cpm",
                                                  signatures = TBsignatures,
                                                  algorithm = "ssGSEA",
                                                  combineSigAndAlgorithm = TRUE,
