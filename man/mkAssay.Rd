@@ -14,15 +14,15 @@ mkAssay(
 )
 }
 \arguments{
-\item{SE_obj}{a \code{SummarizedExperiment} object containing gene expression
+\item{SE_obj}{a \code{SummarizedExperiment} object containing count or CPM
 data. Required.}
 
 \item{input_name}{a character string specifying the name of the assay to
 be referenced for creating additional assays. Default is \code{"counts"}.}
 
-\item{output_name}{a character string to concatenate to "log" when computing
-a log assay. If \code{NULL}, then \code{input_name} will be substituted.
-Only used if \code{log = TRUE}. Default is \code{NULL}.}
+\item{output_name}{a character string to use in place of the \code{input_name}.
+If \code{NULL}, then \code{input_name} will be substituted.
+Default is \code{NULL}. See Return details for how names are altered.}
 
 \item{log}{logical. Indicate whether an assay returned should be the log
 of whichever assay is specified in \code{"output_name"}. If
@@ -34,22 +34,21 @@ be created. Default is \code{FALSE}.}
 will include a normalized CPM assay. If \code{log = TRUE} as well,
 then a log CPM assay will also be created. Default is \code{TRUE}.}
 
-\item{prior_counts}{an integer specifying the average count to be added to
+\item{prior_counts}{a small integer specifying the average count to be added to
 each observation to avoid taking the log of zero. Used only if
 \code{log = TRUE}. The default is \code{3}.}
 }
 \value{
 This function returns a \code{SummarizedExperiment} object with up
 to 3 additional assay types attached to the original inputted object.
-\item{cpm}{Counts per million}
-\item{logcpm}{Log counts per million}
-\item{log_<output_name>}{Log of original inputted assay.
-\code{<output_name>} will be replaced by inputted parameter.}
+\item{\code{output_name}_cpm}{Counts per million}
+\item{log_\code{output_name}_cpm}{Log counts per million}
+\item{log_\code{output_name}}{Log of original input assay.}
 }
 \description{
-Given an input of a Summarized Experiment with a counts or CPM assay, This
-function creates additional assays for a gene expression count dataset
-to be used in further analysis.
+Given a \code{SummarizedExperiment} input with a counts or CPM assay, this
+function creates additional assays for by computing the CPM, log, or both
+of the input assay to be used in further analysis.
 }
 \examples{
 # Create a log assay of the original assay input
