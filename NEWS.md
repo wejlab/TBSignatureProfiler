@@ -1,4 +1,4 @@
-# TBSignatureProfiler (development version)
+# TBSignatureProfiler 1.7.1
 
 ## Bug Fixes
 * Fixed gene in RESPONSE5 (PNN to RP11-295G20.2) in TBsignatures and TBcommon objects. (Stanley M. Kimbung)
