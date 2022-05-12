@@ -1,12 +1,13 @@
-# TBSignatureProfiler (dev)
+# TBSignatureProfiler (development version)
 
 ## Bug Fixes
 
 ## Major Changes
 
 ## Minor Changes
-* Updated the github and website readme.
+* Updated the github and website introductions.
 * Added Natarajan_7, Kaul_3 signatures
+* Shortened some example run times
 
 # TBSignatureProfiler 1.8.0
 

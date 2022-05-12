@@ -47,8 +47,9 @@ The predicted score for each signature has been stored in the column data
 section of the input SummarizedExperiment study.
 }
 \examples{
-data("TB_hiv", package = "TBSignatureProfiler")
-re <- evaluateOriginalModel(input = TB_hiv,
-geneSignaturesName = c("Anderson_42", "Maertzdorf_15"), useAssay = "counts")
+re <- evaluateOriginalModel(input = TB_indian,
+                            geneSignaturesName = c("Anderson_42"),
+                            useAssay = "counts")
 re$Anderson_42_OriginalModel
+
 }

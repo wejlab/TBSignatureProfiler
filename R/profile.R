@@ -368,12 +368,10 @@ runTBsigProfiler <- function(input, useAssay = NULL, signatures = NULL,
 #' @export
 #'
 #' @examples
-#'
-#' # Example using the TB_hiv data set, two signatures, and 3 algorithms
-#' data("TB_hiv")
-#' compareAlgs(TB_hiv, signatures = TBsignatures[c(1,2)],
-#'             annotationColName = "Disease",
-#'             algorithm = c("GSVA", "ssGSEA", "PLAGE"),
+#' compareAlgs(TB_indian,
+#'             signatures = TBsignatures[c("Zimmer_RES_3")],
+#'             annotationColName = "label",
+#'             algorithm = c("ssGSEA", "PLAGE"),
 #'             scale = TRUE, parallel.sz = 1, output = "heatmap")
 #'
 compareAlgs <- function(input, signatures = NULL, annotationColName,

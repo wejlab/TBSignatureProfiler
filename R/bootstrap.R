@@ -36,7 +36,7 @@ globalVariables(c("BS_AUC", "FPR", "LowerTPR", "Signatures",
 #'                                  parallel.sz = 1)
 #'  # Bootstrapping
 #'  booted <- bootstrapAUC(SE_scored = prof_indian, annotationColName = "label",
-#'                         signatureColNames = names(choose_sigs), num.boot = 5)
+#'                         signatureColNames = names(choose_sigs), num.boot = 2)
 #'  booted
 #'
 bootstrapAUC <- function(SE_scored, annotationColName, signatureColNames,

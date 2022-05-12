@@ -137,7 +137,7 @@ Bootstrap_LOOCV_LR_AUC <- function(df, targetVec, nboot) {
 #' signature.list <- list(sig1 = c("gene1", "gene2", "gene3"),
 #'                        sig2 = c("gene4", "gene5", "gene6"))
 #' signature.name.vec <- c("sig1", "sig2")
-#' num.boot <- 5
+#' num.boot <- 2
 #' SignatureQuantitative(inputTest, targetVec.num = targetVec,
 #'                       signature.list = signature.list,
 #'                       signature.name.vec = signature.name.vec,

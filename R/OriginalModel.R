@@ -28,12 +28,15 @@ globalVariables(c("TBsignaturesSplit", "OriginalTrainingData", "TBsignatures"))
 #'
 #' @return A SummarizedExperiment object with predicted scores for each sample
 #' obtained from the signature's original model.
+#'
 #' @export
+#'
 #' @examples
-#' data("TB_hiv", package = "TBSignatureProfiler")
-#' re <- evaluateOriginalModel(input = TB_hiv,
-#' geneSignaturesName = c("Anderson_42", "Maertzdorf_15"), useAssay = "counts")
+#' re <- evaluateOriginalModel(input = TB_indian,
+#'                             geneSignaturesName = c("Anderson_42"),
+#'                             useAssay = "counts")
 #' re$Anderson_42_OriginalModel
+#'
 
 evaluateOriginalModel <- function(input, geneSignaturesName, useAssay = 1,
                                   adj = 1e-3,
