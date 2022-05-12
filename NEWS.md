@@ -1,20 +1,30 @@
-# TBSignatureProfiler 1.7.1
+# TBSignatureProfiler (dev)
+
+## Bug Fixes
+
+## Major Changes
+
+## Minor Changes
+* Updated the github and website readme.
+* Added Natarajan_7, Kaul_3 signatures
+
+# TBSignatureProfiler 1.8.0
 
 ## Bug Fixes
 * Fixed gene in RESPONSE5 (PNN to RP11-295G20.2) in TBsignatures and TBcommon objects. (Stanley M. Kimbung)
+* Fixed a bug in the singscore algorithm called from runTBsigProfiler() that would not allow for the scoring of user-provided signatures.
+* Fixed the TB_hiv data to remove unnecessary factor level of Disease metadata. 
+* Fixed the row numbers of existing sigAnnotData and common_sigAnnotData objects, and added code to update them after new signatures are added.
 
 ## Major Changes
 * If any signatures in the object used with runTBsigProfiler() have <2 genes present in the given sample, the signatures will not be scored. This may affect existing scripts.
-* Fixed a bug in the singscore algorithm called from runTBsigProfiler() that would not allow for the scoring of user-provided signatures. 
 
 ## Minor Changes
 * Reorganized code for OriginalModel.R for clarity.
-* Fixed the TB_hiv data to remove unnecessary factor level of Disease metadata. 
 * Added 4 new signatures (Tabone_OD_11/TB12, Tabone_RES_25/EarlyRESP-TB25, Tabone_RES_27/TREAT-TB27, Long_RES_10)
 * Updated the website interface
 * Changed HGNChelper installation to be checked during profiling if update_genes = TRUE
 * Reorganized code in mkAssay() for clarity. The output_name argument is now appended to all output assays, whereas previously it was only appended to the log of the input assay.
-* Fixed the row numbers of existing sigAnnotData and common_sigAnnotData objects, and added code to update them after new signatures are added.
 
 # TBSignatureProfiler 1.6.0
 
@@ -51,7 +61,3 @@
 * Added `addTBsignature()` to more easily facilitate updating signatures in package
 * Added pROC option to obtain confidence intervals on AUC values as part of \code{tableAUC()}
 * Added citation for newly published paper
-
-# TBSignatureProfiler 0.0.0.9000
-
-* Added a `NEWS.md` file to track changes to the package.
