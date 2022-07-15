@@ -2,14 +2,14 @@
 
 [![](https://img.shields.io/badge/bioconductor-3.15-blue)](http://www.bioconductor.org/packages/release/bioc/html/TBSignatureProfiler.html)
 [![codecov](https://codecov.io/gh/compbiomed/TBSignatureProfiler/branch/master/graph/badge.svg)](https://codecov.io/gh/compbiomed/TBSignatureProfiler)
-[![lifecycle](https://img.shields.io/badge/lifecycle-maturing-blue)](https://www.tidyverse.org/lifecycle/#maturing)
+[![lifecycle](https://lifecycle.r-lib.org/articles/figures/lifecycle-stable.svg)](https://www.tidyverse.org/lifecycle/#stable)
 [![build](http://www.bioconductor.org/shields/build/release/bioc/TBSignatureProfiler.svg)](http://bioconductor.org/checkResults/release/bioc-LATEST/TBSignatureProfiler/)
 
 
 ## What is the TBSignatureProfiler?
 The TBSignatureProfiler (TBSP) is an easy-to-use R package for analysis of RNA-seq data using gene signatures for tuberculosis disease presence, risk, progression, treatment failure, and other states. In-package signature profiling is available using common gene set enrichment tools that include GSVA, singscore, and ssGSEA.
 
-Users can compare RNA-seq data across 70+ published gene signatures to compare signature performance with clear visualizations (e.g., heatmaps and ROC plots), specificity/sensitivity estimates for predicting binary variables, and cross-validated logistic regression.
+Users can analyze RNA-seq data across 70+ published gene signatures to compare signature performance with clear visualizations (e.g., heatmaps and ROC plots), specificity/sensitivity estimates for predicting binary variables, and cross-validated logistic regression.
 
 The TBSP can be used as a standalone software package. Data exploration is also available with the accompanying interactive R Shiny application. The R Shiny app is currently functional but more limited in its capabilities than the command line form of the package.
 
