@@ -1,6 +1,5 @@
 context("test-plot")
 
-set.seed(1234)
 annotdata <- data.frame(sample = c(rep("down", 5), rep("up", 5)),
                         samplename = paste0("sample", 1:10),
                         row.names = paste0("sample", 1:10))

@@ -646,7 +646,6 @@ randomForest_OriginalModel <- function(dat_list, dat_test_sig) {
     diagnosis_train_new <- ifelse(diagnosis_train == "PTB", "PTB", "Others")
     diagnosis_train <- base::factor(diagnosis_train_new,
                                     levels = c("Others", "PTB"))
-    base::set.seed(1)
     sig_model <- randomForest::randomForest(x = dat_list$dat_train_sig,
                                             y = as.factor(diagnosis_train),
                                             ntree = 5000, importance = TRUE)

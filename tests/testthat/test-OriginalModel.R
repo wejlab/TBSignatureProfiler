@@ -1,6 +1,5 @@
 context("test-OriginalModel")
 ## Use "TB_hiv" as example for the input
-set.seed(1234)
 mat_testdata <- rbind(matrix(c(rnorm(80), rnorm(80) + 5), 16, 10,
                              dimnames = list(TBsignatures$Zak_RISK_16,
                                              paste0("sample", 1:10))),

@@ -1,6 +1,5 @@
 context("test-evaluate")
 
-set.seed(1234)
 inputTestmat <- matrix(rnorm(1000), 100, 20,
                     dimnames = list(paste0("gene", seq.int(1, 100)),
                                     paste0("sample", seq.int(1, 20))))
