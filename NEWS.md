@@ -1,8 +1,11 @@
 # TBSignatureProfiler (development version)
 
 ## Bug Fixes
+* Fixed the tableAUC bootstrapped confidence interval to be the 2.5 and 97.5 percentiles instead of the 5 and 95 percentiles
+* Fixed the upper CI value for the pROC/DeLong AUC CI method in the bootstrapAUC function
 
 ## Major Changes
+* Changed tableAUC confidence interval default to bootstrapped instead of DeLong (pROC argument)
 
 ## Minor Changes
 * Updated the github and website introductions.

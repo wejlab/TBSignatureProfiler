@@ -11,7 +11,7 @@ tableAUC(
   num.boot = 100,
   pb.show = TRUE,
   output = "DataTable",
-  pROC = TRUE
+  pROC = FALSE
 )
 }
 \arguments{
@@ -35,8 +35,9 @@ The default is \code{TRUE}.}
 values are \code{DataTable} and \code{data.frame}. The default is
 \code{DataTable}.}
 
-\item{pROC}{logical. Should pROC AUC confidence intervals be used? Default
-is \code{TRUE}.}
+\item{pROC}{logical. Should pROC AUC confidence intervals using the DeLong method
+be used instead of bootstrapped CIs?
+Default is \code{FALSE}.}
 }
 \value{
 A JavaScript table with an R interface using the \code{DT} package.
@@ -52,7 +53,8 @@ R interface, or as a \code{data.frame}.
  prof_indian <- runTBsigProfiler(TB_indian, useAssay = "logcounts",
                                  algorithm = "ssGSEA",
                                  signatures = choose_sigs,
-                                 parallel.sz = 1)
+                                 parallel.sz = 1,
+                                 update_genes = FALSE)
  # Create table
  tableAUC(SE_scored = prof_indian, annotationColName = "label",
           signatureColNames = names(choose_sigs))

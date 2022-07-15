@@ -90,7 +90,7 @@ bootstrapAUC <- function(SE_scored, annotationColName, signatureColNames,
                                        response = annotationData))
     conf <- pROC::ci.auc(roc1, method = "delong", progress = "none")
     pROC_lower[which.sig] <- round(conf[1], 4)
-    pROC_upper[which.sig] <- round(conf[2], 4)
+    pROC_upper[which.sig] <- round(conf[3], 4)
 
     # Update the progress bar
     counter <- counter + 1
@@ -113,8 +113,9 @@ bootstrapAUC <- function(SE_scored, annotationColName, signatureColNames,
 #' @param output a character string indicating the table output format. Possible
 #' values are \code{DataTable} and \code{data.frame}. The default is
 #' \code{DataTable}.
-#' @param pROC logical. Should pROC AUC confidence intervals be used? Default
-#' is \code{TRUE}.
+#' @param pROC logical. Should pROC AUC confidence intervals using the DeLong method
+#' be used instead of bootstrapped CIs?
+#' Default is \code{FALSE}.
 #'
 #' @export
 #'
@@ -126,7 +127,8 @@ bootstrapAUC <- function(SE_scored, annotationColName, signatureColNames,
 #'  prof_indian <- runTBsigProfiler(TB_indian, useAssay = "logcounts",
 #'                                  algorithm = "ssGSEA",
 #'                                  signatures = choose_sigs,
-#'                                  parallel.sz = 1)
+#'                                  parallel.sz = 1,
+#'                                  update_genes = FALSE)
 #'  # Create table
 #'  tableAUC(SE_scored = prof_indian, annotationColName = "label",
 #'           signatureColNames = names(choose_sigs))
@@ -140,7 +142,7 @@ bootstrapAUC <- function(SE_scored, annotationColName, signatureColNames,
 #'
 tableAUC <- function(SE_scored, annotationColName, signatureColNames,
                      num.boot = 100, pb.show = TRUE, output = "DataTable",
-                     pROC = TRUE) {
+                     pROC = FALSE) {
   # Run the bootstrapping function
   BS.Results <- bootstrapAUC(SE_scored, annotationColName, signatureColNames,
                              num.boot, pb.show)
@@ -152,17 +154,17 @@ tableAUC <- function(SE_scored, annotationColName, signatureColNames,
     upperAUC <- BS.Results[["pROC Upper"]]
   } else {
     lowerAUC <- round(apply(aucs_boot, 2, stats::quantile,
-                            probs = .05), 4)
+                            probs = .025), 4)
     upperAUC <- round(apply(aucs_boot, 2, stats::quantile,
-                            probs = .95), 4)
+                            probs = .975), 4)
   }
   return_table <- data.frame("Signature" = signatureColNames,
-                                   "P.value" = round(pvals, 4),
-                                   "neg10xLog(P.value)" =
-                                     round(-10 * log(pvals), 4),
-                                   "LowerAUC" = lowerAUC,
-                                   "AUC" = round(aucs, 4),
-                                   "UpperAUC" = upperAUC)
+                             "P.value" = round(pvals, 4),
+                             "neg10xLog(P.value)" =
+                               round(-10 * log(pvals), 4),
+                             "LowerAUC" = lowerAUC,
+                             "AUC" = round(aucs, 4),
+                             "UpperAUC" = upperAUC)
   return_table$Signature <- paste(return_table$Signature)
   rownames(return_table) <- c(seq(1, nrow(return_table)))
 
