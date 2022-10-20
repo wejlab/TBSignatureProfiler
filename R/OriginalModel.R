@@ -245,8 +245,7 @@ retrain_helper <- function(i, geneSignaturesName,
                                             FUN = "randomForest_OriginalModel",
                                             adj = adj)
         return(sample_score)
-    }
-    else if (sig == "LauxdaCosta_OD_3" || sig == "Bloom_OD_144") {
+    } else if (sig == "LauxdaCosta_OD_3" || sig == "Bloom_OD_144") {
         theObject_train <- OriginalTrainingData[["GSE42834"]]
         if (sig == "LauxdaCosta_OD_3") {
             sample_score <-
@@ -537,8 +536,8 @@ ref_combat_impute <- function(theObject_train, useAssay, gene_set, input,
     dat_exprs_match_sub <- list(
         GSE_train = base::data.frame(dat_train_assay_sig),
         GSE_test = base::data.frame(dat_test_assay_sig))
-    dat_exprs_combine <- base::Reduce(function(x, y)
-        base::merge(x, y, by = "id", all.x = TRUE),
+    dat_exprs_combine <- base::Reduce(
+      function(x, y) base::merge(x, y, by = "id", all.x = TRUE),
         base::lapply(dat_exprs_match_sub, function(x) {
             x$id <- base::row.names(x)
             x

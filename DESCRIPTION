@@ -1,6 +1,6 @@
 Package: TBSignatureProfiler
 Title: Profile RNA-Seq Data Using TB Pathway Signatures
-Version: 1.90.1
+Version: 1.91.0
 Authors@R: c(
     person("Aubrey R.", "Odom-Mabey", , "aodom@bu.edu", role = c("aut", "cre", "dtm"),
            comment = c(ORCID = "0000-0001-7113-7598")),
@@ -76,4 +76,4 @@ biocViews: GeneExpression, DifferentialExpression
 Encoding: UTF-8
 Language: en-US
 LazyData: TRUE
-RoxygenNote: 7.2.0
+RoxygenNote: 7.2.1

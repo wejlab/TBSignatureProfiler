@@ -147,12 +147,12 @@ SignatureQuantitative <- function(df.input, targetVec.num, signature.list = NULL
                                   signature.name.vec = NULL, num.boot = 100,
                                   pb.show = TRUE) {
 
-  if ((is.null(signature.name.vec) & !is.null(signature.list)
-       | (!is.null(signature.name.vec) & is.null(signature.list)))) {
+  if ((is.null(signature.name.vec) && !is.null(signature.list)
+       || (!is.null(signature.name.vec) && is.null(signature.list)))) {
     stop("Please specify arguments for both signature.list and
          signature.name.vec, or leave them both empty to use
          TBsignatures as the list of signatures for profiling.")
-  } else if (is.null(signature.list) & is.null(signature.name.vec)) {
+  } else if (is.null(signature.list) && is.null(signature.name.vec)) {
     signatures <- check_sig_env(signatures)
   }
 
@@ -287,15 +287,14 @@ plotQuantitative <- function(df.input, targetVec.num, signature.list = NULL,
                                "Signature Evaluation: Bootstrapped AUCs",
                              fill.col = "white", outline.col = "black",
                              abline.col = "red", rotateLabels = FALSE) {
-  if ((is.null(signature.name.vec) & !is.null(signature.list)
-       | (!is.null(signature.name.vec) & is.null(signature.list)))) {
+  if ((is.null(signature.name.vec) && !is.null(signature.list)
+       || (!is.null(signature.name.vec) && is.null(signature.list)))) {
     stop("Please specify arguments for both signature.list and
          signature.name.vec, or leave them both empty to use
          TBsignatures as the list of signatures for profiling.")
-  } else if (is.null(signature.list) & is.null(signature.name.vec)) {
+  } else if (is.null(signature.list) && is.null(signature.name.vec)) {
     signatures <- check_sig_env(signatures)
   }
-
   if (length(signature.list) != length(signature.name.vec)) {
     stop("The inputs signature.list and signature.name.vec are not the same
          length.")

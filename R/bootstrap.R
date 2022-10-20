@@ -600,7 +600,7 @@ signatureROCplot_CI <- function(inputData, annotationData, signatureColNames,
 mkAssay <- function(SE_obj, input_name = "counts", output_name = NULL,
                     log = FALSE, counts_to_CPM = TRUE,
                     prior_counts = 3) {
-  if (!(log | counts_to_CPM)) {
+  if (!(log || counts_to_CPM)) {
     stop("At least counts_to_CPM or log must be TRUE.")
   } else if (!(input_name %in% names(SummarizedExperiment::assays(SE_obj)))) {
     stop("input_name must be an assay in the SE_obj")

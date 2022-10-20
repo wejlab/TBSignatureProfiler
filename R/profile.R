@@ -30,7 +30,6 @@ update_genenames <- function(siglist) {
   ind <- grep("//", newgenes)
   if (length(ind) != 0) newgenes[ind] <- strsplit(newgenes[ind],
                                                   " /// ")[[1]][1]
-  # if(any(newgenes != siglist)) message("One or more gene names were altered.")
   return(newgenes)
 }
 
@@ -89,7 +88,7 @@ score_algorithm <- function(runindata, signatures, alg, assignDir = NULL,
   if (length(combineSigAndAlgorithm) == 0) {
     stop("You must choose whether or not to combine the ",
          "signature and algorithm name using combineSigAndAlgorithm.")
-  } else if (combineSigAndAlgorithm & !is.null(algout)) {
+  } else if (combineSigAndAlgorithm && !is.null(algout)) {
     scoremat <- algout
     rownames(scoremat) <- paste(alg, rownames(algout), sep = "_")
   } else if (!combineSigAndAlgorithm) {
@@ -295,7 +294,7 @@ runTBsigProfiler <- function(input, useAssay = NULL, signatures = NULL,
       } else stop("useAssay required for SummarizedExperiment Input")
     }
     runindata <- SummarizedExperiment::assay(input, useAssay)
-    if (!combineSigAndAlgorithm & length(algorithm) > 1) {
+    if (!combineSigAndAlgorithm && length(algorithm) > 1) {
       stop("SummarizedExperiment not supported when ",
            "combineSigAndAlgorithm FALSE.")
     }
@@ -387,7 +386,7 @@ compareAlgs <- function(input, signatures = NULL, annotationColName,
                         colList = list(),
                         show.pb = FALSE, parallel.sz = 0, output = "heatmap",
                         num.boot = 100, column_order = NULL) {
-  if (output != "heatmap" & output != "boxplot") {
+  if (output != "heatmap" && output != "boxplot") {
     stop("Output parameter must specify either 'heatmap' or 'boxplot'")
   }
   if (is.null(signatures)) signatures <- check_sig_env(signatures)

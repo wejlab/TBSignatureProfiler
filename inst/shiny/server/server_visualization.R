@@ -1,7 +1,7 @@
 shiny::observe({
   if (is.null(vals$profilerdat)) {
     shinyWidgets::updatePickerInput(session, "selectsigs", choices = NULL)
-  } else{
+  } else {
     shiny::isolate(
       shinyWidgets::updatePickerInput(
         session, "selectsigs", choices = subset(
@@ -40,7 +40,7 @@ shiny::observe({
 shiny::observe({
   if (is.null(vals$profilerdat)) {
     shinyWidgets::updatePickerInput(session, "singheat", choices = NULL)
-  } else{
+  } else {
     shinyWidgets::updatePickerInput(
       session, "singheat", choices = subset(
         siglist, siglist %in% colnames(
@@ -95,7 +95,7 @@ shiny::observeEvent(input$singboxplot, {
 shiny::observe({
   if (is.null(vals$profilerdat)) {
     shiny::updateSelectInput(session, "singcomp", choices = NULL)
-  } else{
+  } else {
     shiny::updateSelectInput(
       session, "singcomp", choices = subset(
         siglist, siglist %in% colnames(

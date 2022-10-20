@@ -129,7 +129,8 @@ Signature Scores
 ```{r show_scores, message = FALSE}
 ## New colData entries from the Profiler
 sigs <- c("Anderson_42", "Anderson_OD_51", "Berry_393")
-ssgsea_print_results <- as.data.frame(colData(ssgsea_result))[, c("Disease", sigs)]
+ssgsea_print_results <- as.data.frame(
+  colData(ssgsea_result))[, c("Disease", sigs)]
 ssgsea_print_results[, 2:4] <- round(ssgsea_print_results[, 2:4], 4)
 
 DT::datatable(ssgsea_print_results)

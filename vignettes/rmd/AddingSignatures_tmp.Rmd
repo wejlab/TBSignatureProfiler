@@ -1,0 +1,129 @@
+---
+title: "Adding Sig Objects to TBSP"
+author: "Aubrey Odom-Mabey"
+date: "4/15/2022"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+suppressPackageStartupMessages({
+  library(tidyverse)
+})
+
+devtools::load_all()
+
+# Install latest version of TBSP
+devtools::install_github("compbiomed/tbsignatureprofiler")
+```
+
+# First things first
+
+What is a sig object?
+```{R}
+class(TBsignatures)
+TBsignatures[1:2]
+
+```
+
+Another object exists with "common" names found in the literature. We made up the names in the original object according to a certain set of rules to properly describe the signatures.
+```{R}
+TBcommon[1:2]
+
+# A subset of names for comparison
+cbind(names(TBsignatures), names(TBcommon))[60:70, ]
+```
+Splitting signatures by up/down gene regulation -- this was only for a few signatures, to help out in the original modeling efforts.
+```{R}
+TBsignaturesSplit[1:2]
+```
+
+# How do we make signature objects?
+
+It's easy! Just make a named list of genes.
+```{R}
+Sweeney_OD_3 <- c("KLF2", "GBP5", "DUSP3")
+Blankley_5 <- c("AIM2", "BATF2", "FCGR1B", "HP", "TLR5")
+
+example_TB <- list("Sweeney_OD_3" = Sweeney_OD_3,
+     "Blankley_5" = Blankley_5)
+
+str(example_TB)
+
+```
+
+What if you have A LOT of genes?
+```{R}
+# Make a temporary CSV
+TBsignatures$Blankley_380 %>%
+  TBSignatureProfiler::update_genenames() %>%
+  tibble(Blankley_380 = .) %>%
+  write_csv(file = "~/temp_380_genes.csv")
+
+# Read the CSV
+Blankley_380 <- read_csv("~/temp_380_genes.csv")
+Blankley_380[1:5, ]
+
+# Add to list
+new_example_TB <- example_TB
+new_example_TB$Blankley_380 <- Blankley_380$Blankley_380
+
+str(new_example_TB)
+
+```
+
+Theoretically, could do for other genes as well and automate this process!
+```{R}
+add_genes <- function(input_list, new_sig_name, sig_path) {
+  new_sig_genes <- read_csv(sig_path, show_col_types = FALSE)
+  input_list[new_sig_name] <- new_sig_genes[, 1]
+  return(input_list)
+}
+
+str(example_TB)
+
+automated_ex_tb <- add_genes(example_TB, "Blankley_380", "~/temp_380_genes.csv")
+
+str(automated_ex_tb)
+```
+# Adding heatmap information (distinguishing signature groups)
+
+```{R}
+# make sure this is in the same order as the signatures object
+  # Best to alphebetize using sort() (and change rows using order())
+head(sigAnnotData)
+
+data("TB_hiv")
+
+sigs_to_run <- TBsignatures[20:40]
+out <- capture.output(res <- runTBsigProfiler(TB_hiv, useAssay = "counts",
+                        signatures = sigs_to_run,
+                        algorithm = c("ssGSEA"), parallel.sz = 1,
+                        combineSigAndAlgorithm = TRUE))
+
+signatureHeatmap(res, signatureColNames = names(sigs_to_run),
+                 annotationColNames = "Disease", scale = TRUE,
+                 showColumnNames = FALSE, split_heatmap = "tissue_type")
+```
+
+# THE BEST PART: Documentation
+
+Data documentation is currently saved in data.R -- I recommend making a new R script for your object(s). No need to confine it all in one place (it make it harder to find).
+
+Example: ?TBsignatures
+
+## Making an entry for a signature
+```{R, eval = FALSE}
+mkTBreference <- function(TBsigname, ref, DOInum) {
+  cat("\\item{\\strong{", TBsigname, "}}{: ", ref,
+      " \\href{http://dx.doi.org/", DOInum, "}{", DOInum, "}}", sep = "")
+}
+
+mkTBreference(TBsigname = "LauxdaCosta2_OD_3", # The name output in a message from addTBsignature()
+              ref = "Laux da Costa L, Delcroix M, Dalla Costa ER, et al. A real-time PCR signature to discriminate between tuberculosis and other pulmonary diseases. Tuberculosis (Edinb). 2015;95(4):421-425.",
+              DOInum = "10.1016/j.tube.2015.04.008")
+```
+
+```{R, eval = FALSE}
+## \item{\strong{LauxdaCosta2_OD_3}}{: Laux da Costa L, Delcroix M, Dalla Costa ER, et al. A real-time PCR signature to discriminate between tuberculosis and other pulmonary diseases. Tuberculosis (Edinb). 2015;95(4):421-425. \href{http://dx.doi.org/10.1016/j.tube.2015.04.008}{10.1016/j.tube.2015.04.008}}## \item{\strong{LauxdaCosta2_OD_3}}{: Laux da Costa L, Delcroix M, Dalla Costa ER, et al. A real-time PCR signature to discriminate between tuberculosis and other pulmonary diseases. Tuberculosis (Edinb). 2015;95(4):421-425. \href{http://dx.doi.org/10.1016/j.tube.2015.04.008}{10.1016/j.tube.2015.04.008}}
+```

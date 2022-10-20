@@ -19,7 +19,7 @@ editor_options:
 
 # Introduction
 
- Thank you for helping to contribute to the TBSignatureProfiler by adding signatures to our package. This tutorial serves as a step-by-step walkthrough to add signatures by performing the necessary data object updates, updating the publication information in the signature list documentation, and then pulling in the updated package into the official version in the [compbiomed repository](www.github.com/compbiomed/tbsignatureprofiler).
+This tutorial serves as a step-by-step walkthrough to add signatures by performing the necessary data object updates, updating the publication information in the signature list documentation, and then pulling in the updated package into the official version in the [compbiomed repository](www.github.com/compbiomed/tbsignatureprofiler).
  
   There are basically four steps to adding a TB gene signature to the TBSignatureProfiler:
   

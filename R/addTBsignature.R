@@ -171,5 +171,3 @@ addTBsignature <- function(sigsymbols, authname,
 
   if (saveobjs) message("All objects updated and saved to data folder.")
 }
-
-

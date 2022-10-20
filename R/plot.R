@@ -173,7 +173,6 @@ signatureHeatmap <- function(inputData, annotationData = NULL, name = "Signature
   }
   ann_data <- annotationSignature[annotationSignature[, 1] %in%
                                     signatureColNames, ]
-  # ann_data <- ann_data[order(signatureColNames), ]
   if (split_heatmap == "none") {
     row_split_pass <- c()
   } else {
@@ -535,10 +534,10 @@ signatureGeneHeatmap <- function(inputData, useAssay, sigGenes,
   }
 
   if (!is.null(pathwaydata) | !is.null(annotationColNames)) {
-    if (!is.null(annotationColNames) & !is.null(pathwaydata)) {
-      annotDF <- cbind(data.frame(SummarizedExperiment::
-                                    colData(inputData)[, annotationColNames,
-                                                       drop = FALSE]),
+    if (!is.null(annotationColNames) && !is.null(pathwaydata)) {
+      annotDF <- cbind(data.frame(
+        SummarizedExperiment::colData(inputData)[, annotationColNames,
+                                                 drop = FALSE]),
                        pathwaydata)
     } else if (!is.null(annotationColNames)) {
       annotDF <- cbind(data.frame(SummarizedExperiment::

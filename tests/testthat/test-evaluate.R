@@ -5,6 +5,7 @@ inputTestmat <- matrix(rnorm(1000), 100, 20,
                                     paste0("sample", seq.int(1, 20))))
 inputTest <- as.data.frame(inputTestmat)
 target_Vec <- sample(c(0, 1), replace = TRUE, size = 20)
+PQ_target_Vec <- sample(c(0, 1), replace = TRUE, size = nrow(inputTest))
 signaturelist <- list(sig1 = c("gene1", "gene2", "gene3"),
                        sig2 = c("gene4", "gene5", "gene6"))
 signaturenamevec <- c("sig1", "sig2")
@@ -70,7 +71,7 @@ test_that("signatureQuantitative works", {
 test_that("plotQuantitative works", {
   expect_is(
     plotQuantitative(inputTest,
-                     targetVec.num = target_Vec,
+                     targetVec.num = PQ_target_Vec,
                      signature.list = list(sig1 = c("gene1", "gene2", "gene3"),
                                            sig2 = c("gene4", "gene5", "gene6")),
                      signature.name.vec = c("sig1", "sig2"),
@@ -81,7 +82,7 @@ test_that("plotQuantitative works", {
   )
   expect_error(
     plotQuantitative(inputTest,
-                     targetVec.num = target_Vec,
+                     targetVec.num = PQ_target_Vec,
                      signature.list = list(sig1 = c("gene1", "gene2", "gene3"),
                                            sig2 = c("gene4", "gene5", "gene6")),
                      signature.name.vec = NULL,
@@ -94,7 +95,7 @@ test_that("plotQuantitative works", {
   )
   expect_error(
     plotQuantitative(inputTest,
-                     targetVec.num = target_Vec,
+                     targetVec.num = PQ_target_Vec,
                      signature.list = list(sig1 = c("gene1", "gene2", "gene3"),
                                            sig2 = c("gene4", "gene5", "gene6")),
                      signature.name.vec = c("sig2"),
