@@ -1,11 +1,14 @@
 context("test-evaluate")
 
-inputTestmat <- matrix(rnorm(1000), 100, 20,
-                    dimnames = list(paste0("gene", seq.int(1, 100)),
-                                    paste0("sample", seq.int(1, 20))))
+num_sample <- 20
+num_genes <- 100
+inputTestmat <- matrix(rnorm(1000), num_genes, num_sample,
+                    dimnames = list(paste0("gene", seq.int(1, num_genes)),
+                                    paste0("sample", seq.int(1, num_sample))))
 inputTest <- as.data.frame(inputTestmat)
-target_Vec <- sample(c(0, 1), replace = TRUE, size = 20)
-PQ_target_Vec <- sample(c(0, 1), replace = TRUE, size = nrow(inputTest))
+target_Vec <- sample(c(0, 1), replace = TRUE, size = num_sample)
+
+PQ_target_Vec <- c(rep(1, num_sample/2), rep(0, num_sample/2))
 signaturelist <- list(sig1 = c("gene1", "gene2", "gene3"),
                        sig2 = c("gene4", "gene5", "gene6"))
 signaturenamevec <- c("sig1", "sig2")
@@ -40,7 +43,7 @@ test_that("signatureQuantitative works", {
                                                sig2 = c("gene4", "gene5", "gene6")),
                         signature.name.vec = c("sig1", "sig2"),
                         num.boot = 3,
-                        pb.show = TRUE),
+                        pb.show = FALSE),
   "list"
   )
   expect_error(
@@ -50,7 +53,7 @@ test_that("signatureQuantitative works", {
                                                 sig2 = c("gene4", "gene5", "gene6")),
                           signature.name.vec = NULL,
                           num.boot = 3,
-                          pb.show = TRUE),
+                          pb.show = FALSE),
     "Please specify arguments for both signature.list and
          signature.name.vec, or leave them both empty to use
          TBsignatures as the list of signatures for profiling."
@@ -62,7 +65,7 @@ test_that("signatureQuantitative works", {
                                                 sig2 = c("gene4", "gene5", "gene6")),
                           signature.name.vec = c("sig1"),
                           num.boot = 3,
-                          pb.show = TRUE),
+                          pb.show = FALSE),
     "The inputs signature.list and signature.name.vec are not the same
          length."
   )
@@ -76,7 +79,7 @@ test_that("plotQuantitative works", {
                                            sig2 = c("gene4", "gene5", "gene6")),
                      signature.name.vec = c("sig1", "sig2"),
                      num.boot = 20,
-                     pb.show = TRUE,
+                     pb.show = FALSE,
                      rotateLabels = TRUE),
     "gg"
   )
@@ -87,7 +90,7 @@ test_that("plotQuantitative works", {
                                            sig2 = c("gene4", "gene5", "gene6")),
                      signature.name.vec = NULL,
                      num.boot = 3,
-                     pb.show = TRUE,
+                     pb.show = FALSE,
                      rotateLabels = TRUE),
     "Please specify arguments for both signature.list and
          signature.name.vec, or leave them both empty to use
@@ -100,7 +103,7 @@ test_that("plotQuantitative works", {
                                            sig2 = c("gene4", "gene5", "gene6")),
                      signature.name.vec = c("sig2"),
                      num.boot = 3,
-                     pb.show = TRUE,
+                     pb.show = FALSE,
                      rotateLabels = TRUE),
     "The inputs signature.list and signature.name.vec are not the same
          length."

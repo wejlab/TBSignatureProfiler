@@ -94,24 +94,24 @@ test_that("matrix input", {
     runTBsigProfiler(mat_testdata,
                      signatures = list(sig1 = paste0("gene", 1:10)),
                      combineSigAndAlgorithm = TRUE,
-                     algorithm = c("GSVA", "ssGSEA", "ASSIGN"),
-                     ASSIGNiter = 100, ASSIGNburnin = 50, parallel.sz = 1),
+                     algorithm = c("GSVA", "ssGSEA", "Zscore"),
+                     parallel.sz = 1),
     "matrix"
   )
   expect_is(
     runTBsigProfiler(mat_testdata,
                      signatures = list(sig1 = paste0("gene", 1:10)),
                      combineSigAndAlgorithm = FALSE,
-                     algorithm = c("GSVA", "ssGSEA", "ASSIGN"),
-                     ASSIGNiter = 100, ASSIGNburnin = 50, parallel.sz = 1),
+                     algorithm = c("GSVA", "ssGSEA", "Zscore"),
+                     parallel.sz = 1),
     "matrix"
   )
   expect_error(
     runTBsigProfiler(mat_testdata,
                      signatures = list(sig1 = paste0("gene", 1:10)),
                      combineSigAndAlgorithm = NULL,
-                     algorithm = c("GSVA", "ssGSEA", "ASSIGN"),
-                     ASSIGNiter = 100, ASSIGNburnin = 50, parallel.sz = 1),
+                     algorithm = c("GSVA", "ssGSEA", "Zscore"),
+                     parallel.sz = 1),
     paste0("You must choose whether or not to combine the ",
            "signature and algorithm name using combineSigAndAlgorithm.")
   )
@@ -140,19 +140,19 @@ test_that("data.frame input", {
   expect_is(
     runTBsigProfiler(df_testdata,
                      signatures = list(sig1 = paste0("gene", 1:10)),
-                     algorithm = "PLAGE", ASSIGNiter = 100, ASSIGNburnin = 50),
+                     algorithm = "PLAGE"),
     "data.frame"
   )
   expect_is(
     runTBsigProfiler(df_testdata,
                      signatures = list(sig1 = paste0("gene", 1:10)),
-                     algorithm = "Zscore", ASSIGNiter = 100, ASSIGNburnin = 50),
+                     algorithm = "Zscore"),
     "data.frame"
   )
   expect_is(
     runTBsigProfiler(df_testdata,
                      signatures = TBsignatures["Zak_RISK_16"],
-                     algorithm = "singscore", ASSIGNiter = 100, ASSIGNburnin = 50),
+                     algorithm = "singscore"),
     "data.frame"
   )
   expect_is(
@@ -179,78 +179,6 @@ test_that("data.frame input", {
                      signatures = list(sig1 = paste0("gene", 1:10)),
                      combineSigAndAlgorithm = FALSE,
                      algorithm = c("GSVA", "ssGSEA"), parallel.sz = 1),
-    "data.frame"
-  )
-  expect_is(
-    runTBsigProfiler(df_testdata,
-                     signatures = list(sig1 = paste0("gene", 1:10)),
-                     combineSigAndAlgorithm = FALSE,
-                     algorithm = c("ssGSEA", "ASSIGN"), ASSIGNiter = 100,
-                     ASSIGNburnin = 50, parallel.sz = 1),
-    "data.frame"
-  )
-  expect_is(
-    runTBsigProfiler(df_testdata,
-                     signatures = list(sig1 = paste0("gene", 1:10)),
-                     combineSigAndAlgorithm = TRUE,
-                     algorithm = c("ssGSEA", "ASSIGN"), ASSIGNiter = 100,
-                     ASSIGNburnin = 50, parallel.sz = 1),
-    "data.frame"
-  )
-  expect_is(
-    runTBsigProfiler(df_testdata,
-                     signatures = list(sig1 = paste0("gene", 1:10)),
-                     combineSigAndAlgorithm = TRUE,
-                     algorithm = c("GSVA", "Zscore"), ASSIGNiter = 100,
-                     ASSIGNburnin = 50, parallel.sz = 1),
-    "data.frame"
-  )
-  expect_is(
-    runTBsigProfiler(df_testdata,
-                     signatures = list(sig1 = paste0("gene", 1:10)),
-                     combineSigAndAlgorithm = TRUE,
-                     algorithm = c("ssGSEA", "Zscore"), ASSIGNiter = 100,
-                     ASSIGNburnin = 50, parallel.sz = 1),
-    "data.frame"
-  )
-  expect_is(
-    runTBsigProfiler(df_testdata,
-                     signatures = list(sig1 = paste0("gene", 1:10)),
-                     combineSigAndAlgorithm = TRUE,
-                     algorithm = c("ASSIGN", "Zscore"), ASSIGNiter = 100,
-                     ASSIGNburnin = 50, parallel.sz = 1),
-    "data.frame"
-  )
-  expect_is(
-    runTBsigProfiler(df_testdata,
-                     signatures = list(sig1 = paste0("gene", 1:10)),
-                     combineSigAndAlgorithm = TRUE,
-                     algorithm = c("GSVA", "PLAGE"), ASSIGNiter = 100,
-                     ASSIGNburnin = 50, parallel.sz = 1),
-    "data.frame"
-  )
-  expect_is(
-    runTBsigProfiler(df_testdata,
-                     signatures = list(sig1 = paste0("gene", 1:10)),
-                     combineSigAndAlgorithm = TRUE,
-                     algorithm = c("ssGSEA", "PLAGE"), ASSIGNiter = 100,
-                     ASSIGNburnin = 50, parallel.sz = 1),
-    "data.frame"
-  )
-  expect_is(
-    runTBsigProfiler(df_testdata,
-                     signatures = list(sig1 = paste0("gene", 1:10)),
-                     combineSigAndAlgorithm = TRUE,
-                     algorithm = c("ASSIGN", "PLAGE"), ASSIGNiter = 100,
-                     ASSIGNburnin = 50, parallel.sz = 1),
-    "data.frame"
-  )
-  expect_is(
-    runTBsigProfiler(df_testdata,
-                     signatures = list(sig1 = paste0("gene", 1:10)),
-                     combineSigAndAlgorithm = TRUE,
-                     algorithm = c("Zscore", "PLAGE"), ASSIGNiter = 100,
-                     ASSIGNburnin = 50, parallel.sz = 1),
     "data.frame"
   )
   assignDir <- tempfile("assign")
@@ -292,38 +220,35 @@ test_that("SummarizedExperiment input", {
   expect_s4_class(
     runTBsigProfiler(SEtestdata, useAssay = "data",
                      signatures = list(sig1 = paste0("gene", 1:10)),
-                     algorithm = "PLAGE", ASSIGNiter = 100, ASSIGNburnin = 50),
+                     algorithm = "PLAGE"),
     "SummarizedExperiment"
   )
   expect_s4_class(
     runTBsigProfiler(SEtestdata, useAssay = "data",
                      signatures = list(sig1 = paste0("gene", 1:10)),
-                     algorithm = "Zscore", ASSIGNiter = 100, ASSIGNburnin = 50),
+                     algorithm = "Zscore"),
     "SummarizedExperiment"
   )
   expect_s4_class(
     runTBsigProfiler(SEtestdata, useAssay = "data",
                      signatures = list(sig1 = paste0("gene", 1:10)),
-                     algorithm = c("GSVA", "ASSIGN"), parallel.sz = 1,
-                     combineSigAndAlgorithm = TRUE,
-                     ASSIGNiter = 100, ASSIGNburnin = 50),
+                     algorithm = c("GSVA", "Zscore"), parallel.sz = 1,
+                     combineSigAndAlgorithm = TRUE),
     "SummarizedExperiment"
   )
   expect_error(
     runTBsigProfiler(SEtestdata, useAssay = "data",
                      signatures = list(sig1 = paste0("gene", 1:10)),
-                     algorithm = c("GSVA", "ASSIGN"), parallel.sz = 1,
-                     combineSigAndAlgorithm = FALSE,
-                     ASSIGNiter = 100, ASSIGNburnin = 50),
+                     algorithm = c("GSVA", "Zscore"), parallel.sz = 1,
+                     combineSigAndAlgorithm = FALSE),
     "SummarizedExperiment not supported when combineSigAndAlgorithm FALSE."
   )
   expect_error(
     runTBsigProfiler(SEtestdata, useAssay = "data",
                      outputFormat = "SummarizedExperiment",
                      signatures = list(sig1 = paste0("gene", 1:10)),
-                     algorithm = c("GSVA", "ASSIGN"), parallel.sz = 1,
-                     combineSigAndAlgorithm = FALSE,
-                     ASSIGNiter = 100, ASSIGNburnin = 50),
+                     algorithm = c("GSVA", "Zscore"), parallel.sz = 1,
+                     combineSigAndAlgorithm = FALSE),
     "SummarizedExperiment not supported when combineSigAndAlgorithm FALSE."
   )
 })
@@ -338,8 +263,7 @@ test_that("Output error", {
                      outputFormat = "other",
                      signatures = list(sig1 = paste0("gene", 1:10)),
                      algorithm = c("GSVA"), parallel.sz = 1,
-                     combineSigAndAlgorithm = TRUE,
-                     ASSIGNiter = 100, ASSIGNburnin = 50),
+                     combineSigAndAlgorithm = TRUE),
     paste("'OutputFormat' should be one of 'SummarizedExperiment',",
           "'matrix', or 'data.frame'")
   )
