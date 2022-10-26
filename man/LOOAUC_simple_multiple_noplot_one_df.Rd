@@ -10,7 +10,7 @@ LOOAUC_simple_multiple_noplot_one_df(df, targetVec)
 \item{df}{a \code{data.frame} of gene expression count data. Required.}
 
 \item{targetVec}{a binary vector of the response variable. Should be
-the same number of rows as \code{df}. Required.}
+the same number of samples as in \code{df}. Required.}
 }
 \value{
 A list of length 3 with elements

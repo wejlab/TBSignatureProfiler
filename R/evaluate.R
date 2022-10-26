@@ -27,7 +27,7 @@ deseq2_norm_rle <- function(inputData) {
 #'
 #' @param df a \code{data.frame} of gene expression count data. Required.
 #' @param targetVec a binary vector of the response variable. Should be
-#' the same number of rows as \code{df}. Required.
+#' the same number of samples as in \code{df}. Required.
 #'
 #' @return A list of length 3 with elements
 #' \item{auc}{The AUC from the LOOCV procedure.}
