@@ -113,9 +113,6 @@ bootstrapAUC <- function(SE_scored, annotationColName, signatureColNames,
 #' @param output a character string indicating the table output format. Possible
 #' values are \code{DataTable} and \code{data.frame}. The default is
 #' \code{DataTable}.
-#' @param pROC logical. Should pROC AUC confidence intervals using the DeLong method
-#' be used instead of bootstrapped CIs?
-#' Default is \code{FALSE}.
 #'
 #' @export
 #'
@@ -141,23 +138,16 @@ bootstrapAUC <- function(SE_scored, annotationColName, signatureColNames,
 #' head(h)
 #'
 tableAUC <- function(SE_scored, annotationColName, signatureColNames,
-                     num.boot = 100, pb.show = TRUE, output = "DataTable",
-                     pROC = FALSE) {
-  # Run the bootstrapping function
+                     num.boot = 100, pb.show = TRUE, output = "DataTable") {
   BS.Results <- bootstrapAUC(SE_scored, annotationColName, signatureColNames,
                              num.boot, pb.show)
   pvals <- BS.Results[["P-values"]]
   aucs_boot <- BS.Results[["Boot AUC Values"]]
   aucs <- BS.Results[["Non-Boot AUC Values"]]
-  if (pROC) {
-    lowerAUC <- BS.Results[["pROC Lower"]]
-    upperAUC <- BS.Results[["pROC Upper"]]
-  } else {
-    lowerAUC <- round(apply(aucs_boot, 2, stats::quantile,
-                            probs = .025), 4)
-    upperAUC <- round(apply(aucs_boot, 2, stats::quantile,
-                            probs = .975), 4)
-  }
+  lowerAUC <- round(apply(aucs_boot, 2, stats::quantile,
+                          probs = .025), 4)
+  upperAUC <- round(apply(aucs_boot, 2, stats::quantile,
+                          probs = .975), 4)
   return_table <- data.frame("Signature" = signatureColNames,
                              "P.value" = round(pvals, 4),
                              "neg10xLog(P.value)" =
@@ -167,16 +157,16 @@ tableAUC <- function(SE_scored, annotationColName, signatureColNames,
                              "UpperAUC" = upperAUC)
   return_table$Signature <- paste(return_table$Signature)
   rownames(return_table) <- c(seq(1, nrow(return_table)))
-
+  
   # Create interactive table
   if (output == "DataTable") {
     return(DT::datatable(return_table[order(aucs, decreasing = TRUE), ],
-    options = list(scrollX = TRUE, pageLength = 10),
-    rownames = FALSE))
+                         options = list(scrollX = TRUE, pageLength = 10),
+                         rownames = FALSE))
   } else if (output == "data.frame") {
     return(return_table)
   }
-
+  
 }
 
 #' Create a comparison plot of boxplots for bootstrapped AUC values.

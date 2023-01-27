@@ -10,8 +10,7 @@ tableAUC(
   signatureColNames,
   num.boot = 100,
   pb.show = TRUE,
-  output = "DataTable",
-  pROC = FALSE
+  output = "DataTable"
 )
 }
 \arguments{
@@ -34,10 +33,6 @@ The default is \code{TRUE}.}
 \item{output}{a character string indicating the table output format. Possible
 values are \code{DataTable} and \code{data.frame}. The default is
 \code{DataTable}.}
-
-\item{pROC}{logical. Should pROC AUC confidence intervals using the DeLong method
-be used instead of bootstrapped CIs?
-Default is \code{FALSE}.}
 }
 \value{
 A JavaScript table with an R interface using the \code{DT} package.
