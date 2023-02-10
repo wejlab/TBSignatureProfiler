@@ -350,7 +350,7 @@ signatureBoxplot <- function(inputData, annotationData, signatureColNames,
                                variable.name = "Signature",
                                id.vars = "Group")
   theplot <- ggplot2::ggplot(boxplotdfm,
-                             ggplot2::aes_string("Group", "Score")) +
+                             ggplot2::aes("Group", "Score")) +
     ggplot2::facet_wrap(~Signature, scales = "free",
                          nrow = nrow, ncol = ncol)
   if (violinPlot) {
