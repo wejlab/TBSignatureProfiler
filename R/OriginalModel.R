@@ -140,12 +140,12 @@ noretrain_helper <- function(i, geneSignaturesName, input, useAssay) {
         sample_score <- NA
     } else { # Need number of column >=1
         if (sig == "Anderson_42" || sig == "Anderson_OD_51") {
-            up_sample_score <- BiocGenerics::rowSums(dat_sig_up)
-            dn_sample_score <- BiocGenerics::rowSums(dat_sig_dn)
+            up_sample_score <- base::rowSums(dat_sig_up)
+            dn_sample_score <- base::rowSums(dat_sig_dn)
         } else if (sig == "Kaforou_27" || sig == "Kaforou_OD_44"
                    || sig == "Kaforou_OD_53") {
-            up_sample_score <- BiocGenerics::rowMeans(dat_sig_up)
-            dn_sample_score <- BiocGenerics::rowMeans(dat_sig_dn)
+            up_sample_score <- base::rowMeans(dat_sig_up)
+            dn_sample_score <- base::rowMeans(dat_sig_dn)
         } else if (sig == "Sweeney_OD_3") {
             ## Only one gene in down set for Sweeney_OD_3.
             up_sample_score <- base::apply(dat_sig_up, 1, function(x) mean(x))

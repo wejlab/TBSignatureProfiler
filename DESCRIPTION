@@ -1,6 +1,6 @@
 Package: TBSignatureProfiler
 Title: Profile RNA-Seq Data Using TB Pathway Signatures
-Version: 1.11.2
+Version: 1.11.3
 Authors@R: c(
     person("Aubrey R.", "Odom-Mabey", , "aodom@bu.edu", role = c("aut", "cre", "dtm"),
            comment = c(ORCID = "0000-0001-7113-7598")),
@@ -29,7 +29,6 @@ Depends:
     R (>= 4.2.0)
 Imports:
     ASSIGN (>= 1.23.1),
-    BiocGenerics,
     BiocParallel,
     ComplexHeatmap,
     DESeq2,

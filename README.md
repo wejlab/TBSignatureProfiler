@@ -1,8 +1,7 @@
 ## TBSignatureProfiler <img src="https://github.com/compbiomed/TBSignatureProfiler-docs/blob/master/lungs1.png?raw=true" align="right" width="170" />
 
-[![](https://img.shields.io/badge/bioconductor-3.15-blue)](http://www.bioconductor.org/packages/release/bioc/html/TBSignatureProfiler.html)
+[![](https://img.shields.io/badge/bioconductor-3.18-blue)](http://www.bioconductor.org/packages/release/bioc/html/TBSignatureProfiler.html)
 [![codecov](https://codecov.io/gh/compbiomed/TBSignatureProfiler/branch/master/graph/badge.svg)](https://codecov.io/gh/compbiomed/TBSignatureProfiler)
-[![lifecycle](https://lifecycle.r-lib.org/articles/figures/lifecycle-stable.svg)](https://www.tidyverse.org/lifecycle/#stable)
 [![build](http://www.bioconductor.org/shields/build/release/bioc/TBSignatureProfiler.svg)](http://bioconductor.org/checkResults/release/bioc-LATEST/TBSignatureProfiler/)
 
 ## What is the TBSignatureProfiler?

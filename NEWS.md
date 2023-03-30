@@ -1,8 +1,12 @@
 # TBSignatureProfiler (development version)
 
 ## Bug Fixes
-* Removed pROC argument from TableAUC() as it was causing a bug where the upper CI was always
-the same as the AUC point estimate, even with pROC=FALSE as the default setting.
+* Removed pROC argument from `TableAUC()` as it was causing a bug where the upper CI was always
+the same as the AUC point estimate, even with `pROC=FALSE` as the default setting.
+* Changed source package for `rowSums()` and `rowMeans()` to `base` from `BiocGenerics` due to an error on the Bioconductor testing servers.
+
+## Minor Changes
+* Added Chen_5 signature
 
 # TBSignatureProfiler 1.92.0
 
