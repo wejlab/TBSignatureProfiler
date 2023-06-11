@@ -1,7 +1,7 @@
 ---
 title: "Submitting Signatures to the TBSP Package"
 author: 
-- name: Aubrey Odom-Mabey
+- name: Aubrey Odom
   affiliation: 
   - Program in Bioinformatics, Boston University, Boston, MA
   email: aodom@bu.edu

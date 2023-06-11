@@ -1,6 +1,6 @@
 ---
 title: "Adding Sig Objects to TBSP"
-author: "Aubrey Odom-Mabey"
+author: "Aubrey Odom"
 date: "4/15/2022"
 output: html_document
 ---
