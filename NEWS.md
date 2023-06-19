@@ -1,6 +1,11 @@
 # TBSignatureProfiler (development version)
 
 ## Bug Fixes
+* Fixed bug for `signatureBoxplot` by removing quotations around variables. This issue was introduced with the newest ggplot2 version. Thanks to Arthur VanValkenburg for identifying the issue and solution.
+
+# TBSignatureProfiler 1.12.0
+
+## Bug Fixes
 * Removed pROC argument from `TableAUC()` as it was causing a bug where the upper CI was always
 the same as the AUC point estimate, even with `pROC=FALSE` as the default setting.
 * Changed source package for `rowSums()` and `rowMeans()` to `base` from `BiocGenerics` due to an error on the Bioconductor testing servers.
@@ -8,7 +13,7 @@ the same as the AUC point estimate, even with `pROC=FALSE` as the default settin
 ## Minor Changes
 * Added Chen_5 signature
 
-# TBSignatureProfiler 1.92.0
+# TBSignatureProfiler 1.10.0
 
 ## Bug Fixes
 * Fixed the tableAUC bootstrapped confidence interval to be the 2.5 and 97.5 percentiles instead of the 5 and 95 percentiles

@@ -289,12 +289,10 @@ signatureHeatmap <- function(inputData, annotationData = NULL, name = "Signature
 #'                                             "ssGSEA_Zak_RISK_16"),
 #'                  annotationColName = "sample", name = "Zak_RISK_16 Signature")
 #'
-signatureBoxplot <- function(inputData, annotationData, signatureColNames,
-                             annotationColName, name = "Signatures",
-                             scale = FALSE, violinPlot = FALSE,
-                             includePoints = TRUE,
-                             notch = FALSE, rotateLabels = FALSE, nrow = NULL,
-                             ncol = NULL, fill_colors = NULL) {
+signatureBoxplot <- function(inputData, annotationData, signatureColNames, annotationColName, 
+                             name = "Signatures", scale = FALSE, violinPlot = FALSE, 
+                             includePoints = TRUE, notch = FALSE, rotateLabels = FALSE, 
+                             nrow = NULL, ncol = NULL, fill_colors = NULL) {
   if (methods::is(inputData, "SummarizedExperiment")) {
     if (any(duplicated(signatureColNames))) {
       stop("Duplicate signature column name is not supported.")
@@ -305,13 +303,12 @@ signatureBoxplot <- function(inputData, annotationData, signatureColNames,
     if (!all(annotationColName %in% colnames(SummarizedExperiment::colData(inputData)))) {
       stop("Annotation column name not found in inputData.")
     }
-    annotationData <- data.frame(
-      SummarizedExperiment::colData(inputData)[, annotationColName,
-                                               drop = FALSE])
-    inputData <-  data.frame(
-      SummarizedExperiment::colData(inputData)[, signatureColNames,
-                                               drop = FALSE])
-  } else {
+    annotationData <- data.frame(SummarizedExperiment::colData(inputData)[, 
+                                                                          annotationColName, drop = FALSE])
+    inputData <- data.frame(SummarizedExperiment::colData(inputData)[, 
+                                                                     signatureColNames, drop = FALSE])
+  }
+  else {
     if (ncol(annotationData) != 1) {
       stop("annotationData must have only one column.")
     }
@@ -327,58 +324,54 @@ signatureBoxplot <- function(inputData, annotationData, signatureColNames,
   if (n > 9) {
     stop("Too many levels in the annotation data. The boxplot can contain a maximum of 9 levels")
   }
-  # if number of rows equal number of row names
   if (nrow(annotationData) == nrow(inputData)) {
     if (!all(rownames(annotationData) == rownames(inputData))) {
       stop("Annotation data and signature data does not match.")
     }
-  } else if (nrow(annotationData) == ncol(inputData)) {
+  }
+  else if (nrow(annotationData) == ncol(inputData)) {
     if (!all(rownames(annotationData) == colnames(inputData))) {
       stop("Annotation data and signature data does not match.")
     }
     inputData <- t(inputData)
-  } else {
+  }
+  else {
     stop("Annotation data and signature data does not match.")
   }
   pathwaydata <- t(inputData)
   if (scale) {
     pathwaydata <- t(scale(t(pathwaydata)))
   }
-  boxplotdf <- data.frame(t(pathwaydata),
-                          Group = annotationData[, 1])
-  boxplotdfm <- reshape2::melt(boxplotdf, value.name = "Score",
-                               variable.name = "Signature",
-                               id.vars = "Group")
+  boxplotdf <- data.frame(t(pathwaydata), Group = annotationData[, 
+                                                                 1])
+  boxplotdfm <- reshape2::melt(boxplotdf, value.name = "Score", 
+                               variable.name = "Signature", id.vars = "Group")
   theplot <- ggplot2::ggplot(boxplotdfm,
-                             ggplot2::aes("Group", "Score")) +
-    ggplot2::facet_wrap(~Signature, scales = "free",
-                         nrow = nrow, ncol = ncol)
+                             ggplot2::aes(boxplotdfm$Group, boxplotdfm$Score)) +
+    ggplot2::facet_wrap(~Signature, scales = "free", nrow = nrow, ncol = ncol)
   if (violinPlot) {
-    theplot <- theplot + ggplot2::geom_violin(ggplot2::aes_string(
-                                                fill = "Group")) +
+    theplot <- theplot + ggplot2::geom_violin(ggplot2::aes(fill = boxplotdfm$Group)) + 
       ggplot2::theme_classic()
-  } else {
-    theplot <- theplot + ggplot2::geom_boxplot(outlier.shape = NA,
-                                               ggplot2::aes_string(
-                                                 fill = "Group"),
-                                               notch = notch) +
+  }
+  else {
+    theplot <- theplot + ggplot2::geom_boxplot(outlier.shape = NA, 
+                                               ggplot2::aes(fill = boxplotdfm$Group), notch = notch) + 
       ggplot2::theme_classic()
   }
   if (includePoints) {
-    theplot <- theplot + ggplot2::geom_point(position = ggplot2::
-                                               position_jitter(width = 0.1))
+    theplot <- theplot + ggplot2::geom_point(position = ggplot2::position_jitter(width = 0.1))
   }
   if (rotateLabels) {
-    theplot <- theplot + ggplot2::theme(axis.text.x = ggplot2::
-                                          element_text(angle = 90, hjust = 1))
+    theplot <- theplot + ggplot2::theme(axis.text.x = ggplot2::element_text(angle = 90, 
+                                                                            hjust = 1))
   }
   if (is.null(fill_colors)) {
-    if (n < 3) n <- 3
+    if (n < 3) 
+      n <- 3
     fill_colors <- RColorBrewer::brewer.pal(n, "Set1")
   }
-  return(theplot +
-    ggplot2::scale_fill_manual(values = fill_colors) +
-    ggplot2::ggtitle(name))
+  return(theplot + ggplot2::scale_fill_manual(values = fill_colors) + 
+           ggplot2::ggtitle(name))
 }
 
 #' Plot a heatmap of a single signature score with individual gene expression levels.
