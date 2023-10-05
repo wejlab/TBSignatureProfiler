@@ -1,7 +1,12 @@
-# TBSignatureProfiler (development version)
+# TBSignatureProfiler 1.14.0
 
 ## Bug Fixes
 * Fixed bug for `signatureBoxplot` by removing quotations around variables. This issue was introduced with the newest ggplot2 version. Thanks to Arthur VanValkenburg for identifying the issue and solution.
+* Removed Zimmer_RES_3 which was an identical signature as the previously published Sweeney_OD_3.
+
+
+## Minor Changes
+* Added Vargas_18 and Vargas_45 signatures (doi: 10.1371/journal.pcbi.1010770)
 
 # TBSignatureProfiler 1.12.0
 

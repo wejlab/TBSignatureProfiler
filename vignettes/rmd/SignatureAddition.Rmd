@@ -80,7 +80,7 @@ devtools::load_all()
  Sometimes, but not typically, authors name their signatures in originating publication (or that of a peer). If this is the case, take note of this common name. We will use this name in the package alongside a name that we develop according to our own nomenclature system for convenience. Examples of alternative names include [RISK6](https://pubmed.ncbi.nlm.nih.gov/32451443/), [PREDICT29](https://www.sciencedirect.com/science/article/pii/S1472979219303907?via%3Dihub), and [ACS_COR](https://www.sciencedirect.com/science/article/pii/S0140673615013161?via%3Dihub).
   
 ### If any details cannot be clearly determined
-At this point, you should have recorded all of the necessary information. If you are missing any of the pieces of information listed above, then you will not be able to add the signature at this time. If you have any concerns about recording the correct information, you can reach out to the package maintainer, Aubrey Odom-Mabey, at <aodom@bu.edu>.
+At this point, you should have recorded all of the necessary information. If you are missing any of the pieces of information listed above, then you will not be able to add the signature at this time. If you have any concerns about recording the correct information, you can reach out to the package maintainer, Aubrey Odom, at <aodom@bu.edu>.
 
 ## Information table for Laux da Costa signature
 
