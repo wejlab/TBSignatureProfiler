@@ -61,6 +61,7 @@ Chenxi
 Cintron
 Coexpression
 ComplexHeatmap
+Comput
 Coote
 Costa
 Coussens
@@ -101,6 +102,7 @@ Feldmann
 Florian
 Foroutan
 Fotini
+Frahm
 Fukutani
 GSEA
 GSVA
@@ -299,7 +301,6 @@ Schinzel
 Scholing
 Scholl
 Schriek
-Schumacher
 Scriba
 Seielstad
 Semitala
@@ -326,7 +327,6 @@ SummarizedExperiment
 Susannah
 Swaminathan
 Sytze
-Södersten
 TBK
 TBcommon
 TBornot
@@ -355,12 +355,14 @@ Tzu
 Ulrich
 Umar
 Valvo
+VanValkenburg
 Venturini
 Verhagen
 Verma
 Villaorduña
 WB
 WEHI
+WH
 Warao
 Weiner
 Weng
@@ -376,6 +378,7 @@ Yemisi
 Yi
 Ying
 Yoon
+Yu
 Yuanyuan
 Yuxin
 Zak
@@ -420,6 +423,7 @@ et
 fcimb
 fimmu
 fmicb
+ggplot
 github
 granulocytes
 hiv

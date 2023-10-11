@@ -368,7 +368,7 @@ runTBsigProfiler <- function(input, useAssay = NULL, signatures = NULL,
 #'
 #' @examples
 #' compareAlgs(TB_indian,
-#'             signatures = TBsignatures[c("Zimmer_RES_3")],
+#'             signatures = TBsignatures[c("Gliddon_OD_3")],
 #'             annotationColName = "label",
 #'             algorithm = c("ssGSEA", "PLAGE"),
 #'             scale = TRUE, parallel.sz = 1, output = "heatmap")

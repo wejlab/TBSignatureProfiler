@@ -3,6 +3,7 @@
 ## Bug Fixes
 * Fixed bug for `signatureBoxplot` by removing quotations around variables. This issue was introduced with the newest ggplot2 version. Thanks to Arthur VanValkenburg for identifying the issue and solution.
 * Removed Zimmer_RES_3 which was an identical signature as the previously published Sweeney_OD_3.
+* Fixed error in example for `compare_algs` caused by the signature being used.
 
 
 ## Minor Changes
