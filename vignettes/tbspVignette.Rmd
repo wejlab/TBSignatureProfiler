@@ -207,7 +207,7 @@ compareAlgs(hivtb_data, annotationColName = "Disease",
 
 # Additional Documentation and Tutorials
 
-The functions presented as part of this vignette are but a limited subset of those available in the TBSignatureProfiler package. A more complete tutorial is available by going to [our website](https://compbiomed.github.io/TBSignatureProfiler-docs/index.html), and selecting the tab labeled "Command Line Analysis." 
+The functions presented as part of this vignette are but a limited subset of those available in the TBSignatureProfiler package. A more complete tutorial is available by going to [our website](https://wejlab.github.io/TBSignatureProfiler-docs/index.html), and selecting the tab labeled "Command Line Analysis." 
 
 # Session Info
 ```{r session info}
