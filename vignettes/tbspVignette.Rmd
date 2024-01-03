@@ -56,7 +56,7 @@ suppressPackageStartupMessages({
 ```
 
 ## Run Shiny App
-This command is to start the TBSignatureProfiler shiny app. Shiny app tutorials are forthcoming and will be uploaded to [the package website](https://compbiomed.github.io/TBSignatureProfiler-docs/index.html).
+This command is to start the TBSignatureProfiler shiny app. Shiny app tutorials are forthcoming and will be uploaded to [the package website](https://wejlab.github.io/TBSignatureProfiler-docs/index.html).
 
 ```{R Run_shiny_app, eval = FALSE}
 TBSPapp()

@@ -19,7 +19,7 @@ editor_options:
 
 # Introduction
 
-This tutorial serves as a step-by-step walkthrough to add signatures by performing the necessary data object updates, updating the publication information in the signature list documentation, and then pulling in the updated package into the official version in the [compbiomed repository](www.github.com/compbiomed/tbsignatureprofiler).
+This tutorial serves as a step-by-step walkthrough to add signatures by performing the necessary data object updates, updating the publication information in the signature list documentation, and then pulling in the updated package into the official version in the [wejlab repository](www.github.com/wejlab/tbsignatureprofiler).
  
   There are basically four steps to adding a TB gene signature to the TBSignatureProfiler:
   
@@ -33,7 +33,7 @@ This tutorial serves as a step-by-step walkthrough to add signatures by performi
 3) Adding the signature to the appropriate documentation
  
  
-4) Submitting a pull request to the BUMC Division of Computational Biomedicine's (compbiomed) [GitHub repository](www.github.com/compbiomed/tbsignatureprofiler) where the package is located.
+4) Submitting a pull request to the BUMC Division of Computational Biomedicine's (wejlab) [GitHub repository](www.github.com/wejlab/tbsignatureprofiler) where the package is located.
 
   To illustrate the process of adding signatures, we will use a simple 3-transcript signature [published in 2015 by Laux da Costa et al](https://www.ncbi.nlm.nih.gov/pmc/articles/PMC4475479/) as an example. 
   
@@ -43,7 +43,7 @@ If you need to add more than one signature, note that you will need to repeat th
 
 # Setup
 
- Please be sure to download the latest version of the TBSignatureProfiler from [GitHub](www.github.com/compbiomed/tbsignatureprofiler) onto your local machine. Navigate to that folder and set it as your working directory. We will use devtools to load the package.
+ Please be sure to download the latest version of the TBSignatureProfiler from [GitHub](www.github.com/wejlab/tbsignatureprofiler) onto your local machine. Navigate to that folder and set it as your working directory. We will use devtools to load the package.
 ```{r setup}
 library(knitr)
 
@@ -141,7 +141,7 @@ addTBsignature(sigsymbols = c("GBP5", "CD64", "GZMA"),
 
 With that, the data objects themselves should be successfully updated. You can take a look at them by running `devtools::load_all()` to update your local repository and then loading the data objects as `data("TBsignatures)` or `data(common_sigAnnotObject)`. 
 
-In the case that you wrote to the RDS files by accident and need to fix them, redownload the appropriate files from the [GitHub repository](www.github.com/compbiomed/tbsignatureprofiler) and try again. Be sure to rerun the `devtools::load_all()` command.
+In the case that you wrote to the RDS files by accident and need to fix them, redownload the appropriate files from the [GitHub repository](www.github.com/wejlab/tbsignatureprofiler) and try again. Be sure to rerun the `devtools::load_all()` command.
 
 # Documentation 
 

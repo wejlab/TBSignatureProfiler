@@ -8,7 +8,7 @@
 #' required updates to the package for a signature to be full added; users
 #' should check the vignette "Submitting Signatures to the TBSP Package"
 #' on the
-#' [TBSP website](https://compbiomed.github.io/TBSignatureProfiler-docs/.)
+#' [TBSP website](https://wejlab.github.io/TBSignatureProfiler-docs/.)
 #' for a walkthrough of this complete process.
 #' Also note that this function only adds one signature at a time,
 #' and must me run multiple times to add subsequent signatures.
