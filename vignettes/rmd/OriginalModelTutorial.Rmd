@@ -57,5 +57,5 @@ outSub <- evaluateOriginalModel(input = hivtb_data,
 colData(outSub)[, paste0(c("Anderson_42", "Sweeney_OD_3", "Verhagen_10", "Zak_RISK_16"), "_OriginalModel")]
 ```
 
-The returned object is also of the `SummarizedExperiment`. The scores will be returned as a part of the `colData` with column names formatted as "Name_Of_Signature_OriginalModel". The structure of the returned object is the same as the one given by `runTBsigProfiler`. At this point, users may now follow the guidance to using the package given in the main [package vignette](https://compbiomed.github.io/TBSignatureProfiler-docs/articles/rmd/TBSig_Vignette.html) for downstream analysis.
+The returned object is also of the `SummarizedExperiment`. The scores will be returned as a part of the `colData` with column names formatted as "Name_Of_Signature_OriginalModel". The structure of the returned object is the same as the one given by `runTBsigProfiler`. At this point, users may now follow the guidance to using the package given in the main [package vignette](https://wejlab.github.io/TBSignatureProfiler-docs/articles/rmd/TBSig_Vignette.html) for downstream analysis.
 

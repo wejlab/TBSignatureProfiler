@@ -84,7 +84,7 @@ navbar:
       href: news/index.html
   right:
     - icon: fa-github
-      href: https://github.com/compbiomed/TBSignatureProfiler
+      href: https://github.com/wejlab/TBSignatureProfiler
       
 authors:
   footer:
