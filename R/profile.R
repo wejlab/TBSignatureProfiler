@@ -39,10 +39,26 @@ score_algorithm <- function(runindata, signatures, alg, assignDir = NULL,
                             ASSIGNiter = 100000, ASSIGNburnin = 50000,
                             ssgsea_norm = TRUE, combineSigAndAlgorithm,
                             one_alg) {
-  if (alg %in% c("GSVA", "ssGSEA", "PLAGE", "Zscore")) {
-    message("Running ", alg)
-    algout <- GSVA::gsva(runindata, signatures, method = tolower(alg),
-                         parallel.sz = parallel.sz, ssgsea.norm = ssgsea_norm)
+  if (parallel.sz > 1) {
+    utility_param <- BiocParallel::MulticoreParam(workers = parallel.sz)
+  } else utility_param <- BiocParallel::SerialParam(progressbar = FALSE)
+  if (alg == "GSVA") {
+    message("Running GSVA")
+    param_in <- GSVA::gsvaParam(exprData = runindata, geneSets = signatures)
+    algout <- GSVA::gsva(param_in, verbose = FALSE, BPPARAM = utility_param)
+  } else if (alg == "ssGSEA") {
+    message("Running ssGSEA")
+    param_in <- GSVA::ssgseaParam(exprData = runindata, geneSets = signatures,
+                                  normalize = ssgsea_norm)
+    algout <- GSVA::gsva(param_in, verbose = FALSE, BPPARAM = utility_param)
+  } else if (alg == "PLAGE") {
+    message("Running PLAGE")
+    param_in <- GSVA::plageParam(exprData = runindata, geneSets = signatures)
+    algout <- GSVA::gsva(param_in, verbose = FALSE, BPPARAM = utility_param)
+  } else if (alg == "Zscore") {
+    message("Running Zscore")
+    param_in <- GSVA::zscoreParam(exprData = runindata, geneSets = signatures)
+    algout <- GSVA::gsva(param_in, verbose = FALSE, BPPARAM = utility_param)
   } else if (alg == "singscore") {
     message("Running singscore")
     algout <- matrix(ncol = ncol(runindata), nrow = length(signatures),
