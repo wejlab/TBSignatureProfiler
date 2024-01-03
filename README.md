@@ -1,7 +1,7 @@
-## TBSignatureProfiler <img src="https://github.com/compbiomed/TBSignatureProfiler-docs/blob/master/lungs1.png?raw=true" align="right" width="170" />
+## TBSignatureProfiler <img src="https://github.com/wejlab/TBSignatureProfiler-docs/blob/master/lungs1.png?raw=true" align="right" width="170" />
 
 [![](https://img.shields.io/badge/bioconductor-3.18-blue)](http://www.bioconductor.org/packages/release/bioc/html/TBSignatureProfiler.html)
-[![codecov](https://codecov.io/gh/compbiomed/TBSignatureProfiler/branch/master/graph/badge.svg)](https://codecov.io/gh/compbiomed/TBSignatureProfiler)
+[![codecov](https://codecov.io/gh/wejlab/TBSignatureProfiler/branch/master/graph/badge.svg)](https://codecov.io/gh/wejlab/TBSignatureProfiler)
 [![build](http://www.bioconductor.org/shields/build/release/bioc/TBSignatureProfiler.svg)](http://bioconductor.org/checkResults/release/bioc-LATEST/TBSignatureProfiler/)
 
 ## What is the TBSignatureProfiler?
@@ -13,7 +13,7 @@ The TBSP can be used as a standalone software package. Data exploration is also 
 
 ## Documentation
 
-Please check our website at https://compbiomed.github.io/TBSignatureProfiler-docs/.
+Please check our website at https://wejlab.github.io/TBSignatureProfiler-docs/.
 
 ## Citation
 
@@ -33,7 +33,7 @@ The TBSignatureProfiler requires R Version 4.1.
 ``` r
 if (!requireNamespace("devtools", quietly = TRUE))
   install.packages("devtools")
-devtools::install_github("compbiomed/TBSignatureProfiler")
+devtools::install_github("wejlab/TBSignatureProfiler")
 ```
 
 * Install the release version of the package from Bioconductor:

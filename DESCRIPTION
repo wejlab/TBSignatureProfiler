@@ -22,9 +22,9 @@ Description: Gene signatures of TB progression, TB disease, and other TB
     app provides some functionality alongside for detailed command line
     accessibility.
 License: MIT + file LICENSE
-URL: https://github.com/compbiomed/TBSignatureProfiler
-    https://compbiomed.github.io/TBSignatureProfiler-docs/
-BugReports: https://github.com/compbiomed/TBSignatureProfiler/issues
+URL: https://github.com/wejlab/TBSignatureProfiler
+    https://wejlab.github.io/TBSignatureProfiler-docs/
+BugReports: https://github.com/wejlab/TBSignatureProfiler/issues
 Depends: 
     R (>= 4.2.0)
 Imports:
