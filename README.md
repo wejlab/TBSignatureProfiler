@@ -26,7 +26,7 @@ Please cite:
 
 ## Installation
 
-The TBSignatureProfiler requires R Version 4.1.
+The TBSignatureProfiler requires R Version 4.2.
 
 * Install the development version of the package from Github:
 
