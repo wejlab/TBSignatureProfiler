@@ -1,3 +1,12 @@
+# TBSignatureProfiler 1.17.0
+
+# TBSignatureProfiler 1.16.0
+
+## Bug Fixes
+* Removed references to compbiomed repository and replaced with wejlab.
+* Fixed calls to GSVA package dependency to reflect new implementation (runTBsigProfiler)
+* Updated vignette to reflect more recent results (using more signatures than when package was first released)
+
 # TBSignatureProfiler 1.14.0
 
 ## Bug Fixes

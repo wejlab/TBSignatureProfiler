@@ -153,8 +153,8 @@ In the case that you wrote to the RDS files by accident and need to fix them, re
 
 ```{r mkdoc, eval = TRUE}
 mkTBreference <- function(TBsigname, ref, DOInum) {
-  cat("\\item{\\strong{", TBsigname, "}}{: ", ref,
-      " \\href{http://dx.doi.org/", DOInum, "}{", DOInum, "}}", sep = "")
+  cat("* \\strong{", TBsigname, "}: ", ref,
+      " \\url{http://dx.doi.org/", DOInum, "}", sep = "")
 }
 
 mkTBreference(TBsigname = "LauxdaCosta2_OD_3", # The name output in a message from addTBsignature()
