@@ -48,7 +48,7 @@ one is desired. The default is \code{c("GSVA", "ssGSEA", "ASSIGN",
 "PLAGE", "Zscore", "singscore")}.}
 
 \item{combineSigAndAlgorithm}{logical, if \code{TRUE}, output row names will
-be of the form <algorithm>_<signature>. It must be set to code{TRUE} if the
+be of the form \if{html}{\out{<algorithm>}}_\if{html}{\out{<signature>}}. It must be set to \code{TRUE} if the
 \code{ouputFormat} will be a SummarizedExperiment and
 \code{length(algorithm) > 1}.
 It will always be \code{FALSE} if only one algorithm is selected.

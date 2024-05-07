@@ -34,6 +34,6 @@ data("TB_indian")
 Leong S., Zhao Y., et. al. (2018). Existing blood transcriptional classifiers
 accurately discriminate active tuberculosis from latent infection in
 individuals from south India. \emph{Tuberculosis} \strong{109}, 41-51.
-doi: \href{https://doi.org/10.1016/j.tube.2018.01.002}{10.1016/j.tube.2018.01.002}.
+doi: \url{https://doi.org/10.1016/j.tube.2018.01.00210.1016/j.tube.2018.01.002}.
 }
 \keyword{datasets}

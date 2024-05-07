@@ -47,8 +47,8 @@ We used the k-nearest neighbors to impute the expression values for missing gene
 The imputation operation is achieved using \code{\link[impute]{impute.knn}}.
 Since the computational time for the imputation step can be excessive for large
 number of missing genes. We made some constrains to prevent the overflow of imputation
-operation. The evaluation will not run if more than \code{geneMax}*100\% percent
+operation. The evaluation will not run if more than \code{geneMax}*100\\% percent
 of the genes are not found for the corresponding gene signature in the input study.
-By default \code{geneMax} = 0.8, so the evaluation will not run if more than 80\%
+By default \code{geneMax} = 0.8, so the evaluation will not run if more than 80\\%
 of the genes are missing when matching the input study to the reference data.
 }

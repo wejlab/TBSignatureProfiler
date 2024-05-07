@@ -36,6 +36,6 @@ data("TB_hiv")
 Verma S., Du P., et. al. (2018). Tuberculosis in advanced HIV infection is
 associated with increased expression of IFN and its downstream targets.
 \emph{BMC Infectious Diseases} \strong{18:220}.
-doi: \href{https://doi.org/10.1186/s12879-018-3127-4}{10.1186/s12879-018-3127-4}.
+doi: \url{https://doi.org/10.1186/s12879-018-3127-410.1186/s12879-018-3127-4}.
 }
 \keyword{datasets}
