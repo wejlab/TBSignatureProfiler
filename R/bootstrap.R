@@ -249,7 +249,7 @@ compareBoxplots <- function(SE_scored, annotationColName, signatureColNames,
 
   the_plot <- the_plot +
     ggplot2::geom_abline(ggplot2::aes(intercept = 0.5, slope = 0,
-                                      col = abline.col), size = 1,
+                                      col = abline.col), linewidth = 1,
                          linetype = "dashed", show.legend = FALSE) +
     ggplot2::theme_classic() +
     ggplot2::theme(axis.title.x = ggplot2::element_blank(),
@@ -364,11 +364,11 @@ signatureROCplot <- function(inputData, annotationData,
 
   theplot <- ggplot2::ggplot(data = plot_dat, ggplot2::aes(x = FPR, y = TPR)) +
     ggplot2::geom_line(ggplot2::aes(x = FPR, y = TPR, col = paste(
-      "Empirical ROC curve")), size = 1) +
+      "Empirical ROC curve")), linewidth = 1) +
     ggplot2::facet_wrap(~Signature, scales = "free",
                         nrow = nrow, ncol = ncol) +
     ggplot2::geom_abline(ggplot2::aes(intercept = 0, slope = 1,
-                                      col = choose_colors[2]), size = 1,
+                                      col = choose_colors[2]), linewidth = 1,
                          linetype = "dashed", show.legend = FALSE) +
     ggplot2::labs(x = "1-Specificity (FPR)", y = "Sensitivity (TPR)",
                   title = name) +
@@ -518,11 +518,11 @@ signatureROCplot_CI <- function(inputData, annotationData, signatureColNames,
                                       fill = "Confidence Interval"),
                          show.legend = FALSE) +
     ggplot2::geom_line(ggplot2::aes(x = FPR, y = TPR, col =
-                                      "Empirical ROC curve"), size = 1) +
+                                      "Empirical ROC curve"), linewidth = 1) +
     ggplot2::facet_wrap(~Signature, scales = "free",
                         nrow = nrow, ncol = ncol) +
     ggplot2::geom_abline(ggplot2::aes(intercept = 0, slope = 1,
-                                      col = choose_colors[2]), size = 1,
+                                      col = choose_colors[2]), linewidth = 1,
                          linetype = "dashed", show.legend = FALSE) +
     ggplot2::scale_color_manual("",
                                 labels = c("Empirical ROC curve", "Chance line"),

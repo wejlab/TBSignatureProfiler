@@ -198,9 +198,9 @@ retrain_helper <- function(i, geneSignaturesName,
                 col_info[, c("PatientID", "MeasurementTime")] %>%
                 base::as.data.frame() %>%
                 dplyr::mutate(sample_name = base::row.names(col_info)) %>%
-                dplyr::arrange(.data$MeasurementTime, .data$PatientID) %>%
-                dplyr::group_by(.data$PatientID) %>%
-                dplyr::mutate(first = dplyr::first(.data$sample_name))
+                dplyr::arrange(!!dplyr::sym("MeasurementTime"), !!dplyr::sym("PatientID")) %>%
+                dplyr::group_by(!!dplyr::sym("PatientID")) %>%
+                dplyr::mutate(first = dplyr::first(!!dplyr::sym("sample_name")))
             theObject_train <-
                 theObject_train[, base::unique(sample_baseline_GSE79362$first)]
             sample_score <-
@@ -367,7 +367,6 @@ retrain_helper <- function(i, geneSignaturesName,
 #' The SVM model was built using \code{\link[e1071]{svm}}.
 #'
 #' @importFrom magrittr %>%
-#' @importFrom rlang .data
 #' @inheritParams evaluateOriginalModel
 #' @return A SummarizedExperiment object with predicted scores for each sample
 #' obtained from the signature's original model.
@@ -544,7 +543,7 @@ ref_combat_impute <- function(theObject_train, useAssay, gene_set, input,
         }))
     row_names <- dat_exprs_combine$id
     dat_exprs_count <- dat_exprs_combine %>%
-        dplyr::select(-.data$id) %>%
+        dplyr::select(-"id") %>%
         base::as.data.frame()
     row.names(dat_exprs_count) <- row_names
     # Check for NA's in the dat_exprs_counts

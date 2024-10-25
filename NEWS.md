@@ -1,5 +1,13 @@
 # TBSignatureProfiler 1.17.0
 
+## Minor Changes
+* Added Li_3 signature
+* Adjusted function to create documentation in Signature Addition vignette
+* Fixed Zhao_Nano_6 signature documentation
+
+## Bug Fixes
+* Changed out .data pronouns to use proper tidyr variable calling
+
 # TBSignatureProfiler 1.16.0
 
 ## Bug Fixes
@@ -13,7 +21,6 @@
 * Fixed bug for `signatureBoxplot` by removing quotations around variables. This issue was introduced with the newest ggplot2 version. Thanks to Arthur VanValkenburg for identifying the issue and solution.
 * Removed Zimmer_RES_3 which was an identical signature as the previously published Sweeney_OD_3.
 * Fixed error in example for `compare_algs` caused by the signature being used.
-
 
 ## Minor Changes
 * Added Vargas_18 and Vargas_45 signatures (doi: 10.1371/journal.pcbi.1010770)

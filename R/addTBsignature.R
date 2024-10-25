@@ -125,7 +125,7 @@ addTBsignature <- function(sigsymbols, authname,
   TBsignatures <- TBsignatures[new_names]
   # Save new object
   if (saveobjs) save(TBsignatures, file = "data/TBsignatures.rda")
-  if (views) utils::View(names(TBsignatures))
+  if (views) print(names(TBsignatures))
   message("TBsignatures object updated")
 
   # Add signature to TBcommon
@@ -135,7 +135,7 @@ addTBsignature <- function(sigsymbols, authname,
   new_names <- names(TBcommon)[index]
   TBcommon <- TBcommon[new_names]
   if (saveobjs) save(TBcommon, file = "data/TBcommon.rda")
-  if (views) utils::View(names(TBcommon))
+  if (views) print(names(TBcommon))
   message("TBcommon object updated")
 
   # Add to annotation to sigAnnotData
@@ -149,7 +149,7 @@ addTBsignature <- function(sigsymbols, authname,
     stop("The names in the sigAnnotData do not match the order ",
          "and/or names of the TBsignatures object.")
   } else if (saveobjs) save(sigAnnotData, file = "data/sigAnnotData.rda")
-  if (views) utils::View(sigAnnotData)
+  if (views) print(sigAnnotData)
   message("sigAnnotData object updated")
 
   # Add annotation to sigAnnotData_common
@@ -166,7 +166,7 @@ addTBsignature <- function(sigsymbols, authname,
          "the order and/or names of the TBcommon object.")
   } else if (saveobjs) save(common_sigAnnotData,
                             file = "data/common_sigAnnotData.rda")
-  if (views) utils::View(common_sigAnnotData)
+  if (views) print(common_sigAnnotData)
   message("common_sigAnnotData updated")
 
   if (saveobjs) message("All objects updated and saved to data folder.")
