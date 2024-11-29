@@ -71,7 +71,7 @@ We begin by examining the dataset, which contains a matrix of counts information
 
 ```{r loading_data}
 ## HIV/TB gene expression data, included in the package
-hivtb_data <- TB_hiv
+hivtb_data <- get0("TB_hiv", envir = asNamespace("TBSignatureProfiler"))
 
 ### Note that we have 25,369 genes, 33 samples, and 1 assay of counts
 dim(hivtb_data)
@@ -110,11 +110,11 @@ siglist_hivtb <- names(TBsignatures)
 ```{r run_profiler}
 ## Run the TBSignatureProfiler to score the signatures in the data
 out <- capture.output(ssgsea_result <- runTBsigProfiler(input = hivtb_data,
-                                                 useAssay = "log_counts_cpm",
-                                                 signatures = TBsignatures,
-                                                 algorithm = "ssGSEA",
-                                                 combineSigAndAlgorithm = TRUE,
-                                                 parallel.sz = 1))
+                                                        useAssay = "log_counts_cpm",
+                                                        signatures = TBsignatures,
+                                                        algorithm = "ssGSEA",
+                                                        combineSigAndAlgorithm = TRUE,
+                                                        parallel.sz = 1))
 
 ## Remove any signatures that were not scored
 TBsignatures <- subset(TBsignatures, !(names(TBsignatures) %in% c("Chendi_HIV_2")))
