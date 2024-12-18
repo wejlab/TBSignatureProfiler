@@ -1,0 +1,116 @@
+---
+title: "Introduction to the TBSignatureProfiler"
+author: 
+- name: Aubrey Odom
+  affiliation: 
+  - Program in Bioinformatics, Boston University, Boston, MA
+  email: aodom@bu.edu
+- name: W. Evan Johnson
+  affiliation:
+  - Division of Infectious Disease, Center for Data Science, Rutgers University – New Jersey Medical School, Newark, NJ, USA
+  email: wj183@njms.rutgers.edu
+date: '`r format(Sys.Date(), "%B %e, %Y")`'
+package: TBSignatureProfiler
+output: 
+  BiocStyle::html_document
+vignette: >
+  %\VignetteIndexEntry{"Introduction to the TBSignatureProfiler"}
+  %\VignetteEncoding{UTF-8}  
+  %\VignetteEngine{knitr::rmarkdown}
+editor_options: 
+  chunk_output_type: console
+---
+
+# Introduction to the TBSignatureProfiler
+
+Tuberculosis (TB) is the leading cause of infectious disease mortality worldwide, causing on average nearly 1.4 million deaths per year. A consistent issue faced in controlling TB outbreak is difficulty in diagnosing individuals with particular types of TB infections for which bacteria tests (e.g., via GeneXpert, sputum) prove inaccurate. As an alternative mechanism of diagnosis for these infections, researchers have discovered and published multiple gene expression signatures as blood-based disease biomarkers. In this context, gene signatures are defined as a combined group of genes with a uniquely characteristic pattern of gene expression that occurs as a result of a medical condition. To date, more than 75 signatures have been published by researchers, though most have relatively low cross-condition validation (e.g., testing TB in samples from diverse geographic and comorbidity backgrounds). Furthermore, these signatures have never been formally collected and made available as a single unified resource. 
+
+We aim to provide the scientific community with a resource to access these aggregated signatures and to create an efficient means for their visual and quantitative comparison via open source software. This necessitated the development of the TBSignatureProfiler, a novel R package which delivers a computational profiling platform for researchers to characterize the diagnostic ability of existing signatures in multiple comorbidity settings. This software allows for signature strength estimation via several enrichment methods and subsequent visualization of single- and multi-pathway results. Its signature evaluation functionalities include signature profiling, AUC bootstrapping, and leave-one-out cross-validation (LOOCV) of logistic regression to approximate TB samples’ status. Its plotting functionalities include sample-signature score heatmaps, bootstrap AUC and LOOCV boxplots, and tables for presenting results.
+
+More recently, the TBSignatureProfiler has undertaken a new role in analyzing signatures across multiple chronic airway diseases, the most recent being COVID-19 (see the `COVIDsignatures` object). As we grow and expand the TBSignatureProfiler, we hope to add signatures from multiple diseases to improve the package's utility in the area of gene signature comparison.
+ 
+# Installation
+
+In order to install the TBSignatureProfiler from Bioconductor, run the following code:
+
+```{r load_profiler, eval = FALSE}
+if (!requireNamespace("BiocManager", quietly = TRUE))
+  install.packages("BiocManager")
+BiocManager::install("TBSignatureProfiler")
+```
+                                                                      
+# Compatibility with SummarizedExperiment objects
+
+While the TBSignatureProfiler often allows for the form of a `data.frame` or `matrix` as input data, the most ideal form of input for this package is that of the `SummarizedExperiment` object. This is an amazing data structure that is being developed by the \emph{Bioconductor team} as part of the `r Biocpkg("SummarizedExperiment")` package, and is imported as part of the TBSignatureProfiler package. It is able to store data matrices along with annotation information, metadata, and reduced dimensionality data
+(PCA, t-SNE, etc.). To learn more about proper usage and context of the `SummarizedExperiment` object, you may want to take a look at the [package vignette](https://bioconductor.org/packages/release/bioc/vignettes/SummarizedExperiment/inst/doc/SummarizedExperiment.html). A basic understanding of the `assay` and `colData` properties of a `SummarizedExperiment` will be useful for the purposes of this vignette. 
+
+# A Quick Tutorial for the TBSignatureProfiler
+
+## Load packages
+
+```{r setup}
+suppressPackageStartupMessages({
+  library(TBSignatureProfiler)
+  library(SummarizedExperiment)
+})
+```
+
+## Run Shiny App
+This command is to start the TBSignatureProfiler shiny app. The Shiny app implements several functions described in this vignette.
+
+```{R Run_shiny_app, eval = FALSE}
+TBSPapp()
+```
+
+The basic functions of the shiny app are also included in the command line version of the TBSignatureProfiler, which is the focus of the remainder of this vignette.
+
+## Load dataset from a SummarizedExperiment object
+In this tutorial, we will work with HIV and Tuberculosis (TB) gene expression data in a `SummarizedExperiment` format. This dataset is included in the TBSignatureProfiler package and can be loaded into the global environment with `data("TB_hiv")`. The 31 samples in the dataset are marked as either having both TB and HIV infection, or HIV infection only.
+
+We begin by examining the dataset, which contains a matrix of counts information (an "assay" in SummarizedExperiment terms) and another matrix of meta data information on our samples (the "colData"). We will also generate a few additional assays; these are the log(counts), the counts per million (CPM) reads mapped, and the log(CPM) assays. 
+
+```{r loading_data}
+## HIV/TB gene expression data, included in the package
+hivtb_data <- get0("TB_hiv", envir = asNamespace("TBSignatureProfiler"))
+
+### Note that we have 25,369 genes, 33 samples, and 1 assay of counts
+dim(hivtb_data)
+
+# We start with only one assay
+assays(hivtb_data)
+```
+
+
+We now make a log counts, CPM and log CPM assay.
+```{r add_assays}
+## Make a log counts, CPM and log CPM assay
+hivtb_data <- mkAssay(hivtb_data, log = TRUE, counts_to_CPM = TRUE)
+
+### Check to see that we now have 4 assays
+assays(hivtb_data)
+```
+
+## Profile the data {.tabset}
+
+The TBSignatureProfiler enables comparison of multiple Tuberculosis gene signatures. The package currently contains information on 79 signatures for comparison. The default signature list object for most functions here is `TBsignatures`, although a list with publication-given signature names is also available as `TBcommon`. Data frames of annotation information for these signatures, including information on associated disease and tissue type, can be accessed as `sigAnnotData` and `common_sigAnnotData` respectively.
+
+With the `runTBSigProfiler` function, we are able to score these signatures with a selection of algorithms, including [gene set variation analysis](https://bmcbioinformatics.biomedcentral.com/articles/10.1186/1471-2105-14-7) (GSVA) (Hänzelmann et al, 2013), [single-sample GSEA](https://bmcbioinformatics.biomedcentral.com/articles/10.1186/1471-2105-14-7) (ssGSEA) (Barbie et al, 2009), and the [ASSIGN](https://bmcbioinformatics.biomedcentral.com/articles/10.1186/1471-2105-14-7) pathway profiling toolkit (Shen et al, 2015). For a complete list of included scoring methods, run `?runTBsigProfiler` in the terminal.
+
+Here, we evaluate all signatures included in the package with ssGSEA. Paraphrasing from the [ssGSEA documentation](http://software.broadinstitute.org/cancer/software/genepattern/modules/docs/ssGSEAProjection/4), for each pairing of one of the 31 samples and its gene set, ssGSEA calculates a separate enrichment score independent of the phenotypic labeling (in this case, whether a sample has HIV/TB, or HIV only). The single sample's gene expression profile is then transformed to a gene set enrichment profile. A score from the set profile represents the activity level of the biological process in which the gene set's members are coordinately up- or down-regulated.  
+
+```{r run_data}
+## List all signatures in the profiler
+data("TBsignatures")
+names(TBsignatures)
+
+## We can use all of these signatures for further analysis
+siglist_hivtb <- names(TBsignatures)
+```
+
+A more complete tutorial is available by going to [our website](https://wejlab.github.io/TBSignatureProfiler-docs/index.html), and selecting the tab labeled "Command Line Analysis." 
+
+# Session Info
+```{r session info}
+sessionInfo()
+
+```
