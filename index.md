@@ -2,7 +2,7 @@
 
 [![](https://img.shields.io/badge/bioconductor-3.18-blue)](http://www.bioconductor.org/packages/release/bioc/html/TBSignatureProfiler.html)
 [![codecov](https://codecov.io/gh/wejlab/TBSignatureProfiler/branch/master/graph/badge.svg)](https://codecov.io/gh/wejlab/TBSignatureProfiler)
-[![build](http://www.bioconductor.org/shields/build/release/bioc/TBSignatureProfiler.svg)](http://bioconductor.org/checkResults/release/bioc-LATEST/TBSignatureProfiler/)
+[![build](https://www.bioconductor.org/shields/build/devel/bioc/TBSignatureProfiler.svg)](http://bioconductor.org/checkResults/devel/bioc-LATEST/TBSignatureProfiler/)
 
 
 ## What is the TBSignatureProfiler?
