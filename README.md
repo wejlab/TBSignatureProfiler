@@ -2,7 +2,7 @@
 
 [![](https://img.shields.io/badge/bioconductor-3.18-blue)](http://www.bioconductor.org/packages/release/bioc/html/TBSignatureProfiler.html)
 [![codecov](https://codecov.io/gh/wejlab/TBSignatureProfiler/branch/master/graph/badge.svg)](https://codecov.io/gh/wejlab/TBSignatureProfiler)
-[![build](http://www.bioconductor.org/shields/build/release/bioc/TBSignatureProfiler.svg)](http://bioconductor.org/checkResults/release/bioc-LATEST/TBSignatureProfiler/)
+[![build](http://www.bioconductor.org/shields/build/devel/bioc/TBSignatureProfiler.svg)](http://bioconductor.org/checkResults/devel/bioc-LATEST/TBSignatureProfiler/)
 
 ## What is the TBSignatureProfiler?
 The TBSignatureProfiler (TBSP) is an easy-to-use R package for analysis of RNA-seq data using gene signatures for tuberculosis disease presence, risk, progression, treatment failure, and other states. In-package signature profiling is available using common gene set enrichment tools that include GSVA, singscore, and ssGSEA.
