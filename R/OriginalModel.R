@@ -444,10 +444,12 @@ subsetGeneSet <- function(theObject, gene_set, useAssay,
     ## Update gene names for both gene_set and row names of the input data
     ## Function update_genenames() were found from profile.R
     gene_set <- gene_set %>%
-        update_genenames() %>%
-        base::unique()
+      update_genenames() %>%
+      dplyr::pull("new") %>%
+      base::unique()
     update_rownames <- base::row.names(dat_assay) %>%
-        update_genenames()
+        update_genenames() %>%
+        dplyr::pull("new")
     ## Check for duplicated names after updating
     index <- base::which(update_rownames %in% gene_set)
     dat_assay_sig <- dat_assay[index, , drop = FALSE]
