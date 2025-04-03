@@ -24,13 +24,15 @@ update_genenames <- function(siglist) {
     stop("Package 'HGNChelper' required to update gene names.",
          "Either install or set update_genes = FALSE.")
   }
-  newgenes <- suppressMessages(suppressWarnings(
+  allgenes <- suppressMessages(suppressWarnings(
     HGNChelper::checkGeneSymbols(siglist,
-                                 unmapped.as.na = FALSE)))$Suggested.Symbol
+                                 unmapped.as.na = FALSE))) |>
+    dplyr::select("prior" = "x", "new" = "Suggested.Symbol")
+  newgenes <- allgenes$new
   ind <- grep("//", newgenes)
-  if (length(ind) != 0) newgenes[ind] <- strsplit(newgenes[ind],
+  if (length(ind) != 0) allgenes$new[ind] <- strsplit(newgenes[ind],
                                                   " /// ")[[1]][1]
-  return(newgenes)
+  return(allgenes)
 }
 
 # run scoring algorithms
@@ -39,6 +41,7 @@ score_algorithm <- function(runindata, signatures, alg, assignDir = NULL,
                             ASSIGNiter = 100000, ASSIGNburnin = 50000,
                             ssgsea_norm = TRUE, combineSigAndAlgorithm,
                             one_alg) {
+  runindata <- as.matrix(runindata)
   if (parallel.sz > 1) {
     utility_param <- BiocParallel::MulticoreParam(workers = parallel.sz)
   } else utility_param <- BiocParallel::SerialParam(progressbar = FALSE)
@@ -123,32 +126,37 @@ score_algorithm <- function(runindata, signatures, alg, assignDir = NULL,
 # Create proper output class for runTBsigProfiler
 output_function <- function(input, signatures, algorithm, outputFormat,
                             runindata, sig_result) {
+  # if outputFormat is null, make output same as input class
   if (is.null(outputFormat)) {
-    # Output will be the same as input class
-    if (class(input)[1] %in% c("SummarizedExperiment", "SingleCellExperiment",
-                               "SCtkExperiment")) {
-      SummarizedExperiment::colData(input) <-
-        S4Vectors::cbind(SummarizedExperiment::colData(input),
-                         S4Vectors::DataFrame(t(sig_result)))
-      return(input)
-    } else if (methods::is(input, "matrix")) {
-      return(sig_result)
-    } else if (methods::is(input, "data.frame")) {
-      dfres <- data.frame(sig_result)
-      colnames(dfres) <- colnames(sig_result)
-      return(dfres)
-    }
-  } else if (outputFormat == "matrix") {
+    outputFormat <- class(input)[1]
+  }
+  
+  # Obtain potential colData
+  runindata <- as.matrix(runindata)
+  attr(rownames(runindata), ".match.hash") <- NULL
+  
+  if (methods::is(input, "matrix")) {
+    SE_coldat <- S4Vectors::DataFrame(t(sig_result))
+    SE_assay <- S4Vectors::SimpleList(data = runindata)
+  } else if (methods::is(input, "data.frame")) {
+    SE_coldat <- S4Vectors::DataFrame(t(sig_result))
+    SE_assay <- S4Vectors::SimpleList(data = runindata)
+  } else if (methods::is(input, "SummarizedExperiment")) {
+    SE_coldat <- S4Vectors::cbind(SummarizedExperiment::colData(input),
+                                  S4Vectors::DataFrame(t(sig_result)))
+    SE_assay <- SummarizedExperiment::assays(input)
+  }
+  
+  # Then create appropriately formatted output
+  if (outputFormat == "matrix") {
     return(sig_result)
   } else if (outputFormat == "data.frame") {
-    dfres <- data.frame(sig_result)
-    colnames(dfres) <- colnames(sig_result)
+    dfres <- as.data.frame(sig_result)
     return(dfres)
   } else if (outputFormat == "SummarizedExperiment") {
-    attr(rownames(runindata), ".match.hash") <- NULL
     outdata <- SummarizedExperiment::SummarizedExperiment(
-      assays = S4Vectors::SimpleList(data = runindata),
-      colData = S4Vectors::DataFrame(t(sig_result)))
+      assays = SE_assay,
+      colData = SE_coldat)
     return(outdata)
   } else stop("'OutputFormat' should be one of 'SummarizedExperiment', ",
               "'matrix', or 'data.frame'")
@@ -179,7 +187,8 @@ output_function <- function(input, signatures, algorithm, outputFormat,
 #' The default is \code{NULL}.
 #' @param algorithm a vector of algorithms to run, or character string if only
 #' one is desired. The default is \code{c("GSVA", "ssGSEA", "ASSIGN",
-#' "PLAGE", "Zscore", "singscore")}.
+#' "PLAGE", "Zscore", "singscore")}. NOTE: ASSIGN takes a long time to run and
+#' is not recommended for efficient use.
 #' @param combineSigAndAlgorithm logical, if \code{TRUE}, output row names will
 #' be of the form <algorithm>_<signature>. It must be set to \code{TRUE} if the
 #' \code{ouputFormat} will be a SummarizedExperiment and
@@ -309,15 +318,18 @@ runTBsigProfiler <- function(input, useAssay = NULL, signatures = NULL,
         useAssay <- "counts"
       } else stop("useAssay required for SummarizedExperiment Input")
     }
-    runindata <- SummarizedExperiment::assay(input, useAssay)
+    runindata <- SummarizedExperiment::assay(input, useAssay) |>
+      as.data.frame()
     if (!combineSigAndAlgorithm && length(algorithm) > 1) {
       stop("SummarizedExperiment not supported when ",
            "combineSigAndAlgorithm FALSE.")
     }
   } else if (!is.null(useAssay)) {
     stop("useAssay only supported for SummarizedExperiment objects")
+  } else if (methods::is(runindata, "matrix")) {
+    runindata <- as.data.frame(runindata)
   } else if (methods::is(runindata, "data.frame")) {
-    runindata <- as.matrix(runindata)
+    NULL
   } else if (!methods::is(runindata, "matrix")) {
     stop("Invalid input data type. Accepted input formats are matrix, ",
          "data.frame, or SummarizedExperiment. Your input: ",
@@ -325,8 +337,18 @@ runTBsigProfiler <- function(input, useAssay = NULL, signatures = NULL,
   }
   if (update_genes) {
     message("Parameter update_genes is TRUE. Gene names will be updated.")
-    signatures <- lapply(signatures, update_genenames)
-    rownames(runindata) <- update_genenames(rownames(runindata))
+    signatures <- lapply(signatures, update_genenames) |>
+      lapply(function(x) unique(x$new))
+    
+    updated_genes <- update_genenames(rownames(runindata))
+    runindata <- runindata |>
+      tibble::rownames_to_column("prior") |>
+      dplyr::inner_join(updated_genes, by = c("prior")) |>
+      dplyr::relocate("new") |>
+      dplyr::group_by(!!dplyr::sym("new")) |>
+      dplyr::select(-"prior") |>
+      dplyr::summarise(dplyr::across(dplyr::everything(), sum)) |>
+      tibble::column_to_rownames("new")
   }
   # Remove signatures not present in the data
   sig_ind <- vapply(signatures,

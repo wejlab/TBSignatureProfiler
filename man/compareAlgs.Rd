@@ -47,7 +47,8 @@ used will be \code{"counts"}. The default is \code{NULL.}}
 
 \item{algorithm}{a vector of algorithms to run, or character string if only
 one is desired. The default is \code{c("GSVA", "ssGSEA", "ASSIGN",
-"PLAGE", "Zscore", "singscore")}.}
+"PLAGE", "Zscore", "singscore")}. NOTE: ASSIGN takes a long time to run and
+is not recommended for efficient use.}
 
 \item{showColumnNames}{logical. Setting \code{showColumnNames = TRUE} will
 show the column names (i.e. sample names) on the heatmap. The default is

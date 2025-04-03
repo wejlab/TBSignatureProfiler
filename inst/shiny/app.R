@@ -29,6 +29,7 @@ ui <- fluidPage(
 )
 
 server <- function(input, output, session) {
+  options(shiny.maxRequestSize = 100*1024^2) # 100MB limit
   vals <- reactiveValues(
     tbdat = NULL,
     coldat = NULL,

@@ -1,6 +1,6 @@
 Package: TBSignatureProfiler
 Title: Profile RNA-Seq Data Using TB Pathway Signatures
-Version: 1.17.2
+Version: 1.19.3
 Authors@R: c(
     person("Aubrey R.", "Odom", , "aodom@bu.edu", role = c("aut", "cre", "dtm"),
            comment = c(ORCID = "0000-0001-7113-7598")),
@@ -36,17 +36,20 @@ Imports:
     edgeR,
     gdata,
     ggplot2,
+    glmnet,
     GSVA (>= 1.51.3),
     HGNChelper,
     magrittr,
     methods,
+    pROC,
     RColorBrewer,
     reshape2,
     ROCit,
     S4Vectors,
     singscore,
     stats,
-    SummarizedExperiment
+    SummarizedExperiment,
+    tibble
 Suggests:
     BiocStyle,
     caret,
@@ -55,13 +58,11 @@ Suggests:
     covr,
     dplyr,
     e1071,
-    glmnet,
     impute,
     knitr,
     lintr,
     MASS,
     plyr,
-    pROC,
     randomForest,
     rmarkdown,
     shiny,
@@ -75,4 +76,4 @@ Encoding: UTF-8
 Language: en-US
 LazyData: TRUE
 Roxygen: list(markdown = TRUE)
-RoxygenNote: 7.3.1
+RoxygenNote: 7.3.2

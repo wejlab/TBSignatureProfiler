@@ -45,7 +45,8 @@ The default is \code{NULL}.}
 
 \item{algorithm}{a vector of algorithms to run, or character string if only
 one is desired. The default is \code{c("GSVA", "ssGSEA", "ASSIGN",
-"PLAGE", "Zscore", "singscore")}.}
+"PLAGE", "Zscore", "singscore")}. NOTE: ASSIGN takes a long time to run and
+is not recommended for efficient use.}
 
 \item{combineSigAndAlgorithm}{logical, if \code{TRUE}, output row names will
 be of the form \if{html}{\out{<algorithm>}}_\if{html}{\out{<signature>}}. It must be set to \code{TRUE} if the

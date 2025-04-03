@@ -71,7 +71,7 @@ We begin by examining the dataset, which contains a matrix of counts information
 
 ```{r loading_data}
 ## HIV/TB gene expression data, included in the package
-hivtb_data <- TB_hiv
+hivtb_data <- get0("TB_hiv", envir = asNamespace("TBSignatureProfiler"))
 
 ### Note that we have 25,369 genes, 33 samples, and 1 assay of counts
 dim(hivtb_data)
@@ -107,14 +107,31 @@ names(TBsignatures)
 siglist_hivtb <- names(TBsignatures)
 ```
 
+```{R check dupe}
+# Check for duplicated rownames
+assay_matrix <- assay(hivtb_data, "log_counts_cpm")
+duplicated_rows <- duplicated(rownames(assay_matrix))
+if (any(duplicated_rows)) {
+  message("There are duplicated rownames.")
+  # Summing over rows with duplicated names
+  unique_matrix <- rowsum(assay_matrix, group = rownames(assay_matrix))
+  # Update the assay in the SummarizedExperiment object
+  assay(hivtb_data, "log_counts_cpm") <- unique_matrix
+} else {
+  cat("No duplicated rownames.\n")
+}
+
+
+```
+
 ```{r run_profiler}
 ## Run the TBSignatureProfiler to score the signatures in the data
 out <- capture.output(ssgsea_result <- runTBsigProfiler(input = hivtb_data,
-                                                 useAssay = "log_counts_cpm",
-                                                 signatures = TBsignatures,
-                                                 algorithm = "ssGSEA",
-                                                 combineSigAndAlgorithm = TRUE,
-                                                 parallel.sz = 1))
+                                                        useAssay = "log_counts_cpm",
+                                                        signatures = TBsignatures,
+                                                        algorithm = "ssGSEA",
+                                                        combineSigAndAlgorithm = TRUE,
+                                                        parallel.sz = 1))
 
 ## Remove any signatures that were not scored
 TBsignatures <- subset(TBsignatures, !(names(TBsignatures) %in% c("Chendi_HIV_2")))

@@ -270,7 +270,7 @@ test_that("Output error", {
   expect_is(
     update_genenames(c("FN1", "TP53", "UNKNOWNGENE", "7-Sep", "9/7", "1-Mar", "Oct4", "4-Oct",
                        "OCT4-PG4", "C19ORF71", "C19orf71")),
-    "character"
+    "data.frame"
   )
   expect_s4_class(
     runTBsigProfiler(SEtestdata, useAssay = NULL,

@@ -1,3 +1,11 @@
+# TBSignatureProfiler 1.19.0
+
+## Minor Changes
+* Updated gene name update mechanism in `runTBsigProfiler` to sum genes with identical names
+
+## Bug Fixes
+* Fixed issue with GSVA needing a non-data.frame object in `runTBsigProfiler`
+
 # TBSignatureProfiler 1.17.0
 
 ## Minor Changes
