@@ -19,6 +19,7 @@ check_sig_env <- function(signatures) {
 
 # Update gene names that are mogrified or outdated
 update_genenames <- function(siglist) {
+  siglist <- iconv(siglist, from = "UTF-8", to = "ASCII//TRANSLIT")
   requireNamespace("ggplot2", quietly = TRUE)
   if (!requireNamespace("HGNChelper", quietly = TRUE)) {
     stop("Package 'HGNChelper' required to update gene names.",
