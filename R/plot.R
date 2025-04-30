@@ -346,16 +346,18 @@ signatureBoxplot <- function(inputData, annotationData, signatureColNames, annot
                                                                  1])
   boxplotdfm <- reshape2::melt(boxplotdf, value.name = "Score", 
                                variable.name = "Signature", id.vars = "Group")
+  sym_group <- "Group"
+  sym_score <- "Score"
   theplot <- ggplot2::ggplot(boxplotdfm,
-                             ggplot2::aes(boxplotdfm$Group, boxplotdfm$Score)) +
+                             ggplot2::aes(!!ggplot2::sym(sym_group), !!ggplot2::sym(sym_score))) +
     ggplot2::facet_wrap(~Signature, scales = "free", nrow = nrow, ncol = ncol)
   if (violinPlot) {
-    theplot <- theplot + ggplot2::geom_violin(ggplot2::aes(fill = boxplotdfm$Group)) + 
+    theplot <- theplot + ggplot2::geom_violin(ggplot2::aes(fill = !!ggplot2::sym(sym_group))) + 
       ggplot2::theme_classic()
   }
   else {
     theplot <- theplot + ggplot2::geom_boxplot(outlier.shape = NA, 
-                                               ggplot2::aes(fill = boxplotdfm$Group), notch = notch) + 
+                                               ggplot2::aes(fill = !!ggplot2::sym(sym_group)), notch = notch) + 
       ggplot2::theme_classic()
   }
   if (includePoints) {
