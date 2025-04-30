@@ -1,6 +1,6 @@
 ## TBSignatureProfiler <img src="https://github.com/wejlab/TBSignatureProfiler-docs/blob/master/lungs1.png?raw=true" align="right" width="170" />
 
-[![](https://img.shields.io/badge/bioconductor-3.18-blue)](http://www.bioconductor.org/packages/release/bioc/html/TBSignatureProfiler.html)
+[![](https://img.shields.io/badge/bioconductor-3.21-blue)](http://www.bioconductor.org/packages/release/bioc/html/TBSignatureProfiler.html)
 [![codecov](https://codecov.io/gh/wejlab/TBSignatureProfiler/branch/master/graph/badge.svg)](https://codecov.io/gh/wejlab/TBSignatureProfiler)
 [![build](http://www.bioconductor.org/shields/build/devel/bioc/TBSignatureProfiler.svg)](http://bioconductor.org/checkResults/devel/bioc-LATEST/TBSignatureProfiler/)
 
