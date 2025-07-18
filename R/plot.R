@@ -70,6 +70,9 @@ globalVariables(c("BS_AUC", "FPR", "LowerTPR", "Signatures",
 #' @param column_order a vector of character strings indicating the order in
 #' which to manually arrange the heatmap columns. Default is \code{NULL},
 #' such that column order is automatically determined via clustering.
+#' @param cluster_columns A logical indicating whether columns (samples)
+#' should be clustered together. Must be \code{FALSE} if user supplies
+#' \code{column_order}. Default is \code{TRUE}.
 #' @param ... Additional arguments to be passed to
 #' \code{ComplexHeatmap::Heatmap()}.
 #'
@@ -122,6 +125,7 @@ signatureHeatmap <- function(inputData, annotationData = NULL, name = "Signature
                              split_heatmap = "none",
                              annotationSignature = sigAnnotData,
                              column_order = NULL,
+                             cluster_columns = TRUE,
                              ...) {
   if (methods::is(inputData, "SummarizedExperiment")) {
     if (any(duplicated(signatureColNames))) {
@@ -216,6 +220,7 @@ signatureHeatmap <- function(inputData, annotationData = NULL, name = "Signature
                               top_annotation = topha2, name = keyname,
                               row_split = row_split_pass,
                               column_order = column_order,
+                              cluster_columns = cluster_columns,
                               ...),
       annotation_legend_side = "bottom"))
   }

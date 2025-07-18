@@ -20,6 +20,7 @@ signatureHeatmap(
   split_heatmap = "none",
   annotationSignature = sigAnnotData,
   column_order = NULL,
+  cluster_columns = TRUE,
   ...
 )
 }
@@ -96,6 +97,10 @@ Other columns will be ignored. The default is \code{sigAnnotData}.}
 \item{column_order}{a vector of character strings indicating the order in
 which to manually arrange the heatmap columns. Default is \code{NULL},
 such that column order is automatically determined via clustering.}
+
+\item{cluster_columns}{A logical indicating whether columns (samples)
+should be clustered together. Must be \code{FALSE} if user supplies
+\code{column_order}. Default is \code{TRUE}.}
 
 \item{...}{Additional arguments to be passed to
 \code{ComplexHeatmap::Heatmap()}.}
