@@ -216,7 +216,6 @@ signatureHeatmap <- function(inputData, annotationData = NULL, name = "Signature
                               top_annotation = topha2, name = keyname,
                               row_split = row_split_pass,
                               column_order = column_order,
-                              cluster_columns = TRUE,
                               ...),
       annotation_legend_side = "bottom"))
   }
