@@ -1,8 +1,10 @@
 Package: TBSignatureProfiler
 Title: Profile RNA-Seq Data Using TB Pathway Signatures
-Version: 1.21.2
+Version: 1.21.3
 Authors@R: c(
-    person("Aubrey R.", "Odom", , "aodom@bu.edu", role = c("aut", "cre", "dtm"),
+    person("Kiloni", "Quiles", , "kiloni.quiles@rutgers.edu", role = c("cre"), 
+            comment = c(ORCID = "0000-0002-7521-5255"))
+    person("Aubrey R.", "Odom", , "aodom@bu.edu", role = c("aut", "dtm"),
            comment = c(ORCID = "0000-0001-7113-7598")),
     person("David", "Jenkins", , "dfj@bu.edu", role = c("aut", "org"),
            comment = c(ORCID = "0000-0002-7451-4288")),
